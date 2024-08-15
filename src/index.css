@@ -1,0 +1,18 @@
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Concert+One&family=Fjalla+One&family=Oswald:wght@200..700&display=swap');
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f3f4f6;
+}
+
+.placeholder-custom::placeholder {
+    color: #c5c5c5; /* Example: Custom color */
+    opacity: 1; /* Example: Full opacity */
+    font-style: 'Bree Serif'; /* Example: Italicize text */
+}
