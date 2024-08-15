@@ -27,7 +27,7 @@ interface ApiResponse {
   };
 }
 
-export const fetchData = async (page: number): Promise<ApiResponse> => {
+export const fetchDataMvtVenLi = async (page: number): Promise<ApiResponse> => {
   const token = getToken();
 
   if (!token) {
