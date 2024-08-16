@@ -2,10 +2,6 @@ import React from 'react';
 import Button from '../atoms/BottomAtom';
 import { useUser } from '../../context/userContext';
 
-/*interface AgentInfoProps {
-  name: string;
-}*/
-
 const AgentInfo: React.FC<{}> = ({}) => {
   const { user } = useUser();
   return (

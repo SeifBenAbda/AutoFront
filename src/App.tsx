@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import DashboardLayout from './templates/DashboardLayout';
-import CarRequestPage from './pages/CarRequestPage';
-import ItemChangePage from './pages/ItemChangePage';
-import LoginPage from './pages/LoginPage';
+import CarRequestPage from './templates/CarRequestPage';
+import ItemChangePage from './templates/ItemChangePage';
+import LoginPage from './templates/LoginPage';
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
@@ -15,9 +15,9 @@ const App: React.FC = () => {
       await checkAuth(); // Check authentication state
       setLoading(false); // Set loading to false once authentication is checked
     };
-
+    
     initializeAuth();
-  }, [checkAuth]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>; // Show a loading indicator while authentication is being checked

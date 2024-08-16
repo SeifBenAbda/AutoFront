@@ -47,7 +47,7 @@ const LoginForm: React.FC = () => {
       </div>
       <button
         type="submit"
-        className="w-full bg-bluePrimary text-gray-700 p-2 rounded-lg hover:bg-yellow-600 transition duration-300 font-oswald font-semibold"
+        className="w-full bg-bluePrimary text-white p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
       >
         Se Connecter
       </button>

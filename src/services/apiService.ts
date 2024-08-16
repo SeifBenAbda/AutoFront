@@ -3,9 +3,9 @@ import { getToken } from './authService';
 
 export const fetchUserData = async () => {
   const token = getToken();
-  if (!token) throw new Error('No token found');
+  if (!token) throw new Error('No token found fethcu ser data');
 
-  const response = await fetch('/api/user-data', {
+  const response = await fetch('http://localhost:3000/users/me', {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
@@ -31,7 +31,7 @@ export const fetchDataMvtVenLi = async (page: number): Promise<ApiResponse> => {
   const token = getToken();
 
   if (!token) {
-    throw new Error('No token found');
+    throw new Error('No token found fetchMVTVENLI');
   }
   const response = await fetch(`http://localhost:3000/mvt-venli?page=${page}`,
 

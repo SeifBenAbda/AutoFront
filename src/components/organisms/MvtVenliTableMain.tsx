@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import useMvtVenLi from '../../hooks/useMvtVenli'; // Adjust the import path as necessary
 import {TableData} from './TableData';
-import {columns} from '../atoms/MvtVenliColumns'
+import {columns} from '../../utils/MvtVenliColumns'
 
 
 const DataTable: React.FC = () => {

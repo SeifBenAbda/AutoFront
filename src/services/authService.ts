@@ -37,7 +37,7 @@ export const fetchUserData = async () => {
   const token = getToken();
 
   if (!token) {
-    throw new Error('No token found');
+    throw new Error('No token found 122');
   }
 
   const response = await fetch('http://localhost:3000/users/me', {

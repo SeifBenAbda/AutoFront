@@ -4,20 +4,31 @@ import {
     ResizablePanelGroup,
   } from "../../@/components/ui/resizable"
   import { Button } from "../../@/components/ui/button"
-import { Link } from "react-router-dom"
-  export default function ResizableTable() {
-    return (
-      <ResizablePanelGroup direction="vertical">
-        <ResizablePanel>
-        <Button>
-            HELOOO
-  <Link to={"/login"}>Login</Link>
-</Button>
+import {useNavigate } from "react-router-dom"
+import useAuth from "../../hooks/useAuth";
 
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel>Two</ResizablePanel>
-      </ResizablePanelGroup>
-    )
-  }
+  
+
+  const ResizableTable: React.FC = () => {
+    const { handleLogout, error } = useAuth(); // Use the custom hook
+    const navigate = useNavigate(); // Initialize useNavigate
+    return (
+        <ResizablePanelGroup direction="vertical">
+          <ResizablePanel>
+          <Button onClick={() => {
+  handleLogout(() => navigate('/dashboard')); // Pass a function to handleLogout
+}}>
+  Logout
+</Button>
+  
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel>Two</ResizablePanel>
+        </ResizablePanelGroup>
+      )
+  };
+
+  export default ResizableTable
+
+ 
   

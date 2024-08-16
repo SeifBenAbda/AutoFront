@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
 import { useUser } from '../context/userContext';
+import { User } from '../models/user.model'; // Adjust the path as needed
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000/');
 
 const useAuth = () => {
   const { user, setUser } = useUser();
@@ -10,10 +14,16 @@ const useAuth = () => {
     const token = getToken();
     if (token) {
       try {
-        const userData = await fetchUserData(); //Problem here
-        setUser(userData);
+        const userData: User = await fetchUserData();
+        if (userData) {
+          setUser(userData);
+        } else {
+          removeToken();
+          setUser(null);
+        }
       } catch (err) {
         console.error('Failed to fetch user data:', err);
+        removeToken();
         setUser(null);
       }
     } else {
@@ -22,15 +32,25 @@ const useAuth = () => {
   };
 
   useEffect(() => {
-    checkAuth(); // Check authentication on mount
+    checkAuth();
+
+    socket.on('update', (updatedUserData: User) => {
+      setUser(prevUser => ({
+        ...(prevUser || {}), // Use an empty object if prevUser is null or undefined
+        ...updatedUserData,
+      }));
+    });
+
+    return () => {
+      socket.off('update');
+    };
   }, []);
 
   const handleLogin = async (username: string, password: string, navigate: (path: string) => void) => {
     try {
       const token = await loginUser(username, password);
       saveToken(token.accessToken);
-      const userData = await fetchUserData();
-      console.log(userData)
+      const userData: User = await fetchUserData();
       setUser(userData);
       navigate('/dashboard');
     } catch (err) {
