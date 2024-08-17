@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
         <h1 className="text-2xl font-bold text-gray-800 font-oswald">AUTO PRO</h1>
       </div>
       <div className="flex-grow flex items-center justify-center z-10">
-        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+        <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md m-4">
           <h1 className="text-3xl font-bold mb-6 text-center font-oswald text-gray-800">Connexion</h1>
           <LoginForm />
         </div>

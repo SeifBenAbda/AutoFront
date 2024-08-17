@@ -1,6 +1,11 @@
 // src/hooks/useData.ts
 import { useQuery } from '@tanstack/react-query';
 import { fetchDataMvtVenLi } from '../services/apiService';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000/');
+
+
 
 const useMvtVenLi = (page: number) => {
   return useQuery({

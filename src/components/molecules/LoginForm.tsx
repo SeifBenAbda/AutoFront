@@ -21,7 +21,7 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleLogin(username, password, ()=>navigate('/dashboard')); // Pass navigate to handleLogin
+    handleLogin(username, password, () => navigate('/dashboard')); // Pass navigate to handleLogin
   };
 
   return (

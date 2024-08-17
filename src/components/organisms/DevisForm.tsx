@@ -2,56 +2,38 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import React from "react";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../@/components/ui/form";
-import { Button } from "../../@/components/ui/button";
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../../@/components/ui/card";
-import FormCardContent from "../molecules/FormCardContent";
 import { formSchema } from "../../shemas/devisFormShemas";
-
+import { Button } from "../../@/components/ui/button";
+import ClientDataForm from "../molecules/ClientDataForm";
 
 const DevisForm: React.FC = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            nomClient: "", // Ensure this matches your schema field
-        }
+            form1: { nomClient: "", telClient: "", email: "", socialReason: "", postalCode: "", pays: "" ,dateOfBirth:"" ,clientType:"pp"},
+            //form2: { nomClient: "" },
+            //form3: { nomClient: "" },
+        },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values);
-    }
+    const onSubmit = (values: z.infer<typeof formSchema>) => {
+        console.log("All Form Values:", values);
+        console.log("Date of Birth:", values.form1.dateOfBirth);
+        console.log("Nom Client:", values.form1.nomClient);
+    };
 
     return (
-        <Card className="w-[350px]">
-            <CardHeader>
-                <CardTitle>Devis</CardTitle>
-                <CardDescription>Devis pour voiture</CardDescription>
-            </CardHeader>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormCardContent form={form} content="Your Content Here" />
-                    <Button type="submit">Submit</Button>
-                </form>
-            </Form>
-        </Card>
+        <main className="flex flex-wrap lg:flex-row md:flex-row sm:flex-col w-full lg:space-y-0 lg:space-x-4 md:space-x-4">
+            <ClientDataForm form={form} formId="form1" />
+            {/* Uncomment if you have these forms */}
+            {/* <FormMain form={form} formId="form2" /> */}
+            {/* <FormMain form={form} formId="form3" /> */}
+            <div className="w-full flex justify-center mt-4">
+                <Button onClick={() => form.handleSubmit(onSubmit)()} type="button">
+                    Submit All Forms
+                </Button>
+            </div>
+        </main>
     );
 };
 

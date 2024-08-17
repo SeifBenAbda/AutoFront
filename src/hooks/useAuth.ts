@@ -11,6 +11,7 @@ const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
 
   const checkAuth = async () => {
+    console.log("Checking Auth")
     const token = getToken();
     if (token) {
       try {
@@ -32,9 +33,7 @@ const useAuth = () => {
   };
 
   useEffect(() => {
-    checkAuth();
-
-    socket.on('update', (updatedUserData: User) => {
+    socket.on('userUpdate', (updatedUserData: User) => {
       setUser(prevUser => ({
         ...(prevUser || {}), // Use an empty object if prevUser is null or undefined
         ...updatedUserData,
@@ -42,7 +41,7 @@ const useAuth = () => {
     });
 
     return () => {
-      socket.off('update');
+      socket.off('userUpdate');
     };
   }, []);
 

@@ -42,7 +42,7 @@ export const TableData = <TData,TValue,>({
 
   return (
     <div className="rounded-md border">
-      <Table style={{ width: table.getTotalSize() }}>
+      <Table style={{ width: table.getTotalSize()/2 }}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

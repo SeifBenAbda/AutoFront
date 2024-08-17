@@ -3,45 +3,40 @@ import { UseFormReturn } from "react-hook-form";
 import {
     FormField,
     FormControl,
-    FormDescription,
     FormItem,
     FormLabel,
     FormMessage,
 } from "../../@/components/ui/form";
-import { Input } from "../../@/components/ui/input";
+
 import { z } from "zod";
 import { formSchema } from "../../shemas/devisFormShemas";
 import { CardContent } from "../../@/components/ui/card";
 
-
-
-
 interface FormCardProps {
     form: UseFormReturn<z.infer<typeof formSchema>>;
-    content: string;
+    name: string; // Adjust the type based on your `formSchema`
+    label: string;
     children?: React.ReactNode;
 }
 
-const FormCardContent: React.FC<FormCardProps> = ({ form, content, children }) => {
-
-    
+const FormCardContent: React.FC<FormCardProps> = ({ form, name, label, children }) => {
     return (
-        <CardContent>
+        <CardContent className="flex flex-1">
             <FormField
                 control={form.control}
-                name="nomClient"
+                name={name as string}
                 render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Nom Client</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Enter your name" {...field} />
+                    <FormItem className="w-full">
+                        <FormLabel>{label}</FormLabel>
+                        <FormControl className="w-full">
+                            {children}
                         </FormControl>
-                        <FormDescription>{content}</FormDescription>
-                        <FormMessage />
+                        <FormMessage>
+                            {form.formState.errors[name]?.message as string}
+                        </FormMessage>
                     </FormItem>
                 )}
             />
-            {children}
         </CardContent>
     );
 };
