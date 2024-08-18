@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Toggle } from "../../@/components/ui/toggle";
 
-interface TypeClientProps {
+interface ClientGenderProps {
   option1: string;
   option2: string;
   onChange?: (selected: string) => void;
 }
 
-const TypeClient: React.FC<TypeClientProps> = ({ option1, option2, onChange }) => {
+const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange }) => {
   const [selected, setSelected] = useState<string>(option1);
 
   const handleToggle = () => {
@@ -20,14 +20,13 @@ const TypeClient: React.FC<TypeClientProps> = ({ option1, option2, onChange }) =
 
   return (
     <Toggle
-      aria-label="Type Client"
+      aria-label="Toggle gender"
       onClick={handleToggle}
-      className="relative w-full font-oswald bg-green-600 text-whiteSecond hover:bg-green-600 hover:text-whiteSecond border 
-      data-[state=on]:border-gray-200 data-[state=on]:bg-gray-200 "
+      className="relative w-full font-oswald bg-bluePrimary text-whiteSecond hover:bg-bluePrimary hover:text-whiteSecond border data-[state=on]:border-bluePrimary"
     >
       {selected}
     </Toggle>
   );
 };
 
-export default TypeClient;
+export default ClientGender;

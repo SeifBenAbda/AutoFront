@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import DashboardLayout from './templates/DashboardLayout';
-import CarRequestPage from './templates/CarRequestPage';
-import ItemChangePage from './templates/ItemChangePage';
+import CarRequestPage from './templates/CarRequestLayout';
+import ItemChangePage from './templates/ItemChangeLayout';
 import LoginPage from './templates/LoginPage';
 
 const App: React.FC = () => {

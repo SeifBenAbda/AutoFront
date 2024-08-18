@@ -1,6 +1,5 @@
-import { UseFormReturn, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import React from "react";
-import { z } from "zod";
 import {
     Form,
     FormControl,
@@ -12,94 +11,105 @@ import {
 import { Input } from "../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
 import RegionDropDown from "./RegionDropDown";
-import { formSchema } from "../../shemas/devisFormShemas";
 import { Separator } from "../../@/components/ui/separator";
 import { DatePicker } from "../atoms/DataSelector";
-import ClientTypeSelect from "../atoms/ClientTypeSelect";
+import ClientGender from "../atoms/ClientGender";
+import TypeClient from "../atoms/ClientTypeSelect";
 
-
-import { useDevisCompteur } from '../../context/devisCompteurContext'
-
-
-
-
-
-interface FormMainProps {
-    form: UseFormReturn<z.infer<typeof formSchema>>;
-    formId: string;
-}
-
-const ClientDataForm: React.FC<FormMainProps> = ({ form, formId }) => {
+const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
-    const { devisCompteur } = useDevisCompteur();
-    // Watch the value of the clientType field
+
+    // Watch the value of the clientType and clientGender fields
     const clientType = watch(`${formId}.clientType`);
+    const clientGender = watch(`${formId}.clientGender`);
 
     return (
         <Form {...form} className="flex-1">
-            <div className="w-full lg:w-[30%] md:w-[35%]">
-                <FormCardContent form={form} label="Type de Client" name={formId}>
-                    <Controller
-                        name={`${formId}.clientType`}
-                        control={control}
-                        render={({ field }) => (
-                            <ClientTypeSelect
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
-                            />
-                        )}
-                    />
-                </FormCardContent>
-                
+            <div className="pl-3 mt-2 font-oswald text-lg mb-2">Données du client</div>
+            <div className="w-full">
+                {/* Toggle Informations */}
+                <div className="flex space-x-4">
+                    <FormCardContent form={form} label="M. ou Mme" name={`${formId}.clientGender`}>
+                        <ClientGender
+                            option1="Monsieur"
+                            option2="Madame"
+                            onChange={(selected: string) => {
+                                // Update the form field value
+                                form.setValue(`${formId}.clientGender`, selected);
+                                console.log("Selected Gender : " + selected);
+                            }}
+                        />
+                    </FormCardContent>
 
-
-                
-                <FormCardContent form={form} label="test" name={formId}>
-                    <h1>{devisCompteur}</h1>
-                </FormCardContent>
-
+                    <FormCardContent form={form} label="Type Client" name={`${formId}.clientType`}>
+                        <TypeClient
+                            option1="Particulier"
+                            option2="Entreprise"
+                            onChange={(selected: string) => {
+                                // Update the form field value
+                                form.setValue(`${formId}.clientType`, selected);
+                                console.log("Selected Type : " + selected);
+                            }}
+                        />
+                    </FormCardContent>
+                </div>
 
                 {/* Nom Client */}
-                <FormCardContent form={form} label="Nom" name={formId}>
+                <FormCardContent form={form} label="Nom" name={`${formId}.nomClient`}>
                     <Input
+                        className="border border-bluePrimary"
                         placeholder="Nom du Client"
                         {...register(`${formId}.nomClient`)}
                     />
                 </FormCardContent>
 
-                {clientType !== "pp" && (
-                    <FormCardContent form={form} label="Cin" name={formId}>
-                        <Input
-                            placeholder="Cin"
-                            {...register(`${formId}.cin`)} // Changed to `cin` to match the placeholder
-                        />
-                    </FormCardContent>
-                )}
+                {/* Cin Client */}
+                <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
+                    <Input
+                        className="border border-bluePrimary"
+                        placeholder="Cin"
+                        {...register(`${formId}.cin`)}
+                    />
+                </FormCardContent>
+
+                {/* Matricule Fiscale Client */}
+                <FormCardContent form={form} label="Matricule Fiscale" name={`${formId}.mtFiscale`}>
+                    <Input
+                        className="border border-bluePrimary"
+                        placeholder="Matricule Fiscale"
+                        {...register(`${formId}.mtFiscale`)}
+                    />
+                </FormCardContent>
 
                 {/* Tel Client */}
-                <FormCardContent form={form} label="Numero Tel" name={formId}>
+                <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>
                     <Input
-                        placeholder="Tel Client"
+                        className="border border-bluePrimary"
+                        placeholder="Numéro de téléphone"
                         {...register(`${formId}.telClient`)}
                     />
                 </FormCardContent>
 
-                <FormCardContent form={form} label="Email" name={formId}>
+                <FormCardContent form={form} label="Email" name={`${formId}.email`}>
                     <Input
+                        className="border border-bluePrimary"
                         placeholder="Email"
                         {...register(`${formId}.email`)}
                     />
                 </FormCardContent>
 
                 {/* Raison Sociale */}
-                <FormCardContent form={form} label="Profession / Secteur Activite" name={formId}>
+                <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`}>
                     <Input
+                        className="border border-bluePrimary"
                         placeholder="Profession / Secteur Activite"
                         {...register(`${formId}.socialReason`)}
                     />
                 </FormCardContent>
 
-                <FormCardContent form={form} label="Date de naissance" name={formId}>
+
+                {/* Date of Birthday */}                
+                <FormCardContent form={form} label="Date de naissance" name={`${formId}.dateOfBirth`}>
                     <Controller
                         name={`${formId}.dateOfBirth`}
                         control={control}
@@ -107,52 +117,10 @@ const ClientDataForm: React.FC<FormMainProps> = ({ form, formId }) => {
                             <DatePicker
                                 value={field.value}
                                 onChange={field.onChange}
+                                fromYear={new Date().getFullYear()-70}
+                                toYear={new Date().getFullYear()-18}
                             />
                         )}
-                    />
-                </FormCardContent>
-
-                <br />
-                <Separator />
-                <br />
-
-                {/* Adresse */}
-                <FormCardContent form={form} label="Adresse" name={formId}>
-                    <Input
-                        placeholder="Adresse"
-                        {...register(`${formId}.adresse`)}
-                    />
-                </FormCardContent>
-
-                <FormCardContent form={form} label="Ville" name={formId}>
-                    <Input
-                        placeholder="Ville"
-                        {...register(`${formId}.ville`)}
-                    />
-                </FormCardContent>
-
-                {/* Region and Code Postal */}
-                <div className="flex lg:flex-row md:flex-col sm:flex-col">
-                    <div className="flex-1 lg:w-[60%]">
-                        <FormCardContent form={form} label="Region" name={formId}>
-                            <RegionDropDown />
-                        </FormCardContent>
-                    </div>
-                    <div className="flex-1 lg:w-[40%]">
-                        <FormCardContent form={form} label="Code Postal" name={formId}>
-                            <Input
-                                placeholder="Code Postal"
-                                {...register(`${formId}.postalCode`)}
-                            />
-                        </FormCardContent>
-                    </div>
-                </div>
-
-                {/* Pays */}
-                <FormCardContent form={form} label="Pays" name={formId}>
-                    <Input
-                        placeholder="Pays"
-                        {...register(`${formId}.pays`)}
                     />
                 </FormCardContent>
             </div>

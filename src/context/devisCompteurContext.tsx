@@ -1,42 +1,28 @@
 // src/contexts/DevisCompteurContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import io from 'socket.io-client';
-
-const socket = io('http://localhost:3000/');
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { DevisCompteur } from '../models/devis-compteur.model'; // Adjust the path as needed
 
 interface DevisCompteurContextType {
-  devisCompteur: number;
-  setDevisCompteur: React.Dispatch<React.SetStateAction<number>>;
+    devisCompteur: DevisCompteur;
+    setDevisCompteur: React.Dispatch<React.SetStateAction<DevisCompteur>>;
 }
 
 const DevisCompteurContext = createContext<DevisCompteurContextType | undefined>(undefined);
 
-export const DevisCompteurProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [devisCompteur, setDevisCompteur] = useState<number>(0);
+export const DevisCompteurProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [devisCompteur, setDevisCompteur] = useState<DevisCompteur>({ devisNumber: '0' });
 
-  useEffect(() => {
-    // Listen for updates from the socket
-    socket.on('updateDevisCompteur', (newValue: number) => {
-      setDevisCompteur(newValue);
-    });
-
-    return () => {
-      // Cleanup listener on unmount
-      socket.off('updateDevisCompteur');
-    };
-  }, []);
-
-  return (
-    <DevisCompteurContext.Provider value={{ devisCompteur, setDevisCompteur }}>
-      {children}
-    </DevisCompteurContext.Provider>
-  );
+    return (
+        <DevisCompteurContext.Provider value={{ devisCompteur, setDevisCompteur }}>
+            {children}
+        </DevisCompteurContext.Provider>
+    );
 };
 
-export const useDevisCompteur = () => {
-  const context = useContext(DevisCompteurContext);
-  if (!context) {
-    throw new Error('useDevisCompteur must be used within a DevisCompteurProvider');
-  }
-  return context;
+export const useDevisCompteur = (): DevisCompteurContextType => {
+    const context = useContext(DevisCompteurContext);
+    if (context === undefined) {
+        throw new Error('useDevisCompteur must be used within a DevisCompteurProvider');
+    }
+    return context;
 };

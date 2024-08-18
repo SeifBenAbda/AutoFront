@@ -1,0 +1,34 @@
+//This Component is Responsable to Select Why the Client is Actaully here 
+
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../../@/components/ui/select";
+
+
+interface MotifSelectTypes {
+    value?: string; // Updated to match the value type used in ClientTypeSelect
+    onChange: (value: string) => void; // Callback now expects a string
+}
+
+const MotifClientSelect = ({ value, onChange }:MotifSelectTypes) => {
+    return (
+        <Select value={value} onValueChange={onChange}>
+            <SelectTrigger className="w-full border border-bluePrimary">
+                <SelectValue placeholder="Motif" defaultValue={value} />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="accquisation">Volonté d'acquisition</SelectItem>
+                <SelectItem value="visite">Visite / Curiosité</SelectItem>
+                <SelectItem value="compareModels">Comparaison de Modèles</SelectItem>
+                <SelectItem value="comparePrices">Comparaison des Prix</SelectItem>
+            </SelectContent>
+        </Select>
+    );
+};
+
+export default MotifClientSelect;

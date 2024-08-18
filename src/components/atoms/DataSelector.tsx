@@ -9,16 +9,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../@/components/ui/p
 interface DatePickerProps {
   value?: Date;
   onChange: (date: Date | undefined) => void;
+  fromYear?: number;
+  toYear?: number;
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date().getFullYear() - 18 }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal border border-bluePrimary",
             !value && "text-muted-foreground"
           )}
         >
@@ -26,13 +28,16 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
           {value ? format(value, "PPP", { locale: fr }) : <span>Choisir une date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-full p-0" align="start" side="bottom" sideOffset={0}>
         <Calendar
           className="w-full"
           mode="single"
+          captionLayout="dropdown-buttons"
           selected={value}
           onSelect={onChange}
           initialFocus
+          fromYear={fromYear}
+          toYear={toYear}
         />
       </PopoverContent>
     </Popover>

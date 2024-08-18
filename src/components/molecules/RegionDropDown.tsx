@@ -17,7 +17,7 @@ const RegionDropDown: React.FC = () => {
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full flex justify-between items-center truncate"
+                    className="w-full flex justify-between items-center truncate border border-bluePrimary"
                 >
                     <span className="truncate">
                         {value

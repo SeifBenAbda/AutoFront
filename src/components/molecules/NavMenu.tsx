@@ -53,22 +53,22 @@ const NavMenu: React.FC = () => {
   }
 
   return (
-    <nav className="hidden md:flex justify-center space-x-5 border rounded-2xl border-veryGrey bg-veryGrey">
+    <nav className="hidden md:flex justify-center space-x-4 border rounded-2xl border-white bg-white">
       <button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
-        className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-bluePrimary text-white' : 'bg-veryGrey text-bluePrimary'}`}
+        className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
       >
         Dashboard
       </button>
       <button
         onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
-        className={`p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-bluePrimary text-white' : 'bg-veryGrey text-bluePrimary'}`}
+        className={`p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
       >
         Dossier Voiture
       </button>
       <button
         onClick={() => handleNavClick('Commande des Pieces', "/item-change")}
-        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-bluePrimary text-white' : 'bg-veryGrey text-bluePrimary'}`}
+        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
       >
         Commande des Pieces
       </button>

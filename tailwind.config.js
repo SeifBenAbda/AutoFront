@@ -17,6 +17,10 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        'md-custom': '800px', // Custom screen between 800px and 1150px
+        'lg-custom': '1150px',
+      },
       colors: {
         bluePrimary: '#171543', // Define your custom color here
         veryGrey:'#f8f8f8',

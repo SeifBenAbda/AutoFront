@@ -1,4 +1,3 @@
-import DevisForm from "../components/organisms/DevisForm";
 import React from "react";
 import {
     Card,
@@ -14,8 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../shemas/devisFormShemas";
 import { useDevisCompteur } from '../context/devisCompteurContext';
 import useDevisCompteurFetcher from "../hooks/useDevisCompteur";
+import ChangeItemsForm from "../components/organisms/ChangeItemsForm";
 
-const DevisPage: React.FC = () => {
+const ItemChangePage: React.FC = () => {
     const { devisCompteur } = useDevisCompteur();
     useDevisCompteurFetcher(); // Initialize fetching and WebSocket subscription
 
@@ -50,11 +50,11 @@ const DevisPage: React.FC = () => {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <DevisForm form={form} />
+                    <ChangeItemsForm form={form} />
                 </CardContent>
             </div>
         </Card>
     );
 };
 
-export default DevisPage;
+export default ItemChangePage;
