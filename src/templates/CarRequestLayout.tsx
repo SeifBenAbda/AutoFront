@@ -3,7 +3,7 @@ import DevisPage from "../pages/DevisPage";
 import Header from "../components/organisms/Header";
 import { useEffect } from "react";
 
-const CarRequestPage: React.FC = () => {
+const CarRequestLayout: React.FC = () => {
   useEffect(() => {
     // Scroll to the top when the component mounts
     window.scrollTo(0, 0);
@@ -21,4 +21,4 @@ const CarRequestPage: React.FC = () => {
   );
 };
 
-export default CarRequestPage;
+export default CarRequestLayout;

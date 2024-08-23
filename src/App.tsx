@@ -5,6 +5,9 @@ import DashboardLayout from './templates/DashboardLayout';
 import CarRequestPage from './templates/CarRequestLayout';
 import ItemChangePage from './templates/ItemChangeLayout';
 import LoginPage from './templates/LoginPage';
+import CarDevisTrackingPage from './pages/CarDevisTrackingPage';
+import ItemChangeTrackingPage from './pages/ItemChangeTrackingPage';
+import CarTrackingLayout from './templates/CarTrackingLayout';
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
@@ -15,7 +18,7 @@ const App: React.FC = () => {
       await checkAuth(); // Check authentication state
       setLoading(false); // Set loading to false once authentication is checked
     };
-    
+
     initializeAuth();
   }, []);
 
@@ -26,7 +29,7 @@ const App: React.FC = () => {
   const isLoggedIn = Boolean(user); // Check if the user is logged in based on the hook
 
   return (
-   
+
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
@@ -41,6 +44,14 @@ const App: React.FC = () => {
         <Route
           path="/item-change"
           element={isLoggedIn ? <ItemChangePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/carTracking"
+          element={isLoggedIn ? <CarTrackingLayout /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/itemTracking"
+          element={isLoggedIn ? <ItemChangeTrackingPage /> : <Navigate to="/login" />}
         />
         <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />} />
       </Routes>

@@ -6,9 +6,13 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "../../@/components/ui/button";
 import { cn } from "../../@/lib/utils";
 
-const RegionDropDown: React.FC = () => {
-    const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+interface RegionDropDownProps {
+    value: string;
+    onChange: (value: string) => void;
+}
+
+const RegionDropDown: React.FC<RegionDropDownProps> = ({ value, onChange }) => {
+    const [open, setOpen] = React.useState(false);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -37,9 +41,9 @@ const RegionDropDown: React.FC = () => {
                                 <CommandItem
                                     key={region.value}
                                     value={region.value}
-                                    onSelect={(currentValue: React.SetStateAction<string>) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
+                                    onSelect={(currentValue: string) => {
+                                        onChange(currentValue === value ? "" : currentValue);
+                                        setOpen(false);
                                     }}
                                 >
                                     <Check
@@ -56,8 +60,7 @@ const RegionDropDown: React.FC = () => {
                 </Command>
             </PopoverContent>
         </Popover>
-    )
+    );
 }
 
-
-export default RegionDropDown
+export default RegionDropDown;

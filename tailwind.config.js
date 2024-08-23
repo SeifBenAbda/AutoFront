@@ -24,7 +24,8 @@ module.exports = {
       colors: {
         bluePrimary: '#171543', // Define your custom color here
         veryGrey:'#f8f8f8',
-        whiteSecond:"#fbfbfb"
+        whiteSecond:"#fbfbfb",
+        blueCiel:"#e1e8f7"
         // Add more custom colors if needed
       },
       fontFamily: {

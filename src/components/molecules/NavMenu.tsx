@@ -19,6 +19,12 @@ const NavMenu: React.FC = () => {
       case '/item-change':
         setActiveLink('Commande des Pieces');
         break;
+      case '/carTracking':
+        setActiveLink('Suivi Devis Voiture');
+        break;
+      case '/itemTracking':
+        setActiveLink('Suivi Changement des Pieces');
+        break;
       default:
         setActiveLink('Dashboard'); // Default case if no match
     }
@@ -47,13 +53,15 @@ const NavMenu: React.FC = () => {
           <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
           <option value="/item-change">Commande des Pieces</option>
+          <option value="/carTracking">Suivi Devis Voiture</option>
+          <option value="/itemTracking">Suivi Changement des Pieces</option>
         </select>
       </div>
     );
   }
 
   return (
-    <nav className="hidden md:flex justify-center space-x-4 border rounded-2xl border-white bg-white">
+    <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-white bg-white">
       <button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
         className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
@@ -72,6 +80,24 @@ const NavMenu: React.FC = () => {
       >
         Commande des Pieces
       </button>
+
+      <button
+        onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+      >
+
+        Suivi Devis Voiture
+      </button>
+
+      <button
+        onClick={() => handleNavClick('Suivi Changement des Pieces', "/itemTracking")}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+      >
+
+        Suivi Changement des Pieces
+      </button>
+
+
     </nav>
   );
 };

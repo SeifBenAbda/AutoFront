@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../shemas/devisFormShemas";
 import { useDevisCompteur } from '../context/devisCompteurContext';
 import useDevisCompteurFetcher from "../hooks/useDevisCompteur";
-
+import  {defaultDevisFormValues}  from "../utils/defaultFormValues";
 const DevisPage: React.FC = () => {
     const { devisCompteur } = useDevisCompteur();
     useDevisCompteurFetcher(); // Initialize fetching and WebSocket subscription
@@ -22,14 +22,14 @@ const DevisPage: React.FC = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            form1: { nomClient: "", telClient: "", email: "", socialReason: "", postalCode: "", pays: "", dateOfBirth: new Date(), clientType: "pp" },
-        },
+            devisForm: defaultDevisFormValues,
+        }
     });
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         console.log("All Form Values:", values);
-        console.log("Date of Birth:", values.form1.dateOfBirth);
-        console.log("Nom Client:", values.form1.nomClient);
+        console.log("Date of Birth:", values.devisForm.dateOfBirth);
+        console.log("Nom Client:", values.devisForm.nomClient);
     };
 
     return (

@@ -15,19 +15,19 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
     return (
         <div className="flex flex-wrap justify-between">
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4">
-                <ClientDataForm form={form} formId="form1" />
+                <ClientDataForm form={form} formId="devisForm" />
             </div>
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4">
-                <ClientAdresseForm form={form} formId="form2" />
+                <ClientAdresseForm form={form} formId="devisForm" />
             </div>
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4">
-                <ClientExtraForm form={form} formId="form3" />
+                <ClientExtraForm form={form} formId="devisForm" />
             </div>
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4">
-                <ClientRappelForm form={form} formId="form4" />
+                <ClientRappelForm form={form} formId="devisForm" />
             </div>
         </div>
     );

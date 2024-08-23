@@ -11,13 +11,14 @@ import { Input } from "../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
 import RegionDropDown from "./RegionDropDown";
 import { Textarea } from "../../@/components/ui/textarea";
+import { Controller } from "react-hook-form";
 
 
 
 
 const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
-    
+
 
     return (
         <Form {...form} className="flex-1">
@@ -45,7 +46,16 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex lg:flex-row md:flex-col sm:flex-col">
                     <div className="flex-1 lg:w-[60%]">
                         <FormCardContent form={form} label="Region" name={`${formId}.region`}>
-                            <RegionDropDown />
+                            <Controller
+                                name={`${formId}.region`}
+                                control={control}
+                                render={({ field }) => (
+                                    <RegionDropDown
+                                        value={field.value || ""}
+                                        onChange={(value) => field.onChange(value)}
+                                    />
+                                )}
+                            />
                         </FormCardContent>
                     </div>
                     <div className="flex-1 lg:w-[40%]">
@@ -79,7 +89,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 </FormCardContent>
 
 
-                
+
             </div>
         </Form>
     );

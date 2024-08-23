@@ -1,4 +1,5 @@
-import { DataItem } from '../types/mvtvenliTypes';
+import { json } from "react-router-dom";
+import { Devis } from "../types/devisTypes";
 import { getToken } from './authService';
 
 export const fetchUserData = async () => {
@@ -19,7 +20,7 @@ export const fetchUserData = async () => {
 
 
 interface ApiResponse {
-  data: DataItem[];
+  data: Devis[];
   meta: {
     totalItems: number;
     totalPages: number;
@@ -27,7 +28,7 @@ interface ApiResponse {
   };
 }
 
-export const fetchDataMvtVenLi = async (page: number): Promise<ApiResponse> => {
+export const fetchDevisDetailled = async (page: number): Promise<ApiResponse> => {
   const token = getToken();
 
   if (!token) {
@@ -44,5 +45,33 @@ export const fetchDataMvtVenLi = async (page: number): Promise<ApiResponse> => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
+  return response.json();
+};
+
+
+
+export const fetchDevisAllData = async (database: string, clientName: string | undefined, page: number): Promise<ApiResponse> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('No token found fetchDataDevisByClientName');
+  }
+
+  const response = await fetch(`http://localhost:3000/devis/completeDevis`, {
+    method:"POST",
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body:JSON.stringify({
+      "database":database,
+      "page":page
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+
   return response.json();
 };
