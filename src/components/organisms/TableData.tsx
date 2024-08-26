@@ -1,5 +1,4 @@
-// TableData.tsx
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   ColumnDef,
   ColumnSizingState,
@@ -16,24 +15,23 @@ import {
   TableRow,
 } from "../../@/components/ui/table";
 import { ColumnResizer } from "../atoms/ColumnResizer";
-import { EditDevisSheet } from "../molecules/EditDevisSheet"; // Make sure this path is correct
+import { EditDevisSheet } from "../molecules/EditDevisSheet";
 import { Button } from "../../@/components/ui/button";
+import { Devis } from "@/types/devisTypes";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Devis, any>[];
+  data: Devis[];
 }
 
-export const TableData = <TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) => {
+export const TableData = ({ columns, data }: DataTableProps) => {
   const [colSizing, setColSizing] = useState<ColumnSizingState>({});
-  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [tableData, setTableData] = useState<Devis[]>(data); // Manage table data state
+  const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
 
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     enableColumnResizing: true,
     columnResizeMode: "onChange",
@@ -44,8 +42,7 @@ export const TableData = <TData, TValue>({
     },
   });
 
-  const handleOpenSheet = (row: any) => {
-    console.log(row)
+  const handleOpenSheet = (row: Devis) => {
     setSelectedRow(row);
     setIsSheetOpen(true);
   };
@@ -54,13 +51,21 @@ export const TableData = <TData, TValue>({
     setIsSheetOpen(false);
   };
 
-  const handleSaveRow = (updatedRow: TData) => {
-    // Update your data state or make an API call to save the changes
+  const handleSaveRow = (updatedRow: Devis) => {
+    // Update the row in the tableData state
+    setTableData((prevData) =>
+      prevData.map((item) =>
+        item.DevisId === updatedRow.DevisId ? updatedRow : item // Assuming `DevisId` is a unique identifier
+      )
+    );
+
+    // Send updated data to the server
     console.log("Saved row:", updatedRow);
+    // You can use an API call to update the data on the server
   };
 
   return (
-    <>
+    <div className="overflow-y-auto flex-1">
       <Table
         style={{ width: table.getTotalSize() }}
         className="bg-whiteSecond border border-whiteSecond"
@@ -73,8 +78,8 @@ export const TableData = <TData, TValue>({
                   align="center"
                   key={header.id}
                   className={`relative ${index < headerGroup.headers.length - 1
-                      ? "border-r border-whiteSecond text-center align-middle text-bluePrimary font-oswald"
-                      : "text-bluePrimary border-whiteSecond text-center align-middle font-oswald"
+                    ? "border-r border-whiteSecond text-center align-middle text-bluePrimary font-oswald"
+                    : "text-bluePrimary border-whiteSecond text-center align-middle font-oswald"
                     }`}
                   style={{
                     width: header.getSize(),
@@ -106,8 +111,8 @@ export const TableData = <TData, TValue>({
                     key={cell.id}
                     align="center"
                     className={`${cellIndex < row.getVisibleCells().length - 1
-                        ? "border-r border-gray-300 text-bluePrimary"
-                        : "text-bluePrimary"
+                      ? "border-r border-gray-300 text-bluePrimary"
+                      : "text-bluePrimary"
                       }`}
                     style={{
                       width: cell.column.getSize(),
@@ -117,7 +122,7 @@ export const TableData = <TData, TValue>({
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     {cell.column.id === 'actions' && (
                       <Button
-                        onClick={() => handleOpenSheet(row.original)}
+                        onClick={() => handleOpenSheet(row.original as Devis)}
                         className="px-4 py-2 text-white bg-bluePrimary rounded"
                       >
                         Modifier
@@ -138,12 +143,12 @@ export const TableData = <TData, TValue>({
       </Table>
       {selectedRow && (
         <EditDevisSheet
-          allData={selectedRow} // Pass all row data
+          allData={selectedRow}
           isOpen={isSheetOpen}
           onClose={handleCloseSheet}
-          onSave={handleSaveRow} // Pass the save handler
+          onSave={handleSaveRow}
         />
       )}
-    </>
+    </div>
   );
 };

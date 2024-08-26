@@ -1,8 +1,6 @@
-// EditDevisSheet.tsx
-import { useEffect, useState } from "react";
+import { useState, useEffect } from 'react';
+import { Client, Devis } from "@/types/devisTypes";
 import { Button } from "../../@/components/ui/button";
-import { Input } from "../../@/components/ui/input";
-import { Label } from "../../@/components/ui/label";
 import {
     Sheet,
     SheetClose,
@@ -12,61 +10,53 @@ import {
     SheetHeader,
     SheetTitle,
 } from "../../@/components/ui/sheet";
+import { ClientCard } from "../organisms/ClientCard";
 
 interface EditDevisSheetProps {
-    allData: any; // Replace `any` with a more specific type if possible
+    allData: Devis;
     isOpen: boolean;
     onClose: () => void;
-    onSave: (data: any) => void; // Define the shape of the data if possible
+    onSave: (data: Devis) => void;
 }
 
 export function EditDevisSheet({
-    //numero,
-    allData, // Destructure other data here
+    allData,
     isOpen,
     onClose,
     onSave,
 }: EditDevisSheetProps) {
-    const [localNumero, setLocalNumero] = useState(allData.numero);
-    // Define states for other data if needed
+    const [client, setClient] = useState<Client>(allData.client);
 
+    // Synchronize the state with incoming props
     useEffect(() => {
-        setLocalNumero(allData.numero); // Update localNumero when numero prop changes
+        setClient(allData.client);
     }, [allData]);
+
+    const handleClientUpdate = (updatedClient: Client) => {
+        setClient(updatedClient);
+    };
 
     const handleSave = () => {
         onSave({
-            numero: localNumero,
-            // Include other data in the payload
+            ...allData,
+            client: client,
         });
         onClose();
     };
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent>
+            <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
                 <SheetHeader>
-                    <SheetTitle>Consulter Devis N° {allData.numero}</SheetTitle>
+                    <SheetTitle>Consulter Devis N° {allData.DevisId}</SheetTitle>
                     <SheetDescription>
                         Apportez des modifications à Devis ici. Cliquez sur enregistrer lorsque vous avez terminé.
                     </SheetDescription>
                 </SheetHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="numero" className="text-right">
-                            Numero
-                        </Label>
-                        <Input
-                            id="numero"
-                            value={localNumero}
-                            onChange={(e) => setLocalNumero(e.target.value)}
-                        />
-                    </div>
-                    {/* Render other fields based on `otherData` */}
-                </div>
+                <ClientCard client={client} onUpdate={handleClientUpdate} />
                 <SheetFooter>
                     <Button onClick={handleSave} type="button">
-                    Enregistrer les modifications
+                        Enregistrer les modifications
                     </Button>
                     <SheetClose asChild>
                         <Button type="button" onClick={onClose}>

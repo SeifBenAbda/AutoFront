@@ -54,7 +54,7 @@ export interface Devis {
   CreatedBy:string,
   DateCreation:Date,
   payementMethod:string,
-  motivation:string,
+  Motivation:string,
   source:string,
   updatedBy:string,
   updatedAt: Date | undefined,

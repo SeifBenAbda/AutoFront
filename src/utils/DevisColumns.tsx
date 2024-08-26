@@ -1,3 +1,4 @@
+import { Badge } from "../@/components/ui/badge";
 import { Devis } from "../types/devisTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from 'date-fns';
@@ -6,6 +7,23 @@ import { fr } from 'date-fns/locale';
 const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+
+const getVariantStatus = (status : string) =>{
+  switch(status){
+    case "En Cours":
+      return "default"
+      case "Annuler":
+        return "destructive"
+       
+        case "Facture":
+          return "running"
+         
+     default:
+      return "outline";       
+  }
+}
+
 export const columns: ColumnDef<Devis>[] = [
   {
     header: 'Numero Devis',
@@ -57,6 +75,11 @@ export const columns: ColumnDef<Devis>[] = [
     accessorFn: (row) => row.carRequests.map(cr => cr.CarModel).join(', '),
     id: "carModels",
   },
+  {
+    header: 'Motif',
+    accessorFn: (row) => row.Motivation,
+    id: 'Motif',
+  },
 
   
 
@@ -105,11 +128,14 @@ export const columns: ColumnDef<Devis>[] = [
         />
       </div>
     ),
-    accessorFn: (row) => row.StatusDevis,
+    accessorKey: 'StatusDevis',
+    cell: (row) => (
+      <Badge variant={getVariantStatus(row.getValue<string>())}>{row.getValue<string>()}</Badge>
+    ),
     id: 'statusDevis',
   },
   {
-    header: 'Created By',
+    header: 'Créé par',
     accessorFn: (row) => row.CreatedBy,
     id: 'CreatedBy',
   },

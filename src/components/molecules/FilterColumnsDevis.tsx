@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { MultiSelect } from "../../@/components/ui/multi-select";
 
 const filterList = [
-  { value: "financialData", label: "Données financières" },
+  { value: "Motif", label: "Motif" },
+  { value: "CreatedBy", label: "Créé par" },
+  { value: "scheduledLivrDate", label: "Date Livraison prévue" },
+
+  
 ];
 
 interface FilterColumnsDevisProps {
@@ -10,7 +14,7 @@ interface FilterColumnsDevisProps {
 }
 
 const FilterColumnsDevis: React.FC<FilterColumnsDevisProps> = ({ onFiltredListChange }) => {
-  const [filtredList, setFiltredList] = useState<string[]>(["financialData"]);
+  const [filtredList, setFiltredList] = useState<string[]>([]);
 
   useEffect(() => {
     onFiltredListChange(filtredList);

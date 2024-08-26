@@ -222,7 +222,7 @@ export const MultiSelect = React.forwardRef<
                       <Badge
                         key={value}
                         className={cn(
-                          isAnimating ? " bg-white" : "bg-whiteSecond border rounded-md text-bluePrimary hover:bg-whiteSecond",
+                          isAnimating ? " bg-white" : "bg-whiteSecond border rounded-md text-bluePrimary hover:bg-whiteSecond m-1 h-[30px]",
                           multiSelectVariants({ variant })
                         )}
                         style={{ animationDuration: `${animation}s` }}

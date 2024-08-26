@@ -5,15 +5,14 @@ import App from './App.tsx';
 import './index.css';
 import { UserProvider } from './context/userContext.tsx';
 import { AuthProvider } from './context/authContext.tsx';
-import { DevisCompteurProvider } from './context/devisCompteurContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <UserProvider>
-        <DevisCompteurProvider>
-          <App />
-        </DevisCompteurProvider>
+
+        <App />
+
       </UserProvider>
     </AuthProvider>
   </StrictMode>
