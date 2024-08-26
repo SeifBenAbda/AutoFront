@@ -1,4 +1,8 @@
-// services/authService.ts
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error('API_URL is not defined in the environment variables');
+}
 
 export const saveToken = (token: string) => {
   localStorage.setItem('authToken', token);
@@ -12,9 +16,9 @@ export const removeToken = () => {
   localStorage.removeItem('authToken');
 };
 
-// Example of a function to handle login
 export const loginUser = async (username: string, password: string) => {
-  const response = await fetch('http://localhost:3000/auth/signin', {
+  console.log(API_URL); // Check the value of API_URL here
+  const response = await fetch(`${API_URL}/auth/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -29,19 +33,18 @@ export const loginUser = async (username: string, password: string) => {
   const { accessToken } = await response.json();
   console.log('Access Token:', accessToken);
 
-  return {accessToken} ;
+  return { accessToken };
 };
 
-// Example of a function to fetch user data (if needed)
 export const fetchUserData = async () => {
   const token = getToken();
 
   if (!token) {
-    throw new Error('No token found 122');
+    throw new Error('No token found');
   }
 
-  const response = await fetch('http://localhost:3000/users/me', {
-    method: 'GET', // Use POST to send data in the body
+  const response = await fetch(`${API_URL}/users/me`, {
+    method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
     },
@@ -50,7 +53,6 @@ export const fetchUserData = async () => {
   if (!response.ok) {
     throw new Error('Failed to fetch user data');
   }
-
 
   return response.json();
 };
