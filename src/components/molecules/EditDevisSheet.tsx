@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Client, Devis } from "@/types/devisTypes";
+import { CarRequest, Client, Devis } from "@/types/devisTypes";
 import { Button } from "../../@/components/ui/button";
 import {
     Sheet,
@@ -11,6 +11,7 @@ import {
     SheetTitle,
 } from "../../@/components/ui/sheet";
 import { ClientCard } from "../organisms/ClientCard";
+import { CarRequestCard } from '../organisms/CarRequestCard';
 
 interface EditDevisSheetProps {
     allData: Devis;
@@ -26,14 +27,20 @@ export function EditDevisSheet({
     onSave,
 }: EditDevisSheetProps) {
     const [client, setClient] = useState<Client>(allData.client);
+    const [carRquest, setCarRequest] = useState<CarRequest>(allData.carRequests[0]);
 
     // Synchronize the state with incoming props
     useEffect(() => {
         setClient(allData.client);
+        setCarRequest(allData.carRequests[0]);
     }, [allData]);
 
     const handleClientUpdate = (updatedClient: Client) => {
         setClient(updatedClient);
+    };
+
+    const handleCarRequestUpdate = (updatedCarRequest: CarRequest) => {
+        setCarRequest(updatedCarRequest);
     };
 
     const handleSave = () => {
@@ -54,6 +61,7 @@ export function EditDevisSheet({
                     </SheetDescription>
                 </SheetHeader>
                 <ClientCard client={client} onUpdate={handleClientUpdate} />
+                <CarRequestCard carRequest={carRquest} onUpdate={handleCarRequestUpdate}/>
                 <SheetFooter>
                     <Button onClick={handleSave} type="button">
                         Enregistrer les modifications

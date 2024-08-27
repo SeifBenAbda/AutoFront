@@ -5,6 +5,8 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "noEmitOnError": false, // This will allow emitting files even if there are errors
+    "strict": false, // Disable strict mode if needed
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

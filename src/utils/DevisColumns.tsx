@@ -3,6 +3,12 @@ import { Devis } from "../types/devisTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import phoneIcon from '../images/phone.png';
+import delieveryScheduleIcon from "../images/delieverySchedule.png"
+import statusIcon from '../images/status.png'
+import editDevisIcon from '../images/editDevis.png'
+import carIcon from '../images/car.png'
+
 
 const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -51,7 +57,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Tel. Client</span>
         <img
-          src="src/assets/phone.png"
+          src={phoneIcon}
           alt="Status"
           className="w-6 h-6"
         />
@@ -66,7 +72,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Modèle de voiture</span>
         <img
-          src="src/assets/car.png"
+          src={carIcon}
           alt="Status"
           className="w-10 h-10"
         />
@@ -88,7 +94,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Date Livraison prévue</span>
         <img
-          src="src/assets/delieverySchedule.png"
+          src={delieveryScheduleIcon}
           alt="Delivery Schedule"
           className="w-10 h-10"
         />
@@ -122,7 +128,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Status</span>
         <img
-          src="src/assets/status.png"
+          src={statusIcon}
           alt="Status"
           className="w-6 h-6"
         />
@@ -144,7 +150,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Modification</span>
         <img
-          src="src/assets/editDevis.png"
+          src={editDevisIcon}
           alt="Status"
           className="w-6 h-6"
         />

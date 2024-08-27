@@ -17,7 +17,6 @@ export const removeToken = () => {
 };
 
 export const loginUser = async (username: string, password: string) => {
-  console.log(API_URL); // Check the value of API_URL here
   const response = await fetch(`${API_URL}/auth/signin`, {
     method: 'POST',
     headers: {
