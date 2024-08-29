@@ -19,7 +19,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
   };
 
   const handleClearClick = () => {
-    console.log("fasakh")
     setInputValue(''); // Clear input field
     onSearch(""); // Trigger search with empty query
   };

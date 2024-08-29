@@ -63,10 +63,6 @@ export const TableData = ({ columns, data }: DataTableProps) => {
         item.DevisId === updatedRow.DevisId ? updatedRow : item // Assuming `DevisId` is a unique identifier
       )
     );
-
-    // Send updated data to the server
-    console.log("Saved row:", updatedRow);
-    // You can use an API call to update the data on the server
   };
 
   return (

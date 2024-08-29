@@ -11,7 +11,6 @@ const useAuth = () => {
   const [error, setError] = useState<string | null>(null);
 
   const checkAuth = async () => {
-    console.log("Checking Auth")
     const token = getToken();
     if (token) {
       try {

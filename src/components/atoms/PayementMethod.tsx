@@ -13,7 +13,6 @@ interface PayementMethodTypes {
 }
 
 const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
-    console.log(value)
     return (
        
         <Select onValueChange={onChange}>

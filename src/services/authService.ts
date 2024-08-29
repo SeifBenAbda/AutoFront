@@ -30,8 +30,6 @@ export const loginUser = async (username: string, password: string) => {
   }
 
   const { accessToken } = await response.json();
-  console.log('Access Token:', accessToken);
-
   return { accessToken };
 };
 

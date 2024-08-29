@@ -34,7 +34,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                     onChange={(selected: string) => {
                                         // Update the form field value
                                         form.setValue(`${formId}.clientGender`, selected);
-                                        console.log("Selected Gender : " + selected);
                                     }}
                                 />
                             )}
@@ -53,7 +52,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                     onChange={(selected: string) => {
                                         // Update the form field value
                                         form.setValue(`${formId}.clientType`, selected);
-                                        console.log("Selected Type : " + selected);
                                     }}
                                 />
                             )}

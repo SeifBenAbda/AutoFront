@@ -13,7 +13,6 @@ interface StatusDevisTypes {
 }
 
 const StatusDevisDropDown = ({ value, onChange }: StatusDevisTypes) => {
-    console.log(value)
     return (
        
         <Select onValueChange={onChange}>

@@ -41,7 +41,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   };
 
   const handleSearch = (searchValue: string) => {
-    console.log("Saerch Value "+searchValue)
+
     setSearchValue(searchValue);
     setPage(1); // Reset to first page on search
   };

@@ -56,8 +56,6 @@ export function EditDevisSheet({
             UpdatedAt: new Date(), // Update timestamp
             UpdatedBy: user?.nomUser || "Unknown User" // Set user name or fallback
         }));
-        console.log("Updated Client");
-        console.log(updatedClient);
     };
 
     const handleCarRequestUpdate = (updatedCarRequest: CarRequest) => {
@@ -91,8 +89,6 @@ export function EditDevisSheet({
 
     const handleSave = () => {
         onSave(devis);
-        console.log("---------------FULL DEVIS---------------------");
-        console.log(devis);
         onClose();
     };
 
