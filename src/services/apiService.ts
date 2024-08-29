@@ -52,23 +52,29 @@ export const fetchDevisDetailled = async (page: number): Promise<ApiResponse> =>
 
 
 
-export const fetchDevisAllData = async (database: string, clientName: string | undefined, page: number): Promise<ApiResponse> => {
+export const fetchDevisAllData = async (
+  database: string,
+  clientName?: string,
+  page: number = 1
+): Promise<ApiResponse> => {
   const token = getToken();
 
   if (!token) {
-    throw new Error('No token found fetchDataDevisByClientName');
+    throw new Error('No token found');
   }
 
-  const response = await fetch(`${API_URL}/devis/completeDevis`, {
-    method:"POST",
+  const endpoint = clientName!="" || clientName ? '/devis/filter-client' : '/devis/completeDevis';
+  const body = clientName!="" || clientName 
+    ? { database, clientName, page }
+    : { database, page };
+    
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body:JSON.stringify({
-      "database":database,
-      "page":page
-    })
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

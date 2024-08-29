@@ -9,7 +9,7 @@ import {
 } from "../../@/components/ui/form";
 import { Input } from "../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
-import RegionDropDown from "./RegionDropDown";
+import RegionDropDown from "../atoms/RegionDropDown";
 import { Textarea } from "../../@/components/ui/textarea";
 import { Controller } from "react-hook-form";
 

@@ -22,7 +22,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
         <Card className="pt-0 mb-5 mt-5 w-full border border-bluePrimary">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="text-bluePrimary text-lg">Information Devis</CardTitle>
+                    <CardTitle className="text-bluePrimary text-lg">Information Véhicule</CardTitle>
                 </CardHeader>
                 {/** Type Car  */}
                 {carRequest === undefined ? (<CardContent>Pas D'Informations</CardContent>) :
@@ -54,7 +54,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                             {/** Old Car  */}
 
                             {
-                                carRequest.OldCar !== null && <CardContent>
+                                carRequest.OldCar !== null && (<CardContent>
                                     <label className="block text-sm font-medium text-gray-700">Dernier véhicule possédé</label>
                                     <Input
                                         type="text"
@@ -62,7 +62,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                                         onChange={(e) => handleChange("OldCar", e.target.value)}
                                         className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
                                     />
-                                </CardContent>
+                                </CardContent>)
                             }
 
                             {/** Car Notes  */}

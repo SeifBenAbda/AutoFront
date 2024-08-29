@@ -8,6 +8,7 @@ import delieveryScheduleIcon from "../images/delieverySchedule.png"
 import statusIcon from '../images/status.png'
 import editDevisIcon from '../images/editDevis.png'
 import carIcon from '../images/car.png'
+import PriorityIcon from '../images/prioritize.png'
 
 
 const capitalizeFirstLetter = (str: string) => {
@@ -30,6 +31,21 @@ const getVariantStatus = (status : string) =>{
   }
 }
 
+const getVariantPriority = (status : string) =>{
+  switch(status){
+    case "Moyenne":
+      return "medium"
+      case "Haute":
+        return "destructive"
+       
+        case "Normale":
+          return "running"
+         
+     default:
+      return "normal";       
+  }
+}
+
 export const columns: ColumnDef<Devis>[] = [
   {
     header: 'Numero Devis',
@@ -37,15 +53,32 @@ export const columns: ColumnDef<Devis>[] = [
     id: 'DevisId', // add a unique id to each column for identification
   },
   {
+    header: () => (
+      <div className="flex flex-col md:flex-row items-center justify-center p-2">
+        <span className="mb-2 md:mb-0 md:mr-2">Priorité</span>
+        <img
+          src={PriorityIcon}
+          alt="PriorityDevis"
+          className="w-6 h-6"
+        />
+      </div>
+    ),
+    accessorKey: 'PriorityDevis',
+    cell: (row) => (
+      <Badge className="p-2 w-[80%] text-center justify-center" variant={getVariantPriority(row.getValue<string>())}>{row.getValue<string>()}</Badge>
+    ),
+    id: 'PriorityDevis',
+  },
+  {
     header: 'Date Creation',
     accessorFn: (row) => {
-      const formattedDate = format(new Date(row.DateCreation), "EEEE d MMMM yyyy", {
+      const formattedDate = format(new Date(row.DateCreation!), "EEEE d MMMM yyyy", {
         locale: fr,
       });
 
       return capitalizeFirstLetter(formattedDate);
     },
-    id: 'dateCreation',
+    id: 'DateCreation',
   },
   {
     header: 'Nom Client',
@@ -136,7 +169,7 @@ export const columns: ColumnDef<Devis>[] = [
     ),
     accessorKey: 'StatusDevis',
     cell: (row) => (
-      <Badge variant={getVariantStatus(row.getValue<string>())}>{row.getValue<string>()}</Badge>
+      <Badge className="p-2 w-[80%] text-center justify-center" variant={getVariantStatus(row.getValue<string>())}>{row.getValue<string>()}</Badge>
     ),
     id: 'statusDevis',
   },

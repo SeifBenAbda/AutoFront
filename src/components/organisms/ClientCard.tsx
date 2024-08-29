@@ -27,15 +27,14 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
         <Card className="pt-0 mb-5 mt-5 w-full border border-bluePrimary">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="text-bluePrimary text-lg">Information Client</CardTitle>
+                    <CardTitle className="flex items-center text-bluePrimary text-lg space-x-4">
+                        <span className="text-lg">Information Client</span>
+                        <div className={`border rounded-lg text-center text-sm p-2 ${client.clientType === "Particulier" ? "bg-green-400 text-whiteSecond border-green-400" : "border-gray-200 bg-gray-200 text-bluePrimary"}`}>
+                            {client.clientType}
+                        </div>
+                    </CardTitle>
                 </CardHeader>
-                {/** Client Type (Particulier Or Entreprise)  */}
-                <CardContent>
-                    <div className={`border rounded-lg font-oswald text-center p-1 ${client.clientType === "Particulier" ? "bg-green-500 text-whiteSecond border-green-500" :
-                        "border-gray-200 bg-gray-200 text-bluePrimary"}`}>
-                        {client.clientType}
-                    </div>
-                </CardContent>
+
                 {/** Client Name  */}
                 <CardContent>
                     <label className="block text-sm font-medium text-gray-700">Nom</label>
@@ -91,6 +90,18 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                         onChange={handleDateChange}
                         fromYear={new Date().getFullYear() - 70}
                         toYear={new Date().getFullYear() - 18}
+                    />
+                </CardContent>
+
+
+                {/** Client Adress  */}
+                <CardContent>
+                    <label className="block text-sm font-medium text-gray-700">Adresse</label>
+                    <Input
+                        type="text"
+                        value={client.adresse} // Directly bind to client prop
+                        onChange={(e) => handleChange("adresse", e.target.value)}
+                        className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
             </div>

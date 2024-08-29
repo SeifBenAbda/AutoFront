@@ -96,16 +96,6 @@ const ClientExtraForm: React.FC<any> = ({ form, formId }) => {
                         )}
                     />
                 </FormCardContent>
-                
-
-                <FormCardContent form={form} label="Avance Payement" name={`${formId}.avancePayement`}>
-                    <Input
-                        className="border border-bluePrimary"
-                        placeholder="Avance Payement"
-                        {...register(`${formId}.avancePayement`)}
-                    />
-                </FormCardContent>
-
             </div>
         </Form>
     )

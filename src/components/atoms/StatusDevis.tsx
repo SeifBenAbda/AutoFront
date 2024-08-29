@@ -7,12 +7,12 @@ import {
 } from "../../@/components/ui/select";
 
 
-interface PayementMethodTypes {
+interface StatusDevisTypes {
     value?: string; // Updated to match the value type used in ClientTypeSelect
     onChange: (value: string) => void; // Callback now expects a string
 }
 
-const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
+const StatusDevisDropDown = ({ value, onChange }: StatusDevisTypes) => {
     console.log(value)
     return (
        
@@ -21,14 +21,13 @@ const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
                 <SelectValue placeholder={value?.toString()} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem key="Leasing" value="leasing">Leasing</SelectItem>
-                <SelectItem value="Bank">Bank</SelectItem>
-                <SelectItem value="Comptant">Comptant</SelectItem>
-                <SelectItem value="FCR">FCR</SelectItem>
+                <SelectItem key="leasing" value="leasing">En Cours</SelectItem>
+                <SelectItem value="bank">Facture</SelectItem>
+                <SelectItem value="comptant">Annuler</SelectItem>
             </SelectContent>
         </Select>
 
     );
 };
 
-export default PayementMethod;
+export default StatusDevisDropDown;

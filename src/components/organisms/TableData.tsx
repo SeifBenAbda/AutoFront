@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnSizingState,
@@ -29,6 +29,11 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   const [tableData, setTableData] = useState<Devis[]>(data); // Manage table data state
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
+
+  // Update tableData when data prop changes
+  useEffect(() => {
+    setTableData(data);
+  }, [data]);
 
   const table = useReactTable({
     data: tableData,

@@ -5,9 +5,9 @@ import DashboardLayout from './templates/DashboardLayout';
 import CarRequestPage from './templates/CarRequestLayout';
 import ItemChangePage from './templates/ItemChangeLayout';
 import LoginPage from './templates/LoginPage';
-import CarDevisTrackingPage from './pages/CarDevisTrackingPage';
 import ItemChangeTrackingPage from './pages/ItemChangeTrackingPage';
 import CarTrackingLayout from './templates/CarTrackingLayout';
+import Loading from './components/atoms/Loading';
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
@@ -23,7 +23,7 @@ const App: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading indicator while authentication is being checked
+    return <Loading/>
   }
 
   const isLoggedIn = Boolean(user); // Check if the user is logged in based on the hook
