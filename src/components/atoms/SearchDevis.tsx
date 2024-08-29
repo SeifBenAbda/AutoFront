@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
 
   return (
     <div className="flex items-center">
-      <div className="flex items-center border border-white rounded-md  bg-white">
+      <div className="flex items-center border border-bluePrimary rounded-md  bg-white">
       <Input
         type="text"
         value={inputValue}

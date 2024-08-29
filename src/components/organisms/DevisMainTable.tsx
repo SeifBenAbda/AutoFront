@@ -7,6 +7,10 @@ import FilterColumnsDevis from '../molecules/FilterColumnsDevis';
 import useDevis from '../../hooks/useDevis';
 import Loading from '../atoms/Loading';
 import SearchBar from '../atoms/SearchDevis';
+import StatusDevisDropDown from '../atoms/StatusDevis';
+import PriorityDevisDropDown from '../atoms/PriorityDropDown';
+import { Devis } from '@/types/devisTypes';
+import CarsDropDown from '../atoms/CarsDropDown';
 
 interface DataTableProps {
   typeDevis: string;
@@ -16,13 +20,62 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   const [page, setPage] = useState(1);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
-
-  // Update the hook call to include searchValue
+  const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Statuts');
+  const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
+  const [selectedCars, setSelectedCars] = useState<string[]>([]); // Changed to an array
   const { data, isLoading, error } = useDevis(page, searchValue);
   const columnMapping: { [key: string]: string } = {
     'Motif': 'Motif',
     'Créé par': 'CreatedBy',
     'Date Livraison prévue': 'scheduledLivrDate',
+  };
+
+  const handleStatusChange = (status: string) => {
+    setSelectedStatus(status);
+    setPage(1); // Reset to first page on status change
+  };
+
+  const handlePriorityChange = (priority: string) => {
+    setSelectedPriority(priority);
+    setPage(1); // Reset to first page on priority change
+  };
+
+  const handleCarChange = (cars: string[]) => {
+    setSelectedCars(cars);
+    setPage(1); // Reset to first page on car change
+  };
+
+  // Filter the data based on selectedStatus
+  const filterByStatus = (data: Devis[], selectedStatus: string) => {
+    const isStatusDefault = selectedStatus === "Tous Statuts";
+
+    return isStatusDefault ? data : data.filter(item =>
+      item.StatusDevis === selectedStatus
+    );
+  };
+
+  const filterByPriority = (data: Devis[], selectedPriority: string) => {
+    const isPriorityDefault = selectedPriority === "Toutes les priorités";
+
+    return isPriorityDefault ? data : data.filter(item =>
+      item.PriorityDevis === selectedPriority
+    );
+  };
+
+   // Filter the data based on selectedCars
+   const filterByCars = (data: Devis[], selectedCars: string[]) => {
+    if (selectedCars.length==0) {
+      return data; // If 'Tous types de voitures' is selected, show all cars
+    }
+    return data.filter(item =>  item.carRequests.some(request => selectedCars.includes(request.CarModel))); // Adjust property as needed
+  };
+
+  const applyFilters = (data: Devis[], selectedStatus: string, selectedPriority: string) => {
+    const filteredByStatus = filterByStatus(data, selectedStatus);
+    const filteredByPriority = filterByPriority(filteredByStatus, selectedPriority);
+    const filteredByCars = filterByCars(filteredByPriority, selectedCars);
+
+    return filteredByCars;
   };
 
   const handleFiltredListChange = useCallback((filtredList: string[]) => {
@@ -41,10 +94,12 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   };
 
   const handleSearch = (searchValue: string) => {
-
     setSearchValue(searchValue);
     setPage(1); // Reset to first page on search
   };
+
+  // Apply filters to data if it exists
+  const filteredData = data ? applyFilters(data.data, selectedStatus!, selectedPriority!) : [];
 
   return (
     <div className="flex-1 flex flex-col mt-16 overflow-hidden">
@@ -59,9 +114,35 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         </div>
       </div>
 
-      {/* Search Box */}
-      <div className="flex-none mb-4">
-        <SearchBar onSearch={handleSearch} searchValue={searchValue} />
+      {/* Search Box and Status Dropdown */}
+      <div className="flex justify-between mb-4">
+        <div className="flex gap-4">
+          <div className="w-auto">
+            <StatusDevisDropDown
+              value={selectedStatus}
+              onChange={handleStatusChange}
+              isFiltring={true}
+            />
+          </div>
+          <div className="w-auto">
+            <PriorityDevisDropDown
+              value={selectedPriority}
+              onChange={handlePriorityChange}
+              isFiltring={true}
+            />
+          </div>
+          <div className="w-auto">
+          <CarsDropDown
+              selectedValues={selectedCars} // Changed to selectedValues
+              onChange={handleCarChange} // Updated to handle array of selected values
+              isFiltering={true}
+            />
+          </div>
+          
+        </div>
+        <div className="w-auto">
+          <SearchBar onSearch={handleSearch} searchValue={searchValue} />
+        </div>
       </div>
 
       {/* Devis Content */}
@@ -73,7 +154,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} columns={displayedColumns} />
+              <TableData data={filteredData || []} columns={displayedColumns} />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable

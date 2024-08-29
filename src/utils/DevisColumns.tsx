@@ -157,6 +157,11 @@ export const columns: ColumnDef<Devis>[] = [
     id: 'row.client.lastVisitDate',
   },
   {
+    header: 'Créé par',
+    accessorFn: (row) => row.CreatedBy,
+    id: 'CreatedBy',
+  },
+  {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Status</span>
@@ -172,11 +177,6 @@ export const columns: ColumnDef<Devis>[] = [
       <Badge className="p-2 w-[80%] text-center justify-center" variant={getVariantStatus(row.getValue<string>())}>{row.getValue<string>()}</Badge>
     ),
     id: 'statusDevis',
-  },
-  {
-    header: 'Créé par',
-    accessorFn: (row) => row.CreatedBy,
-    id: 'CreatedBy',
   },
   {
     header: () => (

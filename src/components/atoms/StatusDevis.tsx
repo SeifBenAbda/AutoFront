@@ -6,26 +6,29 @@ import {
     SelectValue,
 } from "../../@/components/ui/select";
 
-
 interface StatusDevisTypes {
-    value?: string; // Updated to match the value type used in ClientTypeSelect
-    onChange: (value: string) => void; // Callback now expects a string
+    value?: string;
+    onChange: (value: string) => void;
+    isFiltring?: boolean; // Optional prop to control whether "Tous Statuts" is shown
 }
 
-const StatusDevisDropDown = ({ value, onChange }: StatusDevisTypes) => {
+const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) => {
     return (
-       
         <Select onValueChange={onChange}>
             <SelectTrigger className="w-full border border-bluePrimary">
-                <SelectValue placeholder={value?.toString()} />
+                <SelectValue placeholder={value ? value?.toString() : "Tous Statuts"} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem key="leasing" value="leasing">En Cours</SelectItem>
-                <SelectItem value="bank">Facture</SelectItem>
-                <SelectItem value="comptant">Annuler</SelectItem>
+                {isFiltring && (
+                    <SelectItem key="Tous Statuts" value="Tous Statuts">
+                        Tous Statuts
+                    </SelectItem>
+                )}
+                <SelectItem key="En Cours" value="En Cours">En Cours</SelectItem>
+                <SelectItem key="Facture" value="Facture">Facture</SelectItem>
+                <SelectItem key="Annuler" value="Annuler">Annuler</SelectItem>
             </SelectContent>
         </Select>
-
     );
 };
 

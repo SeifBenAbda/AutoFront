@@ -34,6 +34,7 @@ export function DevisCard({ devis, onUpdate }: DevisCardProps) {
                     <StatusDevisDropDown
                         value={devis.StatusDevis}
                         onChange={(value) => handleChange("StatusDevis", value)}
+                        isFiltring={false} 
                     />
                 </CardContent>
 

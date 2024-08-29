@@ -67,7 +67,7 @@ export const fetchDevisAllData = async (
   const body = clientName!="" || clientName 
     ? { database, clientName, page }
     : { database, page };
-    
+
   const response = await fetch(`${API_URL}${endpoint}`, {
     method: 'POST',
     headers: {
@@ -79,6 +79,28 @@ export const fetchDevisAllData = async (
 
   if (!response.ok) {
     throw new Error('Network response was not ok');
+  }
+
+  return response.json();
+};
+
+
+export const fetchCarModels = async (databasename:string) => {
+  console.log(`${API_URL}/cars`)
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+  const body = {"database":databasename}
+  const response = await fetch(`${API_URL}/cars`, {
+    method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch car models');
   }
 
   return response.json();
