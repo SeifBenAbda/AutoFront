@@ -2,13 +2,16 @@
 import DevisPage from "../pages/DevisPage";
 import Header from "../components/organisms/Header";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const CarRequestLayout: React.FC = () => {
+  const queryClient = new QueryClient();
   useEffect(() => {
     // Scroll to the top when the component mounts
     window.scrollTo(0, 0);
   }, []);
   return (
+    <QueryClientProvider client={queryClient}>
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <Header />
@@ -18,6 +21,7 @@ const CarRequestLayout: React.FC = () => {
         <DevisPage />
       </main>
     </div>
+    </QueryClientProvider>
   );
 };
 

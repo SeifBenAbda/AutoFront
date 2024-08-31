@@ -10,7 +10,7 @@ import SearchBar from '../atoms/SearchDevis';
 import StatusDevisDropDown from '../atoms/StatusDevis';
 import PriorityDevisDropDown from '../atoms/PriorityDropDown';
 import { Devis } from '@/types/devisTypes';
-import CarsDropDown from '../atoms/CarsDropDown';
+import CarsMultiSelect from '../atoms/CarsMultiSelect';
 
 interface DataTableProps {
   typeDevis: string;
@@ -132,7 +132,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
             />
           </div>
           <div className="w-auto">
-          <CarsDropDown
+          <CarsMultiSelect
               selectedValues={selectedCars} // Changed to selectedValues
               onChange={handleCarChange} // Updated to handle array of selected values
               isFiltering={true}

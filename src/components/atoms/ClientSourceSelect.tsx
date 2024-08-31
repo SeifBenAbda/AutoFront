@@ -19,11 +19,11 @@ const ClientSourceSelect = ({ value, onChange }:ClientSourceSelectTypes) => {
                 <SelectValue placeholder="Source" defaultValue={value} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="web">Web</SelectItem>
-                <SelectItem value="phone">Téléphone</SelectItem>
+                <SelectItem value="Web">Web</SelectItem>
+                <SelectItem value="Téléphone">Téléphone</SelectItem>
                 <SelectItem value="ShowRoom">ShowRoom</SelectItem>
-                <SelectItem value="prospection">Prospection</SelectItem>
-                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="Prospection">Prospection</SelectItem>
+                <SelectItem value="Email">Email</SelectItem>
             </SelectContent>
         </Select>
     );

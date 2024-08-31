@@ -52,8 +52,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                                 render={({ field }) => (
                                     <RegionDropDown
                                         value={field.value || ""}
-                                        onChange={(value) => field.onChange(value)}
-                                    />
+                                        onChange={(value) => field.onChange(value)} isFiltring={false}                                    />
                                 )}
                             />
                         </FormCardContent>

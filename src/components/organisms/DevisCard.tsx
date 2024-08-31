@@ -1,7 +1,5 @@
-import { CarRequest, Devis } from "@/types/devisTypes";
+import { Devis } from "@/types/devisTypes";
 import { Card, CardContent, CardHeader, CardTitle } from "../../@/components/ui/card";
-import { Input } from "../../@/components/ui/input";
-import { Textarea } from "../../@/components/ui/textarea";
 import PayementMethod from "../atoms/PayementMethod";
 import StatusDevisDropDown from "../atoms/StatusDevis";
 

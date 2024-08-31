@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
-    devisForm: z.object({
-        clientGender:  z.string().min(5, {
+export const devisSchema = z.object({
+    clientForm: z.object({
+        clientGender: z.string().min(5, {
             message: "Genre est requis.",
         }),
-        clientType: z.string().min(5, {
-            message: "Type Client est requis.",
+        clientType: z.string().min(1, {
+            message: "Type de Client is required.",
         }),
 
         cin: z.string().min(8, {
             message: "Cin est requis.",
         }),
-        
+
         nomClient: z.string().min(1, {
             message: "Nom Client est requis.",
         }),
@@ -56,30 +56,18 @@ export const formSchema = z.object({
         }),
 
         addressMoreInfos: z.string().optional(),
+    }).refine((data) => {
+        if (data.clientType !== "Particulier" && !data.mtFiscale) {
+            return false;
+        }
+        console.log(data.clientType," ",data.mtFiscale)
+        return true;
+    }, {
+        message: "Matricule Fiscale est requis pour les clients autres que 'Particulier'.",
+        path: ['mtFiscale'], // Ensure the path points to the correct field
+    }),
 
-        // Required fields from ClientExtraForm
-        oldCar: z.string().min(1, {
-            message: "Ancien Vehicule est requis.",
-        }),
-
-        carModel: z.string().min(1, {
-            message: "Modèle préféré est requis.",
-        }),
-
-        motif: z.string().min(1, {
-            message: "Motif est requis.",
-        }),
-
-        source: z.string().min(1, {
-            message: "Source est requis.",
-        }),
-
-        payementMethod: z.string().min(1, {
-            message: "Moyen de Payement est requis.",
-        }),
-
-        avancePayement: z.string().optional(),
-
+    rappelForm: z.object({
         rp1: z.date({
             message: "Date Rappel N°1 est requis.",
         }),
@@ -93,14 +81,36 @@ export const formSchema = z.object({
         }),
 
         rappelNotes: z.string().optional()
-    }).refine((data) => {
-        // Conditional validation logic
-        if (data.clientType !== "Particulier" && !data.mtFiscale) {
-            return false;
-        }
-        return true;
-    }, {
-        message: "Matricule Fiscale est requis'.",
-        path: ['mtFiscale'], // Specify which field to highlight the error on
+    }),
+
+    devisCarForm: z.object({
+        OldCar: z.string().min(1, {
+            message: "Ancien Vehicule est requis.",
+        }),
+
+        CarModel: z.string().min(1, {
+            message: "Modèle préféré est requis.",
+        }),
+    }),
+
+    devisGeneralForm: z.object({
+        Motivation: z.string().min(1, {
+            message: "Motif est requis.",
+        }),
+
+        Source: z.string().min(1, {
+            message: "Source est requis.",
+        }),
+
+        PayementMethod: z.string().min(1, {
+            message: "Moyen de Payement est requis.",
+        }),
+
+        ScheduledLivDate: z.date({
+            message: "Date Livraison est requis.",
+        }),
+        PriorityDevis: z.enum(["Normale", "Moyenne", "Haute"], {
+            message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
+        }),
     }),
 });

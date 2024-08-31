@@ -40,7 +40,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                     <label className="block text-sm font-medium text-gray-700">Nom</label>
                     <Input
                         type="text"
-                        value={client.nomClient} // Directly bind to client prop
+                        value={client.nomClient || ""} // Directly bind to client prop
                         onChange={(e) => handleChange("nomClient", e.target.value)}
                         className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
@@ -53,7 +53,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                         <label className="block text-sm font-medium text-gray-700">Cin</label>
                         <Input
                             type="text"
-                            value={client.cin} // Directly bind to client prop
+                            value={client.cin || ""} // Directly bind to client prop
                             onChange={(e) => handleChange("cin", e.target.value)}
                             className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
                         />

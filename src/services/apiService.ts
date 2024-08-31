@@ -1,5 +1,5 @@
-import { Devis } from "../types/devisTypes";
-import { getToken } from './authService';
+import { CarRequest, Client, Devis, ItemRequest } from "../types/devisTypes";
+import { getToken, removeToken } from './authService';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -63,30 +63,40 @@ export const fetchDevisAllData = async (
     throw new Error('No token found');
   }
 
-  const endpoint = clientName!="" || clientName ? '/devis/filter-client' : '/devis/completeDevis';
-  const body = clientName!="" || clientName 
+  const endpoint = clientName ? '/devis/filter-client' : '/devis/completeDevis';
+  const body = clientName 
     ? { database, clientName, page }
     : { database, page };
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
+    if (response.status === 401) { // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  } catch (e) {
+    // Handle errors other than network errors
+    console.error(e);
+    throw e; // Rethrow the error to handle it elsewhere if needed
   }
-
-  return response.json();
 };
 
 
 export const fetchCarModels = async (databasename:string) => {
-  console.log(`${API_URL}/cars`)
   const token = getToken();
   if (!token) throw new Error('No token found');
   const body = {"database":databasename}
@@ -105,3 +115,96 @@ export const fetchCarModels = async (databasename:string) => {
 
   return response.json();
 };
+
+
+//fetching Regions 
+export const fetchRegions = async (databasename:string) => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+  const body = {"database":databasename}
+  const response = await fetch(`${API_URL}/regions`, {
+    method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch car models');
+  }
+
+  return response.json();
+};
+
+
+
+
+//This Part is Responsbale to Update my Devis : 
+export const updateDevis = async (
+  database: string,
+  devisId: number,
+  clientId: number,
+  updatedDevis: Partial<Devis>,
+  updatedClient?: Partial<Client>,
+  updatedItemRequestData?: Partial<ItemRequest>,
+  updatedCarRequestData?: Partial<CarRequest>
+): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest }> => {
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/devis/${devisId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database":database,
+      "clientId": clientId,
+      "updatedDevis":updatedDevis,
+      "updatedClient": updatedClient,
+      "updatedItemRequest": updatedItemRequestData,
+      "updatedCarRequest" : updatedCarRequestData,
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  return response.json();
+};
+
+
+export const createDevis = async (
+  database: string,
+  client: Client,
+  devis: Devis,
+  itemRequestData?: ItemRequest,
+  carRequestData?: CarRequest
+) => {
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+  const response = await fetch(`${API_URL}/devis`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database":database,
+      "client":client,
+      "devis":devis,
+      "itemRequest":itemRequestData,
+      "carRequest":carRequestData,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Error creating Devis');
+  }
+
+  return response.json();
+};  

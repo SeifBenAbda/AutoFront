@@ -3,6 +3,7 @@ import { DatePicker } from "../atoms/DataSelector";
 import { Card, CardContent, CardHeader, CardTitle } from "../../@/components/ui/card";
 import { Input } from "../../@/components/ui/input";
 import { Textarea } from "../../@/components/ui/textarea";
+import CarsDropDown from "../atoms/CarsDropDown";
 
 interface CarRequestCardProps {
     carRequest: CarRequest;
@@ -30,12 +31,11 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                         <>
                             <CardContent>
                                 <label className="block text-sm font-medium text-gray-700">Modele du véhicule</label>
-                                <Input
-                                    type="text"
-                                    value={carRequest.CarModel} // Directly bind to client prop
-                                    onChange={(e) => handleChange("CarModel", e.target.value)}
-                                    className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                                />
+                                <CarsDropDown
+                                value={carRequest.CarModel} // Pass the current model value
+                                onChange={(value) => handleChange("CarModel", value)}
+                                isFiltring={false}
+                            />
                             </CardContent>
 
                             {/** Color Car  */}

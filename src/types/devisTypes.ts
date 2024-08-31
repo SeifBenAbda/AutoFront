@@ -1,6 +1,5 @@
 
 export interface Client {
-  id: number;
   clientGender:string,
   clientType:string,
   cin:string,
@@ -9,7 +8,7 @@ export interface Client {
   telClient:string,
   email:string,
   socialReason:string,
-  dateOfBirth:Date,
+  dateOfBirth:Date | undefined,
   adresse:string,
   ville:string,
   region:string,
@@ -17,7 +16,7 @@ export interface Client {
   pays:string,
   addressMoreInfos:string,
   userCreation:string,
-  lastVisitDate:Date
+  lastVisitDate:Date | undefined
 }
 
 // Define the ItemRequest interface
@@ -49,23 +48,22 @@ export interface CarRequest {
 
 // Define the Devis interface
 export interface Devis {
-  DevisId: number;
+  DevisId?: number;
   clientId: number;
   CreatedBy:string,
   DateCreation:string | Date | undefined,
   PayementMethod:string,
   Motivation:string,
-  source:string,
+  Source:string,
   UpdatedBy:string,
   UpdatedAt: Date | undefined,
-  typeDevis:string,
-  StatusDevis:string,
-  PriorityDevis:string,
-  isGarantie:boolean,
-  numBonCommande:string,  
-  priorityDevis:string,
+  TypeDevis:string | undefined,
+  StatusDevis:string | undefined,
+  PriorityDevis:"Normale" | "Moyenne" | "Haute",
+  isGarantie:boolean | undefined,
+  numBonCommande:string | undefined,  
   ScheduledLivDate:Date | undefined,
-  client: Client; // The client associated with the Devis
+  client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis
 }

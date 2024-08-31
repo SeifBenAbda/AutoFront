@@ -14,6 +14,7 @@ import { ClientCard } from "../organisms/ClientCard";
 import { CarRequestCard } from '../organisms/CarRequestCard';
 import { DevisCard } from '../organisms/DevisCard';
 import { useUser } from '../../context/userContext'; // Import the useUser hook
+import { useUpdateDevis } from '../../hooks/useDevis'; // Import the useUpdateDevis hook
 
 interface EditDevisSheetProps {
     allData: Devis;
@@ -29,7 +30,7 @@ export function EditDevisSheet({
     onSave,
 }: EditDevisSheetProps) {
     const { user } = useUser(); // Get user from context
-    const [client, setClient] = useState<Client>(allData.client);
+    const [client, setClient] = useState<Client>(allData.client!);
     const [carRequest, setCarRequest] = useState<CarRequest | null>(allData.carRequests?.[0] || null);
     const [itemRequests, setItemRequests] = useState<ItemRequest[]>(allData.itemRequests || []);
     const [devis, setDevis] = useState<Devis>(allData);
@@ -38,11 +39,13 @@ export function EditDevisSheet({
     const [showCarRequestCard, setShowCarRequestCard] = useState(true);
     const [showDevisCard, setShowDevisCard] = useState(true);
 
+    const { mutate: updateDevis, isPending, isError, isSuccess } = useUpdateDevis();
+
     useEffect(() => {
         setShowClientCard(true);
         setShowCarRequestCard(true);
         setShowDevisCard(true);
-        setClient(allData.client);
+        setClient(allData.client!);
         setCarRequest(allData.carRequests?.[0] || null);
         setItemRequests(allData.itemRequests || []);
         setDevis(allData);
@@ -87,9 +90,24 @@ export function EditDevisSheet({
         }));
     };
 
-    const handleSave = () => {
-        onSave(devis);
-        onClose();
+    const handleSave = async () => {
+        console.log(carRequest)
+        try {
+            await updateDevis({
+                database: "Commer_2024_AutoPro", // Replace with actual database name
+                devisId: devis.DevisId,
+                clientId: client.id,
+                updatedDevis: devis,
+                updatedClient: client,
+                updatedItemRequestData: itemRequests.length > 0 ? itemRequests[0] : undefined,
+                updatedCarRequestData: carRequest || undefined
+            });
+            onSave(devis);
+            onClose();
+        } catch (error) {
+            console.error('Failed to save updates:', error);
+            // Handle error (e.g., show a notification)
+        }
     };
 
     return (
@@ -140,8 +158,8 @@ export function EditDevisSheet({
                 )}
 
                 <SheetFooter>
-                    <Button onClick={handleSave} type="button">
-                        Enregistrer les modifications
+                    <Button onClick={handleSave} type="button" disabled={isPending}>
+                        {isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
                     </Button>
                     <SheetClose asChild>
                         <Button type="button" onClick={onClose}>

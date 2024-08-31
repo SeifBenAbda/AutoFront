@@ -18,13 +18,15 @@ const capitalizeFirstLetter = (str: string) => {
 
 const getVariantStatus = (status : string) =>{
   switch(status){
+    case "En Attente":
+      return "default"
     case "En Cours":
       return "default"
       case "Annuler":
         return "destructive"
        
         case "Facture":
-          return "running"
+          return "running"  
          
      default:
       return "outline";       
@@ -82,7 +84,7 @@ export const columns: ColumnDef<Devis>[] = [
   },
   {
     header: 'Nom Client',
-    accessorFn: (row) => row.client.nomClient,
+    accessorFn: (row) => row.client!.nomClient,
     id: 'client.nomClient',
   },
   {
@@ -96,7 +98,7 @@ export const columns: ColumnDef<Devis>[] = [
         />
       </div>
     ),
-    accessorFn: (row) => row.client.telClient,
+    accessorFn: (row) => row.client!.telClient,
     id: 'client.telClient',
   },
 
@@ -111,7 +113,7 @@ export const columns: ColumnDef<Devis>[] = [
         />
       </div>
     ),
-    accessorFn: (row) => row.carRequests.map(cr => cr.CarModel).join(', '),
+    accessorFn: (row) => row.carRequests!.map(cr => cr.CarModel).join(', '),
     id: "carModels",
   },
   {
@@ -148,7 +150,7 @@ export const columns: ColumnDef<Devis>[] = [
   {
     header: 'Dernière visite',
     accessorFn: (row) => {
-      const formattedDate = format(new Date(row.client.lastVisitDate), "EEEE d MMMM yyyy", {
+      const formattedDate = format(new Date(row.client!.lastVisitDate!), "EEEE d MMMM yyyy", {
         locale: fr,
       });
 

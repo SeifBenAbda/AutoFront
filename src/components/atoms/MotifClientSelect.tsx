@@ -22,10 +22,10 @@ const MotifClientSelect = ({ value, onChange }:MotifSelectTypes) => {
                 <SelectValue placeholder="Motif" defaultValue={value} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="accquisation">Volonté d'acquisition</SelectItem>
-                <SelectItem value="visite">Visite / Curiosité</SelectItem>
-                <SelectItem value="compareModels">Comparaison de Modèles</SelectItem>
-                <SelectItem value="comparePrices">Comparaison des Prix</SelectItem>
+                <SelectItem value="Volonté d'acquisition">Volonté d'acquisition</SelectItem>
+                <SelectItem value="Visite / Curiosité">Visite / Curiosité</SelectItem>
+                <SelectItem value="Comparaison de Modèles">Comparaison de Modèles</SelectItem>
+                <SelectItem value="Comparaison des Prix">Comparaison des Prix</SelectItem>
             </SelectContent>
         </Select>
     );

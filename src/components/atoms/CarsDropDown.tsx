@@ -1,45 +1,48 @@
-// src/components/PriorityDevisDropDown.tsx
+import { forwardRef } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../../@/components/ui/select";
 import useCarModels from '../../hooks/useCars';
-import { MultiSelect } from '../../@/components/ui/multi-select';
 
 interface CarsDropDownTypes {
-    selectedValues: string[]; // Adjust to handle multiple selections
-    onChange: (values: string[]) => void;
-    isFiltering: boolean;
+    value?: string;
+    onChange: (value: string) => void;
+    isFiltring: boolean;
 }
 
-const CarsDropDown = ({ selectedValues, onChange, isFiltering }: CarsDropDownTypes) => {
-    const { data: carModels, isLoading, error } = useCarModels();
+const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
+    ({ value, onChange, isFiltring }, ref) => {
+        const { data: carModels, isLoading, error } = useCarModels();
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+        if (isLoading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error.message}</div>;
 
-    // Prepare options for MultiSelect
-    const options = carModels?.map((car) => ({
-        label: car.carName,
-        value: car.carName,
-    })) || [];
-
-    // Add a default "All types of cars" option if filtering
-    if (isFiltering) {
-        /*options.unshift({
-            label: 'Tous types de voitures',
-            value: 'Tous types de voitures',
-        });*/
+        return (
+            <Select onValueChange={onChange}>
+                <SelectTrigger ref={ref} className="w-full border border-bluePrimary">
+                    <SelectValue placeholder={value ? value.toString() : "Tous types de voitures"} />
+                </SelectTrigger>
+                <SelectContent>
+                    {isFiltring && (
+                        <SelectItem key="Tous types de voitures" value="Tous types de voitures">
+                            Tous types de voitures
+                        </SelectItem>
+                    )}
+                    {carModels?.map((car) => (
+                        <SelectItem key={car.carId} value={car.carName}>
+                            {car.carName}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        );
     }
+);
 
-    return (
-        <MultiSelect
-            options={options}
-            onValueChange={onChange}
-            defaultValue={selectedValues}
-            placeholder="Tous types de voitures"
-            variant="inverted"
-            animation={0}
-            maxCount={1}
-            className='bg-white border rounded-md border-bluePrimary hover:bg-white text-bluePrimary'
-        />
-    );
-};
+CarsDropDown.displayName = 'CarsDropDown'; // Add a displayName for better debugging
 
 export default CarsDropDown;

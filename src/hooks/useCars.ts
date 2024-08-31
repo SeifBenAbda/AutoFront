@@ -16,9 +16,9 @@ const useCarModels = () => {
     return useQuery<CarModel[]>({
         queryKey: ['carModels'],
         queryFn: () => fetchCarModels("Commer_2024_AutoPro"),
-        refetchInterval: 5000,
+        //refetchInterval: 5000,
         staleTime: 0,
-        refetchOnWindowFocus: true,
+        refetchOnWindowFocus: false,
     });
 };
 

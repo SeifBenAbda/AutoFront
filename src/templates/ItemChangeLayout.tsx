@@ -2,13 +2,16 @@
 import { useEffect } from "react";
 import Header from "../components/organisms/Header";
 import ItemChangePage from "../pages/ItemChangePage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const ItemChangeLayout: React.FC = () => {
+  const queryClient = new QueryClient();
   useEffect(() => {
     // Scroll to the top when the component mounts
     window.scrollTo(0, 0);
   }, []);
   return (
+    <QueryClientProvider client={queryClient}>
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <Header />
@@ -18,6 +21,7 @@ const ItemChangeLayout: React.FC = () => {
       <ItemChangePage />
       </main>
     </div>
+    </QueryClientProvider>
   );
 };
 

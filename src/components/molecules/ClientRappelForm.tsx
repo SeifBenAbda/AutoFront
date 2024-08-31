@@ -12,6 +12,7 @@ import {
 import FormCardContent from "./FormCardContent";
 import { DatePicker } from "../atoms/DataSelector";
 import { Textarea } from "../../@/components/ui/textarea";
+import PriorityDevisDropDown from "../atoms/PriorityDropDown";
 
 
 const ClientRappelForm: React.FC<any> = ({ form, formId }) => {
@@ -83,6 +84,20 @@ const ClientRappelForm: React.FC<any> = ({ form, formId }) => {
                         {...register(`${formId}.rappelNotes`)}
                     />
                 </FormCardContent>
+
+                <FormCardContent form={form} label="Priorité" name={`${form}.PriorityDevis`}>
+                    <Controller
+                        name={`${form}.PriorityDevis`}
+                        control={control}
+                        render={({ field }) => (
+                            <PriorityDevisDropDown
+                                value={field.value}
+                                onChange={(value) => field.onChange(value)} isFiltring={false}                            />
+                        )}
+                    />
+                </FormCardContent>
+
+                
             </div>
         </Form>
     )

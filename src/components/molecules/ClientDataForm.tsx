@@ -1,5 +1,5 @@
 import { Controller } from "react-hook-form";
-import React from "react";
+import React, { useState } from "react";
 import {
     Form,
     FormControl,
@@ -16,7 +16,7 @@ import TypeClient from "../atoms/ClientTypeSelect";
 
 const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
-
+    const clientType = watch(`${formId}.clientType`);
     return (
         <Form {...form} className="flex-1">
             <div className="pl-3 mt-2 font-oswald text-lg mb-2">Données du client</div>
@@ -29,10 +29,12 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                             control={control}
                             render={({ field }) => (
                                 <ClientGender
+
                                     option1="Monsieur"
                                     option2="Madame"
                                     onChange={(selected: string) => {
                                         // Update the form field value
+                                        field.onChange(selected);
                                         form.setValue(`${formId}.clientGender`, selected);
                                     }}
                                 />
@@ -69,7 +71,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     />
                 </FormCardContent>
 
-                {/* Cin Client */}
+
                 <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
                     <Input
                         className="border border-bluePrimary"
@@ -78,14 +80,21 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     />
                 </FormCardContent>
 
-                {/* Matricule Fiscale Client */}
                 <FormCardContent form={form} label="Matricule Fiscale" name={`${formId}.mtFiscale`}>
-                    <Input
-                        className="border border-bluePrimary"
-                        placeholder="Matricule Fiscale"
-                        {...register(`${formId}.mtFiscale`)}
+                    <Controller
+                        name={`${formId}.mtFiscale`}
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                className="border border-bluePrimary"
+                                placeholder="Matricule Fiscale"
+                                {...register(`${formId}.mtFiscale`)}
+                            />
+                        )}
                     />
+
                 </FormCardContent>
+
 
                 {/* Tel Client */}
                 <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>

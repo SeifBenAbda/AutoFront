@@ -1,66 +1,48 @@
-import React from "react";
-import { regions } from '../../utils/Regions'
-import { Popover, PopoverContent, PopoverTrigger } from "../../@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../@/components/ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { Button } from "../../@/components/ui/button";
-import { cn } from "../../@/lib/utils";
+import { forwardRef } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../../@/components/ui/select";
+import useRegions from '../../hooks/useRegion';
 
-interface RegionDropDownProps {
-    value: string;
+interface RegionsDropDownTypes {
+    value?: string;
     onChange: (value: string) => void;
+    isFiltring: boolean;
 }
 
-const RegionDropDown: React.FC<RegionDropDownProps> = ({ value, onChange }) => {
-    const [open, setOpen] = React.useState(false);
+const RegionDropDown = forwardRef<HTMLButtonElement, RegionsDropDownTypes>(
+    ({ value, onChange, isFiltring }, ref) => {
+        const { data: regions, isLoading, error } = useRegions();
 
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="w-full flex justify-between items-center truncate border border-bluePrimary"
-                >
-                    <span className="truncate">
-                        {value
-                            ? regions.find((region) => region.value === value)?.label
-                            : "Rechercher..."}
-                    </span>
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-                <Command>
-                    <CommandInput placeholder="Rechercher Region..." />
-                    <CommandList>
-                        <CommandEmpty>Region Introuvable</CommandEmpty>
-                        <CommandGroup>
-                            {regions.map((region) => (
-                                <CommandItem
-                                    key={region.value}
-                                    value={region.value}
-                                    onSelect={(currentValue: string) => {
-                                        onChange(currentValue === value ? "" : currentValue);
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            value === region.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {region.label}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
-    );
-}
+        if (isLoading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error.message}</div>;
+
+        return (
+            <Select onValueChange={onChange}>
+                <SelectTrigger ref={ref} className="w-full border border-bluePrimary">
+                    <SelectValue placeholder={value ? value.toString() : "Toutes les régions"} />
+                </SelectTrigger>
+                <SelectContent>
+                    {isFiltring && (
+                        <SelectItem key="Toutes les régions" value="Toutes les régions">
+                            Toutes les régions
+                        </SelectItem>
+                    )}
+                    {regions?.map((region) => (
+                        <SelectItem key={region.RegionID} value={region.RegionName}>
+                            {region.RegionName}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        );
+    }
+);
+
+RegionDropDown.displayName = 'RegionDropDown'; // Add a displayName for better debugging
 
 export default RegionDropDown;
