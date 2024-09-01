@@ -16,12 +16,12 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
     return (
         <Select onValueChange={onChange}>
             <SelectTrigger className="w-full border border-bluePrimary">
-                <SelectValue placeholder={value ? value?.toString() : "Tous Statuts"} />
+                <SelectValue placeholder={value ? value?.toString() : "Tous Status"} />
             </SelectTrigger>
             <SelectContent>
                 {isFiltring && (
-                    <SelectItem key="Tous Statuts" value="Tous Statuts">
-                        Tous Statuts
+                    <SelectItem key="Tous Status" value="Tous Status">
+                        Tous Status
                     </SelectItem>
                 )}
                 <SelectItem key="En Attente" value="En Attente">En Attente</SelectItem>

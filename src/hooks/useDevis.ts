@@ -12,11 +12,11 @@ interface ApiResponse {
   };
 }
 
-const useDevis = (page: number, searchValue?: string) => {
+const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
   return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue],
-    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page),
-    refetchInterval: 5000,
+    queryKey: ['data', page, searchValue, status, priority, cars], // Include all dependencies in the key
+    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars),
+    refetchInterval: 5000, // Optional: keeps refetching every 5 seconds
     select: (response: ApiResponse) => response,
     staleTime: 0,
     refetchOnWindowFocus: true,

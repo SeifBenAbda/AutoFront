@@ -55,7 +55,10 @@ export const fetchDevisDetailled = async (page: number): Promise<ApiResponse> =>
 export const fetchDevisAllData = async (
   database: string,
   clientName?: string,
-  page: number = 1
+  page: number = 1,
+  status?:string, 
+  priority?:string,
+  cars?:string[]
 ): Promise<ApiResponse> => {
   const token = getToken();
 
@@ -65,8 +68,8 @@ export const fetchDevisAllData = async (
 
   const endpoint = clientName ? '/devis/filter-client' : '/devis/completeDevis';
   const body = clientName 
-    ? { database, clientName, page }
-    : { database, page };
+    ? { database, clientName, page ,status,priority,cars}
+    : { database, page ,status,priority,cars};
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
