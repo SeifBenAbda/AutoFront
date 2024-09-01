@@ -5,6 +5,7 @@ import { cn } from "../../@/lib/utils";
 import { Button } from "../../@/components/ui/button";
 import { Calendar } from "../../@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../@/components/ui/popover";
+import { useState } from "react";
 
 interface DatePickerProps {
   value?: Date;
@@ -14,8 +15,9 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date().getFullYear() - 18 }: DatePickerProps) {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
-    <Popover>
+    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -34,7 +36,7 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
           mode="single"
           captionLayout="dropdown-buttons"
           selected={value}
-          onSelect={onChange}
+          onSelect={(e) => { onChange(e); setIsCalendarOpen(false); }}
           initialFocus
           fromYear={fromYear}
           toYear={toYear}

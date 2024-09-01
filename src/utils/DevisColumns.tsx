@@ -21,7 +21,7 @@ const getVariantStatus = (status : string) =>{
     case "En Attente":
       return "default"
     case "En Cours":
-      return "default"
+      return "medium"
       case "Annuler":
         return "destructive"
        

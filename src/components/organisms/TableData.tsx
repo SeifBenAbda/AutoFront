@@ -136,7 +136,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center rounded-bl-2xl rounded-br-2xl">
-                No results.
+                Aucun résultat
               </TableCell>
             </TableRow>
           )}

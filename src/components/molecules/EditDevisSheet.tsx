@@ -95,8 +95,8 @@ export function EditDevisSheet({
         try {
             await updateDevis({
                 database: "Commer_2024_AutoPro", // Replace with actual database name
-                devisId: devis.DevisId,
-                clientId: client.id,
+                devisId: devis.DevisId!,
+                clientId: client.id!,
                 updatedDevis: devis,
                 updatedClient: client,
                 updatedItemRequestData: itemRequests.length > 0 ? itemRequests[0] : undefined,

@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+
+const rappelFormSchema = z.object({
+    RappelDate: z.date({
+        message: "Date est requis.",
+    }), // Ensure this is required
+});
+
 export const devisSchema = z.object({
     clientForm: z.object({
         clientGender: z.string().min(5, {
@@ -60,28 +67,12 @@ export const devisSchema = z.object({
         if (data.clientType !== "Particulier" && !data.mtFiscale) {
             return false;
         }
-        console.log(data.clientType," ",data.mtFiscale)
         return true;
     }, {
         message: "Matricule Fiscale est requis pour les clients autres que 'Particulier'.",
         path: ['mtFiscale'], // Ensure the path points to the correct field
     }),
 
-    rappelForm: z.object({
-        rp1: z.date({
-            message: "Date Rappel N°1 est requis.",
-        }),
-
-        rp2: z.date({
-            message: "Date Rappel N°2 est requis.",
-        }),
-
-        rp3: z.date({
-            message: "Date Rappel N°3 est requis.",
-        }),
-
-        rappelNotes: z.string().optional()
-    }),
 
     devisCarForm: z.object({
         OldCar: z.string().min(1, {
@@ -113,4 +104,10 @@ export const devisSchema = z.object({
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),
     }),
+    rappelForm: z.array(rappelFormSchema),
+
 });
+
+
+
+

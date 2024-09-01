@@ -1,4 +1,4 @@
-import { CarRequest, Client, Devis } from "@/types/devisTypes";
+import { CarRequest, Client, Devis, Rappel } from "@/types/devisTypes";
 
 // src/defaultFormValues.ts
 export const defaultFormDevisGeneral : Devis = {
@@ -28,13 +28,11 @@ export const defaultFormCarDevis : CarRequest = {
     // Client Extra Form
     OldCar: "",
     CarModel: "",
-    CarRequestId: 0,
     RequestDate: new Date(),
     RequestBy: "",
     CarColor: "",
     CarNotes: "",
     isCanceled: false,
-    DevisId: 0,
 };
 
 export const defaultFormClient : Client = {
@@ -63,10 +61,19 @@ export const defaultFormClient : Client = {
     lastVisitDate: new Date()
 }
 
-export const defaultRappelForm = {
-    // Client Rappel Form
-    rp1: new Date(),
-    rp2: new Date(),
-    rp3: new Date(),
-    rappelNotes: "",
-}
+export const defaultRappelForm: Rappel = {
+    RappelDate: new Date(),
+    CreatedBy: "",
+    CreatedAt: new Date(),
+    UpdatedBy: "",
+    UpdatedAt: new Date(),
+    RappelContent: ""
+};
+
+export const defaultRappelList = [
+    { ...defaultRappelForm },
+    { ...defaultRappelForm },
+    { ...defaultRappelForm }
+];
+
+

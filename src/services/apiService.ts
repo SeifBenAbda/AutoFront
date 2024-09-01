@@ -1,4 +1,4 @@
-import { CarRequest, Client, Devis, ItemRequest } from "../types/devisTypes";
+import { CarRequest, Client, Devis, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -155,13 +155,14 @@ export const updateDevis = async (
 
   if (!token) throw new Error('No token found');
 
-  const response = await fetch(`${API_URL}/devis/${devisId}`, {
-    method: 'PUT',
+  const response = await fetch(`${API_URL}/devis/update`, {
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      "devisId":devisId,
       "database":database,
       "clientId": clientId,
       "updatedDevis":updatedDevis,
@@ -182,7 +183,8 @@ export const createDevis = async (
   client: Client,
   devis: Devis,
   itemRequestData?: ItemRequest,
-  carRequestData?: CarRequest
+  carRequestData?: CarRequest,
+  rappelData? : Rappel[]
 ) => {
   const token = getToken();
 
@@ -199,6 +201,7 @@ export const createDevis = async (
       "devis":devis,
       "itemRequest":itemRequestData,
       "carRequest":carRequestData,
+      "rappelsDevis":rappelData
     }),
   });
 

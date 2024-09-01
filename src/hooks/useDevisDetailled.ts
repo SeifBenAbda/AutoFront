@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import {fetchDevisDetailled } from '../services/apiService';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000/');
+//const socket = io('http://localhost:3000/');
 
 
 

@@ -27,7 +27,7 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
             </div>
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4">
-                <ClientRappelForm form={form} formId="rappelForm" />
+                <ClientRappelForm form={form} formId="rappelForm" devisFormId="devisGeneralForm" />
             </div>
         </div>
     );

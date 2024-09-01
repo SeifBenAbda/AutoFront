@@ -1,5 +1,6 @@
 
 export interface Client {
+  id?:number,
   clientGender:string,
   clientType:string,
   cin:string,
@@ -35,7 +36,7 @@ export interface ItemRequest {
 
 // Define the CarRequest interface
 export interface CarRequest {
-  CarRequestId: number;
+  CarRequestId?: number;
   RequestDate: Date | undefined,
   RequestBy: string,
   CarModel: string,
@@ -43,7 +44,7 @@ export interface CarRequest {
   CarColor: string,
   CarNotes: string,
   isCanceled: boolean,
-  DevisId: number
+  DevisId?: number
 }
 
 // Define the Devis interface
@@ -66,4 +67,18 @@ export interface Devis {
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis
+}
+
+
+
+export interface Rappel{
+  RappelId? : number , 
+  ClientId?: number , 
+  DevisId?: number , 
+  RappelDate:Date | undefined, 
+  CreatedBy : string
+  CreatedAt: Date | undefined , 
+  UpdatedBy : string | undefined , 
+  UpdatedAt : Date | undefined , 
+  RappelContent:string | undefined
 }

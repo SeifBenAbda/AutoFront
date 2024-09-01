@@ -4,7 +4,7 @@ import { useUser } from '../context/userContext';
 import { User } from '../models/user.model'; // Adjust the path as needed
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000/');
+//const socket = io('http://localhost:3000/');
 
 const useAuth = () => {
   const { user, setUser } = useUser();
@@ -31,7 +31,7 @@ const useAuth = () => {
     }
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     socket.on('userUpdate', (updatedUserData: User) => {
       setUser(prevUser => ({
         ...(prevUser || {}), // Use an empty object if prevUser is null or undefined
@@ -42,7 +42,7 @@ const useAuth = () => {
     return () => {
       socket.off('userUpdate');
     };
-  }, []);
+  }, []);*/
 
   const handleLogin = async (username: string, password: string, navigate: (path: string) => void) => {
     try {

@@ -1,5 +1,5 @@
 // src/hooks/useDevis.ts
-import { CarRequest, Client, Devis, ItemRequest } from '../types/devisTypes';
+import { CarRequest, Client, Devis, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -75,21 +75,21 @@ export const useCreateDevis = () => {
       devis,
       carRequestData,
       itemRequestData,
+      rappelData
     }: {
       database: string;
       client: Client;
       devis: Devis;
       carRequestData?: CarRequest;
       itemRequestData?: ItemRequest;
+      rappelData?: Rappel[]
     }) => {
-      return createDevis(database, client, devis, itemRequestData, carRequestData);
+      return createDevis(database, client, devis, itemRequestData, carRequestData, rappelData);
     },
     onSuccess: (data) => {
-      // Handle success (e.g., show a notification, invalidate queries)
       console.log(`New Data ${data} Successfully Created`);
     },
     onError: (error) => {
-      // Handle error (e.g., show an error message)
       console.log(`Error ${error} Happened During Creating Devis`);
     },
   });
