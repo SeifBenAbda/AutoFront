@@ -56,11 +56,9 @@ export const useUpdateDevis = () => {
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
       // Handle success (e.g., show a notification, invalidate queries)
-      console.log(`New Data ${data} Is Succesffuy Updated`)
     },
     onError: (error) => {
       // Handle error (e.g., show an error message)
-      console.log(`This Error | ${error} Happened During Updating Devis`)
     },
   });
 };
@@ -87,10 +85,8 @@ export const useCreateDevis = () => {
       return createDevis(database, client, devis, itemRequestData, carRequestData, rappelData);
     },
     onSuccess: (data) => {
-      console.log(`New Data ${data} Successfully Created`);
     },
     onError: (error) => {
-      console.log(`Error ${error} Happened During Creating Devis`);
     },
   });
 };

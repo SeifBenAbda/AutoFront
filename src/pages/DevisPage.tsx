@@ -37,7 +37,6 @@ const DevisPage: React.FC = () => {
     const { mutateAsync: createDevis } = useCreateDevis();
 
     const onSubmit = async (values: z.infer<typeof devisSchema>) => {
-        console.log("submit called")
         setIsLoading(true); // Show loading
         try {
 
@@ -61,7 +60,6 @@ const DevisPage: React.FC = () => {
 
             // Submit the merged data
             await createDevis(mergedValues);
-            console.log("Form submitted successfully!");
             setIsLoading(false); // Hide loading
             navigate('/carTracking');
             // Optionally: redirect or show a success message
@@ -70,7 +68,6 @@ const DevisPage: React.FC = () => {
             setIsLoading(false); // Hide loading
             // Optionally: show an error message
         } finally {
-            console.log("done")
         }
     };
 

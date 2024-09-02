@@ -41,7 +41,6 @@ const ItemChangePage: React.FC = () => {
 
             // Submit the merged data
             await createDevis(mergedValues);
-            console.log("Form submitted successfully!");
             // Optionally: redirect or show a success message
         } catch (error) {
             console.error("Error submitting form:", error);

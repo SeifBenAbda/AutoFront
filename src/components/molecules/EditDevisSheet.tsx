@@ -91,7 +91,6 @@ export function EditDevisSheet({
     };
 
     const handleSave = async () => {
-        console.log(carRequest)
         try {
             await updateDevis({
                 database: "Commer_2024_AutoPro", // Replace with actual database name
