@@ -69,7 +69,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
     <div className="overflow-y-auto flex-1">
       <Table
         style={{ width: table.getTotalSize() }}
-        className="bg-whiteSecond border border-whiteSecond"
+        className="bg-whiteSecond border border-whiteSecond inline-block rounded-xl"
       >
         <TableHeader className="rounded-tl-2xl rounded-2xl overflow-hidden">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -92,7 +92,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       header.column.columnDef.header,
                       header.getContext()
                     )}
-                  <ColumnResizer header={header} />
+                  {index !== headerGroup.headers.length-1 && <ColumnResizer header={header} />}
                 </TableHead>
               ))}
             </TableRow>

@@ -1,4 +1,4 @@
-import DevisForm from "../components/organisms/DevisForm";
+
 import React from "react";
 import {
     Card,
@@ -12,7 +12,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { devisSchema } from "../shemas/devisFormShemas";
-import { defaultFormCarDevis, defaultFormClient, defaultFormDevisGeneral, defaultRappelForm } from "../utils/defaultFormValues";
+import { defaultFormCarDevis, defaultFormClient, defaultFormDevisGeneral,defaultRappelList } from "../utils/defaultFormValues";
 import { useCreateDevis } from "../hooks/useDevis";  // Adjust the path to your hooks
 
 const ItemChangePage: React.FC = () => {
@@ -22,7 +22,7 @@ const ItemChangePage: React.FC = () => {
             clientForm: defaultFormClient,
             devisCarForm: defaultFormCarDevis,
             devisGeneralForm: defaultFormDevisGeneral,
-            rappelForm: defaultRappelForm
+            rappelForm: defaultRappelList // Use the list of Rappel defaults here
         }
     });
 

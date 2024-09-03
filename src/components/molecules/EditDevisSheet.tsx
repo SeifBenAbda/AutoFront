@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CarRequest, Client, Devis, ItemRequest } from "@/types/devisTypes";
+import { CarRequest, Client, Devis, ItemRequest, Rappel } from "@/types/devisTypes";
 import { Button } from "../../@/components/ui/button";
 import {
     Sheet,
@@ -15,6 +15,7 @@ import { CarRequestCard } from '../organisms/CarRequestCard';
 import { DevisCard } from '../organisms/DevisCard';
 import { useUser } from '../../context/userContext'; // Import the useUser hook
 import { useUpdateDevis } from '../../hooks/useDevis'; // Import the useUpdateDevis hook
+import { RappelCard } from '../organisms/RappelsCard';
 
 interface EditDevisSheetProps {
     allData: Devis;
@@ -34,10 +35,12 @@ export function EditDevisSheet({
     const [carRequest, setCarRequest] = useState<CarRequest | null>(allData.carRequests?.[0] || null);
     const [itemRequests, setItemRequests] = useState<ItemRequest[]>(allData.itemRequests || []);
     const [devis, setDevis] = useState<Devis>(allData);
+    const [rappels, setRappels] = useState<Rappel[]>(allData.rappels);
 
     const [showClientCard, setShowClientCard] = useState(true);
     const [showCarRequestCard, setShowCarRequestCard] = useState(true);
     const [showDevisCard, setShowDevisCard] = useState(true);
+    const [showRapelCard, setShowRappelCard] = useState(true);
 
     const { mutate: updateDevis, isPending, isError, isSuccess } = useUpdateDevis();
 
@@ -45,10 +48,12 @@ export function EditDevisSheet({
         setShowClientCard(true);
         setShowCarRequestCard(true);
         setShowDevisCard(true);
+        setShowRappelCard(true);
         setClient(allData.client!);
         setCarRequest(allData.carRequests?.[0] || null);
         setItemRequests(allData.itemRequests || []);
         setDevis(allData);
+        setRappels(allData.rappels);
     }, [allData]);
 
     const handleClientUpdate = (updatedClient: Client) => {
@@ -90,6 +95,17 @@ export function EditDevisSheet({
         }));
     };
 
+
+    const handleRappelUpdate = (updatedRappels: Rappel[]) => {
+        setRappels(updatedRappels); // Update the local rappels state
+        setDevis(prevDevis => ({
+            ...prevDevis,
+            rappels: updatedRappels, // Update the rappels in the devis object
+            UpdatedAt: new Date(), // Update timestamp
+            UpdatedBy: user?.nomUser || "Unknown User" // Set user name or fallback
+        }));
+    };
+
     const handleSave = async () => {
         try {
             await updateDevis({
@@ -99,7 +115,8 @@ export function EditDevisSheet({
                 updatedDevis: devis,
                 updatedClient: client,
                 updatedItemRequestData: itemRequests.length > 0 ? itemRequests[0] : undefined,
-                updatedCarRequestData: carRequest || undefined
+                updatedCarRequestData: carRequest || undefined,
+                updatedRappels:rappels || undefined
             });
             onSave(devis);
             onClose();
@@ -143,6 +160,14 @@ export function EditDevisSheet({
                     >
                         Données Devis
                     </Button>
+
+                    <Button
+                        className={`${showRapelCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-bluePrimary hover:bg-gray-300'
+                            } w-full md:w-auto`}
+                        onClick={() => setShowRappelCard(!showRapelCard)}
+                    >
+                        Rappels
+                    </Button>
                 </div>
 
                 {/* Conditionally Render Cards */}
@@ -154,6 +179,10 @@ export function EditDevisSheet({
                 )}
                 {showDevisCard && (
                     <DevisCard devis={devis} onUpdate={handleDevisUpdate} />
+                )}
+
+                {showRapelCard && (
+                    <RappelCard rappels={rappels} onUpdate={handleRappelUpdate} />
                 )}
 
                 <SheetFooter>

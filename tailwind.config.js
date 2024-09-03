@@ -9,43 +9,68 @@ module.exports = {
   ],
   prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
-    extend: {
-      screens: {
-        'md-custom': '800px', // Custom screen between 800px and 1150px
-        'lg-custom': '1150px',
-      },
-      colors: {
-        bluePrimary: '#171543', // Define your custom color here
-        veryGrey:'#f8f8f8',
-        whiteSecond:"#fbfbfb",
-        blueCiel:"#e1e8f7"
-        // Add more custom colors if needed
-      },
-      fontFamily: {
-        oswald: ['Fjalla One','sans-serif'],
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
-    },
+  	container: {
+  		center: 'true',
+  		padding: '2rem',
+  		screens: {
+  			'2xl': '1400px'
+  		}
+  	},
+  	extend: {
+  		screens: {
+  			'md-custom': '800px',
+  			'lg-custom': '1150px'
+  		},
+  		colors: {
+  			bluePrimary: '#171543',
+  			veryGrey: '#f8f8f8',
+  			whiteSecond: '#fbfbfb',
+  			blueCiel: '#e1e8f7'
+  		},
+  		fontFamily: {
+  			oswald: ['Fjalla One','sans-serif']
+  		},
+  		keyframes: {
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		},
+  		animation: {
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		}
+  	}
   },
   plugins: [require("tailwindcss-animate")],
 }

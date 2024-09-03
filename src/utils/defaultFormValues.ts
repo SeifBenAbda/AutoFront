@@ -18,6 +18,7 @@ export const defaultFormDevisGeneral : Devis = {
     client: undefined,
     itemRequests: [],
     carRequests: [],
+    rappels:[],
     //DevisId: 0,
     clientId: 0,
     ScheduledLivDate: undefined

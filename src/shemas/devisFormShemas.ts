@@ -4,7 +4,10 @@ import { z } from "zod";
 const rappelFormSchema = z.object({
     RappelDate: z.date({
         message: "Date est requis.",
-    }), // Ensure this is required
+    }),
+    RappelContent: z.string({
+        
+    }),  // Ensure this is required
 });
 
 export const devisSchema = z.object({

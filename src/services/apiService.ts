@@ -152,8 +152,9 @@ export const updateDevis = async (
   updatedDevis: Partial<Devis>,
   updatedClient?: Partial<Client>,
   updatedItemRequestData?: Partial<ItemRequest>,
-  updatedCarRequestData?: Partial<CarRequest>
-): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest }> => {
+  updatedCarRequestData?: Partial<CarRequest>,
+  updatedRappels?: Partial<Rappel[]>
+): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[]}> => {
   const token = getToken();
 
   if (!token) throw new Error('No token found');
@@ -172,6 +173,7 @@ export const updateDevis = async (
       "updatedClient": updatedClient,
       "updatedItemRequest": updatedItemRequestData,
       "updatedCarRequest" : updatedCarRequestData,
+      "updatedRappels":updatedRappels
     }),
   });
 

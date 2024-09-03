@@ -2,6 +2,13 @@
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useWebSocketForDevis } from './useWebSocket';
+import { io } from 'socket.io-client';
+
+const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
+
+// Initialize WebSocket connection outside the hook to prevent creating multiple instances
+const socket = io(SOCKET_URL);
 
 interface ApiResponse {
   data: Devis[];
@@ -13,13 +20,13 @@ interface ApiResponse {
 }
 
 const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
+  useWebSocketForDevis(page, searchValue, status, priority, cars);
+
   return useQuery<ApiResponse>({
     queryKey: ['data', page, searchValue, status, priority, cars], // Include all dependencies in the key
     queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars),
-    refetchInterval: 5000, // Optional: keeps refetching every 5 seconds
-    select: (response: ApiResponse) => response,
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
+    refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 };
 
@@ -34,6 +41,7 @@ export const useUpdateDevis = () => {
       updatedClient,
       updatedItemRequestData,
       updatedCarRequestData,
+      updatedRappels,
     }: {
       database: string;
       devisId: number;
@@ -42,6 +50,7 @@ export const useUpdateDevis = () => {
       updatedClient?: Partial<Client>;
       updatedItemRequestData?: Partial<ItemRequest>;
       updatedCarRequestData?: Partial<CarRequest>;
+      updatedRappels?: Partial<Rappel[]>;
     }) => {
       return updateDevis(
         database,
@@ -50,12 +59,20 @@ export const useUpdateDevis = () => {
         updatedDevis,
         updatedClient,
         updatedItemRequestData,
-        updatedCarRequestData
+        updatedCarRequestData,
+        updatedRappels
       );
     },
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
       // Handle success (e.g., show a notification, invalidate queries)
+      socket.emit('devisUpdate', {
+        client: data.client,
+        devis: data.devis,
+        carRequest: data.carRequest,
+        itemRequest: data.itemRequest,
+        //rappelDevis: data.rappelDevis,
+      });
     },
     onError: (error) => {
       // Handle error (e.g., show an error message)
@@ -92,3 +109,5 @@ export const useCreateDevis = () => {
 };
 
 export default useDevis;
+
+
