@@ -7,6 +7,7 @@ import {
     SelectValue,
 } from "../../@/components/ui/select";
 import useRegions from '../../hooks/useRegion';
+import Loading from './Loading';
 
 interface RegionsDropDownTypes {
     value?: string;
@@ -18,12 +19,12 @@ const RegionDropDown = forwardRef<HTMLButtonElement, RegionsDropDownTypes>(
     ({ value, onChange, isFiltring }, ref) => {
         const { data: regions, isLoading, error } = useRegions();
 
-        if (isLoading) return <div>Loading...</div>;
-        if (error) return <div>Error: {error.message}</div>;
+        if (isLoading) return <div className='pl-1 text-white'>Loading</div>;
+        if (error) return <div className='text-lightRed'>Error: {error.message}</div>;
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-bluePrimary">
+                <SelectTrigger ref={ref} className="w-full border border-greenFour bg-greenZero text-greenFour">
                     <SelectValue placeholder={value ? value.toString() : "Toutes les régions"} />
                 </SelectTrigger>
                 <SelectContent>

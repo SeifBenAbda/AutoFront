@@ -48,7 +48,7 @@ const NavMenu: React.FC = () => {
         <select
           onChange={(e) => handleNavClick(e.target.options[e.target.selectedIndex].text, e.target.value)}
           value={location.pathname}
-          className="bg-veryGrey text-bluePrimary border rounded-md p-2"
+          className="bg-veryGrey text-greenFour border rounded-md p-2"
         >
           <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
@@ -64,26 +64,26 @@ const NavMenu: React.FC = () => {
     <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-white bg-white">
       <button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
-        className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-greenFour text-white font-oswald' : 'bg-white text-greenFour font-oswald'}`}
       >
         Dashboard
       </button>
       <button
         onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
-        className={`p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-greenFour text-white font-oswald' : 'bg-white text-greenFour font-oswald'}`}
       >
         Dossier Voiture
       </button>
       <button
         onClick={() => handleNavClick('Commande des Pieces', "/item-change")}
-        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-greenFour text-white font-oswald' : 'bg-white text-greenFour font-oswald'}`}
       >
         Commande des Pieces
       </button>
 
       <button
         onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-greenFour text-white font-oswald' : 'bg-white text-greenFour font-oswald'}`}
       >
 
         Suivi Devis Voiture
@@ -91,7 +91,7 @@ const NavMenu: React.FC = () => {
 
       <button
         onClick={() => handleNavClick('Suivi Changement des Pieces', "/itemTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-bluePrimary text-white font-oswald' : 'bg-white text-bluePrimary font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-greenFour text-white font-oswald' : 'bg-white text-greenFour font-oswald'}`}
       >
 
         Suivi Changement des Pieces

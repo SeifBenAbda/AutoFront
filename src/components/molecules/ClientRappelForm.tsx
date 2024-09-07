@@ -18,7 +18,7 @@ const ClientRappelForm: React.FC<{ form: any; formId: string ,devisFormId:string
 
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2">Rappels</div>
+            <div className="pl-3 mb-2  font-oswald text-lg  text-white">Rappels</div>
             <div className="w-full">
 
                 {[...Array(rappelCount)].map((_, index) => (

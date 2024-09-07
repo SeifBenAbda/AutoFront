@@ -1,17 +1,18 @@
 import { z } from "zod";
 import { UseFormReturn } from "react-hook-form";
 import React from "react";
-import { devisSchema, devisSchemaForCar } from "../../shemas/devisFormShemas"; // Update import path to your new schema
+import { devisSchema, devisSchemaForItems } from "../../shemas/devisFormShemas"; // Update import path to your new schema
 import ClientDataForm from "../molecules/ClientDataForm";
-import ClientExtraForm from "../molecules/ClientExtraForm";
 import ClientAdresseForm from "../molecules/ClientAdresseForm";
 import ClientRappelForm from "../molecules/ClientRappelForm";
+import ClientItemChangeForm from "../molecules/ClientItemChangeForm";
+import ClientExtraForm from "../molecules/ClientExtraForm";
 
 interface DevisFormProps {
-    form: UseFormReturn<z.infer<typeof devisSchemaForCar>>;
+    form: UseFormReturn<z.infer<typeof devisSchemaForItems>>;
 }
 
-const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
+const ItemRequestForm: React.FC<DevisFormProps> = ({ form }) => {
     return (
         <div className="flex flex-wrap justify-between">
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4 bg-greenFour border border-greenFour rounded-xl p-2">
@@ -21,9 +22,10 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4 bg-greenFour border border-greenFour rounded-xl p-2">
                 <ClientAdresseForm form={form} formId="clientForm" />
             </div>
+            
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4 bg-greenFour border border-greenFour rounded-xl p-2">
-                <ClientExtraForm form={form} generalFormId="devisGeneralForm" formId="devisCarForm" />
+                <ClientItemChangeForm form={form} formId="itemRequests"  />
             </div>
 
             <div className="w-full md:w-[48%] lg-custom:w-[23%] mb-4 bg-greenFour border border-greenFour rounded-xl p-2">
@@ -33,4 +35,4 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
     );
 };
 
-export default DevisForm;
+export default ItemRequestForm;

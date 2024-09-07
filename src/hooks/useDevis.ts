@@ -96,7 +96,7 @@ export const useCreateDevis = () => {
       client: Client;
       devis: Devis;
       carRequestData?: CarRequest;
-      itemRequestData?: ItemRequest;
+      itemRequestData?: ItemRequest[];
       rappelData?: Rappel[]
     }) => {
       return createDevis(database, client, devis, itemRequestData, carRequestData, rappelData);

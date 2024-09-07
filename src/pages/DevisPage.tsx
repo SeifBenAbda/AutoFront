@@ -11,7 +11,7 @@ import { Button } from "../@/components/ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { devisSchema } from "../shemas/devisFormShemas";
+import { devisSchema, devisSchemaForCar } from "../shemas/devisFormShemas";
 import { defaultFormCarDevis, defaultFormClient, defaultFormDevisGeneral, defaultRappelForm, defaultRappelList } from "../utils/defaultFormValues";
 import { useCreateDevis } from "../hooks/useDevis"; // Adjust the path to your hooks
 import { useUser } from "../context/userContext";
@@ -32,8 +32,8 @@ const DevisPage: React.FC = () => {
     const navigate = useNavigate();
     const [showAlert, setShowAlert] = useState(false); // Alert state
 
-    const form = useForm<z.infer<typeof devisSchema>>({
-        resolver: zodResolver(devisSchema),
+    const form = useForm<z.infer<typeof devisSchemaForCar>>({
+        resolver: zodResolver(devisSchemaForCar),
         defaultValues: {
             clientForm: defaultFormClient,
             devisCarForm: defaultFormCarDevis,
@@ -56,7 +56,7 @@ const DevisPage: React.FC = () => {
         }
     }, [errors]);
 
-    const onSubmit = async (values: z.infer<typeof devisSchema>) => {
+    const onSubmit = async (values: z.infer<typeof devisSchemaForCar>) => {
         setIsLoading(true); // Show loading
         try {
 
@@ -102,32 +102,34 @@ const DevisPage: React.FC = () => {
                     <Loading /> {/* Adjust this component to fit your loading design */}
                 </div>
             )}
-            <Card className="p-2 m-2">
+            <Card className="p-2 m-1 bg-veryGrey border border-veryGrey">
                 <div className="flex flex-col">
-                    <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    {/* Fixed CardHeader, with enough margin to avoid overlap with the main Header */}
+                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-veryGrey z-10 p-4 border-b border-veryGrey ">
                         <div>
-                            <CardTitle>Devis</CardTitle>
+                            <CardTitle className="text-greenFour">Devis</CardTitle>
                             <CardDescription>Devis pour voiture</CardDescription>
                         </div>
-                        <div className="mt-2 md:mt-2">
+                        <div className="mt-2 md:mt-0">
                             <Button
                                 onClick={form.handleSubmit(onSubmit)}
                                 type="button"
                                 disabled={isLoading} // Disable button when loading
+                                className="bg-greenFour hover:bg-greenThree"
                             >
                                 Valider Devis
                             </Button>
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        {showAlert && (
-                            <MissingFieldsComponent message="Certains champs sont manquants ou invalides. Veuillez vérifier le formulaire." />
-                        )}
+
+                    {/* Add margin to the content area to compensate for the fixed header */}
+                    <CardContent className="lg-custom:mt-[70px] md-custom:mt-[65px] sm-custom:mt-[80px] sm:mt-[120px] mt-[110px]"> {/* 160px accounts for the combined height of the Header (64px) and CardHeader */}
                         <DevisForm form={form} />
                     </CardContent>
                 </div>
             </Card>
         </div>
+
     );
 };
 

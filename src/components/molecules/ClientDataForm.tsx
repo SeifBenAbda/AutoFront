@@ -19,7 +19,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const clientType = watch(`${formId}.clientType`);
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2">Données du client</div>
+            <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Données du client</div>
             <div className="w-full">
                 {/* Toggle Informations */}
                 <div className="flex space-x-4">
@@ -65,7 +65,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Nom Client */}
                 <FormCardContent form={form} label="Nom" name={`${formId}.nomClient`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenFour bg-greenZero"
                         placeholder="Nom du Client"
                         {...register(`${formId}.nomClient`)}
                     />
@@ -74,7 +74,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
                 <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenFour bg-greenZero"
                         placeholder="Cin"
                         {...register(`${formId}.cin`)}
                     />
@@ -86,7 +86,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                className="border border-bluePrimary"
+                                className="border border-greenFour bg-greenZero"
                                 placeholder="Matricule Fiscale"
                                 {...register(`${formId}.mtFiscale`)}
                             />
@@ -99,7 +99,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Tel Client */}
                 <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenFour bg-greenZero"
                         placeholder="Numéro de téléphone"
                         {...register(`${formId}.telClient`)}
                     />
@@ -107,7 +107,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
                 <FormCardContent form={form} label="Email" name={`${formId}.email`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenFour bg-greenZero"
                         placeholder="Email"
                         {...register(`${formId}.email`)}
                     />
@@ -116,7 +116,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Raison Sociale */}
                 <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenFour bg-greenZero"
                         placeholder="Profession / Secteur Activite"
                         {...register(`${formId}.socialReason`)}
                     />

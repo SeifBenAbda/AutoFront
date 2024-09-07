@@ -1,3 +1,4 @@
+import { Article } from "@/types/otherTypes";
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 
@@ -187,7 +188,7 @@ export const createDevis = async (
   database: string,
   client: Client,
   devis: Devis,
-  itemRequestData?: ItemRequest,
+  itemRequestData?: ItemRequest[],
   carRequestData?: CarRequest,
   rappelData? : Rappel[]
 ) => {
@@ -216,3 +217,96 @@ export const createDevis = async (
 
   return response.json();
 };  
+
+
+
+//fetching Articles : 
+export const fetchArticles = async (
+  database: string,
+  searchValue?: string,
+  page: number = 1
+): Promise<{ data: Article[], meta: { totalItems: number, totalPages: number, currentPage: number } }> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  const body = {
+    database,
+    page,
+    searchValue: searchValue || ''
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/articles`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) { // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+
+
+//Fetch Clients with Pagination 
+
+export const fetchClients = async (
+  database: string,
+  searchValue?: string,
+  page: number = 1
+): Promise<{ data: Client[], meta: { totalItems: number, totalPages: number, currentPage: number } }> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  const body = {
+    database,
+    page,
+    searchValue: searchValue || ''
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/clients/allClients`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) { // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};

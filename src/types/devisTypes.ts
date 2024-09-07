@@ -22,16 +22,32 @@ export interface Client {
 
 // Define the ItemRequest interface
 export interface ItemRequest {
-  itemRequestId: number;
-  itemId: string;
-  requestDate: Date | undefined , 
-  requestedBy:string,
+  ItemRequestId?: number;
+  ItemId: string;
+  RequestDate: Date | undefined , 
+  RequestedBy:string,
   Quantity:string,
   isWaranty:boolean,
   isCancled:boolean,
-  Ligne:number,
-  DevisId:number
+  Ligne?:number | undefined,
+  DevisId?:number,
+  OldCar?:string | undefined , 
+  Immatriculation:string | undefined
   // Add other ItemRequest properties here
+}
+
+
+export interface AccidentDetails{
+  AccidentDetailId?:number,
+  DevisId?:number,
+  Assurance:string | undefined,
+  NomExpert:string,
+  PhoneExpert:string,
+  MailExpert:string,
+  TypeDossier:string | undefined , 
+  CommentOne?:string | undefined,
+  CommentTwo?:string | undefined,
+  CommentThree?:string | undefined
 }
 
 // Define the CarRequest interface
@@ -83,3 +99,6 @@ export interface Rappel{
   UpdatedAt : Date | undefined , 
   RappelContent:string | undefined
 }
+
+
+

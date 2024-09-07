@@ -10,7 +10,7 @@ import {
 import { CardContent } from "../../@/components/ui/card";
 
 
-const FormCardContent: React.FC<any> = ({ form, name, label, children }) => {
+const FormCardContent: React.FC<any> = ({ form, name, label, children, className }) => {
     return (
         <CardContent className="flex flex-1">
             <FormField
@@ -18,13 +18,17 @@ const FormCardContent: React.FC<any> = ({ form, name, label, children }) => {
                 name={name}
                 render={({ field }) => (
                     <FormItem className="w-full">
-                        <FormLabel>{label}</FormLabel>
+                        <div className="flex justify-between w-full p-1 flex-col">
+                            <FormLabel className={`${className ? className : 'text-white mb-1'} `}>
+                                {label}
+                            </FormLabel>
+                            <FormMessage className="text-lightRed truncate">
+                                {form.formState.errors[name]?.message as string}
+                            </FormMessage>
+                        </div>
                         <FormControl className="w-full">
                             {children}
                         </FormControl>
-                        <FormMessage>
-                            {form.formState.errors[name]?.message as string}
-                        </FormMessage>
                     </FormItem>
                 )}
             />

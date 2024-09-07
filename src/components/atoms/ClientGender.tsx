@@ -22,7 +22,8 @@ const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange 
     <Toggle
       aria-label="Toggle gender"
       onClick={handleToggle}
-      className="relative w-full font-oswald bg-bluePrimary text-whiteSecond hover:bg-bluePrimary hover:text-whiteSecond border data-[state=on]:border-bluePrimary"
+      className="relative w-full font-oswald bg-whiteSecond text-greenFour hover:bg-whiteSecond hover:text-greenFour border 
+      data-[state=on]:border-lightRed data-[state=on]:bg-lightRed data-[state=on]:text-whiteSecond "
     >
       {selected}
     </Toggle>

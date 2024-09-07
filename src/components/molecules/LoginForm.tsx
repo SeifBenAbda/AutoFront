@@ -53,12 +53,12 @@ const LoginForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-bluePrimary text-white p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
+          className="w-full bg-white text-greenFour p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
           disabled={isLoading}
         >
           {isLoading ? 'Chargement...' : 'Se Connecter'}
         </button>
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-white text-center m-2">{error}</p>}
       </form>
     </div>
   );

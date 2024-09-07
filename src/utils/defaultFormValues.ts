@@ -1,4 +1,4 @@
-import { CarRequest, Client, Devis, Rappel } from "@/types/devisTypes";
+import { CarRequest, Client, Devis, ItemRequest, Rappel } from "@/types/devisTypes";
 
 // src/defaultFormValues.ts
 export const defaultFormDevisGeneral : Devis = {
@@ -75,6 +75,23 @@ export const defaultRappelList = [
     { ...defaultRappelForm },
     { ...defaultRappelForm },
     { ...defaultRappelForm }
+];
+
+
+export const defaultItemRequestForm : ItemRequest = {
+    ItemId: "Hey",
+    RequestDate: new Date(),
+    RequestedBy: "",
+    Quantity: "",
+    isWaranty: false,
+    isCancled: false,
+    Ligne: 0,
+    Immatriculation: undefined
+}
+
+
+export const defaultItemRequestList = [
+  
 ];
 
 

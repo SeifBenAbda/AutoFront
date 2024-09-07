@@ -19,13 +19,20 @@ module.exports = {
   	extend: {
   		screens: {
   			'md-custom': '800px',
-  			'lg-custom': '1150px'
+  			'lg-custom': '1150px',
+			'sm-custom':'768px'
   		},
   		colors: {
   			bluePrimary: '#171543',
-  			veryGrey: '#f8f8f8',
+  			veryGrey: '#f0f7f6',
   			whiteSecond: '#fbfbfb',
-  			blueCiel: '#e1e8f7'
+  			blueCiel: '#e1e8f7',
+			greenOne:'#8ebd55',
+			greenTwo:'#c2ea62',
+			greenThree:'#34613a',
+			greenFour:'#056751',
+			greenZero:'#f7fff6',
+			lightRed:'#FF6B6B'
   		},
   		fontFamily: {
   			oswald: ['Fjalla One','sans-serif']

@@ -10,6 +10,11 @@ const rappelFormSchema = z.object({
     }),  // Ensure this is required
 });
 
+const itemSchema = z.object({
+    ItemId: z.string().min(1, "Item is required"), // Backend will supply this
+    Quantity: z.string().min(1, "Quantity is required"),
+  });
+
 export const devisSchema = z.object({
     clientForm: z.object({
         clientGender: z.string().min(5, {
@@ -78,9 +83,7 @@ export const devisSchema = z.object({
 
 
     devisCarForm: z.object({
-        OldCar: z.string().min(1, {
-            message: "Ancien Vehicule est requis.",
-        }),
+        OldCar: z.string().optional(),
 
         CarModel: z.string().min(1, {
             message: "Modèle préféré est requis.",
@@ -106,11 +109,64 @@ export const devisSchema = z.object({
         PriorityDevis: z.enum(["Normale", "Moyenne", "Haute"], {
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),
+        /*Origin:z.enum(["Envoyé par Mail", "Au comptoire"], {
+            message: "Devis Origine",
+        }),*/
     }),
     rappelForm: z.array(rappelFormSchema),
 
+    itemChangeForm: z.object({
+        OldCar: z.string().min(1,{
+            message:"Voiture Ancienne"
+        }),
+
+        Immatriculation:z.string().min(1, {
+            message: "Immatriculation",
+        }),
+    }),
+
+    itemRequests: z.array(itemSchema),
+
+    accidentDetails : z.object({
+        NomExpert: z.string().min(1,{message:"Nom de L'Expert est requis"}),
+
+        MailExpert: z.string().optional(),
+
+        PhoneExpert: z.string().min(1, {
+            message: "Numero de L'Expert est requis",
+        }),
+
+        CommentOne: z.string().min(10,{
+            message: "Commentaire de L'Expert 1",
+        }),
+        CommentTwo: z.string().min(10, {
+            message: "Commentaire de L'Expert 2",
+        }),
+        CommentThree: z.string().min(10, {
+            message: "Commentaire de L'Expert 3",
+        }),
+        Assurance:z.string().min(1,{message:"Assurance"}),
+        TypeDossier:z.enum(["Atelier Mecanique", "Magasin", "Carosserie"], {
+            message: "Type de Devis",
+        }),
+    })
+
 });
 
+
+export const devisSchemaForCar = devisSchema.omit({
+    accidentDetails: true,
+    itemRequests:true,
+    itemChangeForm:true
+});
+
+export const devisSchemaForItems = devisSchema.omit({
+    accidentDetails: true,
+    devisGeneralForm:true,
+    itemChangeForm:true,
+    devisCarForm:true,
+    
+});
 
 
 

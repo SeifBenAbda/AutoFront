@@ -23,12 +23,12 @@ const ClientExtraForm: React.FC<any> = ({   form, formId ,generalFormId }) => {
 
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2">Infos supplémentaires</div>
+            <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Infos supplémentaires</div>
             <div className="w-full">
                 {/* Old Car Input */}
                 <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
                     <Input
-                        className="border border-bluePrimary"
+                        className="border border-greenZero bg-greenZero"
                         placeholder="Ancien Vehicule"
                         {...register(`${formId}.OldCar`)}
                     />
@@ -97,7 +97,7 @@ const ClientExtraForm: React.FC<any> = ({   form, formId ,generalFormId }) => {
 
                       
 
-                <div className="pl-3 mt-2 font-oswald text-lg mb-2">Paiements</div>
+                <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Paiements</div>
 
                 {/* Moyen Paiement */}
                 <FormCardContent form={form} label="Moyen de Payement" name={`${generalFormId}.PayementMethod`}>
