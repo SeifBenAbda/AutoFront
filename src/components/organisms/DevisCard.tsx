@@ -18,17 +18,17 @@ export function DevisCard({ devis, onUpdate }: DevisCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="text-highGrey text-lg">Information Devis</CardTitle>
+                    <CardTitle className="text-whiteSecond text-lg">Information Devis</CardTitle>
                 </CardHeader>
 
 
                 {/** Status Devis  */}
 
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Status</label>
                     <StatusDevisDropDown
                         value={devis.StatusDevis}
                         onChange={(value) => handleChange("StatusDevis", value)}
@@ -39,7 +39,7 @@ export function DevisCard({ devis, onUpdate }: DevisCardProps) {
                 {/** Payement Type  */}
 
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Type de Payement</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Type de Payement</label>
                     <PayementMethod
                         value={devis.PayementMethod}
                         onChange={(value) => handleChange("PayementMethod", value)}

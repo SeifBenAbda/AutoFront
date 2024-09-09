@@ -24,12 +24,13 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
             <div className="flex flex-col">
-                <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="flex items-center text-highGrey text-lg space-x-4">
-                        <span className="text-lg">Information Client</span>
-                        <div className={`border rounded-lg text-center text-sm p-2 ${client.clientType === "Particulier" ? "bg-green-400 text-whiteSecond border-green-400" : "border-gray-200 bg-gray-200 text-highGrey"}`}>
+                <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between w-full">
+                    <CardTitle className="flex items-center text-whiteSecond text-lg space-x-8">
+                        <div className="text-lg ">Information Client</div>
+                        <div className={`border rounded-lg text-center text-sm p-2 ${client.clientType === "Particulier" ? "bg-whiteSecond text-highGrey border-whiteSecond" 
+                            : "border-greenOne bg-greenOne text-lightWhite"}`}>
                             {client.clientType}
                         </div>
                     </CardTitle>
@@ -37,7 +38,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
 
                 {/** Client Name  */}
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Nom</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Nom</label>
                     <Input
                         type="text"
                         value={client.nomClient || ""} // Directly bind to client prop
@@ -50,7 +51,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
 
                 {client.clientType === "Particulier" ? (
                     <CardContent>
-                        <label className="block text-sm font-medium text-gray-700">Cin</label>
+                        <label className="block text-sm font-medium text-whiteSecond">Cin</label>
                         <Input
                             type="text"
                             value={client.cin || ""} // Directly bind to client prop
@@ -60,7 +61,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                     </CardContent>
                 ) : (
                     <CardContent>
-                        <label className="block text-sm font-medium text-gray-700">Matricule Fiscale</label>
+                        <label className="block text-sm font-medium text-whiteSecond">Matricule Fiscale</label>
                         <Input
                             type="text"
                             value={client.mtFiscale} // Directly bind to client prop
@@ -73,7 +74,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
 
                 {/** Client Tel  */}
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Numéro de téléphone</label>
                     <Input
                         type="text"
                         value={client.telClient} // Directly bind to client prop
@@ -83,20 +84,21 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                 </CardContent>
 
 
+                {client.clientType =="Particulier" && (
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Date de naissance</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Date de naissance</label>
                     <DatePicker
                         value={client.dateOfBirth}
                         onChange={handleDateChange}
                         fromYear={new Date().getFullYear() - 70}
                         toYear={new Date().getFullYear() - 18}
                     />
-                </CardContent>
+                </CardContent>)}
 
 
                 {/** Client Adress  */}
                 <CardContent>
-                    <label className="block text-sm font-medium text-gray-700">Adresse</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Adresse</label>
                     <Input
                         type="text"
                         value={client.adresse} // Directly bind to client prop

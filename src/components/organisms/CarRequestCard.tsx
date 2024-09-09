@@ -20,17 +20,17 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="text-highGrey text-lg">Information Véhicule</CardTitle>
+                    <CardTitle className="text-whiteSecond text-lg">Information Véhicule</CardTitle>
                 </CardHeader>
                 {/** Type Car  */}
                 {carRequest === undefined ? (<CardContent>Pas D'Informations</CardContent>) :
                     (
                         <>
                             <CardContent>
-                                <label className="block text-sm font-medium text-gray-700">Modele du véhicule</label>
+                                <label className="block text-sm font-medium text-whiteSecond">Modele du véhicule</label>
                                 <CarsDropDown
                                 value={carRequest.CarModel} // Pass the current model value
                                 onChange={(value) => handleChange("CarModel", value)}
@@ -41,7 +41,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                             {/** Color Car  */}
 
                             <CardContent>
-                                <label className="block text-sm font-medium text-gray-700">Couleur du véhicule</label>
+                                <label className="block text-sm font-medium text-whiteSecond">Couleur du véhicule</label>
                                 <Input
                                     type="text"
                                     value={carRequest.CarColor} // Directly bind to client prop
@@ -55,7 +55,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
 
                             {
                                 carRequest.OldCar !== null && (<CardContent>
-                                    <label className="block text-sm font-medium text-gray-700">Dernier véhicule possédé</label>
+                                    <label className="block text-sm font-medium text-whiteSecond">Dernier véhicule possédé</label>
                                     <Input
                                         type="text"
                                         value={carRequest.OldCar} // Directly bind to client prop
@@ -69,7 +69,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
 
 
                             <CardContent>
-                                <label className="block text-sm font-medium text-gray-700">Dernier véhicule possédé</label>
+                                <label className="block text-sm font-medium text-whiteSecond">Dernier véhicule possédé</label>
                                 <Textarea
                                     className="border border-highGrey min-h-[70px]"
                                     placeholder="Plus d'informations.."

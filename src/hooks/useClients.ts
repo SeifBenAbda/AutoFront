@@ -13,7 +13,7 @@ interface ApiResponse {
 
 const useClients = (page: number, searchValue?: string) => {
   return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue], // Include all dependencies in the key
+    queryKey: ['clients', page, searchValue], // Include all dependencies in the key
     queryFn: () => fetchClients("Commer_2024_AutoPro", searchValue, page),
     staleTime: 0, // Data is always considered stale
     refetchOnWindowFocus: false, // Optional: Disable refetching on window focus if not needed

@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toggle } from "../../@/components/ui/toggle";
 
 interface ClientGenderProps {
   option1: string;
   option2: string;
+  defaultValue: string;
   onChange?: (selected: string) => void;
 }
 
-const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange }) => {
+const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange ,defaultValue}) => {
   const [selected, setSelected] = useState<string>(option1);
+
+
+  useEffect(() => {
+    if (defaultValue) {
+      setSelected(defaultValue === "Madame" ? option2 : option1);
+    }
+  }, [defaultValue, option1, option2,selected]);
 
   const handleToggle = () => {
     const newSelected = selected === option1 ? option2 : option1;
@@ -21,9 +29,11 @@ const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange 
   return (
     <Toggle
       aria-label="Toggle gender"
+      data-state={selected === "Entreprise" ? "on" : "off"}  // Dynamically set data-state
       onClick={handleToggle}
-      className="relative w-full font-oswald bg-whiteSecond text-darkGrey hover:bg-whiteSecond hover:text-darkGrey border 
-      data-[state=on]:border-lightRed data-[state=on]:bg-lightRed data-[state=on]:text-whiteSecond "
+      className={`relative w-full font-oswald bg-whiteSecond text-darkGrey hover:bg-whiteSecond hover:text-darkGrey border 
+      data-[state=on]:border-lightRed data-[state=on]:bg-lightRed data-[state=on]:text-whiteSecond  
+      ${selected === "Madame" ? "border-lightRed bg-lightRed text-whiteSecond" : "border-whiteSecond bg-whiteSecond text-darkGrey"}`}
     >
       {selected}
     </Toggle>
@@ -31,3 +41,5 @@ const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange 
 };
 
 export default ClientGender;
+
+

@@ -46,9 +46,7 @@ export const devisSchema = z.object({
             message: "Erreur Profession / Secteur Activite est requis.",
         }),
 
-        dateOfBirth: z.date({
-            message: "Date naissance est requis.",
-        }),
+        dateOfBirth: z.date().optional(),
 
         adresse: z.string().min(5, {
             message: "Adresse est requis.",
@@ -79,6 +77,14 @@ export const devisSchema = z.object({
     }, {
         message: "Matricule Fiscale est requis pour les clients autres que 'Particulier'.",
         path: ['mtFiscale'], // Ensure the path points to the correct field
+    }).refine((data)=>{
+        if(data.clientType == "Particulier" && !data.dateOfBirth){
+            return false;
+        }
+        return true ;
+    },{
+        message:"Date de Naissance !",
+        path:['dateOfBirth']
     }),
 
 

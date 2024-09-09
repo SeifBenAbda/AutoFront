@@ -1,5 +1,6 @@
 export interface Article {
     code:string,
-    libell:string
-    stock:number
+    libell:string,
+    stock:number,
+    pv:number
 }

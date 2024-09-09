@@ -1,5 +1,5 @@
 import { Controller } from "react-hook-form";
-import React, { useState } from "react";
+import React from "react";
 import {
     Form,
     FormControl,
@@ -16,7 +16,11 @@ import TypeClient from "../atoms/ClientTypeSelect";
 
 const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
+
+    // Watch the clientType field
     const clientType = watch(`${formId}.clientType`);
+    const clientGender = watch(`${formId}.clientGender`);
+
     return (
         <Form {...form} className="flex-1">
             <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Données du client</div>
@@ -29,18 +33,14 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                             control={control}
                             render={({ field }) => (
                                 <ClientGender
-
                                     option1="Monsieur"
                                     option2="Madame"
                                     onChange={(selected: string) => {
-                                        // Update the form field value
                                         field.onChange(selected);
                                         form.setValue(`${formId}.clientGender`, selected);
-                                    }}
-                                />
+                                    } } defaultValue={clientGender}                                />
                             )}
                         />
-
                     </FormCardContent>
 
                     <FormCardContent form={form} label="Type Client" name={`${formId}.clientType`}>
@@ -52,13 +52,10 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                     option1="Particulier"
                                     option2="Entreprise"
                                     onChange={(selected: string) => {
-                                        // Update the form field value
                                         form.setValue(`${formId}.clientType`, selected);
-                                    }}
-                                />
+                                    } } defaultValue={clientType}                                />
                             )}
                         />
-
                     </FormCardContent>
                 </div>
 
@@ -70,7 +67,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                         {...register(`${formId}.nomClient`)}
                     />
                 </FormCardContent>
-
 
                 <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
                     <Input
@@ -92,9 +88,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                             />
                         )}
                     />
-
                 </FormCardContent>
-
 
                 {/* Tel Client */}
                 <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>
@@ -113,7 +107,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     />
                 </FormCardContent>
 
-                {/* Raison Sociale */}
                 <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`}>
                     <Input
                         className="border border-darkGrey bg-lightWhite"
@@ -122,22 +115,23 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     />
                 </FormCardContent>
 
-
-                {/* Date of Birthday */}
-                <FormCardContent form={form} label="Date de naissance" name={`${formId}.dateOfBirth`}>
-                    <Controller
-                        name={`${formId}.dateOfBirth`}
-                        control={control}
-                        render={({ field }) => (
-                            <DatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                                fromYear={new Date().getFullYear() - 70}
-                                toYear={new Date().getFullYear() - 18}
-                            />
-                        )}
-                    />
-                </FormCardContent>
+                {/* Conditionally render Date of Birth */}
+                {clientType !== "Entreprise" && (
+                    <FormCardContent form={form} label="Date de naissance" name={`${formId}.dateOfBirth`}>
+                        <Controller
+                            name={`${formId}.dateOfBirth`}
+                            control={control}
+                            render={({ field }) => (
+                                <DatePicker
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    fromYear={new Date().getFullYear() - 70}
+                                    toYear={new Date().getFullYear() - 18}
+                                />
+                            )}
+                        />
+                    </FormCardContent>
+                )}
             </div>
         </Form>
     );

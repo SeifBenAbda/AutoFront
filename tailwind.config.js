@@ -23,7 +23,6 @@ module.exports = {
 			'sm-custom':'768px'
   		},
   		colors: {
-  			bluePrimary: '#171543',
   			veryGrey: '#f0f7f6',
   			whiteSecond: '#fbfbfb',
   			blueCiel: '#e1e8f7',
@@ -32,7 +31,7 @@ module.exports = {
 			lightWhite:'#fbfbfb',
 			lightRed:'#FF6B6B',
 			lightGreen:'#b0ee81',
-			highGrey:'#343740'
+			highGrey:'#272e45'
   		},
   		fontFamily: {
   			oswald: ['Fjalla One','sans-serif']

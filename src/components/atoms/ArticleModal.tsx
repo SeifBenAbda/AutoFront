@@ -97,7 +97,7 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                         onSelectArticle(article);
                       }
                     }}
-                    className={`font-oswald flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedArticles.some(selected => selected.article.code === article.code)
+                    className={`flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedArticles.some(selected => selected.article.code === article.code)
                       ? 'bg-gray-400 cursor-not-allowed hover:cursor-not-allowed'
                       : 'bg-darkGrey hover:bg-lightWhite hover:text-darkGrey hover:border-darkGrey'
                       }`}
@@ -105,6 +105,14 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                     <div className="flex-1 text-left">
                       {article.libell} <span className="ml-1">({article.code})</span>
                     </div>
+
+
+                    <div
+                      className='bg-lightWhite border border-lightWhite rounded-xl p-1 mr-2 w-24 text-highGrey hover:border hover:border-highGrey'
+                    >
+                      {article.pv} DT
+                    </div>
+
                     <div
                       className={`flex-none text-center border rounded-lg p-1 ${article.stock <= 0
                         ? 'bg-lightRed text-lightWhite border-lightRed'
@@ -113,6 +121,8 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                     >
                       {article.stock > 0 ? 'Stock Disponible' : 'Hors Stock !'}
                     </div>
+
+                    
                   </Button>
                 </li>
               ))}

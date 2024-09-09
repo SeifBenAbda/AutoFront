@@ -128,9 +128,9 @@ export function EditDevisSheet({
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
-            <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
+            <SheetContent onOpenAutoFocus={(e) => e.preventDefault()} className='bg-lightWhite'>
                 <SheetHeader>
-                    <SheetTitle>Consulter Devis N° {allData.DevisId}</SheetTitle>
+                    <SheetTitle className='text-highGrey'>Consulter Devis N° {allData.DevisId}</SheetTitle>
                     <SheetDescription>
                         Apportez des modifications à Devis ici. Cliquez sur enregistrer lorsque vous avez terminé.
                     </SheetDescription>
@@ -139,14 +139,14 @@ export function EditDevisSheet({
                 {/* Toggle Buttons */}
                 <div className="flex flex-wrap gap-4 mb-4 mt-2">
                     <Button
-                        className={`${showClientCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
+                        className={`${showClientCard ? 'bg-greenOne hover:bg-greenOne' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowClientCard(!showClientCard)}
                     >
                         Données client
                     </Button>
                     <Button
-                        className={`${showCarRequestCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
+                        className={`${showCarRequestCard ? 'bg-greenOne hover:bg-greenOne' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowCarRequestCard(!showCarRequestCard)}
                     >
@@ -154,7 +154,7 @@ export function EditDevisSheet({
                     </Button>
 
                     <Button
-                        className={`${showDevisCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
+                        className={`${showDevisCard ? 'bg-greenOne hover:bg-greenOne' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowDevisCard(!showDevisCard)}
                     >
@@ -162,7 +162,7 @@ export function EditDevisSheet({
                     </Button>
 
                     <Button
-                        className={`${showRapelCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
+                        className={`${showRapelCard ? 'bg-greenOne hover:bg-greenOne' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowRappelCard(!showRapelCard)}
                     >
@@ -186,11 +186,11 @@ export function EditDevisSheet({
                 )}
 
                 <SheetFooter>
-                    <Button onClick={handleSave} type="button" disabled={isPending}>
+                    <Button onClick={handleSave} type="button" disabled={isPending} className='bg-greenOne border boorder-greenOne hover:bg-greenOne'>
                         {isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
                     </Button>
                     <SheetClose asChild>
-                        <Button type="button" onClick={onClose}>
+                        <Button type="button" onClick={onClose} className='bg-lightRed border boorder-lightRed mb-2 hover:bg-lightRed'>
                             Fermer
                         </Button>
                     </SheetClose>

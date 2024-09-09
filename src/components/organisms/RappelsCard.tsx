@@ -35,14 +35,14 @@ export function RappelCard({ rappels, onUpdate }: RappelsCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
             <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <CardTitle className="flex items-center text-highGrey text-lg space-x-4">
-                    <span className="text-lg">Rappels</span>
+                    <span className="text-lg text-whiteSecond">Rappels</span>
                 </CardTitle>
             </CardHeader>
             {rappels.map((rappel, index) => (
-                <CardContent className='border border-blueCiel mr-2 ml-2 bg-blueCiel rounded-xl mb-2 pt-2' key={rappel.RappelId}>
+                <CardContent className='border border-lightWhite mr-2 ml-2 bg-lightWhite rounded-xl mb-2 pt-2' key={rappel.RappelId}>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value={`item-${index}`}>
                             <AccordionTrigger className='font-oswald pt-2 pb-2'>
