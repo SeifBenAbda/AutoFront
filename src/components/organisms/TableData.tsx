@@ -79,8 +79,8 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                   align="center"
                   key={header.id}
                   className={`relative ${index < headerGroup.headers.length - 1
-                    ? "border-r border-whiteSecond text-center align-middle text-bluePrimary font-oswald"
-                    : "text-bluePrimary border-whiteSecond text-center align-middle font-oswald"
+                    ? "border-r border-whiteSecond text-center align-middle text-highGrey font-oswald"
+                    : "text-highGrey border-whiteSecond text-center align-middle font-oswald"
                     }`}
                   style={{
                     width: header.getSize(),
@@ -104,7 +104,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className={`${rowIndex % 2 === 0 ? "bg-blueCiel hover:bg-blueCiel" : "bg-veryGrey"
+                className={`${rowIndex % 2 === 0 ? "bg-lighGrey hover:bg-lighGrey" : "bg-veryGrey"
                   }`}
               >
                 {row.getVisibleCells().map((cell, cellIndex) => (
@@ -112,8 +112,8 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                     key={cell.id}
                     align="center"
                     className={`${cellIndex < row.getVisibleCells().length - 1
-                      ? "border-r border-gray-300 text-bluePrimary"
-                      : "text-bluePrimary"
+                      ? "border-r border-gray-300 text-highGrey"
+                      : "text-highGrey"
                       }`}
                     style={{
                       width: cell.column.getSize(),
@@ -124,7 +124,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                     {cell.column.id === 'actions' && (
                       <Button
                         onClick={() => handleOpenSheet(row.original as Devis)}
-                        className="px-4 py-2 text-white bg-bluePrimary rounded"
+                        className="px-4 py-2 text-white bg-highGrey rounded"
                       >
                         Modifier
                       </Button>

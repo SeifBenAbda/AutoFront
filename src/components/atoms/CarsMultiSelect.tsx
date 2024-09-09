@@ -37,7 +37,7 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
             variant="inverted"
             animation={0}
             maxCount={1}
-            className='bg-white border rounded-md border-bluePrimary hover:bg-white text-bluePrimary'
+            className='bg-white border rounded-md border-highGrey hover:bg-white text-highGrey'
         />
     );
 };

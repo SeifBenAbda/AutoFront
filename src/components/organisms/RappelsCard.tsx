@@ -35,9 +35,9 @@ export function RappelCard({ rappels, onUpdate }: RappelsCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-bluePrimary">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
             <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <CardTitle className="flex items-center text-bluePrimary text-lg space-x-4">
+                <CardTitle className="flex items-center text-highGrey text-lg space-x-4">
                     <span className="text-lg">Rappels</span>
                 </CardTitle>
             </CardHeader>
@@ -49,7 +49,7 @@ export function RappelCard({ rappels, onUpdate }: RappelsCardProps) {
                                 Rappel N° {index+1} : {new Date(rappel.RappelDate!).toLocaleDateString()}
                             </AccordionTrigger>
                             <AccordionContent>
-                                <div className='text-bluePrimary font-oswald text-base mt-2 mb-2'>Date du rappel</div>
+                                <div className='text-highGrey font-oswald text-base mt-2 mb-2'>Date du rappel</div>
                                 <DatePicker
                                     value={rappel.RappelDate}
                                     onChange={(date) => handleDateChange(rappel.RappelId!, date)}
@@ -58,11 +58,11 @@ export function RappelCard({ rappels, onUpdate }: RappelsCardProps) {
                                 />
                             </AccordionContent>
                             <AccordionContent>
-                                <div className='text-bluePrimary font-oswald text-base mt-2 mb-2'>Contenu du rappel</div>
+                                <div className='text-highGrey font-oswald text-base mt-2 mb-2'>Contenu du rappel</div>
                                 <Textarea
                                     value={rappel.RappelContent || ""} // Directly bind to client prop
                                     onChange={(e) => handleChange(rappel.RappelId!, "RappelContent", e.target.value)}
-                                    className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                                 />
                             </AccordionContent>
                         </AccordionItem>

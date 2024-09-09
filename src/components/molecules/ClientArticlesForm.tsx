@@ -20,8 +20,9 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
+        console.log("Assigning new Article ")
         selectedArticles.forEach((item, index) => {
-            setValue(`${formId}[${index}].ItemId`, item.article.libell);
+            setValue(`${formId}[${index}].ItemId`, item.article.code);
             setValue(`${formId}[${index}].Quantity`, item.quantity);
         });
     }, [selectedArticles, formId, setValue]);

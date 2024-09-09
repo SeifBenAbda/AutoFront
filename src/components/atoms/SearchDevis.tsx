@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
 
   return (
     <div className="flex items-center">
-      <div className="flex items-center border border-bluePrimary rounded-md  bg-white">
+      <div className="flex items-center border border-highGrey rounded-md  bg-white">
       <Input
         type="text"
         value={inputValue}
@@ -38,14 +38,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
         onClick={handleClearClick}
         className="border-none bg-transparent hover:bg-transparent"
       >
-        <CloseIcon className="text-bluePrimary" />
+        <CloseIcon className="text-highGrey" />
       </Button>
         
       )}
       </div>
       <Button
         onClick={handleSearchClick}
-        className="ml-2 px-4 py-2 bg-bluePrimary text-white rounded"
+        className="ml-2 px-4 py-2 bg-highGrey text-white rounded"
       >
         Rechercher
       </Button>

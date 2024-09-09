@@ -139,14 +139,14 @@ export function EditDevisSheet({
                 {/* Toggle Buttons */}
                 <div className="flex flex-wrap gap-4 mb-4 mt-2">
                     <Button
-                        className={`${showClientCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-bluePrimary hover:bg-gray-300'
+                        className={`${showClientCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowClientCard(!showClientCard)}
                     >
                         Données client
                     </Button>
                     <Button
-                        className={`${showCarRequestCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-bluePrimary hover:bg-gray-300'
+                        className={`${showCarRequestCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowCarRequestCard(!showCarRequestCard)}
                     >
@@ -154,7 +154,7 @@ export function EditDevisSheet({
                     </Button>
 
                     <Button
-                        className={`${showDevisCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-bluePrimary hover:bg-gray-300'
+                        className={`${showDevisCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowDevisCard(!showDevisCard)}
                     >
@@ -162,7 +162,7 @@ export function EditDevisSheet({
                     </Button>
 
                     <Button
-                        className={`${showRapelCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-bluePrimary hover:bg-gray-300'
+                        className={`${showRapelCard ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 text-highGrey hover:bg-gray-300'
                             } w-full md:w-auto`}
                         onClick={() => setShowRappelCard(!showRapelCard)}
                     >

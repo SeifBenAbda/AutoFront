@@ -64,7 +64,21 @@ const ItemChangePage: React.FC = () => {
     const handleSelectClient = (client: any) => {
         setSelectedClient(client);  // Update selected client
         setIsClientModalOpen(false);  // Close modal
-        form.reset({ clientForm: client });  // Update form with selected client
+    
+        // Get current form values
+        const currentValues = form.getValues();
+    
+        // Ensure that the dateOfBirth is a Date object
+        const parsedClient = {
+            ...client,
+            dateOfBirth: client.dateOfBirth ? new Date(client.dateOfBirth) : null,
+        };
+    
+        // Update only the clientForm, keeping the rest of the form intact
+        form.reset({
+            ...currentValues,  // Spread the existing form values
+            clientForm: parsedClient,  // Override the client form with the new client, ensuring date is a Date object
+        });
     };
 
     return (

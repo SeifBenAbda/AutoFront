@@ -71,7 +71,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
     <div className="flex-1 flex flex-col mt-16 overflow-hidden">
       {/* Header with Devis Title and Filter */}
       <div className='flex-none flex flex-row justify-between mb-4'>
-        <div className="flex items-center justify-center font-oswald text-2xl text-bluePrimary">
+        <div className="flex items-center justify-center font-oswald text-2xl text-highGrey">
           {typeDevis === "TC" ? "Devis Voiture" : "Devis Changement des Pieces"}
         </div>
 

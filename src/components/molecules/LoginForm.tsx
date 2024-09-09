@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-veryGrey focus:border-bluePrimary focus:outline-none rounded-md mt-1 font-oswald text-gray-600"
+            className="w-full p-2 border border-veryGrey focus:border-highGrey focus:outline-none rounded-md mt-1 font-oswald text-gray-600"
             placeholder="Nom d'utilisateur"
           />
         </div>
@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-white text-darkGrey p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
+          className="w-full bg-white text-darkGrey p-2 rounded-lg hover:highGrey transition duration-300 font-oswald"
           disabled={isLoading}
         >
           {isLoading ? 'Chargement...' : 'Se Connecter'}

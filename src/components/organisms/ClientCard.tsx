@@ -24,12 +24,12 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-bluePrimary">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <CardTitle className="flex items-center text-bluePrimary text-lg space-x-4">
+                    <CardTitle className="flex items-center text-highGrey text-lg space-x-4">
                         <span className="text-lg">Information Client</span>
-                        <div className={`border rounded-lg text-center text-sm p-2 ${client.clientType === "Particulier" ? "bg-green-400 text-whiteSecond border-green-400" : "border-gray-200 bg-gray-200 text-bluePrimary"}`}>
+                        <div className={`border rounded-lg text-center text-sm p-2 ${client.clientType === "Particulier" ? "bg-green-400 text-whiteSecond border-green-400" : "border-gray-200 bg-gray-200 text-highGrey"}`}>
                             {client.clientType}
                         </div>
                     </CardTitle>
@@ -42,7 +42,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                         type="text"
                         value={client.nomClient || ""} // Directly bind to client prop
                         onChange={(e) => handleChange("nomClient", e.target.value)}
-                        className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
@@ -55,7 +55,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                             type="text"
                             value={client.cin || ""} // Directly bind to client prop
                             onChange={(e) => handleChange("cin", e.target.value)}
-                            className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                         />
                     </CardContent>
                 ) : (
@@ -65,7 +65,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                             type="text"
                             value={client.mtFiscale} // Directly bind to client prop
                             onChange={(e) => handleChange("mtFiscale", e.target.value)}
-                            className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                         />
                     </CardContent>
                 )}
@@ -78,7 +78,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                         type="text"
                         value={client.telClient} // Directly bind to client prop
                         onChange={(e) => handleChange("telClient", e.target.value)}
-                        className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
@@ -101,7 +101,7 @@ export function ClientCard({ client, onUpdate }: ClientCardProps) {
                         type="text"
                         value={client.adresse} // Directly bind to client prop
                         onChange={(e) => handleChange("adresse", e.target.value)}
-                        className="mt-1 p-2 block w-full border border-bluePrimary rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
             </div>

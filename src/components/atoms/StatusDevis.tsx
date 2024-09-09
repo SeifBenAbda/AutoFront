@@ -15,7 +15,7 @@ interface StatusDevisTypes {
 const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) => {
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-bluePrimary">
+            <SelectTrigger className="w-full border border-highGrey">
                 <SelectValue placeholder={value ? value?.toString() : "Tous Status"} />
             </SelectTrigger>
             <SelectContent>

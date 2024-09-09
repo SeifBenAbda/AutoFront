@@ -22,7 +22,7 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal border border-bluePrimary",
+            "w-full justify-start text-left font-normal border border-highGrey",
             !value && "text-muted-foreground"
           )}
         >
