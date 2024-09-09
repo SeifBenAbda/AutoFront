@@ -11,7 +11,7 @@ import { Button } from "../@/components/ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { devisSchema, devisSchemaForCar } from "../shemas/devisFormShemas";
+import {devisSchemaForCar } from "../shemas/devisFormShemas";
 import { defaultFormCarDevis, defaultFormClient, defaultFormDevisGeneral, defaultRappelForm, defaultRappelList } from "../utils/defaultFormValues";
 import { useCreateDevis } from "../hooks/useDevis"; // Adjust the path to your hooks
 import { useUser } from "../context/userContext";
@@ -20,17 +20,12 @@ import { useNavigate } from "react-router-dom";
 import { Rappel } from "@/types/devisTypes";
 
 
-// Custom error component
-const MissingFieldsComponent: React.FC<{ message: string }> = ({ message }) => (
-    <div className="p-4 bg-red-100 text-red-700 rounded-md">
-        {message}
-    </div>
-);
+
+
 const DevisPage: React.FC = () => {
     const { user } = useUser();
     const [isLoading, setIsLoading] = useState(false); // Loading state
     const navigate = useNavigate();
-    const [showAlert, setShowAlert] = useState(false); // Alert state
 
     const form = useForm<z.infer<typeof devisSchemaForCar>>({
         resolver: zodResolver(devisSchemaForCar),
@@ -42,19 +37,7 @@ const DevisPage: React.FC = () => {
         }
     });
 
-    const { errors } = form.formState; // Extract errors from form state
     const { mutateAsync: createDevis } = useCreateDevis();
-
-
-    useEffect(() => {
-        if (Object.keys(errors).length > 0) {
-            setShowAlert(true);
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-            }, 5000);
-            return () => clearTimeout(timer); // Cleanup timer on component unmount
-        }
-    }, [errors]);
 
     const onSubmit = async (values: z.infer<typeof devisSchemaForCar>) => {
         setIsLoading(true); // Show loading
@@ -85,9 +68,6 @@ const DevisPage: React.FC = () => {
             // Optionally: redirect or show a success message
         } catch (error) {
             console.error("Error submitting form:", error);
-            setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 5000); // Hide alert after 5 seconds
-            // Optionally: show an error message
         } finally {
             setIsLoading(false); // Hide loading
         }
@@ -107,7 +87,7 @@ const DevisPage: React.FC = () => {
                     {/* Fixed CardHeader, with enough margin to avoid overlap with the main Header */}
                     <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-veryGrey z-10 p-4 border-b border-veryGrey ">
                         <div>
-                            <CardTitle className="text-greenFour">Devis</CardTitle>
+                            <CardTitle className="text-darkGrey">Devis</CardTitle>
                             <CardDescription>Devis pour voiture</CardDescription>
                         </div>
                         <div className="mt-2 md:mt-0">
@@ -115,7 +95,7 @@ const DevisPage: React.FC = () => {
                                 onClick={form.handleSubmit(onSubmit)}
                                 type="button"
                                 disabled={isLoading} // Disable button when loading
-                                className="bg-greenFour hover:bg-greenThree"
+                                className="bg-greenOne hover:bg-greenOne"
                             >
                                 Valider Devis
                             </Button>

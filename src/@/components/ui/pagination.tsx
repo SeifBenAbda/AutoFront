@@ -8,7 +8,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
     aria-label="pagination"
-    className={cn("mx-auto flex w-full justify-left", className)}
+    className={cn("mx-auto flex w-auto justify-center", className)}
     {...props}
   />
 )
@@ -52,7 +52,7 @@ const PaginationLink = ({
         variant: isActive ? "outline" : "ghost",
         size,
       }),
-      isActive?"bg-bluePrimary text-whiteSecond hover:bg-bluePrimary hover:text-whiteSecond":"bg-transparent",
+      isActive?"bg-darkGrey text-whiteSecond hover:bg-darkGrey hover:text-whiteSecond":"bg-transparent",
       className
     )}
     {...props}

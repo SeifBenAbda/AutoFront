@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-white text-greenFour p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
+          className="w-full bg-white text-darkGrey p-2 rounded-lg hover:bluePrimary transition duration-300 font-oswald"
           disabled={isLoading}
         >
           {isLoading ? 'Chargement...' : 'Se Connecter'}

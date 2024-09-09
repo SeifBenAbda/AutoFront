@@ -163,7 +163,6 @@ export const devisSchemaForCar = devisSchema.omit({
 export const devisSchemaForItems = devisSchema.omit({
     accidentDetails: true,
     devisGeneralForm:true,
-    itemChangeForm:true,
     devisCarForm:true,
     
 });

@@ -89,6 +89,11 @@ export const defaultItemRequestForm : ItemRequest = {
     Immatriculation: undefined
 }
 
+export const defaultGeneralItemChnageForm = {
+    OldCar:"",
+    Immatriculation:""
+};
+
 
 export const defaultItemRequestList = [
   

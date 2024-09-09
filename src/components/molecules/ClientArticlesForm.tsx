@@ -14,14 +14,12 @@ import { Controller } from 'react-hook-form';
 import { Button } from '../../@/components/ui/button';
 import { Input } from '../../@/components/ui/input';
 
-
 const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
-    const { control, setValue, getValues } = form;
+    const { control, setValue, formState: { errors } } = form;
     const [selectedArticles, setSelectedArticles] = useState<{ article: Article, quantity: string }[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        // Update the form with the current selected articles
         selectedArticles.forEach((item, index) => {
             setValue(`${formId}[${index}].ItemId`, item.article.libell);
             setValue(`${formId}[${index}].Quantity`, item.quantity);
@@ -37,38 +35,52 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
         const updatedArticles = [...selectedArticles];
         updatedArticles[index].quantity = quantity;
         setSelectedArticles(updatedArticles);
-        setValue(`${formId}[${index}].Quantity`, quantity); // Update form value
+        setValue(`${formId}[${index}].Quantity`, quantity);
     };
 
+    const handleDeleteArticle = (index: number) => {
+        const updatedArticles = selectedArticles.filter((_, i) => i !== index);
+        setSelectedArticles(updatedArticles);
+        setValue(`${formId}[${index}].ItemId`, '');
+        setValue(`${formId}[${index}].Quantity`, '');
+    };
+
+    // Determine the height based on errors
+    const containerHeight = Object.keys(errors).length > 0 ? 'max-h-[90vh]' : 'max-h-[90vh]';
+
     return (
-        <Form {...form} className="flex-1">
-            <div className="pl-3  font-oswald text-lg mb-2  text-white flex flex-row justify-between items-center">
-                <div>Articles</div>
-                <Button
-                    onClick={() => setIsModalOpen(true)}
-                    className=" bg-greenZero text-greenFour rounded-md hover:bg-greenZero text-lg"
-                >
-                    +
-                </Button>
+        <Form {...form} className="relative flex-1 max-h-[400px] overflow-y-auto">
+            {/* Sticky header */}
+            <div className="bg-darkGrey mb-2 w-[100%]">
+                <div className="pl-3 font-oswald text-lg text-white flex flex-row justify-between items-center">
+                    <div>Articles</div>
+                    <Button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-lightWhite text-darkGrey rounded-md hover:bg-lightWhite text-lg"
+                    >
+                        +
+                    </Button>
+                </div>
             </div>
-            <div className="w-full">
 
-
+            {/* Scrollable content */}
+            <div className={`w-full mt-4 ${containerHeight} overflow-y-auto p-2`}>
                 <ArticleModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     onSelectArticle={handleSelectArticle}
+                    selectedArticles={selectedArticles}
                 />
 
                 {selectedArticles.length > 0 && selectedArticles.map((item, index) => (
-                    <div key={index} className='border border-greenZero rounded-xl bg-greenZero mb-2'>
-                        <FormCardContent form={form} className="text-greenFour mt-2 text-start pr-1" label={`Article N° ${index+1}`} name={`${formId}[${index}].ItemId`}>
+                    <div key={index} className="border border-lightWhite rounded-xl bg-lightWhite mb-2">
+                        <FormCardContent form={form} className="text-darkGrey mt-2 text-start pr-1" label={`Article N° ${index + 1}`} name={`${formId}[${index}].ItemId`}>
                             <div className="flex flex-row items-center justify-between space-x-2">
                                 <Controller
                                     name={`${formId}[${index}].ItemId`}
                                     control={control}
                                     render={({ field }) => (
-                                        <div className='text-greenFour font-oswald'>{item.article.libell}</div>
+                                        <div className="text-darkGrey font-oswald w-[65%] text-start justify-start">{item.article.libell} <span className='ml-0'>({item.article.code})</span></div>
                                     )}
                                 />
                                 <Controller
@@ -80,15 +92,21 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
                                             {...field}
                                             value={item.quantity}
                                             onChange={(e) => handleQuantityChange(index, e.target.value)}
-                                            className='w-[20%] bg-greenZero border border-greenFour'
+                                            className="w-[30%] bg-lightWhite border border-darkGrey"
                                         />
                                     )}
                                 />
                             </div>
+
                         </FormCardContent>
-
-
-
+                        <div className="flex justify-center mb-2">
+                            <Button
+                                onClick={() => handleDeleteArticle(index)}
+                                className="bg-lightRed text-white rounded-md hover:bg-lightRed px-4 py-1 w-[80%]"
+                            >
+                                Supprimer
+                            </Button>
+                        </div>
                     </div>
                 ))}
             </div>

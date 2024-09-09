@@ -12,7 +12,7 @@ body {
 }
   
 .placeholder-custom::placeholder {
-      color: #c5c5c5; /* Example: Custom color */
+      color: #f3f4f6; /* Example: Custom color */
       opacity: 1; /* Example: Full opacity */
       font-style: 'Bree Serif'; /* Example: Italicize text */
 }

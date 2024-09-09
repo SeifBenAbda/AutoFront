@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import useArticles from '../../hooks/useArticles'; // Custom hook for fetching articles
-import { Article } from '@/types/otherTypes'; // Assuming you have an Article type
+import useClients from '../../hooks/useClients'; // Custom hook for fetching clients
+import { Client } from '@/types/devisTypes'; // Assuming you have a Client type
 import { Input } from '../../@/components/ui/input';
 import Loading from './Loading';
 import { PaginationTable } from './TablePagination';
 import { Button } from '../../@/components/ui/button';
 
-interface ArticleModalProps {
+interface ClientModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectArticle: (article: Article) => void;
-  selectedArticles: { article: Article; quantity: string }[];
+  onSelectClient: (client: Client) => void;
+  selectedClient: Client; // List of selected clients
 }
 
-const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectArticle, selectedArticles }) => {
+const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClient, selectedClient }) => {
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState(''); // Tracks input field value
   const [searchQuery, setSearchQuery] = useState(''); // Triggers actual search
-  const { data, isLoading, isFetching, refetch } = useArticles(page, searchQuery); // Use searchQuery for API request
+  const { data, isLoading, isFetching, refetch } = useClients(page, searchQuery); // Use searchQuery for API request
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -64,12 +64,12 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
         ref={modalRef}
         className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-darkGrey flex flex-1 flex-col"
       >
-        <h1 className="text-xl mb-4 text-darkGrey font-oswald">Choisir un article</h1>
+        <h1 className="text-xl mb-4 text-darkGrey font-oswald">Choisir un client</h1>
 
         <div className="flex">
           <Input
             type="text"
-            placeholder="Rechercher un article..."
+            placeholder="Rechercher un client..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={(e) => {
@@ -79,7 +79,7 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
             }}
             className="w-full mb-4 p-2 border border-darkGrey bg-lightWhite rounded-md"
           />
-          <Button onClick={handleSearch} className="ml-2 bg-greenOne hover:bg-greenOne">Rechercher</Button> {/* Trigger search with button */}
+          <Button onClick={handleSearch} className="ml-2 bg-greenOne hover:bg-greenOne">Rechercher</Button> {/* Search button */}
         </div>
 
         {isLoading || isFetching ? (
@@ -89,29 +89,21 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
         ) : (
           <>
             <ul>
-              {data?.data.map((article, index) => (
+              {data?.data.map((client, index) => (
                 <li key={index} className="mb-2">
                   <Button
                     onClick={() => {
-                      if (!selectedArticles.some(selected => selected.article.code === article.code)) {
-                        onSelectArticle(article);
+                      if (selectedClient.id !== client.id) {
+                        onSelectClient(client);
                       }
                     }}
-                    className={`font-oswald flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedArticles.some(selected => selected.article.code === article.code)
+                    className={`font-oswald flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedClient.id=== client.id
                       ? 'bg-gray-400 cursor-not-allowed hover:cursor-not-allowed'
                       : 'bg-darkGrey hover:bg-lightWhite hover:text-darkGrey hover:border-darkGrey'
                       }`}
                   >
                     <div className="flex-1 text-left">
-                      {article.libell} <span className="ml-1">({article.code})</span>
-                    </div>
-                    <div
-                      className={`flex-none text-center border rounded-lg p-1 ${article.stock <= 0
-                        ? 'bg-lightRed text-lightWhite border-lightRed'
-                        : 'bg-lightWhite text-darkGrey border-lightWhite'
-                        }`}
-                    >
-                      {article.stock > 0 ? 'Stock Disponible' : 'Hors Stock !'}
+                      {client.nomClient} <span className="ml-1">({client.id})</span>
                     </div>
                   </Button>
                 </li>
@@ -132,4 +124,4 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
   );
 };
 
-export default ArticleModal;
+export default ClientModal;

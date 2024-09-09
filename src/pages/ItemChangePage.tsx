@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import {
     Card,
     CardContent,
@@ -11,82 +10,112 @@ import { Button } from "../@/components/ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { devisSchema, devisSchemaForItems } from "../shemas/devisFormShemas";
-import { defaultFormCarDevis, defaultFormClient, defaultFormDevisGeneral,defaultItemRequestForm,defaultItemRequestList,defaultRappelList } from "../utils/defaultFormValues";
-import { useCreateDevis } from "../hooks/useDevis";  // Adjust the path to your hooks
-import { ItemRequest } from "@/types/devisTypes";
+import { devisSchemaForItems } from "../shemas/devisFormShemas";
+import { defaultFormClient, defaultGeneralItemChnageForm, defaultItemRequestList, defaultRappelList } from "../utils/defaultFormValues";
+import { useCreateDevis } from "../hooks/useDevis";  
 import { useUser } from "../context/userContext";
 import ItemRequestForm from "../components/organisms/ItemRequestForm";
+import Loading from "../components/atoms/Loading";
+import ClientModal from "../components/atoms/ClientModal";  // Import the modal
 
 const ItemChangePage: React.FC = () => {
+    const [isClientModalOpen, setIsClientModalOpen] = useState(false);  // Modal state
+    const [selectedClient, setSelectedClient] = useState(defaultFormClient);  // Selected client state
+    const { user } = useUser();
+    
+    // Initial form setup with selected client
     const form = useForm<z.infer<typeof devisSchemaForItems>>({
         resolver: zodResolver(devisSchemaForItems),
         defaultValues: {
-            clientForm: defaultFormClient,
-            //devisCarForm: defaultFormCarDevis,
-            //devisGeneralForm: defaultFormDevisGeneral,
-            rappelForm: defaultRappelList, // Use the list of Rappel defaults here
-            itemRequests:defaultItemRequestList
+            clientForm: selectedClient,  // Start with selectedClient state here
+            rappelForm: defaultRappelList,
+            itemRequests: defaultItemRequestList,
+            itemChangeForm:defaultGeneralItemChnageForm
         }
     });
 
     const { mutateAsync: createDevis } = useCreateDevis();
-    const { user } = useUser();
+    const [isLoading, setIsLoading] = useState(false);
+
     const onSubmit = async (values: z.infer<typeof devisSchemaForItems>) => {
-        console.log("hellpo")
+        setIsLoading(true); 
         try {
-            // Merge default values with form values
-
-
-            const itemRequests: ItemRequest[] = values.itemRequests.map((itemRequest, index) => ({
-                ...defaultItemRequestForm, // Apply default values
-                ...itemRequest, // Override default values with form input
-                RequestDate: new Date(), // Use form value if available, otherwise default
-                CreatedBy: user!.nomUser, // Use form value if available, otherwise default or dynamic value
+            const itemRequests = values.itemRequests.map(itemRequest => ({
+                ...itemRequest,
+                RequestDate: new Date(),
+                CreatedBy: user!.nomUser,
             }));
 
             const mergedValues = {
-                database: "Commer_2024_AutoPro", // Replace with actual database name or use a variable
-                client: { ...defaultFormClient, ...values.clientForm },
-                //devis: { ...defaultFormDevisGeneral, ...values.devisGeneralForm ,TypeDevis:'OC'},
-                //carRequestData: { ...defaultFormCarDevis, ...values.devisCarForm },
+                database: "Commer_2024_AutoPro",
+                client: selectedClient, // Use the selected client data
                 itemRequestData: itemRequests
             };
 
             // Submit the merged data
-           // await createDevis(mergedValues);
-            // Optionally: redirect or show a success message
-            console.log("hellpo")
-            console.log(itemRequests)
+            console.log("Submitted Data: ", mergedValues);
+            setIsLoading(false);
         } catch (error) {
             console.error("Error submitting form:", error);
-            // Optionally: show an error message
+            setIsLoading(false);
         }
     };
 
+    const handleSelectClient = (client: any) => {
+        setSelectedClient(client);  // Update selected client
+        setIsClientModalOpen(false);  // Close modal
+        form.reset({ clientForm: client });  // Update form with selected client
+    };
+
     return (
-        <Card className="p-2 m-2">
-            <div className="flex flex-col">
-                <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <CardTitle className="text-greenFour">Devis</CardTitle>
-                        <CardDescription>Devis pour Pieces</CardDescription>
-                    </div>
-                    <div className="mt-2 md:mt-2">
-                        <Button
-                            onClick={form.handleSubmit(onSubmit)}
-                            type="button"
-                            className="bg-greenFour hover:bg-greenThree"
-                        >
-                            Valider Devis
-                        </Button>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <ItemRequestForm form={form}/>
-                </CardContent>
-            </div>
-        </Card>
+        <div className="relative">
+            {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center z-50">
+                    <Loading />
+                </div>
+            )}
+
+            <Card className="p-2 m-1 bg-veryGrey border border-veryGrey">
+                <div className="flex flex-col">
+                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-veryGrey z-10 p-4 border-b border-veryGrey">
+                        <div className="flex-1">
+                            <CardTitle className="text-darkGrey">Devis</CardTitle>
+                            <CardDescription>Devis pour Changement des Pieces</CardDescription>
+                        </div>
+                        <div className="flex flex-row space-x-2 mt-2 md:mt-0 md:flex-1 md:justify-end">
+                            <Button
+                                onClick={() => setIsClientModalOpen(true)}  // Open modal on click
+                                type="button"
+                                disabled={isLoading}
+                                className="bg-lightWhite hover:bg-lightWhite border border-darkGrey text-darkGrey"
+                            >
+                                Client existant
+                            </Button>
+                            <Button
+                                onClick={form.handleSubmit(onSubmit)}
+                                type="button"
+                                disabled={isLoading}
+                                className="bg-greenOne hover:bg-greenOne"
+                            >
+                                Valider Devis
+                            </Button>
+                        </div>
+                    </CardHeader>
+
+                    <CardContent className="lg-custom:mt-[70px] md-custom:mt-[65px] sm-custom:mt-[80px] sm:mt-[120px] mt-[110px]">
+                        <ItemRequestForm form={form} />
+                    </CardContent>
+                </div>
+            </Card>
+
+            {/* Modal for client selection */}
+            <ClientModal
+                isOpen={isClientModalOpen}
+                onClose={() => setIsClientModalOpen(false)}
+                onSelectClient={handleSelectClient}
+                selectedClient={selectedClient}  // Replace with your client data
+            />
+        </div>
     );
 };
 

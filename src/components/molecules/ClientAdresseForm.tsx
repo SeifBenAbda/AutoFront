@@ -28,7 +28,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 {/* Adresse */}
                 <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Adresse"
                         {...register(`${formId}.adresse`)}
                     />
@@ -36,7 +36,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
 
                 <FormCardContent form={form} label="Ville" name={`${formId}.ville`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Ville"
                         {...register(`${formId}.ville`)}
                     />
@@ -60,7 +60,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`}>
                             <Input
-                                className="border border-greenFour bg-greenZero"
+                                className="border border-darkGrey bg-lightWhite"
                                 placeholder="Code Postal"
                                 {...register(`${formId}.postalCode`)}
                             />
@@ -71,7 +71,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 {/* Pays */}
                 <FormCardContent form={form} label="Pays" name={`${formId}.pays`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Pays"
                         {...register(`${formId}.pays`)}
                     />
@@ -81,7 +81,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 {/* Nore Infos about Adress */}
                 <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`}>
                     <Textarea
-                        className="border border-greenFour bg-greenZero min-h-[70px]"
+                        className="border border-darkGrey bg-lightWhite min-h-[70px]"
                         placeholder="Plus d'informations.."
                         {...register(`${formId}.addressMoreInfos`)}
                     />

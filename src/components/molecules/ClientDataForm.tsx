@@ -63,10 +63,10 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 </div>
 
                 {/* Nom Client */}
-                <FormCardContent form={form} label="Nom" name={`${formId}.nomClient`}>
+                <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
-                        placeholder="Nom du Client"
+                        className="border border-darkGrey bg-lightWhite"
+                        placeholder="Nom et prénom Client"
                         {...register(`${formId}.nomClient`)}
                     />
                 </FormCardContent>
@@ -74,7 +74,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
                 <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Cin"
                         {...register(`${formId}.cin`)}
                     />
@@ -86,7 +86,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                         control={control}
                         render={({ field }) => (
                             <Input
-                                className="border border-greenFour bg-greenZero"
+                                className="border border-darkGrey bg-lightWhite"
                                 placeholder="Matricule Fiscale"
                                 {...register(`${formId}.mtFiscale`)}
                             />
@@ -99,7 +99,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Tel Client */}
                 <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Numéro de téléphone"
                         {...register(`${formId}.telClient`)}
                     />
@@ -107,7 +107,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
                 <FormCardContent form={form} label="Email" name={`${formId}.email`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Email"
                         {...register(`${formId}.email`)}
                     />
@@ -116,7 +116,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Raison Sociale */}
                 <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`}>
                     <Input
-                        className="border border-greenFour bg-greenZero"
+                        className="border border-darkGrey bg-lightWhite"
                         placeholder="Profession / Secteur Activite"
                         {...register(`${formId}.socialReason`)}
                     />

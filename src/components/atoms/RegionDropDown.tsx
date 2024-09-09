@@ -24,7 +24,7 @@ const RegionDropDown = forwardRef<HTMLButtonElement, RegionsDropDownTypes>(
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-greenFour bg-greenZero text-greenFour">
+                <SelectTrigger ref={ref} className="w-full border border-darkGrey bg-lightWhite text-darkGrey">
                     <SelectValue placeholder={value ? value.toString() : "Toutes les régions"} />
                 </SelectTrigger>
                 <SelectContent>

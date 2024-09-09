@@ -22,7 +22,7 @@ const TypeClient: React.FC<TypeClientProps> = ({ option1, option2, onChange }) =
     <Toggle
       aria-label="Type Client"
       onClick={handleToggle}
-      className="relative w-full font-oswald bg-whiteSecond text-greenFour hover:bg-whiteSecond hover:text-greenFour border 
+      className="relative w-full font-oswald bg-whiteSecond text-darkGrey hover:bg-whiteSecond hover:text-darkGrey border 
       data-[state=on]:border-greenOne data-[state=on]:bg-greenOne data-[state=on]:text-whiteSecond "
     >
       {selected}

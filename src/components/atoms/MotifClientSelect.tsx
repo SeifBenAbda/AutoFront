@@ -18,7 +18,7 @@ interface MotifSelectTypes {
 const MotifClientSelect = ({ value, onChange }:MotifSelectTypes) => {
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-greenFour bg-greenZero text-greenFour">
+            <SelectTrigger className="w-full border border-darkGrey bg-lightWhite text-darkGrey">
                 <SelectValue placeholder="Motif" defaultValue={value} />
             </SelectTrigger>
             <SelectContent>

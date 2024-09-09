@@ -24,17 +24,17 @@ const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-greenFour bg-greenZero text-greenFour">
+                <SelectTrigger ref={ref} className="w-full border border-darkGrey bg-lightWhite text-darkGrey">
                     <SelectValue placeholder={value ? value.toString() : "Tous types de voitures"} />
                 </SelectTrigger>
-                <SelectContent className='border-greenFour bg-greenZero text-greenFour'>
+                <SelectContent className='border-darkGrey bg-lightWhite text-darkGrey'>
                     {isFiltring && (
-                        <SelectItem key="Tous types de voitures" value="Tous types de voitures" className='text-greenFour focus:text-greenFour'>
+                        <SelectItem key="Tous types de voitures" value="Tous types de voitures" className='text-darkGrey focus:text-darkGrey'>
                             Tous types de voitures
                         </SelectItem>
                     )}
                     {carModels?.map((car) => (
-                        <SelectItem key={car.carId} value={car.carName} className='text-greenFour'>
+                        <SelectItem key={car.carId} value={car.carName} className='text-darkGrey'>
                             {car.carName}
                         </SelectItem>
                     ))}
