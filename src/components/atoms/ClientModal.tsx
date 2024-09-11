@@ -61,9 +61,9 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-lightWhite bg-opacity-55">
       <div
         ref={modalRef}
-        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-darkGrey flex flex-1 flex-col"
+        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-highGrey flex flex-1 flex-col"
       >
-        <h1 className="text-xl mb-4 text-darkGrey font-oswald">Choisir un client</h1>
+        <h1 className="text-xl mb-4 text-highGrey font-oswald">Choisir un client</h1>
 
         <div className="flex">
           <Input
@@ -76,7 +76,7 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
                 handleSearch();
               }
             }}
-            className="w-full mb-4 p-2 border border-darkGrey bg-lightWhite rounded-md"
+            className="w-full mb-4 p-2 border border-highGrey bg-lightWhite rounded-md"
           />
           <Button onClick={handleSearch} className="ml-2 bg-greenOne hover:bg-greenOne">Rechercher</Button>
         </div>
@@ -98,7 +98,7 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
                     }}
                     className={`font-oswald flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedClient?.id === client.id
                       ? 'bg-gray-400 cursor-not-allowed hover:cursor-not-allowed'
-                      : 'bg-darkGrey hover:bg-lightWhite hover:text-darkGrey hover:border-darkGrey'
+                      : 'bg-highGrey hover:bg-lightWhite hover:text-highGrey hover:border-highGrey'
                       }`}
                   >
                     <div className="flex-1 text-left">

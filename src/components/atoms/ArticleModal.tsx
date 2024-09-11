@@ -62,9 +62,9 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-lightWhite bg-opacity-55">
       <div
         ref={modalRef}
-        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-darkGrey flex flex-1 flex-col"
+        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-highGrey flex flex-1 flex-col"
       >
-        <h1 className="text-xl mb-4 text-darkGrey font-oswald">Choisir un article</h1>
+        <h1 className="text-xl mb-4 text-highGrey font-oswald">Choisir un article</h1>
 
         <div className="flex">
           <Input
@@ -77,7 +77,7 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                 handleSearch(); // Trigger search when Enter is pressed
               }
             }}
-            className="w-full mb-4 p-2 border border-darkGrey bg-lightWhite rounded-md"
+            className="w-full mb-4 p-2 border border-highGrey bg-lightWhite rounded-md"
           />
           <Button onClick={handleSearch} className="ml-2 bg-greenOne hover:bg-greenOne">Rechercher</Button> {/* Trigger search with button */}
         </div>
@@ -99,7 +99,7 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                     }}
                     className={`flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedArticles.some(selected => selected.article.code === article.code)
                       ? 'bg-gray-400 cursor-not-allowed hover:cursor-not-allowed'
-                      : 'bg-darkGrey hover:bg-lightWhite hover:text-darkGrey hover:border-darkGrey'
+                      : 'bg-highGrey hover:bg-lightWhite hover:text-highGrey hover:border-highGrey'
                       }`}
                   >
                     <div className="flex-1 text-left">
@@ -116,7 +116,7 @@ const ArticleModal: React.FC<ArticleModalProps> = ({ isOpen, onClose, onSelectAr
                     <div
                       className={`flex-none text-center border rounded-lg p-1 ${article.stock <= 0
                         ? 'bg-lightRed text-lightWhite border-lightRed'
-                        : 'bg-lightWhite text-darkGrey border-lightWhite'
+                        : 'bg-lightWhite text-highGrey border-lightWhite'
                         }`}
                     >
                       {article.stock > 0 ? 'Stock Disponible' : 'Hors Stock !'}

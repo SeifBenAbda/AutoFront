@@ -1,3 +1,5 @@
+import { Car, FilePenLine, LayoutDashboard, Pickaxe } from 'lucide-react';
+import { Button } from '../../@/components/ui/button';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -48,7 +50,7 @@ const NavMenu: React.FC = () => {
         <select
           onChange={(e) => handleNavClick(e.target.options[e.target.selectedIndex].text, e.target.value)}
           value={location.pathname}
-          className="bg-veryGrey text-darkGrey border rounded-md p-2"
+          className="bg-veryGrey text-highGrey border rounded-md p-2"
         >
           <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
@@ -61,41 +63,58 @@ const NavMenu: React.FC = () => {
   }
 
   return (
-    <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-white bg-white">
-      <button
+    <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-lightWhite bg-lightWhite">
+      <Button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
-        className={`p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-darkGrey text-white font-oswald' : 'bg-white text-darkGrey font-oswald'}`}
+        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
       >
-        Dashboard
-      </button>
-      <button
+        <div className="flex items-center space-x-2">
+          <LayoutDashboard />
+          <span>Dashboard</span>
+        </div>
+      </Button>
+      <Button
         onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
-        className={`p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-darkGrey text-white font-oswald' : 'bg-white text-darkGrey font-oswald'}`}
+        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
       >
-        Dossier Voiture
-      </button>
-      <button
+        <div className="flex items-center space-x-2">
+          <Car />
+          <span>Dossier Voiture</span>
+
+        </div>
+      </Button>
+      <Button
         onClick={() => handleNavClick('Commande des Pieces', "/item-change")}
-        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-darkGrey text-white font-oswald' : 'bg-white text-darkGrey font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'hover:bg-lightWhite bg-lightWhite text-highGrey font-oswald'}`}
       >
-        Commande des Pieces
-      </button>
+        <div className="flex items-center space-x-2">
+          <Pickaxe />
+          <span> Commande des Pieces</span>
+        </div>
 
-      <button
+      </Button>
+
+      <Button
         onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-darkGrey text-white font-oswald' : 'bg-white text-darkGrey font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
       >
+        <div className="flex items-center space-x-2">
+          <FilePenLine />
+          <span>Suivi Devis Voiture</span>
+        </div>
 
-        Suivi Devis Voiture
-      </button>
+      </Button>
 
-      <button
+      <Button
         onClick={() => handleNavClick('Suivi Changement des Pieces', "/itemTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-darkGrey text-white font-oswald' : 'bg-white text-darkGrey font-oswald'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-white text-highGrey font-oswald hover:bg-lightWhite'}`}
       >
+        <div className="flex items-center space-x-2">
+          <FilePenLine />
+          <span>Suivi Changement des Pieces</span>
+        </div>
 
-        Suivi Changement des Pieces
-      </button>
+      </Button>
 
 
     </nav>

@@ -18,7 +18,7 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
     <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-      <PopoverTrigger className="border-darkGrey text-darkGrey bg-lightWhite hover:bg-lightWhite hover:text-darkGrey" asChild>
+      <PopoverTrigger className="border-highGrey text-highGrey bg-lightWhite hover:bg-lightWhite hover:text-highGrey" asChild>
         <Button
           variant={"outline"}
           className={cn(
@@ -26,11 +26,11 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
             !value && "text-muted-foreground"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 text-darkGrey" />
-          {value ? format(value, "PPP", { locale: fr }) : <span className="text-darkGrey">Choisir une date</span>}
+          <CalendarIcon className="mr-2 h-4 w-4 text-highGrey" />
+          {value ? format(value, "PPP", { locale: fr }) : <span className="text-highGrey">Choisir une date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 text-darkGrey" align="start" side="bottom" sideOffset={0}>
+      <PopoverContent className="w-full p-0 text-highGrey" align="start" side="bottom" sideOffset={0}>
         <Calendar
           className="w-full"
           mode="single"

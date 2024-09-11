@@ -23,7 +23,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Données du client</div>
             <div className="w-full">
                 {/* Toggle Informations */}
                 <div className="flex space-x-4">
@@ -38,7 +37,9 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                     onChange={(selected: string) => {
                                         field.onChange(selected);
                                         form.setValue(`${formId}.clientGender`, selected);
-                                    } } defaultValue={clientGender}                                />
+                                    }}
+                                    defaultValue={clientGender}
+                                />
                             )}
                         />
                     </FormCardContent>
@@ -53,7 +54,9 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                     option2="Entreprise"
                                     onChange={(selected: string) => {
                                         form.setValue(`${formId}.clientType`, selected);
-                                    } } defaultValue={clientType}                                />
+                                    }}
+                                    defaultValue={clientType}
+                                />
                             )}
                         />
                     </FormCardContent>
@@ -68,13 +71,43 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     />
                 </FormCardContent>
 
-                <FormCardContent form={form} label="Cin" name={`${formId}.cin`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Cin"
-                        {...register(`${formId}.cin`)}
-                    />
-                </FormCardContent>
+                {/* Phone and CIN */}
+                <div className="flex space-x-4 text-whiteSecond">
+                    <FormCardContent form={form} label="Cin" name={`${formId}.cin`} className="flex-1">
+                        <Input
+                            className="border border-darkGrey bg-lightWhite text-highGrey"
+                            placeholder="Cin"
+                            {...register(`${formId}.cin`)}
+                        />
+                    </FormCardContent>
+
+                    <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1">
+                        <Input
+                            className="border border-darkGrey bg-lightWhite text-highGrey"
+                            placeholder="Numéro de téléphone"
+                            {...register(`${formId}.telClient`)}
+                        />
+                    </FormCardContent>
+                </div>
+
+                
+                <div className="flex space-x-4 text-whiteSecond">
+
+                    <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1">
+                        <Input
+                            className="border border-darkGrey bg-lightWhite text-highGrey"
+                            placeholder="Email"
+                            {...register(`${formId}.email`)}
+                        />
+                    </FormCardContent>
+                    <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`} className="flex-1">
+                        <Input
+                            className="border border-darkGrey bg-lightWhite text-highGrey"
+                            placeholder="Profession / Secteur Activite"
+                            {...register(`${formId}.socialReason`)}
+                        />
+                    </FormCardContent>
+                </div>
 
                 <FormCardContent form={form} label="Matricule Fiscale" name={`${formId}.mtFiscale`}>
                     <Controller
@@ -87,31 +120,6 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                                 {...register(`${formId}.mtFiscale`)}
                             />
                         )}
-                    />
-                </FormCardContent>
-
-                {/* Tel Client */}
-                <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Numéro de téléphone"
-                        {...register(`${formId}.telClient`)}
-                    />
-                </FormCardContent>
-
-                <FormCardContent form={form} label="Email" name={`${formId}.email`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Email"
-                        {...register(`${formId}.email`)}
-                    />
-                </FormCardContent>
-
-                <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Profession / Secteur Activite"
-                        {...register(`${formId}.socialReason`)}
                     />
                 </FormCardContent>
 

@@ -51,12 +51,12 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
     return (
         <Form {...form} className="relative flex-1 max-h-[400px] overflow-y-auto">
             {/* Sticky header */}
-            <div className="bg-darkGrey mb-2 w-[100%]">
+            <div className="bg-highGrey mb-2 w-[100%]">
                 <div className="pl-3 font-oswald text-lg text-white flex flex-row justify-between items-center">
                     <div>Articles</div>
                     <Button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-lightWhite text-darkGrey rounded-md hover:bg-lightWhite text-lg"
+                        className="bg-lightWhite text-highGrey rounded-md hover:bg-lightWhite text-lg"
                     >
                         +
                     </Button>
@@ -74,13 +74,13 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
 
                 {selectedArticles.length > 0 && selectedArticles.map((item, index) => (
                     <div key={index} className="border border-lightWhite rounded-xl bg-lightWhite mb-2">
-                        <FormCardContent form={form} className="text-darkGrey mt-2 text-start pr-1" label={`Article N° ${index + 1}`} name={`${formId}[${index}].ItemId`}>
+                        <FormCardContent form={form} className="text-highGrey mt-2 text-start pr-1" label={`Article N° ${index + 1}`} name={`${formId}[${index}].ItemId`}>
                             <div className="flex flex-row items-center justify-between space-x-2">
                                 <Controller
                                     name={`${formId}[${index}].ItemId`}
                                     control={control}
                                     render={({ field }) => (
-                                        <div className="text-darkGrey font-oswald w-[65%] text-start justify-start">{item.article.libell} <span className='ml-0'>({item.article.code})</span></div>
+                                        <div className="text-highGrey font-oswald w-[65%] text-start justify-start">{item.article.libell} <span className='ml-0'>({item.article.code})</span></div>
                                     )}
                                 />
                                 <Controller
@@ -92,7 +92,7 @@ const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
                                             {...field}
                                             value={item.quantity}
                                             onChange={(e) => handleQuantityChange(index, e.target.value)}
-                                            className="w-[30%] bg-lightWhite border border-darkGrey"
+                                            className="w-[30%] bg-lightWhite border border-highGrey"
                                         />
                                     )}
                                 />

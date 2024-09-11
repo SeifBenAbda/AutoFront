@@ -30,8 +30,8 @@ const TypeClient: React.FC<TypeClientProps> = ({ option1, option2, onChange, def
       aria-label="Type Client"
       onClick={handleToggle}
       data-state={selected === "Entreprise" ? "on" : "off"}  // Dynamically set data-state
-      className={`relative w-full font-oswald bg-whiteSecond text-darkGrey hover:bg-whiteSecond hover:text-darkGrey border 
-      ${selected === "Entreprise" ? "border-greenOne bg-greenOne text-whiteSecond" : "border-gray-300 bg-white text-darkGrey"}
+      className={`relative w-full font-oswald bg-whiteSecond text-highGrey hover:bg-whiteSecond hover:text-highGrey border 
+      ${selected === "Entreprise" ? "border-greenOne bg-greenOne text-whiteSecond" : "border-gray-300 bg-white text-highGrey"}
       data-[state=on]:border-greenOne data-[state=on]:bg-greenOne data-[state=on]:text-whiteSecond`}
     >
       {selected}

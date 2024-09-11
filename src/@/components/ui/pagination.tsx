@@ -52,7 +52,7 @@ const PaginationLink = ({
         variant: isActive ? "outline" : "ghost",
         size,
       }),
-      isActive?"bg-darkGrey text-whiteSecond hover:bg-darkGrey hover:text-whiteSecond":"bg-transparent",
+      isActive?"bg-highGrey text-whiteSecond hover:bg-highGrey hover:text-whiteSecond":"bg-transparent",
       className
     )}
     {...props}

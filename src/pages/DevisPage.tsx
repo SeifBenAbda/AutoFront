@@ -40,6 +40,7 @@ const DevisPage: React.FC = () => {
     const { mutateAsync: createDevis } = useCreateDevis();
 
     const onSubmit = async (values: z.infer<typeof devisSchemaForCar>) => {
+        console.log("hello world")
         setIsLoading(true); // Show loading
         try {
 

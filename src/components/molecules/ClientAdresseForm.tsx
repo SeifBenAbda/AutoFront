@@ -13,37 +13,32 @@ import RegionDropDown from "../atoms/RegionDropDown";
 import { Textarea } from "../../@/components/ui/textarea";
 import { Controller } from "react-hook-form";
 
-
-
-
 const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
-    const { register, control, watch } = form;
-
+    const { register, control } = form;
 
     return (
         <Form {...form} className="flex-1" autoComplete="off">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Adresse du client</div>
-            <div className="w-full">
-
+            <div className="w-full space-y-4">
                 {/* Adresse */}
                 <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`}>
                     <Input
-                        className="border border-darkGrey bg-lightWhite"
+                        className="border border-highGrey bg-lightWhite"
                         placeholder="Adresse"
                         {...register(`${formId}.adresse`)}
                     />
                 </FormCardContent>
 
-                <FormCardContent form={form} label="Ville" name={`${formId}.ville`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Ville"
-                        {...register(`${formId}.ville`)}
-                    />
-                </FormCardContent>
-
-                {/* Region and Code Postal */}
-                <div className="flex flex-col ">
+                {/* Ville and Region */}
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Ville" name={`${formId}.ville`}>
+                            <Input
+                                className="border border-highGrey bg-lightWhite"
+                                placeholder="Ville"
+                                {...register(`${formId}.ville`)}
+                            />
+                        </FormCardContent>
+                    </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Region" name={`${formId}.region`}>
                             <Controller
@@ -52,43 +47,45 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                                 render={({ field }) => (
                                     <RegionDropDown
                                         value={field.value || ""}
-                                        onChange={(value) => field.onChange(value)} isFiltring={false}                                    />
+                                        onChange={(value) => field.onChange(value)}
+                                        isFiltring={false}
+                                    />
                                 )}
-                            />
-                        </FormCardContent>
-                    </div>
-                    <div className="flex-1">
-                        <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`}>
-                            <Input
-                                className="border border-darkGrey bg-lightWhite"
-                                placeholder="Code Postal"
-                                {...register(`${formId}.postalCode`)}
                             />
                         </FormCardContent>
                     </div>
                 </div>
 
-                {/* Pays */}
-                <FormCardContent form={form} label="Pays" name={`${formId}.pays`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Pays"
-                        {...register(`${formId}.pays`)}
-                    />
-                </FormCardContent>
+                {/* Code Postal and Pays */}
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`}>
+                            <Input
+                                className="border border-highGrey bg-lightWhite"
+                                placeholder="Code Postal"
+                                {...register(`${formId}.postalCode`)}
+                            />
+                        </FormCardContent>
+                    </div>
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Pays" name={`${formId}.pays`}>
+                            <Input
+                                className="border border-highGrey bg-lightWhite"
+                                placeholder="Pays"
+                                {...register(`${formId}.pays`)}
+                            />
+                        </FormCardContent>
+                    </div>
+                </div>
 
-
-                {/* Nore Infos about Adress */}
+                {/* Plus d'informations Adresse */}
                 <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`}>
                     <Textarea
-                        className="border border-darkGrey bg-lightWhite min-h-[70px]"
+                        className="border border-highGrey bg-lightWhite min-h-[70px]"
                         placeholder="Plus d'informations.."
                         {...register(`${formId}.addressMoreInfos`)}
                     />
                 </FormCardContent>
-
-
-
             </div>
         </Form>
     );

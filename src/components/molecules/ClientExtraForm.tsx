@@ -1,4 +1,3 @@
-
 import { Controller } from "react-hook-form";
 import React from "react";
 import {
@@ -17,69 +16,73 @@ import PayementMethod from "../atoms/PayementMethod";
 import CarsDropDown from "../atoms/CarsDropDown";
 import { DatePicker } from "../atoms/DataSelector";
 
-
-const ClientExtraForm: React.FC<any> = ({   form, formId ,generalFormId }) => {
-    const { register, control, watch } = form ;
+const ClientExtraForm: React.FC<any> = ({ form, formId, generalFormId }) => {
+    const { register, control } = form;
 
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Infos supplémentaires</div>
-            <div className="w-full">
-                {/* Old Car Input */}
-                <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
-                    <Input
-                        className="border border-lightWhite bg-lightWhite"
-                        placeholder="Ancien Vehicule"
-                        {...register(`${formId}.OldCar`)}
-                    />
-                </FormCardContent>
-
-
-                {/* Prefered Car Select */}
-                <FormCardContent form={form} label="Modèle préféré" name={`${formId}.carModel`}>
-                    <Controller
-                        name={`${formId}.CarModel`}
-                        control={control}
-                        render={({ field }) => (
-                            <CarsDropDown
-                                value={field.value} // Pass the current model value
-                                onChange={(value) => field.onChange(value)}
-                                isFiltring={false}
+            <div className="w-full space-y-4">
+                {/* Old Car and Preferred Model */}
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
+                            <Input
+                                className="border border-lightWhite bg-lightWhite"
+                                placeholder="Ancien Vehicule"
+                                {...register(`${formId}.OldCar`)}
                             />
-                        )}
-                    />
-                </FormCardContent>
-
-
-                {/* Motif */}
-                <FormCardContent form={form} label="Motif" name={`${generalFormId}.Motivation`}>
-                    <Controller
-                        name={`${generalFormId}.Motivation`}
-                        control={control}
-                        render={({ field }) => (
-                            <MotifClientSelect
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
+                        </FormCardContent>
+                    </div>
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Modèle préféré" name={`${formId}.CarModel`}>
+                            <Controller
+                                name={`${formId}.CarModel`}
+                                control={control}
+                                render={({ field }) => (
+                                    <CarsDropDown
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                        isFiltring={false}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                </FormCardContent>
+                        </FormCardContent>
+                    </div>
+                </div>
 
-
-                {/* Source */}
-                <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`}>
-                    <Controller
-                        name={`${generalFormId}.Source`}
-                        control={control}
-                        render={({ field }) => (
-                            <ClientSourceSelect
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
+                {/* Motif and Source */}
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Motif" name={`${generalFormId}.Motivation`}>
+                            <Controller
+                                name={`${generalFormId}.Motivation`}
+                                control={control}
+                                render={({ field }) => (
+                                    <MotifClientSelect
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                </FormCardContent>
+                        </FormCardContent>
+                    </div>
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`}>
+                            <Controller
+                                name={`${generalFormId}.Source`}
+                                control={control}
+                                render={({ field }) => (
+                                    <ClientSourceSelect
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                    />
+                                )}
+                            />
+                        </FormCardContent>
+                    </div>
+                </div>
 
+                {/* Delivery Date */}
                 <FormCardContent form={form} label="Date de livraison prévue" name={`${generalFormId}.ScheduledLivDate`}>
                     <Controller
                         name={`${generalFormId}.ScheduledLivDate`}
@@ -89,17 +92,15 @@ const ClientExtraForm: React.FC<any> = ({   form, formId ,generalFormId }) => {
                                 value={field.value}
                                 onChange={field.onChange}
                                 fromYear={new Date().getFullYear()}
-                                toYear={new Date().getFullYear()+2}
+                                toYear={new Date().getFullYear() + 2}
                             />
                         )}
                     />
                 </FormCardContent>
 
-                      
-
                 <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Paiements</div>
 
-                {/* Moyen Paiement */}
+                {/* Payment Method */}
                 <FormCardContent form={form} label="Moyen de Payement" name={`${generalFormId}.PayementMethod`}>
                     <Controller
                         name={`${generalFormId}.PayementMethod`}
@@ -114,9 +115,7 @@ const ClientExtraForm: React.FC<any> = ({   form, formId ,generalFormId }) => {
                 </FormCardContent>
             </div>
         </Form>
-    )
-
+    );
 };
 
-
-export default ClientExtraForm
+export default ClientExtraForm;

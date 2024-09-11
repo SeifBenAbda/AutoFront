@@ -5,9 +5,7 @@ const rappelFormSchema = z.object({
     RappelDate: z.date({
         message: "Date est requis.",
     }),
-    RappelContent: z.string({
-        
-    }),  // Ensure this is required
+    RappelContent: z.string().optional(),  // Ensure this is required
 });
 
 const itemSchema = z.object({
