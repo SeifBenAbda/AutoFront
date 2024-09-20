@@ -16,7 +16,7 @@ const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
     return (
        
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey bg-lightWhite">
+            <SelectTrigger className="w-full border border-highGrey bg-lightWhite text-highGrey">
                 <SelectValue placeholder={value?.toString()} />
             </SelectTrigger>
             <SelectContent>

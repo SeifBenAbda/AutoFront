@@ -62,83 +62,75 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     </FormCardContent>
                 </div>
 
-                {/* Nom Client */}
-                <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`}>
-                    <Input
-                        className="border border-darkGrey bg-lightWhite"
-                        placeholder="Nom et prénom Client"
-                        {...register(`${formId}.nomClient`)}
-                    />
-                </FormCardContent>
-
-                {/* Phone and CIN */}
+                {/* Nom et Prenom + Profession */}
                 <div className="flex space-x-4 text-whiteSecond">
-                    <FormCardContent form={form} label="Cin" name={`${formId}.cin`} className="flex-1">
+                    <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`} className="flex-1">
                         <Input
-                            className="border border-darkGrey bg-lightWhite text-highGrey"
-                            placeholder="Cin"
-                            {...register(`${formId}.cin`)}
+                            className="border border-highGrey bg-lightWhite text-highGrey"
+                            placeholder="Nom et prénom Client"
+                            {...register(`${formId}.nomClient`)}
                         />
                     </FormCardContent>
-
-                    <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1">
-                        <Input
-                            className="border border-darkGrey bg-lightWhite text-highGrey"
-                            placeholder="Numéro de téléphone"
-                            {...register(`${formId}.telClient`)}
-                        />
-                    </FormCardContent>
-                </div>
-
-                
-                <div className="flex space-x-4 text-whiteSecond">
-
-                    <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1">
-                        <Input
-                            className="border border-darkGrey bg-lightWhite text-highGrey"
-                            placeholder="Email"
-                            {...register(`${formId}.email`)}
-                        />
-                    </FormCardContent>
+                    
                     <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`} className="flex-1">
                         <Input
-                            className="border border-darkGrey bg-lightWhite text-highGrey"
+                            className="border border-highGrey bg-lightWhite text-highGrey"
                             placeholder="Profession / Secteur Activite"
                             {...register(`${formId}.socialReason`)}
                         />
                     </FormCardContent>
                 </div>
 
-                <FormCardContent form={form} label="Matricule Fiscale" name={`${formId}.mtFiscale`}>
-                    <Controller
-                        name={`${formId}.mtFiscale`}
-                        control={control}
-                        render={({ field }) => (
-                            <Input
-                                className="border border-darkGrey bg-lightWhite"
-                                placeholder="Matricule Fiscale"
-                                {...register(`${formId}.mtFiscale`)}
-                            />
-                        )}
-                    />
-                </FormCardContent>
+                {/* Numero de tel + Email */}
+                <div className="flex space-x-4 text-whiteSecond">
+                    <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1">
+                        <Input
+                            className="border border-highGrey bg-lightWhite text-highGrey"
+                            placeholder="Numéro de téléphone"
+                            {...register(`${formId}.telClient`)}
+                        />
+                    </FormCardContent>
+
+                    <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1">
+                        <Input
+                            className="border border-highGrey bg-lightWhite text-highGrey"
+                            placeholder="Email"
+                            {...register(`${formId}.email`)}
+                        />
+                    </FormCardContent>
+                </div>
+
+                {/* Comment Cin */}
+                {/*
+                <div className="flex space-x-4 text-whiteSecond">
+                    <FormCardContent form={form} label="Cin" name={`${formId}.cin`} className="flex-1">
+                        <Input
+                            className="border border-highGrey bg-lightWhite text-highGrey"
+                            placeholder="Cin"
+                            {...register(`${formId}.cin`)}
+                        />
+                    </FormCardContent>
+                </div>
+                */}
 
                 {/* Conditionally render Date of Birth */}
                 {clientType !== "Entreprise" && (
-                    <FormCardContent form={form} label="Date de naissance" name={`${formId}.dateOfBirth`}>
-                        <Controller
-                            name={`${formId}.dateOfBirth`}
-                            control={control}
-                            render={({ field }) => (
-                                <DatePicker
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                    fromYear={new Date().getFullYear() - 70}
-                                    toYear={new Date().getFullYear() - 18}
-                                />
-                            )}
-                        />
-                    </FormCardContent>
+                    <div className="text-whiteSecond">
+                        <FormCardContent form={form} label="Date de naissance" name={`${formId}.dateOfBirth`} className="flex-1">
+                            <Controller
+                                name={`${formId}.dateOfBirth`}
+                                control={control}
+                                render={({ field }) => (
+                                    <DatePicker
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        fromYear={new Date().getFullYear() - 70}
+                                        toYear={new Date().getFullYear() - 18}
+                                    />
+                                )}
+                            />
+                        </FormCardContent>
+                    </div>
                 )}
             </div>
         </Form>

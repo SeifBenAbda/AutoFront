@@ -12,13 +12,14 @@ interface DatePickerProps {
   onChange: (date: Date | undefined) => void;
   fromYear?: number;
   toYear?: number;
+  styling?:string
 }
 
-export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date().getFullYear() - 18 }: DatePickerProps) {
+export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date().getFullYear() - 18 ,styling}: DatePickerProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
     <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-      <PopoverTrigger className="border-highGrey text-highGrey bg-lightWhite hover:bg-lightWhite hover:text-highGrey" asChild>
+      <PopoverTrigger className={styling?styling: "border-highGrey text-highGrey bg-lightWhite hover:bg-lightWhite hover:text-highGrey"} asChild>
         <Button
           variant={"outline"}
           className={cn(
@@ -40,7 +41,8 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
           initialFocus
           fromYear={fromYear}
           toYear={toYear}
-          classNames={{day_selected:"border border-greenOne bg-greenOne font-oswald text-white",day_today:"bg-transparent border border-highGrey text-highGrey font-oswald"}}
+          classNames={{day_selected:"border border-greenOne bg-greenOne font-oswald text-highGrey",
+            day_today:"bg-transparent border border-transparent text-highGrey font-oswald p-2"}}
         />
       </PopoverContent>
     </Popover>

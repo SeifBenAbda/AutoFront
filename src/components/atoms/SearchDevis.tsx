@@ -2,6 +2,7 @@ import { Input } from '../../@/components/ui/input';
 import React, { useState } from 'react';
 import { Button } from '../../@/components/ui/button';
 import CloseIcon from '@mui/icons-material/Close';
+
 interface SearchBarProps {
   onSearch: (searchValue: string) => void;
   searchValue: string;
@@ -24,28 +25,27 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
   };
 
   return (
-    <div className="flex items-center">
-      <div className="flex items-center border border-highGrey rounded-md  bg-white">
-      <Input
-        type="text"
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder="Rechercher Client..."
-        className="flex-1 border-none  rounded-md outline-none pl-2"
-      />
-      {inputValue && (
-        <Button
-        onClick={handleClearClick}
-        className="border-none bg-transparent hover:bg-transparent"
-      >
-        <CloseIcon className="text-highGrey" />
-      </Button>
-        
-      )}
+    <div className="flex items-center w-full m-2 pr-4"> {/* Added pr-4 to add padding-right */}
+      <div className="flex items-center flex-1 border border-highGrey rounded-md bg-white ml-2">
+        <Input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Rechercher Client..."
+          className="flex-1 border-none rounded-l-md outline-none px-2 py-1"
+        />
+        {inputValue && (
+          <Button
+            onClick={handleClearClick}
+            className="border-none bg-transparent hover:bg-transparent p-2"
+          >
+            <CloseIcon className="text-highGrey" />
+          </Button>
+        )}
       </div>
       <Button
         onClick={handleSearchClick}
-        className="ml-2 px-4 py-2 bg-highGrey text-white rounded"
+        className="bg-highGrey hover:bg-highGrey text-white rounded-md  ml-2" // Added ml-2 to add left margin
       >
         Rechercher
       </Button>

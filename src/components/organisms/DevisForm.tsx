@@ -22,7 +22,7 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
         { label: "Information du client", component: <ClientDataForm form={form} formId="clientForm" /> },
         { label: "Adresse du client", component: <ClientAdresseForm form={form} formId="clientForm" /> },
         { label: "Infos supplémentaires", component: <ClientExtraForm form={form} generalFormId="devisGeneralForm" formId="devisCarForm" /> },
-        { label: "Client Rappel", component: <ClientRappelForm form={form} formId="rappelForm" devisFormId="devisGeneralForm" /> }
+        { label: "Client Rappel", component: <ClientRappelForm form={form} formId="rappelForm"  /> }
     ];
 
 

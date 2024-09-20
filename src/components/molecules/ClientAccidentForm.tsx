@@ -17,25 +17,27 @@ const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, form
 
     return (
         <Form {...form} className="flex-1">
-            <div className="pl-3 mb-2  font-oswald text-lg  text-white">Plus d'informations</div>
             <div className="w-full">
-            <FormCardContent form={form} label="Voiture Ancienne" name={`${formId}.OldCar`}>
-                    <Input
-                        className="border border-highGrey bg-lightWhite"
-                        placeholder="Voiture Ancienne"
-                        {...register(`${formId}.OldCar`)}
-                    />
-                </FormCardContent>
+                {/* Group Voiture Ancienne and Immatriculation */}
+                <div className="flex space-x-4">
+                    <FormCardContent form={form} label="Voiture Actuelle" name={`${formId}.OldCar`}>
+                        <Input
+                            className="border border-highGrey bg-lightWhite"
+                            placeholder="Voiture Actuelle"
+                            {...register(`${formId}.OldCar`)}
+                        />
+                    </FormCardContent>
 
-                <FormCardContent form={form} label="Immatriculation" name={`${formId}.Immatriculation`}>
-                    <Input
-                        className="border border-highGrey bg-lightWhite"
-                        placeholder="Immatriculation"
-                        {...register(`${formId}.Immatriculation`)}
-                    />
-                </FormCardContent> 
+                    <FormCardContent form={form} label="Immatriculation" name={`${formId}.Immatriculation`}>
+                        <Input
+                            className="border border-highGrey bg-lightWhite"
+                            placeholder="Immatriculation"
+                            {...register(`${formId}.Immatriculation`)}
+                        />
+                    </FormCardContent>
+                </div>
 
-                <div className="pl-3 mb-2  font-oswald text-lg  text-white">Voiture accidentée</div>
+                <div className="pl-3 mb-2 font-oswald text-lg text-white">Voiture accidentée</div>
 
                 <FormCardContent form={form} label="Nom Expert" name={`${formId}.NomExpert`}>
                     <Input
@@ -43,27 +45,26 @@ const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, form
                         placeholder="Nom Expert"
                         {...register(`${formId}.NomExpert`)}
                     />
-                </FormCardContent> 
+                </FormCardContent>
 
+                {/* Group Email Expert and Tel Expert */}
+                <div className="flex space-x-4">
+                    <FormCardContent form={form} label="Email Expert" name={`${formId}.MailExpert`}>
+                        <Input
+                            className="border border-highGrey bg-lightWhite"
+                            placeholder="Email Expert"
+                            {...register(`${formId}.MailExpert`)}
+                        />
+                    </FormCardContent>
 
-
-                <FormCardContent form={form} label="Email Expert" name={`${formId}.MailExpert`}>
-                    <Input
-                        className="border border-highGrey bg-lightWhite"
-                        placeholder="Email Expert"
-                        {...register(`${formId}.MailExpert`)}
-                    />
-                </FormCardContent> 
-
-
-
-                <FormCardContent form={form} label="Tel Expert" name={`${formId}.PhoneExpert`}>
-                    <Input
-                        className="border border-highGrey bg-lightWhite"
-                        placeholder="Tel Expert"
-                        {...register(`${formId}.PhoneExpert`)}
-                    />
-                </FormCardContent> 
+                    <FormCardContent form={form} label="Tel Expert" name={`${formId}.PhoneExpert`}>
+                        <Input
+                            className="border border-highGrey bg-lightWhite"
+                            placeholder="Tel Expert"
+                            {...register(`${formId}.PhoneExpert`)}
+                        />
+                    </FormCardContent>
+                </div>
 
                 <FormCardContent form={form} label="Commentaire N°1" name={`${formId}.CommentOne`}>
                     <Textarea
@@ -73,7 +74,6 @@ const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, form
                     />
                 </FormCardContent>
 
-
                 <FormCardContent form={form} label="Commentaire N°2" name={`${formId}.CommentTwo`}>
                     <Textarea
                         className="border border-highGrey bg-lightWhite min-h-[70px]"
@@ -82,7 +82,6 @@ const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, form
                     />
                 </FormCardContent>
 
-
                 <FormCardContent form={form} label="Commentaire N°3" name={`${formId}.CommentThree`}>
                     <Textarea
                         className="border border-highGrey bg-lightWhite min-h-[70px]"
@@ -90,7 +89,6 @@ const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, form
                         {...register(`${formId}.CommentThree`)}
                     />
                 </FormCardContent>
-
             </div>
         </Form>
     );

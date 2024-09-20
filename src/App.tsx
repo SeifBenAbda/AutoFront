@@ -42,10 +42,6 @@ const App: React.FC = () => {
           element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />}
         />
         <Route
-          path="/item-change"
-          element={isLoggedIn ? <ItemChangePage /> : <Navigate to="/login" />}
-        />
-        <Route
           path="/carTracking"
           element={isLoggedIn ? <CarTrackingLayout /> : <Navigate to="/login" />}
         />

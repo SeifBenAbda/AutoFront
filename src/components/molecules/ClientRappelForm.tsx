@@ -10,11 +10,11 @@ import {
 } from "../../@/components/ui/form";
 import FormCardContent from "./FormCardContent";
 import { DatePicker } from "../atoms/DataSelector";
-import PriorityDevisDropDown from "../atoms/PriorityDropDown";
+import { Textarea } from "../../@/components/ui/textarea";
 
-const ClientRappelForm: React.FC<{ form: any; formId: string ,devisFormId:string }> = ({ form, formId , devisFormId}) => {
+const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formId }) => {
     const { register, control } = form;
-    const rappelCount = 3; // Adjust based on your needs
+    const rappelCount = 1; // Adjust based on your needs
 
     return (
         <Form {...form} className="flex-1">
@@ -37,23 +37,17 @@ const ClientRappelForm: React.FC<{ form: any; formId: string ,devisFormId:string
                                 )}
                             />
                         </FormCardContent>
+
+                        <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-whiteSecond">
+                            <Textarea
+                                className="border border-highGrey bg-lightWhite min-h-[70px] text-highGrey"
+                                placeholder="Contenu de rappel.."
+                                name={`${formId}[${index}].RappelContent`}
+                                {...register(`${formId}[${index}].RappelContent`)}
+                            />
+                        </FormCardContent>
                     </React.Fragment>
                 ))}
-
-                {/* Priority */}
-                <FormCardContent form={form} label="Priorité" name={`${devisFormId}.PriorityDevis`}>
-                    <Controller
-                        name={`${devisFormId}.PriorityDevis`}
-                        control={control}
-                        render={({ field }) => (
-                            <PriorityDevisDropDown
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
-                                isFiltring={false}
-                            />
-                        )}
-                    />
-                </FormCardContent>
 
             </div>
         </Form>

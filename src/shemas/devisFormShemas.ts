@@ -22,9 +22,7 @@ export const devisSchema = z.object({
             message: "Type de Client is required.",
         }),
 
-        cin: z.string().min(8, {
-            message: "Cin est requis.",
-        }),
+        cin: z.string().optional(),
 
         nomClient: z.string().min(1, {
             message: "Nom Client est requis.",
@@ -36,45 +34,27 @@ export const devisSchema = z.object({
             message: "Tel Client est requis.",
         }),
 
-        email: z.string().email({
-            message: "Email mal formé.",
-        }),
+        email: z.string().optional(),
 
-        socialReason: z.string().min(1, {
-            message: "Erreur Profession / Secteur Activite est requis.",
-        }),
+        socialReason: z.string().optional(),
 
         dateOfBirth: z.date().optional(),
 
-        adresse: z.string().min(5, {
-            message: "Adresse est requis.",
-        }),
+        adresse: z.string().optional(),
 
-        ville: z.string().min(2, {
-            message: "Ville est requis.",
-        }),
+        ville: z.string().optional(),
 
         region: z.string().min(1, {
             message: "Region est requis.",
         }),
 
-        postalCode: z.string().min(4, {
-            message: "Code Postal est requis.",
-        }),
+        postalCode: z.string().optional(),
 
         pays: z.string().min(2, {
             message: "Pays est requis.",
         }),
 
         addressMoreInfos: z.string().optional(),
-    }).refine((data) => {
-        if (data.clientType !== "Particulier" && !data.mtFiscale) {
-            return false;
-        }
-        return true;
-    }, {
-        message: "Matricule Fiscale est requis pour les clients autres que 'Particulier'.",
-        path: ['mtFiscale'], // Ensure the path points to the correct field
     }).refine((data)=>{
         if(data.clientType == "Particulier" && !data.dateOfBirth){
             return false;
@@ -107,9 +87,7 @@ export const devisSchema = z.object({
             message: "Moyen de Payement est requis.",
         }),
 
-        ScheduledLivDate: z.date({
-            message: "Date Livraison est requis.",
-        }),
+        ScheduledLivDate: z.date().optional(),
         PriorityDevis: z.enum(["Normale", "Moyenne", "Haute"], {
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),

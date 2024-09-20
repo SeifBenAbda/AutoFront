@@ -18,9 +18,9 @@ const NavMenu: React.FC = () => {
       case '/car-request':
         setActiveLink('Dossier Voiture');
         break;
-      case '/item-change':
+      /*case '/item-change':
         setActiveLink('Commande des Pieces');
-        break;
+        break;*/
       case '/carTracking':
         setActiveLink('Suivi Devis Voiture');
         break;
@@ -54,7 +54,6 @@ const NavMenu: React.FC = () => {
         >
           <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
-          <option value="/item-change">Commande des Pieces</option>
           <option value="/carTracking">Suivi Devis Voiture</option>
           <option value="/itemTracking">Suivi Changement des Pieces</option>
         </select>
@@ -83,17 +82,7 @@ const NavMenu: React.FC = () => {
 
         </div>
       </Button>
-      <Button
-        onClick={() => handleNavClick('Commande des Pieces', "/item-change")}
-        className={`p-2 rounded-md ${activeLink === 'Commande des Pieces' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'hover:bg-lightWhite bg-lightWhite text-highGrey font-oswald'}`}
-      >
-        <div className="flex items-center space-x-2">
-          <Pickaxe />
-          <span> Commande des Pieces</span>
-        </div>
-
-      </Button>
-
+    
       <Button
         onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
         className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}

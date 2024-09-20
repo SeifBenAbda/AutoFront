@@ -208,7 +208,7 @@ export const MultiSelect = React.forwardRef<
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "flex p-1 bg-highGrey rounded-md border min-h-10 h-auto items-center  ml-auto",
+              "flex p-1 bg-highGrey rounded-md border min-h-10 h-auto items-center  ml-auto mt-auto mb-auto",
               className
             )}
           >
@@ -222,7 +222,7 @@ export const MultiSelect = React.forwardRef<
                       <Badge
                         key={value}
                         className={cn(
-                          isAnimating ? "animate-bounce" : "p-2",
+                          isAnimating ? "animate-bounce" : "p-2 ml-2",
                           multiSelectVariants({ variant })
                         )}
                         style={{ animationDuration: `${animation}s` }}

@@ -29,7 +29,7 @@ const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange 
   return (
     <Toggle
       aria-label="Toggle gender"
-      data-state={selected === "Entreprise" ? "on" : "off"}  // Dynamically set data-state
+      data-state={selected === "Madame" ? "on" : "off"}  // Dynamically set data-state
       onClick={handleToggle}
       className={`relative w-full font-oswald bg-whiteSecond text-highGrey hover:bg-whiteSecond hover:text-highGrey border 
       data-[state=on]:border-lightRed data-[state=on]:bg-lightRed data-[state=on]:text-whiteSecond  

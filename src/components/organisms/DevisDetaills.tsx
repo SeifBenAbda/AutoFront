@@ -1,0 +1,301 @@
+import React, { ReactNode, useEffect, useState } from 'react';
+import { CarRequest, Client, Devis, Rappel } from '../../types/devisTypes';
+import emptyIcon from '../../images/empty.png';
+import clientIcon from '../../images/client.png';
+import agentIcon from '../../images/agent.png';
+import phoneIcon from '../../images/phone.png';
+import calendarIcon from '../../images/calendar.png';
+import calendarUpdateIcon from '../../images/calendar_update.png';
+import reminderIcon from '../../images/reminder_new.png';
+import { Button } from '../../@/components/ui/button';
+import { useUpdateDevis } from '../../hooks/useDevis'
+import { useUser } from '../../context/userContext';
+import { DevisDetaillsCard } from './ExtraDetaillsCards/DevisDetaillsCard';
+import { VehiculeDetaillsCard } from './ExtraDetaillsCards/VehiculeDetaillsCard';
+import { RappelsDetaillsCard } from './ExtraDetaillsCards/RappelsDetaillsCard';
+import { DocumentsDetaillsCard } from './ExtraDetaillsCards/DocumentsDetaillsCard';
+
+interface DevisDetailsProps {
+    devis: Devis | null; // The selected Devis, or null if none is selected
+}
+
+interface StepConfig {
+    label: string;
+    component: ReactNode;
+}
+
+
+const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
+    const [currentPriority, setPriority] = useState(devis?.PriorityDevis || 'Normale');
+
+    const activeNormalStyle = 'font-oswald bg-greenOne border border-greenOne rounded-md text-lightWhite hover:bg-greenOne';
+    const activeMoyenneStyle = 'font-oswald bg-yellow-500 border border-yellow-500 rounded-md text-lightWhite hover:bg-yellow-500';
+    const activeHauteStyle = 'font-oswald bg-lightRed border border-lightRed rounded-md text-lightWhite hover:bg-lightRed';
+    const normalStyle = 'font-oswald bg-lightWhite border border-lightWhite rounded-md text-highGrey hover:bg-lightWhite';
+
+
+    const { user } = useUser();
+    const [activeStep, setActiveStep] = useState<number>(0);
+    const [myDevis, setDevis] = useState<Devis | null>(devis);
+    const [rappels, setRappels] = useState<Rappel[]>(devis?.rappels || []);
+    const [client, setClient] = useState<Client | null>(devis?.client || null);
+    const [carRequest, setCarRequest] = useState<CarRequest | null>(devis?.carRequests?.[0] || null);
+    const { mutate: updateDevis } = useUpdateDevis();
+
+    const activeStyling = "bg-greenOne border border-greenOne rounded-md hover:bg-greenOne"
+    const defaultStyling = "bg-transparent border border-lightWhite rounded-md hover:bg-transparent"
+
+    useEffect(() => {
+        console.log(devis)
+        if (devis) {
+            setPriority(devis.PriorityDevis || 'Normale');
+            setClient(devis!.client!);
+            setCarRequest(devis!.carRequests?.[0]);
+            //setItemRequests(devis!.itemRequests || []);
+            setDevis(devis!);
+            setRappels(devis!.rappels);
+        }
+    }, [devis]); // Trigger effect when 'devis' changes
+
+    const handleClientUpdate = (updatedClient: Client) => {
+        setDevis(prevDevis => prevDevis ? ({
+            ...prevDevis,
+            client: updatedClient,
+            UpdatedAt: new Date(),
+            UpdatedBy: user?.nomUser || "Unknown User"
+        }) : null);
+    };
+
+    const handleCarRequestUpdate = (updatedCarRequest: CarRequest) => {
+        setDevis(prevDevis => prevDevis ? ({
+            ...prevDevis,
+            carRequests: updatedCarRequest ? [updatedCarRequest] : [],
+            UpdatedAt: new Date(),
+            UpdatedBy: user?.nomUser || "Unknown User"
+        }) : null);
+    };
+
+    const handleRappelUpdate = (updatedRappels: Rappel[]) => {
+        setRappels(updatedRappels);
+        setDevis(prevDevis => prevDevis ? ({
+            ...prevDevis,
+            rappels: updatedRappels,
+            UpdatedAt: new Date(),
+            UpdatedBy: user?.nomUser || "Unknown User"
+        }) : null);
+    };
+
+    const handleSave = async () => {
+        console.log(myDevis)
+        try {
+            updateDevis({
+                database: "Commer_2024_AutoPro", 
+                devisId: devis!.DevisId!,
+                clientId: myDevis!.client?.id!,
+                updatedDevis: myDevis!,
+                updatedClient: myDevis!.client,
+                updatedItemRequestData: undefined,
+                updatedCarRequestData: myDevis!.carRequests?.[0] || undefined,
+                updatedRappels: rappels || undefined
+            });
+        } catch (error) {
+            console.error('Failed to save updates:', error);
+        }
+    };
+
+    const steps: StepConfig[] = myDevis ? [
+        { label: 'Devis', component: <DevisDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
+        { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} /> },
+        { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} /> },
+        { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
+    ] : [];
+
+    function getClosestFutureDate(): Rappel | null {
+        const now = new Date();
+
+        // Check if devis and devis.rappels are defined
+        if (!devis || !devis.rappels) {
+            return devis?.rappels[0]! // or handle this case as needed
+        }
+
+        // Filter out dates that are before today
+        const futureRappels = devis.rappels.filter(rappel => {
+            const rappelDate = new Date(rappel.RappelDate!);
+            return rappelDate >= now; // Only keep dates that are today or in the future
+        });
+
+        if (futureRappels.length === 0) {
+            return devis.rappels[0]; // No future dates available
+        }
+
+        // Find the closest future date
+        return futureRappels.reduce((closest, current) => {
+            const closestDate = new Date(closest.RappelDate!);
+            const currentDate = new Date(current.RappelDate!);
+
+            const closestDiff = Math.abs(now.getTime() - closestDate.getTime());
+            const currentDiff = Math.abs(now.getTime() - currentDate.getTime());
+
+            return currentDiff < closestDiff ? current : closest;
+        }, futureRappels[0]);
+    }
+
+
+
+
+    if (!devis) {
+        return (
+            <div className="items-center justify-center flex flex-col space-y-2">
+                <img src={emptyIcon} alt="Empty" className="w-48 h-48" />
+                <h2 className="text-xl text-lightWhite font-oswald text-center">
+                    Veuillez sélectionner l'une des demandes de véhicules sur la gauche
+                </h2>
+            </div>
+        );
+    }
+
+    const renderPriorities = () => {
+        return (
+            <div className="flex flex-row space-x-2">
+                <Button
+                    className={`${currentPriority === 'Normale' ? activeNormalStyle : normalStyle
+                        }`}
+                    onClick={() => setPriority('Normale')}
+                >
+                    Normale
+                </Button>
+                <Button
+                    className={`${currentPriority === 'Moyenne' ? activeMoyenneStyle : normalStyle
+                        }`}
+                    onClick={() => setPriority('Moyenne')}
+                >
+                    Moyenne
+                </Button>
+                <Button
+                    className={`${currentPriority === 'Haute' ? activeHauteStyle : normalStyle
+                        }`}
+                    onClick={() => setPriority('Haute')}
+                >
+                    Haute
+                </Button>
+            </div>
+        );
+    };
+
+    const renderApplyChangesButton = () => {
+        return (
+            <Button onClick={handleSave} className="bg-greenOne border border-greenOne hover:bg-greenOne rounded-md">
+                Appliquer
+            </Button>
+        );
+    };
+
+    const renderTopHeader = () => {
+        return (
+            <div className="flex flex-row justify-between w-full p-2">
+                {renderPriorities()}
+                {renderApplyChangesButton()}
+            </div>
+        );
+    };
+
+    const renderGeneralData = () => {
+        return (
+            <div className='flex flex-row justify-between w-full p-2 mt-2 ml-4'>
+                {/** Client and Rappel Date */}
+                <div className='flex flex-col space-y-2'>
+                    {renderClientInfos()}
+                    {renderDevisGeneralInfo()}
+                </div>
+
+                <div className='flex flex-col space-y-2 mr-6'>
+                    {renderAdditionalInfos()}
+                    {renderDates()}
+                </div>
+            </div>
+        )
+    }
+
+    const renderAdditionalInfos = () => {
+        return (
+            <div className='flex flex-row space-x-2'>
+                <img src={agentIcon} alt="Agent" className="w-7 h-7" />
+                <span className='text-lightWhite font-oswald text-lg'>{devis.UpdatedBy === "" ? devis.CreatedBy : devis.UpdatedBy}</span>
+            </div>
+        )
+    }
+
+    const renderDates = () => {
+        return (
+            <div className='flex flex-col space-y-2'>
+                <div className='flex flex-row space-x-2'>
+                    <img src={calendarUpdateIcon} alt="CalendarUpdate" className="w-7 h-7" />
+                    <span className='text-lightWhite font-oswald text-lg'>Dernière actualisation : {new Date(devis.UpdatedAt!).toLocaleDateString()}</span>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                    <img src={reminderIcon} alt="Reminder" className="w-7 h-7" />
+                    <span className='text-lightWhite font-oswald text-lg'>Prochain Rappel : {new Date(getClosestFutureDate()!.RappelDate!).toLocaleDateString()}</span>
+                </div>
+
+            </div>
+        )
+    }
+
+    const renderDevisGeneralInfo = () => {
+        return (
+            <div className='flex flex-col'>
+                <div className='flex flex-row space-x-2'>
+                    <img src={calendarIcon} alt="Calendar" className="w-8 h-8" />
+                    <span className='text-lightWhite font-oswald text-lg'>Date Creation : {new Date(devis.DateCreation!).toLocaleDateString()}</span>
+                </div>
+            </div>
+        )
+    }
+
+    const renderClientInfos = () => {
+        return (
+            <div className='flex flex-col space-y-2'>
+                <div className='flex flex-row space-x-2 items-center'>
+                    <img src={clientIcon} alt="Client" className="w-8 h-8" />
+                    <span className='text-whiteSecond font-oswald text-lg'>{devis.client!.nomClient}</span>
+                </div>
+                <div className='flex flex-row space-x-4 items-center'>
+                    <img src={phoneIcon} alt="Phone" className="w-6 h-6" />
+                    <span className='text-whiteSecond font-oswald text-lg'>{devis.client!.telClient}</span>
+                </div>
+            </div>
+        )
+    }
+
+    const renderExtraDetails = () => {
+        return (
+            <div className="flex flex-col space-y-2 m-2">
+                <div className="flex flex-row justify-around">
+                    {steps.map((step, index) => (
+                        <Button
+                            key={index}
+                            onClick={() => setActiveStep(index)}
+                            className={`w-full ml-2 mb-2 p-2 rounded ${activeStep === index ? activeStyling : defaultStyling} text-white`}
+                        >
+                            {step.label}
+                        </Button>
+                    ))}
+                </div>
+                {steps[activeStep]?.component}
+            </div>
+        )
+    }
+
+    return (
+        <div className="justify-start h-[88vh] w-full">
+            {/* Top Devis Details to Change Priority and apply changes Button */}
+            {renderTopHeader()}
+            <hr className='border-lightWhite' />
+            {renderGeneralData()}
+            <hr className='border-lightWhite' />
+            {renderExtraDetails()}
+        </div>
+    );
+};
+
+export default DevisDetails;

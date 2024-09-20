@@ -1,6 +1,7 @@
 import CarDevisTrackingPage from "../pages/CarDevisTrackingPage";
 import Header from "../components/organisms/Header";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CarsTrackingPage } from "../pages/CarsTrackingPage";
 
 const CarTrackingLayout: React.FC = () => {
     const queryClient = new QueryClient();
@@ -11,8 +12,8 @@ const CarTrackingLayout: React.FC = () => {
                 <Header />
 
                 {/* Main Content */}
-                <main className="flex-1 p-4 bg-gray-100 flex">
-                    <CarDevisTrackingPage />
+                <main className="flex-1 p-4 bg-whiteSecond flex">
+                    <CarsTrackingPage />
                 </main>
             </div>
         </QueryClientProvider>

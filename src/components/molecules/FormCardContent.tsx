@@ -4,11 +4,9 @@ import {
     FormControl,
     FormItem,
     FormLabel,
-    FormMessage,
 } from "../../@/components/ui/form";
 
 import { CardContent } from "../../@/components/ui/card";
-
 
 const FormCardContent: React.FC<any> = ({ form, name, label, children, className }) => {
     return (
@@ -19,16 +17,16 @@ const FormCardContent: React.FC<any> = ({ form, name, label, children, className
                 render={({ field }) => (
                     <FormItem className="w-full">
                         <div className="flex justify-between w-full p-1 flex-col">
-                            <FormLabel className={`${className ? className : 'text-white mb-1'} `}>
+                            <FormLabel
+                                className={`${className ? className : 'text-white mb-1'}`}
+                            >
                                 {label}
                             </FormLabel>
-                            <FormMessage className="text-lightRed truncate">
-                                {form.formState.errors[name]?.message as string}
-                            </FormMessage>
                         </div>
                         <FormControl className="w-full">
                             {children}
                         </FormControl>
+                        {/* Remove FormMessage to avoid displaying the error message */}
                     </FormItem>
                 )}
             />
