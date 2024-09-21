@@ -346,3 +346,54 @@ export const fetchClients = async (
     throw e;
   }
 };
+
+
+//Upload Documents : 
+export const uploadDocuments = async (
+  database: string,
+  devisId: number,
+  files: File[], // Accept an array of files
+  navigate: (path: string) => void
+) => {
+  const token = getToken(); // Assume getToken retrieves the token
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const formData = new FormData();
+  // Append each file to the FormData
+  files.forEach(file => {
+    formData.append('files', file); // Use the same key 'file' for all files
+  });
+  formData.append('database', database);
+  formData.append('DevisId', devisId.toString());
+
+  try {
+    const response = await fetch(`${API_URL}/devis-documents/uploadFiles`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // 'Content-Type' is not set for FormData; it will be automatically handled
+      },
+      body: formData,
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken(); // Assume removeToken clears the token
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to upload documents');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
