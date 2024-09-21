@@ -23,20 +23,22 @@ const App: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <Loading/>
+    return <Loading />
   }
 
   const isLoggedIn = Boolean(user); // Check if the user is logged in based on the hook
-
+  {/**
+      <Route
+          path="/dashboard"
+          element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />}
+        />  
+    */}
   return (
 
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/dashboard"
-          element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />}
-        />
+
         <Route
           path="/car-request"
           element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />}
@@ -49,7 +51,7 @@ const App: React.FC = () => {
           path="/itemTracking"
           element={isLoggedIn ? <ItemChangeTrackingPage /> : <Navigate to="/login" />}
         />
-        <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />} />
+        <Route path="*" element={<Navigate to={isLoggedIn ? "/car-request" : "/login"} />} />
       </Routes>
     </Router>
   );

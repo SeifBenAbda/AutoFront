@@ -50,7 +50,8 @@ const useAuth = () => {
       saveToken(token.accessToken);
       const userData: User = await fetchUserData();
       setUser(userData);
-      navigate('/dashboard');
+      //navigate('/dashboard');
+      navigate('/car-request')
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

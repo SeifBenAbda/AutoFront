@@ -100,24 +100,41 @@ export const fetchDevisAllData = async (
 };
 
 
-export const fetchCarModels = async (databasename:string) => {
+export const fetchCarModels = async (databasename: string, navigate: (path: string) => void) => {
   const token = getToken();
-  if (!token) throw new Error('No token found');
-  const body = {"database":databasename}
-  const response = await fetch(`${API_URL}/cars`, {
-    method: 'POST',
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database: databasename };
+
+  try {
+    const response = await fetch(`${API_URL}/cars`, {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
-  });
+    });
 
-  if (!response.ok) {
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
       throw new Error('Failed to fetch car models');
-  }
+    }
 
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 

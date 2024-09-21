@@ -44,7 +44,6 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
 
     const activeStyling = "bg-greenOne border border-greenOne rounded-md hover:bg-greenOne"
     const defaultStyling = "bg-transparent border border-lightWhite rounded-md hover:bg-transparent"
-
     useEffect(() => {
         if (devis) {
             setPriority(devis.PriorityDevis || 'Normale');
@@ -94,8 +93,18 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
         }) : null);
     };
 
+   
+    const updatePriority = (priority: "Normale" | "Moyenne" | "Haute")=>{
+        setPriority(priority)
+        setDevis(prevDevis => prevDevis ? ({
+            ...prevDevis,
+            PriorityDevis:priority,
+            UpdatedAt: new Date(),
+            UpdatedBy: user?.nomUser || "Unknown User"
+        }) : null);
+    }
+
     const handleSave = async () => {
-        console.log(myDevis)
         try {
             updateDevis({
                 database: "Commer_2024_AutoPro",
@@ -114,7 +123,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
 
     const steps: StepConfig[] = myDevis ? [
         { label: 'Devis', component: <DevisDetaillsCard devis={myDevis} onUpdate={handleDevisUpdate} /> },
-        { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} /> },
+        { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} /> },
         { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
     ] : [];
@@ -169,21 +178,21 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
                 <Button
                     className={`${currentPriority === 'Normale' ? activeNormalStyle : normalStyle
                         }`}
-                    onClick={() => setPriority('Normale')}
+                    onClick={() => updatePriority('Normale')}
                 >
                     Normale
                 </Button>
                 <Button
                     className={`${currentPriority === 'Moyenne' ? activeMoyenneStyle : normalStyle
                         }`}
-                    onClick={() => setPriority('Moyenne')}
+                    onClick={() => updatePriority('Moyenne')}
                 >
                     Moyenne
                 </Button>
                 <Button
                     className={`${currentPriority === 'Haute' ? activeHauteStyle : normalStyle
                         }`}
-                    onClick={() => setPriority('Haute')}
+                    onClick={() => updatePriority('Haute')}
                 >
                     Haute
                 </Button>
@@ -266,7 +275,9 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
             <div className='flex flex-col space-y-2'>
                 <div className='flex flex-row space-x-2 items-center'>
                     <img src={clientIcon} alt="Client" className="w-8 h-8" />
-                    <span className='text-whiteSecond font-oswald text-lg'>{devis.client!.nomClient}</span>
+                    <span className='text-whiteSecond font-oswald text-lg'>
+                        {devis.client!.clientType=="Entreprise"?"":devis.client!.clientGender} {devis.client!.nomClient}
+                    </span>
                 </div>
                 <div className='flex flex-row space-x-4 items-center'>
                     <img src={phoneIcon} alt="Phone" className="w-6 h-6" />

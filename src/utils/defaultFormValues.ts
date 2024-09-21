@@ -14,10 +14,12 @@ export const defaultFormDevisGeneral : Devis = {
     StatusDevis: "En Attente",
     PriorityDevis: "Normale",
     isGarantie: false,
-    numBonCommande: "",
+    NumBc: "",
+    NumFacture:"",
     client: undefined,
     ReasonAnnulation:undefined,
     BankAndLeasing:undefined,
+    Comments : undefined,
     itemRequests: [],
     carRequests: [],
     rappels:[],
@@ -36,6 +38,7 @@ export const defaultFormCarDevis : CarRequest = {
     CarColor: "",
     CarNotes: "",
     isCanceled: false,
+    Immatriculation:undefined
 };
 
 export const defaultFormClient : Client = {

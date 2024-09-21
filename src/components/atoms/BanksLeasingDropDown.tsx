@@ -6,8 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../@/components/ui/select";
-import useRegions from '../../hooks/useRegion';
-import useBanksAndLeasing from '@/hooks/useBanks';
+import useBanksAndLeasing from '../../hooks/useBanks';
 
 
 interface BanksLeasingDropDownTypes {

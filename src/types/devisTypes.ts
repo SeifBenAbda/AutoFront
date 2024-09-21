@@ -60,7 +60,8 @@ export interface CarRequest {
   CarColor: string,
   CarNotes: string,
   isCanceled: boolean,
-  DevisId?: number
+  DevisId?: number,
+  Immatriculation:string | undefined
 }
 
 // Define the Devis interface
@@ -78,10 +79,12 @@ export interface Devis {
   StatusDevis:string | undefined,
   PriorityDevis:"Normale" | "Moyenne" | "Haute",
   isGarantie:boolean | undefined,
-  numBonCommande:string | undefined,  
+  NumBc:string | undefined,  
+  NumFacture:string | undefined,
   ScheduledLivDate:Date | undefined,
   ReasonAnnulation : string | undefined , 
   BankAndLeasing : string | undefined,
+  Comments : string | undefined ,
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis

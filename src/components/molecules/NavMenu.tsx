@@ -12,9 +12,9 @@ const NavMenu: React.FC = () => {
   // Update activeLink based on the current pathname
   useEffect(() => {
     switch (location.pathname) {
-      case '/dashboard':
+      /*case '/dashboard':
         setActiveLink('Dashboard');
-        break;
+        break;*/
       case '/car-request':
         setActiveLink('Dossier Voiture');
         break;
@@ -24,11 +24,11 @@ const NavMenu: React.FC = () => {
       case '/carTracking':
         setActiveLink('Suivi Devis Voiture');
         break;
-      case '/itemTracking':
+      /*case '/itemTracking':
         setActiveLink('Suivi Changement des Pieces');
-        break;
+        break;*/
       default:
-        setActiveLink('Dashboard'); // Default case if no match
+        setActiveLink('Dossier Voiture'); // Default case if no match
     }
   }, [location.pathname]);
 
@@ -44,6 +44,8 @@ const NavMenu: React.FC = () => {
     navigate(navigateTo); // Navigate to the specified path
   };
 
+  // <option value="/dashboard">Dashboard</option>
+  // <option value="/itemTracking">Suivi Changement des Pieces</option>
   if (isMobile) {
     return (
       <div className="block md:hidden"> {/* Hide on larger screens */}
@@ -52,10 +54,8 @@ const NavMenu: React.FC = () => {
           value={location.pathname}
           className="bg-veryGrey text-highGrey border rounded-md p-2"
         >
-          <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
           <option value="/carTracking">Suivi Devis Voiture</option>
-          <option value="/itemTracking">Suivi Changement des Pieces</option>
         </select>
       </div>
     );
@@ -63,6 +63,8 @@ const NavMenu: React.FC = () => {
 
   return (
     <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-lightWhite bg-lightWhite">
+      
+      {/*
       <Button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
         className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
@@ -72,6 +74,7 @@ const NavMenu: React.FC = () => {
           <span>Dashboard</span>
         </div>
       </Button>
+       */}
       <Button
         onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
         className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
@@ -82,7 +85,7 @@ const NavMenu: React.FC = () => {
 
         </div>
       </Button>
-    
+
       <Button
         onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
         className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
@@ -94,7 +97,8 @@ const NavMenu: React.FC = () => {
 
       </Button>
 
-      <Button
+      {/*
+        <Button
         onClick={() => handleNavClick('Suivi Changement des Pieces', "/itemTracking")}
         className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-white text-highGrey font-oswald hover:bg-lightWhite'}`}
       >
@@ -104,6 +108,8 @@ const NavMenu: React.FC = () => {
         </div>
 
       </Button>
+      */}
+
 
 
     </nav>

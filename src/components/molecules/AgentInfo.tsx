@@ -7,10 +7,17 @@ const AgentInfo: React.FC<{}> = ({}) => {
   const { user } = useUser();
   return (
     <div className="flex items-center space-x-4">
-      <Avatar>
+
+      {/*
+         <Avatar>
       <AvatarImage src="https://github.com/shadcn.png" />
       <AvatarFallback>PF</AvatarFallback>
       </Avatar>
+      */
+      }
+
+      <h4 className='text-highGrey font-oswald'>{user?.nomUser.toUpperCase()}</h4>
+     
     </div>
   );
 };
