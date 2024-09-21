@@ -136,13 +136,32 @@ export const fetchRegions = async (databasename:string) => {
   });
 
   if (!response.ok) {
-      throw new Error('Failed to fetch car models');
+      throw new Error('Failed to fetch regions');
   }
 
   return response.json();
 };
 
+//fetching Banks And Leasing 
+export const fetchBanksAndLeasing = async (databasename:string) => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+  const body = {"database":databasename}
+  const response = await fetch(`${API_URL}/banks-and-leasing`, {
+    method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
 
+  if (!response.ok) {
+      throw new Error('Failed to fetch Banks and Leasing');
+  }
+
+  return response.json();
+};
 
 
 //This Part is Responsbale to Update my Devis : 

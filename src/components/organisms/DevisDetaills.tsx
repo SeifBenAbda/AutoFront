@@ -46,7 +46,6 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     const defaultStyling = "bg-transparent border border-lightWhite rounded-md hover:bg-transparent"
 
     useEffect(() => {
-        console.log(devis)
         if (devis) {
             setPriority(devis.PriorityDevis || 'Normale');
             setClient(devis!.client!);
@@ -56,6 +55,16 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
             setRappels(devis!.rappels);
         }
     }, [devis]); // Trigger effect when 'devis' changes
+
+
+    const handleDevisUpdate = (updatedDevis: Devis) => {
+        setDevis(prevDevis => ({
+            ...prevDevis,
+            ...updatedDevis, // Spread the existing devis and updatedDevis fields
+            UpdatedAt: new Date(), // Update timestamp
+            UpdatedBy: user?.nomUser || "Unknown User" // Set user name or fallback
+        }));
+    };
 
     const handleClientUpdate = (updatedClient: Client) => {
         setDevis(prevDevis => prevDevis ? ({
@@ -89,7 +98,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
         console.log(myDevis)
         try {
             updateDevis({
-                database: "Commer_2024_AutoPro", 
+                database: "Commer_2024_AutoPro",
                 devisId: devis!.DevisId!,
                 clientId: myDevis!.client?.id!,
                 updatedDevis: myDevis!,
@@ -104,7 +113,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     };
 
     const steps: StepConfig[] = myDevis ? [
-        { label: 'Devis', component: <DevisDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
+        { label: 'Devis', component: <DevisDetaillsCard devis={myDevis} onUpdate={handleDevisUpdate} /> },
         { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} /> },
         { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} /> },
         { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
@@ -114,18 +123,18 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
         const now = new Date();
 
         // Check if devis and devis.rappels are defined
-        if (!devis || !devis.rappels) {
+        if (!myDevis || !myDevis.rappels) {
             return devis?.rappels[0]! // or handle this case as needed
         }
 
         // Filter out dates that are before today
-        const futureRappels = devis.rappels.filter(rappel => {
+        const futureRappels = myDevis.rappels.filter(rappel => {
             const rappelDate = new Date(rappel.RappelDate!);
             return rappelDate >= now; // Only keep dates that are today or in the future
         });
 
         if (futureRappels.length === 0) {
-            return devis.rappels[0]; // No future dates available
+            return myDevis.rappels[0]; // No future dates available
         }
 
         // Find the closest future date
@@ -230,7 +239,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
             <div className='flex flex-col space-y-2'>
                 <div className='flex flex-row space-x-2'>
                     <img src={calendarUpdateIcon} alt="CalendarUpdate" className="w-7 h-7" />
-                    <span className='text-lightWhite font-oswald text-lg'>Dernière actualisation : {new Date(devis.UpdatedAt!).toLocaleDateString()}</span>
+                    <span className='text-lightWhite font-oswald text-lg'>Dernière actualisation : {new Date(myDevis?.UpdatedAt!).toLocaleDateString()}</span>
                 </div>
                 <div className='flex flex-row space-x-2'>
                     <img src={reminderIcon} alt="Reminder" className="w-7 h-7" />
@@ -246,7 +255,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
             <div className='flex flex-col'>
                 <div className='flex flex-row space-x-2'>
                     <img src={calendarIcon} alt="Calendar" className="w-8 h-8" />
-                    <span className='text-lightWhite font-oswald text-lg'>Date Creation : {new Date(devis.DateCreation!).toLocaleDateString()}</span>
+                    <span className='text-lightWhite font-oswald text-lg'>Date Creation : {new Date(myDevis?.DateCreation!).toLocaleDateString()}</span>
                 </div>
             </div>
         )

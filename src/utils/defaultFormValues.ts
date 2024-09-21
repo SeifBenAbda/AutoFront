@@ -16,6 +16,8 @@ export const defaultFormDevisGeneral : Devis = {
     isGarantie: false,
     numBonCommande: "",
     client: undefined,
+    ReasonAnnulation:undefined,
+    BankAndLeasing:undefined,
     itemRequests: [],
     carRequests: [],
     rappels:[],

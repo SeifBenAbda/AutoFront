@@ -80,6 +80,8 @@ export interface Devis {
   isGarantie:boolean | undefined,
   numBonCommande:string | undefined,  
   ScheduledLivDate:Date | undefined,
+  ReasonAnnulation : string | undefined , 
+  BankAndLeasing : string | undefined,
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis

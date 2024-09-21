@@ -20,7 +20,7 @@ const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
                 <SelectValue placeholder={value?.toString()} />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem key="Leasing" value="leasing">Leasing</SelectItem>
+                <SelectItem key="Leasing" value="Leasing">Leasing</SelectItem>
                 <SelectItem value="Bank">Bank</SelectItem>
                 <SelectItem value="Comptant">Comptant</SelectItem>
                 <SelectItem value="FCR">FCR</SelectItem>
