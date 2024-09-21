@@ -8,7 +8,7 @@ import calendarIcon from '../../images/calendar.png';
 import calendarUpdateIcon from '../../images/calendar_update.png';
 import reminderIcon from '../../images/reminder_new.png';
 import { Button } from '../../@/components/ui/button';
-import { useUpdateDevis } from '../../hooks/useDevis'
+import useDevis, { useUpdateDevis } from '../../hooks/useDevis'
 import { useUser } from '../../context/userContext';
 import { DevisDetaillsCard } from './ExtraDetaillsCards/DevisDetaillsCard';
 import { VehiculeDetaillsCard } from './ExtraDetaillsCards/VehiculeDetaillsCard';
@@ -41,6 +41,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     const [client, setClient] = useState<Client | null>(devis?.client || null);
     const [carRequest, setCarRequest] = useState<CarRequest | null>(devis?.carRequests?.[0] || null);
     const { mutate: updateDevis } = useUpdateDevis();
+
 
     const activeStyling = "bg-greenOne border border-greenOne rounded-md hover:bg-greenOne"
     const defaultStyling = "bg-transparent border border-lightWhite rounded-md hover:bg-transparent"
@@ -301,7 +302,9 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
                         </Button>
                     ))}
                 </div>
-                {steps[activeStep]?.component}
+                <div className='overflow-y-auto h-[55vh]'>
+                    {steps[activeStep]?.component}
+                </div>
             </div>
         )
     }

@@ -19,7 +19,7 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
     const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
     const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
     const [selectedCars, setSelectedCars] = useState<string[]>([]);
-    const [selectedDevisId, setSelectedDevisId] = useState<string | undefined>(undefined); // Track the selected devis
+    const [selectedDevis, setSelectedDevis] = useState<Devis | undefined>(undefined); // Track the selected devis
 
     const { data, isLoading, error, isFetching, isError, refetch } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars);
 
@@ -30,10 +30,17 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
         refetch();
     }, [searchValue, selectedStatus, selectedPriority, selectedCars, page, refetch]);
 
+    // Effect to handle data updates through WebSocket or any other update mechanism
+    useEffect(() => {
+        if (data) {
+            handleDevisClick(data.data.find((e)=>e.DevisId===selectedDevis?.DevisId)!);
+        }
+    }, [data]);
+
     const handleDevisClick = (devis: Devis) => {
         console.log("Pressed Devis _ " + devis)
         onDevisClick(devis); // Send the selected devis to the parent
-        setSelectedDevisId(devis.DevisId!.toString()); // Track the selected devis ID
+        setSelectedDevis(devis); // Track the selected devis ID
     };
 
     const handleSearch = (searchValue: string) => {
@@ -84,13 +91,13 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
                     <div
                         key={devis.DevisId}
                         className={`font-oswald p-3 bg-highGrey border border-highGrey rounded-xl mb-2 cursor-pointer 
-                            ${selectedDevisId === devis.DevisId!.toString() ? 'bg-lightGreen border border-lightGreen text-highGrey' : 'text-lightWhite'}`}
+                            ${selectedDevis?.DevisId! === devis.DevisId ? 'bg-lightGreen border border-lightGreen text-highGrey' : 'text-lightWhite'}`}
                         onClick={() => {
                             console.log("Clicked Devis ID: ", devis.DevisId);
                             handleDevisClick(devis);
                         }}
                     >
-                        <MiniDevisCardContent devis={devis} isSelected={selectedDevisId === devis.DevisId!.toString()} />
+                        <MiniDevisCardContent devis={devis} isSelected={selectedDevis?.DevisId! === devis.DevisId} />
                     </div>
                 ))}
             </div>
