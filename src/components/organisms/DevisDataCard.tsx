@@ -38,7 +38,6 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
     }, [data]);
 
     const handleDevisClick = (devis: Devis) => {
-        console.log("Pressed Devis _ " + devis)
         onDevisClick(devis); // Send the selected devis to the parent
         setSelectedDevis(devis); // Track the selected devis ID
     };
@@ -93,7 +92,6 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
                         className={`font-oswald p-3 bg-highGrey border border-highGrey rounded-xl mb-2 cursor-pointer 
                             ${selectedDevis?.DevisId! === devis.DevisId ? 'bg-lightGreen border border-lightGreen text-highGrey' : 'text-lightWhite'}`}
                         onClick={() => {
-                            console.log("Clicked Devis ID: ", devis.DevisId);
                             handleDevisClick(devis);
                         }}
                     >

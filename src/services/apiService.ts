@@ -2,6 +2,7 @@ import { Article } from "@/types/otherTypes";
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 
@@ -396,4 +397,110 @@ export const uploadDocuments = async (
     throw error;
   }
 };
+
+
+export const streamFile = async (filename: string, navigate: (path: string) => void) => {
+  const token = getToken(); // Retrieve the token
+  if (!token) {
+      navigate('/login');
+      throw new Error('No token found');
+  }
+
+  try {
+      const response = await fetch(`${API_URL}/devis-documents/stream-file`, {
+          method: 'POST',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ filename }), // Sending filename in request body
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to stream file');
+      }
+
+      return response.blob(); // Return the blob from the response
+  } catch (error) {
+      console.error('Error streaming file:', error);
+      throw error;
+  }
+};
+
+
+export const getUrlFiles = async (database:string,devisId:string,filename: string , navigate: (path: string) => void) => {
+  const token = getToken(); // Retrieve the token
+  if (!token) {
+      navigate('/login');
+      throw new Error('No token found');
+  }
+
+  try {
+      const response = await fetch(`${API_URL}/devis-documents/get-url`, {
+          method: 'POST',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "database":database,
+            "devisId":devisId,
+            "filename":filename,
+          }),
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to stream file');
+      }
+
+      return response
+  } catch (error) {
+      console.error('Error streaming file:', error);
+      throw error;
+  }
+};
+
+
+
+
+interface FileData {
+  id: number;
+  DevisId: number;
+  file_name: string;
+  file_path: string;
+  mime_type: string;
+  file_size: number;
+  uploaded_at: string;
+}
+export const getDevisFiles = async (database: string, devisId: string, navigate: (path: string) => void): Promise<FileData[]> => {
+  const token = getToken(); // Retrieve the token
+  if (!token) {
+      navigate('/login');
+      throw new Error('No token found');
+  }
+
+  try {
+      const response = await fetch(`${API_URL}/devis-documents/get-devis-files`, {
+          method: 'POST',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              "database": database,
+              "devisId": devisId,
+          }),
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch files');
+      }
+
+      return response.json();
+  } catch (error) {
+      console.error('Error fetching files:', error);
+      throw error;
+  }
+};
+
 
