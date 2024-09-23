@@ -28,12 +28,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, fileType, fileN
 
   const renderContent = () => {
     if (!content) return null;
-
+  
+    const updatedContent = fileType === 'text' ? `${content}?t=${Date.now()}` : content; // Append timestamp for text
+  
     switch (fileType) {
       case 'text':
         return (
           <iframe
-            src={content}
+            src={updatedContent} // Use the updated content URL
             width="100%"
             height="80%"
             title="Text Preview"
@@ -60,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, fileType, fileN
             width="100%"
             height="100%" // Set height to 100% to utilize available space
             title="PDF Preview"
-            style={{ border: 'none', minHeight: '70vh', minWidth:'100vh' }} // Ensure minimum height for better visibility
+            style={{ border: 'none', minHeight: '70vh', minWidth: '100vh' }} // Ensure minimum height for better visibility
             onLoad={() => setDimensions({ width: 'auto', height: 'auto' })}
           />
         );
@@ -68,6 +70,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, fileType, fileN
         return null;
     }
   };
+  
 
   const renderHeader = () => {
     return (

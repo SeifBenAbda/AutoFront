@@ -98,6 +98,9 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      react-audio-recorder:
+        specifier: ^2.2.0
+        version: 2.2.0(react@18.3.1)
       react-day-picker:
         specifier: 8.10.1
         version: 8.10.1(date-fns@3.6.0)(react@18.3.1)
@@ -2667,6 +2670,11 @@ packages:
     peerDependencies:
       react: '>=16.9.0'
       react-dom: '>=16.9.0'
+
+  react-audio-recorder@2.2.0:
+    resolution: {integrity: sha512-YVWmrvz+NhqbeDgmfddI5bJUBx5AZcaksqlK86Mv6PfSYUbJSmb45rg16lASjo6CU/jFOJIAnLAMTHGAWbp0NQ==}
+    peerDependencies:
+      react: 16.x
 
   react-day-picker@8.10.1:
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
@@ -5713,6 +5721,10 @@ snapshots:
       rc-util: 5.43.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  react-audio-recorder@2.2.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
     dependencies:

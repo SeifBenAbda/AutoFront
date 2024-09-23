@@ -8,11 +8,11 @@
 /* Custom styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f3f4f6;
+    background-color: #fbfbfb;
 }
   
 .placeholder-custom::placeholder {
-      color: #f3f4f6; /* Example: Custom color */
+      color: #fbfbfb; /* Example: Custom color */
       opacity: 1; /* Example: Full opacity */
       font-style: 'Bree Serif'; /* Example: Italicize text */
 }

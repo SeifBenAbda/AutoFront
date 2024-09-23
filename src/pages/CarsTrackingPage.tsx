@@ -29,7 +29,7 @@ export function CarsTrackingPage() {
                         </div>
                     </ResizablePanel>
 
-                    <ResizableHandle className="bg-whiteSecond border-none border" />
+                    <ResizableHandle className="bg-lightWhite border-none border" />
 
                     {/* DevisDetails panel */}
                     <ResizablePanel defaultSize={75} minSize={50} className="h-full">

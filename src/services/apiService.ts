@@ -504,3 +504,93 @@ export const getDevisFiles = async (database: string, devisId: string, navigate:
 };
 
 
+
+//-----------------Audio------------------------//
+export const uploadAudio = async (
+  formData: FormData, // Accept FormData as a parameter
+  navigate: (path: string) => void
+) => {
+  const token = getToken(); // Assume getToken retrieves the token
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/devis-documents/uploadAudio`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // Note: Do not set Content-Type when sending FormData
+      },
+      body: formData, // Use FormData as the body
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken(); // Assume removeToken clears the token
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to upload audio');
+    }
+
+    return await response.json(); // Return the response as JSON
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+// Utility function to convert a file to Base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+};
+
+
+export const getAudioFiles = async (
+  database: string,
+  devisId: number
+) => {
+  const token = getToken(); // Assume getToken retrieves the token
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/devis-documents/getAudioFiles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ database, devisId }),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken(); // Assume removeToken clears the token
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch audio files');
+    }
+
+    const data = await response.json();
+    return data; // Assuming the API response structure is { status: 200, audioFiles: [] }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+

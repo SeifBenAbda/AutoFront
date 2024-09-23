@@ -14,6 +14,7 @@ import { DevisDetaillsCard } from './ExtraDetaillsCards/DevisDetaillsCard';
 import { VehiculeDetaillsCard } from './ExtraDetaillsCards/VehiculeDetaillsCard';
 import { RappelsDetaillsCard } from './ExtraDetaillsCards/RappelsDetaillsCard';
 import { DocumentsDetaillsCard } from './ExtraDetaillsCards/DocumentsDetaillsCard';
+import { ClientDetaillsCard } from './ExtraDetaillsCards/ClientDetaillsCard';
 
 interface DevisDetailsProps {
     devis: Devis | null; // The selected Devis, or null if none is selected
@@ -132,8 +133,9 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
 
     const steps: StepConfig[] = myDevis ? [
         { label: 'Devis', component: <DevisDetaillsCard devis={myDevis} onUpdate={handleDevisUpdate} /> },
+        { label: 'Client', component: <ClientDetaillsCard client={myDevis.client!} onUpdate={handleClientUpdate} /> },
         { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
-        { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} /> },
+        { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} devisId={myDevis.DevisId!} /> },
         { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
     ] : [];
 

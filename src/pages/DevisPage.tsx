@@ -83,10 +83,10 @@ const DevisPage: React.FC = () => {
                     <Loading /> {/* Adjust this component to fit your loading design */}
                 </div>
             )}
-            <Card className="p-2 m-1 bg-veryGrey border border-veryGrey">
+            <Card className="p-2 m-1 bg-lightWhite border border-lightWhite">
                 <div className="flex flex-col">
                     {/* Fixed CardHeader, with enough margin to avoid overlap with the main Header */}
-                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-veryGrey z-10 p-4 border-b border-veryGrey ">
+                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-lightWhite z-10 p-4 border-b border-lightWhite ">
                         <div>
                             <CardTitle className="text-darkGrey">Devis</CardTitle>
                             <CardDescription>Devis pour voiture</CardDescription>

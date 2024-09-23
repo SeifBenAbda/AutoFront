@@ -54,7 +54,7 @@ const DevisDocsViewer: React.FC = () => {
             <h1>File Viewer</h1>
            
             <button onClick={() => handleButtonClick('test1.txt')}>View PDF</button>
-            <Modal isOpen={isModalOpen} onClose={handleCloseModal} content={fileContent} fileType={fileType} />
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal} content={fileContent} fileType={fileType} fileName={""}/>
         </div>
     );
 };

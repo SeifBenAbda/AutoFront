@@ -45,7 +45,9 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
     const handleSearch = (searchValue: string) => {
         setSearchValue(searchValue);
         setPage(1); // Reset to first page on search
-        setSelectedDevis(undefined); // Track the selected devis ID
+        if(searchValue!=""){
+            setSelectedDevis(undefined); // Track the selected devis ID
+        }
     };
 
     const handleStatusChange = (status: string) => {

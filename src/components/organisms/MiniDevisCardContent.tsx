@@ -57,7 +57,7 @@ export default function MiniDevisCardContent({ devis, isSelected }: MiniDevisCar
                 </div>
 
                 {/* Days ago in French */}
-                <span className={`text-sm ${selectedTextColor} `}>{`Il y a ${daysAgo}`}</span>
+                <span className={`text-sm ${selectedTextColor} `}>{`${daysAgo}`}</span>
             </div>
 
             <div className="flex flex-row justify-between items-center">
