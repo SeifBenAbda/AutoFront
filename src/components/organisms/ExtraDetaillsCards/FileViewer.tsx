@@ -7,15 +7,18 @@ import { Card, CardContent, CardTitle } from '../../../@/components/ui/card';
 import imageIcon from '../../../images/picture.png';
 import textIcon from '../../../images/text.png';
 import pdfIcon from '../../../images/pdf.png';
+import emptyBoxIcon from '../../../images/emptyBox.png';
+
 const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [fileType, setFileType] = useState<'text' | 'image' | 'pdf' | null>(null);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [fileName , setFileName] = useState<string | null>(null);
     const API_URL = import.meta.env.VITE_FILES_URL;
     const navigate = useNavigate();
-    const [isLoadingFile,setIsLoadingFiles] = useState(false)
+    const [isLoadingFile, setIsLoadingFiles] = useState(false)
     // Fetch all files using the useDevisFiles hook
-    const { data: files = [], isLoading, error ,refetch } = useDevisFiles(devisId, navigate);
+    const { data: files = [], isLoading, error, refetch } = useDevisFiles(devisId, navigate);
 
     // Use the useUrlFiles hook
     const { mutateAsync: fetchFileUrl } = useUrlFiles(devisId, navigate);
@@ -23,7 +26,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
 
     useEffect(() => {
         setIsLoadingFiles(true)
-        refetch().then(()=>{
+        refetch().then(() => {
             setIsLoadingFiles(false);
         });
     }, [devisId, refetch]); // Add refetch to the dependency array
@@ -47,6 +50,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
 
             // Set the file URL and type based on the MIME type
             setFileUrl(fullUrl);
+            setFileName(filename)
 
             if (mime_type.startsWith('image/')) {
                 setFileType('image');
@@ -57,6 +61,8 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
             } else {
                 throw new Error('Unsupported file type');
             }
+
+            
 
             // Open the modal
             setModalOpen(true);
@@ -69,6 +75,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
         setModalOpen(false);
         setFileUrl(null);
         setFileType(null);
+        setFileName(null);
     };
 
     if (isLoading || isLoadingFile) return (
@@ -78,9 +85,9 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     )
     if (error) return <div>Error fetching files: {error.message}</div>;
 
-    return (
-        <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 mt-2'>
-            <CardTitle className='text-center mb-2 mt-1 text-2xl font-oswald'>Visualisation des fichiers</CardTitle>
+
+    const renderFiles = () => {
+        return (
             <div className="flex flex-wrap">
                 {files.map((file) => (
                     <CardContent key={file.id}>
@@ -98,12 +105,30 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
                     </CardContent>
                 ))}
             </div>
+        )
+    }
 
+
+    const renderEmptyFiles = () => {
+        return (
+            <div className='h-full w-full items-center flex flex-col space-x-4'>
+                <img src={emptyBoxIcon} alt='EmptyBox' height={100} width={100} />
+                <span className='text-highGrey text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
+            </div>
+        )
+    }
+
+    return (
+        <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 mt-2'>
+            <CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle>
+
+            {files.length > 0 ? renderFiles() : renderEmptyFiles()}
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 content={fileUrl}
                 fileType={fileType}
+                fileName={fileName!}
             />
         </Card>
     );

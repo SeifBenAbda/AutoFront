@@ -40,16 +40,21 @@ export const fetchUserData = async () => {
     throw new Error('No token found');
   }
 
-  const response = await fetch(`${API_URL}/users/me`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch user data');
+  try{
+    const response = await fetch(`${API_URL}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      //throw new Error('Failed to fetch user data');
+    }
+  
+    return response.json();
+  }catch(e){
+    return null ;
   }
 
-  return response.json();
+  
 };

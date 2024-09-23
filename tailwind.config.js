@@ -31,7 +31,8 @@ module.exports = {
 			lightWhite:'#fbfbfb',
 			lightRed:'#FF6B6B',
 			lightGreen:'#b0ee81',
-			highGrey:'#272e45'
+			highGrey:'#272e45',
+			highGreen:'#1e390a'
   		},
   		fontFamily: {
   			oswald: ['Fjalla One','sans-serif']

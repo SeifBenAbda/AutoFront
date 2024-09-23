@@ -27,7 +27,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
             {/* Centered Devis N° */}
             <div className="flex justify-center w-full">
-                <CardTitle className="text-xl text-highGrey font-oswald mt-4 mb-2">
+                <CardTitle className="text-2xl text-highGrey font-oswald mt-4 mb-3">
                     Devis N° {devis.DevisId}
                 </CardTitle>
             </div>

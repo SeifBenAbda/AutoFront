@@ -23,7 +23,7 @@ export default function MiniDevisCardContent({ devis, isSelected }: MiniDevisCar
             case "Moyenne":
                 return "bg-yellow-400 border border-yellow-400 text-highGrey"
             case "Haute":
-                return "bg-lightRed border border-lightRed text-highGrey"
+                return "bg-red-500 border border-red-500 text-lightWhite"
 
         }
     }
@@ -31,11 +31,17 @@ export default function MiniDevisCardContent({ devis, isSelected }: MiniDevisCar
     const getStatusClassName = (devisStatus: string) => {
         switch (devisStatus) {
             case "En Attente":
-                return "bg-lightWhite border border-highGrey text-highGrey"
+                return "bg-gray-300 border border-gray-300 text-highGrey"
             case "En Cours":
                 return "bg-yellow-200 border border-yellow-200 text-highGrey"
             case "Facture":
-                return "bg-lightRed border border-lightRed text-highGrey"
+                return isSelected ? "bg-highGreen border border-highGreen text-lightWhite" : "bg-green-200 border border-green-200 text-highGrey"
+            case "Reserver":
+                return "bg-blue-300 border border-blue-300 text-highGrey"
+            case "Annuler":
+                return "bg-red-500 border border-red-500 text-lightWhite"
+                case "HDSI":
+                    return "bg-yellow-400 border border-yellow-400 text-highGrey"    
             default:
                 return ""
         }

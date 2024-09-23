@@ -13,7 +13,7 @@ interface DevisDataProps {
     onDevisClick: (devis: Devis) => void; // Function to send the selected Devis to the parent
 }
 
-const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
+const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
     const [page, setPage] = useState(1);
     const [searchValue, setSearchValue] = useState('');
     const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
@@ -45,21 +45,26 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
     const handleSearch = (searchValue: string) => {
         setSearchValue(searchValue);
         setPage(1); // Reset to first page on search
+        setSelectedDevis(undefined); // Track the selected devis ID
     };
 
     const handleStatusChange = (status: string) => {
         setSelectedStatus(status);
         setPage(1); // Reset to first page on status change
+        setSelectedDevis(undefined); // Track the selected devis ID
+        
     };
 
     const handlePriorityChange = (priority: string) => {
         setSelectedPriority(priority);
         setPage(1); // Reset to first page on priority change
+        setSelectedDevis(undefined); // Track the selected devis ID
     };
 
     const handleCarChange = (cars: string[]) => {
         setSelectedCars(cars);
         setPage(1); // Reset to first page on car change
+        setSelectedDevis(undefined); // Track the selected devis ID
     };
 
 

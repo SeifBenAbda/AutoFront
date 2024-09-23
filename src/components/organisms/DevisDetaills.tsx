@@ -25,7 +25,7 @@ interface StepConfig {
 }
 
 
-const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
+const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
     const [currentPriority, setPriority] = useState(devis?.PriorityDevis || 'Normale');
 
     const activeNormalStyle = 'font-oswald bg-greenOne border border-greenOne rounded-md text-lightWhite hover:bg-greenOne';
@@ -40,6 +40,9 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     const [rappels, setRappels] = useState<Rappel[]>(devis?.rappels || []);
     const [client, setClient] = useState<Client | null>(devis?.client || null);
     const [carRequest, setCarRequest] = useState<CarRequest | null>(devis?.carRequests?.[0] || null);
+    
+
+
     const { mutate: updateDevis } = useUpdateDevis();
 
 
@@ -53,7 +56,12 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
             //setItemRequests(devis!.itemRequests || []);
             setDevis(devis!);
             setRappels(devis!.rappels);
+            setActiveStep(0)
+        
+        }else{
+            setDevis(null);
         }
+        
     }, [devis]); // Trigger effect when 'devis' changes
 
 

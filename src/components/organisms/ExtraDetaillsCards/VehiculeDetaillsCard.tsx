@@ -31,7 +31,7 @@ export function VehiculeDetaillsCard({ carRequest, devis, onUpdate, onUpdateDevi
     return (
         <Card className="bg-lightWhite border border-lightWhite flex flex-col overflow-y-auto">
             <div className="flex justify-center w-full">
-                <CardTitle className="text-xl text-highGrey font-oswald mt-4 mb-2">
+                <CardTitle className="text-2xl text-highGrey font-oswald mt-4 mb-3">
                     Véhicule {carRequest.CarModel}
                 </CardTitle>
             </div>

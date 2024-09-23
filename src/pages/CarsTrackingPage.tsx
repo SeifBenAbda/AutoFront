@@ -11,6 +11,8 @@ export function CarsTrackingPage() {
         setSelectedDevis(devis); // Update the selected devis
     };
 
+  
+
     return (
         <section className="flex-1 flex flex-col ml-4 max-h-[88vh] overflow-hidden"> 
             {/* Ensures no scrolling on the entire page */}
