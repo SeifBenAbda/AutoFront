@@ -9,14 +9,14 @@ interface CustomAudioPlayerProps {
 const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState<number | null>(null); // Duration will be set to null initially
-    const [showDuration, setShowDuration] = useState(false); // Manage visibility of duration
+    const [duration, setDuration] = useState<number | null>(null);
+    const [showDuration, setShowDuration] = useState(false);
 
     const playAudio = () => {
         if (audioRef.current) {
             audioRef.current.play();
-            setShowDuration(true); // Show duration when play is pressed
-            setDuration(audioRef.current.duration); // Set duration when play is pressed
+            setShowDuration(true);
+            setDuration(audioRef.current.duration);
         }
     };
 
@@ -31,8 +31,8 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
     };
 
     const handleEnded = () => {
-        setShowDuration(false); // Hide duration when audio ends
-        setCurrentTime(0); // Optionally reset current time when audio ends
+        setShowDuration(false);
+        setCurrentTime(0);
     };
 
     useEffect(() => {
@@ -40,36 +40,59 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
 
         if (audioElement) {
             audioElement.addEventListener('loadedmetadata', () => {
-                // Set the duration when metadata is loaded if it's not playing
                 if (audioElement.paused) {
                     setDuration(audioElement.duration);
                 }
             });
 
-            // Add event listener for audio ending
             audioElement.addEventListener('ended', handleEnded);
 
             return () => {
                 audioElement.removeEventListener('loadedmetadata', () => {
                     setDuration(audioElement.duration);
                 });
-                audioElement.removeEventListener('ended', handleEnded); // Clean up event listener
+                audioElement.removeEventListener('ended', handleEnded);
             };
         }
     }, []);
 
-    // Calculate progress percentage
-    const progressPercent = (currentTime / (duration || 1)) * 100 || 0; // Prevent division by zero
+    // Fetch the audio file with authentication
+    useEffect(() => {
+        const fetchAudio = async () => {
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Basic ${btoa('Faouzi:baf.syrine2013')}`, // Replace with your credentials
+                    },
+                    credentials: 'include', // Include credentials in the request
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch audio file');
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                if (audioRef.current) {
+                    audioRef.current.src = audioUrl;
+                }
+            } catch (error) {
+                console.error('Error fetching audio file:', error);
+            }
+        };
+
+        fetchAudio();
+    }, [fullUrl]);
+
+    const progressPercent = (currentTime / (duration || 1)) * 100 || 0;
 
     return (
         <div className="audio-player bg-lightWhite p-2 rounded-md font-oswald w-full">
             <audio
                 ref={audioRef}
-                src={fullUrl}
                 onTimeUpdate={handleTimeUpdate}
             />
-
-
 
             <div className='flex flex-row space-x-2 mb-2'>
                 <span className="mt-2 text-sm">{fileName}</span>
@@ -81,13 +104,15 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
                     <Button onClick={pauseAudio} className="bg-red-600 text-white px-4 py-2 rounded">
                         Pause
                     </Button>
-                    {fileName == "" && <>
-                        {showDuration && (
-                            <div className="progress-info text-sm text-highGrey">
-                                {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
-                            </div>
-                        )}
-                    </>}
+                    {fileName === "" && (
+                        <>
+                            {showDuration && (
+                                <div className="progress-info text-sm text-highGrey">
+                                    {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
+                                </div>
+                            )}
+                        </>
+                    )}
                 </div>
             </div>
             <div className='flex flex-col space-y-2'>
@@ -97,13 +122,15 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
                         style={{ width: `${progressPercent}%` }}
                     />
                 </div>
-                {fileName != "" && <>
-                    {showDuration && (
-                        <div className="progress-info text-sm text-highGrey">
-                            {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
-                        </div>
-                    )}
-                </>}
+                {fileName !== "" && (
+                    <>
+                        {showDuration && (
+                            <div className="progress-info text-sm text-highGrey">
+                                {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

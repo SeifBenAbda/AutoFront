@@ -13,23 +13,40 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [fileType, setFileType] = useState<'text' | 'image' | 'pdf' | null>(null);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [fileName , setFileName] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string | null>(null);
     const API_URL = import.meta.env.VITE_FILES_URL;
     const navigate = useNavigate();
-    const [isLoadingFile, setIsLoadingFiles] = useState(false)
-    // Fetch all files using the useDevisFiles hook
+    const [isLoadingFile, setIsLoadingFiles] = useState(false);
     const { data: files = [], isLoading, error, refetch } = useDevisFiles(devisId, navigate);
-
-    // Use the useUrlFiles hook
     const { mutateAsync: fetchFileUrl } = useUrlFiles(devisId, navigate);
 
-
     useEffect(() => {
-        setIsLoadingFiles(true)
+        setIsLoadingFiles(true);
         refetch().then(() => {
             setIsLoadingFiles(false);
         });
     }, [devisId, refetch]); // Add refetch to the dependency array
+
+    const fetchFileWithAuth = async (fileUrl: string) => {
+        try {
+            const response = await fetch(fileUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Basic ${btoa('Faouzi:baf.syrine2013')}`, // Replace with your credentials
+                },
+                credentials: 'include', // Include credentials in the request
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`);
+            }
+
+            return await response.blob(); // Return the file blob for further processing
+        } catch (error) {
+            console.error('Error fetching file:', error);
+            throw error; // Rethrow error for handling in the calling function
+        }
+    };
 
     const handleButtonClick = async (filename: string) => {
         try {
@@ -48,9 +65,13 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
             // Construct the full URL
             const fullUrl = `${API_URL}${encodeURIComponent(sanitizedFilePath)}`;
 
+            // Fetch the file content with authorization
+            const fileBlob = await fetchFileWithAuth(fullUrl);
+            const blobUrl = URL.createObjectURL(fileBlob);
+
             // Set the file URL and type based on the MIME type
-            setFileUrl(fullUrl);
-            setFileName(filename)
+            setFileUrl(blobUrl);
+            setFileName(filename);
 
             if (mime_type.startsWith('image/')) {
                 setFileType('image');
@@ -61,8 +82,6 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
             } else {
                 throw new Error('Unsupported file type');
             }
-
-            
 
             // Open the modal
             setModalOpen(true);
@@ -82,9 +101,9 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
         <div className='flex items-center justify-center w-full h-full'>
             <div className="w-12 h-12 border-4 border-t-highGrey border-gray-200 rounded-full animate-spin"></div>
         </div>
-    )
-    if (error) return <div>Error fetching files: {error.message}</div>;
+    );
 
+    if (error) return <div>Error fetching files: {error.message}</div>;
 
     const renderFiles = () => {
         return (
@@ -106,8 +125,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
                 ))}
             </div>
         )
-    }
-
+    };
 
     const renderEmptyFiles = () => {
         return (
@@ -116,12 +134,11 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
                 <span className='text-highGrey text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
             </div>
         )
-    }
+    };
 
     return (
         <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 mt-2'>
             <CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle>
-
             {files.length > 0 ? renderFiles() : renderEmptyFiles()}
             <Modal
                 isOpen={isModalOpen}
@@ -134,8 +151,6 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     );
 };
 
-export default FileViewer;
-
 const getFileIcon = (myFileType: string) => {
     const fileType = myFileType.split('/')[0];
     switch (fileType) {
@@ -146,6 +161,8 @@ const getFileIcon = (myFileType: string) => {
         case 'text':
             return textIcon;
         default:
-            return '/path/to/file-icon.png';
+            return '/path/to/file-icon.png'; // Default icon for unknown types
     }
 };
+
+export default FileViewer;

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
 import { useUser } from '../context/userContext';
 import { User } from '../models/user.model'; // Adjust the path as needed
-import io from 'socket.io-client';
+
 
 //const socket = io('http://localhost:3000/');
 

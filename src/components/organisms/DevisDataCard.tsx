@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useDevis from '../../hooks/useDevis';
 import { Devis } from '../../types/devisTypes'; // Assuming you have a type for your data
 import { PaginationTable } from '../atoms/TablePagination';
@@ -13,7 +13,7 @@ interface DevisDataProps {
     onDevisClick: (devis: Devis) => void; // Function to send the selected Devis to the parent
 }
 
-const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
+const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
     const [page, setPage] = useState(1);
     const [searchValue, setSearchValue] = useState('');
     const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
@@ -23,17 +23,27 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
 
     const { data, isLoading, error, isFetching, isError, refetch } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars);
 
-
+    // Ref to track if it's the initial fetch
+    const isInitialFetch = useRef(true);
 
     useEffect(() => {
         // Trigger refetch whenever search or filters change
         refetch();
     }, [searchValue, selectedStatus, selectedPriority, selectedCars, page, refetch]);
 
-    // Effect to handle data updates through WebSocket or any other update mechanism
     useEffect(() => {
         if (data) {
-            handleDevisClick(data.data.find((e)=>e.DevisId===selectedDevis?.DevisId)!);
+            if (isInitialFetch.current) {
+                // If it's the first fetch, select the first Devis
+                handleDevisClick(data.data[0]);
+                isInitialFetch.current = false; // Set it to false after the first fetch
+            } else if (selectedDevis) {
+                // If it's not the initial fetch, update the already selected Devis
+                const updatedDevis = data.data.find((e) => e.DevisId === selectedDevis.DevisId);
+                if (updatedDevis) {
+                    handleDevisClick(updatedDevis);
+                }
+            }
         }
     }, [data]);
 
@@ -45,31 +55,28 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
     const handleSearch = (searchValue: string) => {
         setSearchValue(searchValue);
         setPage(1); // Reset to first page on search
-        if(searchValue!=""){
-            setSelectedDevis(undefined); // Track the selected devis ID
+        if (searchValue !== '') {
+            setSelectedDevis(undefined); // Clear selected devis on search
         }
     };
 
     const handleStatusChange = (status: string) => {
         setSelectedStatus(status);
         setPage(1); // Reset to first page on status change
-        setSelectedDevis(undefined); // Track the selected devis ID
-        
+        setSelectedDevis(undefined); // Clear selected devis on status change
     };
 
     const handlePriorityChange = (priority: string) => {
         setSelectedPriority(priority);
         setPage(1); // Reset to first page on priority change
-        setSelectedDevis(undefined); // Track the selected devis ID
+        setSelectedDevis(undefined); // Clear selected devis on priority change
     };
 
     const handleCarChange = (cars: string[]) => {
         setSelectedCars(cars);
         setPage(1); // Reset to first page on car change
-        setSelectedDevis(undefined); // Track the selected devis ID
+        setSelectedDevis(undefined); // Clear selected devis on car change
     };
-
-
 
     const renderFilters = () => (
         <div className="flex flex-wrap gap-4 p-2 sticky">
@@ -83,7 +90,6 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
                 <CarsMultiSelect selectedValues={selectedCars} onChange={handleCarChange} isFiltering={true} />
             </div>
         </div>
-
     );
 
     const renderArticles = () => {
@@ -136,6 +142,5 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick}) => {
         </div>
     );
 };
-
 
 export default DevisData;
