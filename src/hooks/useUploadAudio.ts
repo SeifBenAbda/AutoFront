@@ -14,7 +14,7 @@ interface UseAudioUploadProps {
       },
       onSuccess: () => {
         // Handle successful upload, maybe you can add a refetch here if needed
-        getAudioFiles("Commer_2024_AutoPro", devisId);
+        getAudioFiles("Commer_2024_AutoPro", devisId,navigate);
       },
       onError: (error) => {
         console.error('Error uploading audio:', error);
@@ -26,11 +26,12 @@ interface UseAudioUploadProps {
 
 interface UseGetAudioFilesProps {
     devisId: number;
+    navigate: (path: string) => void;
 }
-export const useGetAudioFiles = ({devisId }: UseGetAudioFilesProps) => {
+export const useGetAudioFiles = ({devisId ,navigate}: UseGetAudioFilesProps) => {
     return useQuery({
       queryKey: ['audioFiles', devisId], // Query key includes both database and devisId
-      queryFn: () => getAudioFiles("Commer_2024_AutoPro", devisId), // API call function (to be implemented)
+      queryFn: () => getAudioFiles("Commer_2024_AutoPro", devisId,navigate), // API call function (to be implemented)
       enabled: !!devisId, // Only fetch if both database and devisId are provided
       staleTime: 5000, // Adjust the stale time as per your requirement
       refetchOnWindowFocus: false, // You can adjust this depending on your needs

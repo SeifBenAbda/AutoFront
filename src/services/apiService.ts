@@ -431,7 +431,8 @@ export const streamFile = async (filename: string, navigate: (path: string) => v
 export const getUrlFiles = async (database:string,devisId:string,filename: string , navigate: (path: string) => void) => {
   const token = getToken(); // Retrieve the token
   if (!token) {
-      navigate('/login');
+    removeToken();
+    navigate('/login');
       throw new Error('No token found');
   }
 
@@ -450,12 +451,14 @@ export const getUrlFiles = async (database:string,devisId:string,filename: strin
       });
 
       if (!response.ok) {
-          throw new Error('Failed to stream file');
+          throw new Error('Failed to get Url Docs');
+          removeToken();
+      navigate('/login');
       }
 
       return response
   } catch (error) {
-      console.error('Error streaming file:', error);
+      console.error('Error getting Url Docs:', error);
       throw error;
   }
 };
@@ -475,6 +478,7 @@ interface FileData {
 export const getDevisFiles = async (database: string, devisId: string, navigate: (path: string) => void): Promise<FileData[]> => {
   const token = getToken(); // Retrieve the token
   if (!token) {
+    removeToken();
       navigate('/login');
       throw new Error('No token found');
   }
@@ -493,6 +497,8 @@ export const getDevisFiles = async (database: string, devisId: string, navigate:
       });
 
       if (!response.ok) {
+        removeToken();
+          navigate('/login');
           throw new Error('Failed to fetch files');
       }
 
@@ -512,6 +518,7 @@ export const uploadAudio = async (
 ) => {
   const token = getToken(); // Assume getToken retrieves the token
   if (!token) {
+    removeToken();
     navigate('/login');
     throw new Error('No token found');
   }
@@ -558,10 +565,13 @@ const fileToBase64 = (file: File): Promise<string> => {
 
 export const getAudioFiles = async (
   database: string,
-  devisId: number
+  devisId: number,
+  navigate: (path: string) => void
 ) => {
   const token = getToken(); // Assume getToken retrieves the token
   if (!token) {
+    removeToken();
+    navigate('/login');
     throw new Error('No token found');
   }
 
@@ -577,7 +587,8 @@ export const getAudioFiles = async (
 
     if (response.status === 401) {
       // Token is invalid or expired
-      removeToken(); // Assume removeToken clears the token
+      removeToken();
+      navigate('/login');
       throw new Error('Unauthorized: Token is invalid or expired');
     }
 
