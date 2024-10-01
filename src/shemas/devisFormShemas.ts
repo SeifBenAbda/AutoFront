@@ -55,7 +55,10 @@ export const devisSchema = z.object({
         }),
 
         addressMoreInfos: z.string().optional(),
-    }).refine((data)=>{
+    }),
+
+    /*
+    .refine((data)=>{
         if(data.clientType == "Particulier" && !data.dateOfBirth){
             return false;
         }
@@ -64,6 +67,7 @@ export const devisSchema = z.object({
         message:"Date de Naissance !",
         path:['dateOfBirth']
     }),
+    */
 
 
     devisCarForm: z.object({

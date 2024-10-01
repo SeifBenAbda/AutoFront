@@ -24,6 +24,9 @@ const NavMenu: React.FC = () => {
       case '/carTracking':
         setActiveLink('Suivi Devis Voiture');
         break;
+        case '/profile':
+        setActiveLink('');
+        break;
       /*case '/itemTracking':
         setActiveLink('Suivi Changement des Pieces');
         break;*/

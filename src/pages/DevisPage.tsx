@@ -86,7 +86,7 @@ const DevisPage: React.FC = () => {
             <Card className="p-2 m-1 bg-lightWhite border border-lightWhite">
                 <div className="flex flex-col">
                     {/* Fixed CardHeader, with enough margin to avoid overlap with the main Header */}
-                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-lightWhite z-10 p-4 border-b border-lightWhite ">
+                    <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[50px] left-0 right-0 bg-lightWhite z-10 p-4 border-b border-lightWhite ">
                         <div>
                             <CardTitle className="text-darkGrey">Devis</CardTitle>
                             <CardDescription>Devis pour voiture</CardDescription>
@@ -104,7 +104,7 @@ const DevisPage: React.FC = () => {
                     </CardHeader>
 
                     {/* Add margin to the content area to compensate for the fixed header */}
-                    <CardContent className="lg-custom:mt-[70px] md-custom:mt-[65px] sm-custom:mt-[80px] sm:mt-[120px] mt-[110px]"> {/* 160px accounts for the combined height of the Header (64px) and CardHeader */}
+                    <CardContent className="lg-custom:mt-[40px] md-custom:mt-[65px] sm-custom:mt-[80px] sm:mt-[90px] mt-[100px]"> {/* 160px accounts for the combined height of the Header (64px) and CardHeader */}
                         <DevisForm form={form} />
                     </CardContent>
                 </div>
