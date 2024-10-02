@@ -79,7 +79,7 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
     };
 
     const renderFilters = () => (
-        <div className="flex flex-wrap gap-4 p-2 sticky">
+        <div className="flex flex-wrap gap-4 p-2 sticky pl-4">
             <div className="w-auto">
                 <StatusDevisDropDown value={selectedStatus} onChange={handleStatusChange} isFiltring={true} />
             </div>

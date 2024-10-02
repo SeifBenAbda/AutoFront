@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, } from 'react';
 import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
 import { useUser } from '../context/userContext';
 import { User } from '../models/user.model'; // Adjust the path as needed
+
 
 
 //const socket = io('http://localhost:3000/');
@@ -66,6 +67,9 @@ const useAuth = () => {
     setUser(null);
     navigate('/login');
   };
+
+
+  
 
   return { user, handleLogin, handleLogout, checkAuth, error };
 };

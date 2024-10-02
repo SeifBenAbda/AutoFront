@@ -176,9 +176,6 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
         return (
             <div className="items-center justify-center flex flex-col space-y-2">
                 <img src={emptyIcon} alt="Empty" className="w-48 h-48" />
-                <h2 className="text-xl text-lightWhite font-oswald text-center">
-                    Veuillez sélectionner l'une des demandes de véhicules sur la gauche
-                </h2>
             </div>
         );
     }

@@ -5,5 +5,8 @@ export interface User {
     password: string;
     nomUser: string;
     userCodeSte: string;
+    groupe:string,
+    actifDepuis:Date | undefined,
+    isActif : boolean | null ,
   }
   

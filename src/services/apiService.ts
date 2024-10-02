@@ -1,6 +1,7 @@
 import { Article } from "@/types/otherTypes";
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
+import { User } from "../models/user.model";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -17,6 +18,32 @@ export const fetchUserData = async () => {
   });
 
   if (!response.ok) throw new Error('Failed to fetch user data');
+
+  return response.json();
+};
+
+export const updateUser = async (
+  updatedUser?: Partial<User>,
+  newUserName? : string | null
+): Promise<{ user: User }> => {
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/users/me`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    // Directly sending the updatedUser object
+    body: JSON.stringify({
+      updatedUser,
+      newUserName
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
 
   return response.json();
 };

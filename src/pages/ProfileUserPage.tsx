@@ -1,13 +1,16 @@
 import { ProfileUser } from "../components/organisms/ProfileUser";
 import Header from "../components/organisms/Header";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const ProfileUserPage: React.FC = () => {
+    const queryClient = new QueryClient();
     useEffect(() => {
         // Scroll to the top when the component mounts
         window.scrollTo(0, 0);
     }, []);
     return (
+        <QueryClientProvider client={queryClient}>
         <div className="min-h-screen flex flex-col">
             {/* Header */}
             <Header />
@@ -17,6 +20,7 @@ const ProfileUserPage: React.FC = () => {
                 <ProfileUser />
             </main>
         </div>
+        </QueryClientProvider>
     );
 }
 
