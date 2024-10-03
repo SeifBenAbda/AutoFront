@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import PasswordInput from './PasswordInput';
+import {PasswordInput} from './PasswordInput';
 import Loading from '../atoms/Loading';
 
 const LoginForm: React.FC = () => {

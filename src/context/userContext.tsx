@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '../models/user.model'; // Adjust the path as needed
 import { useMutation } from '@tanstack/react-query';
-import { updateUser } from '../services/apiService';
+import { updatePassword, updateUser } from '../services/apiService';
 
 interface UserContextType {
   user: User | null;
@@ -39,6 +39,25 @@ export const useUpdateUser = () => {
       newUserName : string | null;
     }) => {
       return await updateUser(updatedUser, newUserName);
+    },
+    // Optional: Define onSuccess, onError, etc.
+    onSuccess: (data) => {
+      // Handle success (e.g., show a notification, invalidate queries)
+    },
+    onError: (error) => {
+      // Handle error (e.g., show an error message)
+    },
+  });
+};
+
+export const useUpdatePassword = () => {
+  return useMutation({
+    mutationFn: async ({
+      newPassword
+    }: {
+      newPassword : string | null;
+    }) => {
+      return await updatePassword(newPassword);
     },
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {

@@ -7,7 +7,6 @@ import {
     SelectValue,
 } from "../../@/components/ui/select";
 import useRegions from '../../hooks/useRegion';
-import Loading from './Loading';
 
 interface RegionsDropDownTypes {
     value?: string;

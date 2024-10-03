@@ -49,6 +49,31 @@ export const updateUser = async (
 };
 
 
+export const updatePassword = async (
+  newPassword? : string | null
+): Promise<{ user: User }> => {
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/users/newPassword`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    // Directly sending the updatedUser object
+    body: JSON.stringify({
+      newPassword
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  return response.json();
+};
+
+
 
 interface ApiResponse {
   data: Devis[];
