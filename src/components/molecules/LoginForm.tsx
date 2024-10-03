@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import {PasswordInput} from './PasswordInput';
+import { PasswordInput } from './PasswordInput';
 import Loading from '../atoms/Loading';
+import { Input } from '../../@/components/ui/input';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -33,13 +34,13 @@ const LoginForm: React.FC = () => {
       {isLoading && <Loading />}
       <form onSubmit={handleSubmit} className="relative z-10">
         <div className="mb-4">
-          <input
+          <Input
             type="text"
             id="username"
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-veryGrey focus:border-highGrey focus:outline-none rounded-md mt-1 font-oswald text-gray-600"
+            className="w-full p-2 border border-veryGrey focus:border-highGrey focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
             placeholder="Nom d'utilisateur"
           />
         </div>
