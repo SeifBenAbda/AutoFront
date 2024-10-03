@@ -19,7 +19,7 @@ function General() {
     const { mutateAsync: updateUser, isPending, isError, isSuccess } = useUpdateUser();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [myToastCloseStyle,setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite")
+    const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite")
 
 
     const navigate = useNavigate();
@@ -31,24 +31,24 @@ function General() {
             const updatedUser = { ...user, nomUser: name, actifDepuis: new Date() };
             setUser(updatedUser);
             setIsLoading(true);
-    
+
             await updateUser({ updatedUser, newUserName: username }).then((e) => {
                 if (user.username.trim() != username.trim()) {
                     setMyToastCloseStyle("text-lightWhite hover:text-lightWhite")
-                    
+
                     const myToast = toast({
                         className: "bg-red-800 border rounded-md text-lightWhite hover:text-lightWhite",
                         title: "Vous serez déconnecté dans quelques secondes.",
                     });
-                    
-    
+
+
                     // Wait for 3 seconds before logging out
                     setTimeout(() => {
                         myToast.dismiss();
                         handleLogout(navigate);
                     }, 3000); // 3000 milliseconds = 3 seconds
-                   
-                }else{
+
+                } else {
                     setMyToastCloseStyle("text-highGrey hover:text-highGrey")
                     toast({
                         className: "bg-greenOne border border-greenOne rounded-md text-highGrey hover:text-highGrey ",
@@ -56,13 +56,13 @@ function General() {
                     });
                 }
 
-               
-    
+
+
                 setIsLoading(false);
             });
         }
     };
-    
+
 
 
     return (
@@ -78,32 +78,21 @@ function General() {
 
             {/* Main content that remains in the background */}
             <Card className="bg-highGrey w-full">
-                <div className="flex flex-row justify-between w-full">
-                    <CardContent className="w-full">
-                        <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">
-                            Nom d'utilisateur
-                        </label>
-                        <Input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Nom d'utilisateur"
-                            className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
-                        />
-                    </CardContent>
-                    <CardContent className="w-full">
-                        <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">
-                            Identifiant de connexion
-                        </label>
-                        <Input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Identifiant de connexion"
-                            className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
-                        />
-                    </CardContent>
-                </div>
+
+                <CardContent className="w-full">
+                    <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">
+                        Nom d'utilisateur
+                    </label>
+                    <Input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Nom d'utilisateur"
+                        className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
+                    />
+                </CardContent>
+
+
 
                 <div className="flex flex-row justify-between w-full">
                     <CardContent className="w-full">

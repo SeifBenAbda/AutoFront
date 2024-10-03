@@ -31,7 +31,7 @@ export const updateUser = async (
   if (!token) throw new Error('No token found');
 
   const response = await fetch(`${API_URL}/users/me`, {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',

@@ -19,7 +19,13 @@ const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
     ({ value, onChange, isFiltring }, ref) => {
         const { data: carModels, isLoading, error } = useCarModels();
 
-        if (isLoading) return <div className='pl-1 text-white'>Loading</div>;
+        if (isLoading){
+            return (
+                <div className="flex justify-center items-center h-10">
+                    <div className="flex border-2 border-t-highGrey h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                </div>
+            );
+        }
         if (error) return <div className='text-lightRed'>Error: {error.message}</div>;
 
         return (

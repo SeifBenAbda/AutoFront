@@ -29,9 +29,9 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
     const [isLoadingAudios, setIsLoadingAudios] = useState(true); // State for loading audios
     const [showBottomBar, setShowBottomBar] = useState(false); // State to control bottom bar visibility
     const [uploadMessage, setUploadMessage] = useState<string>(''); // State for upload messages
-
-    const { data: fetchedAudioFiles, refetch } = useGetAudioFiles({ devisId });
     const navigate = useNavigate();
+    const { data: fetchedAudioFiles, refetch } = useGetAudioFiles({ devisId,navigate });
+    
     const uploadAudio = useAudioUpload({ devisId, navigate });
 
     useEffect(() => {

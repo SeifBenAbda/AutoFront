@@ -11,7 +11,13 @@ interface CarsDropDownTypes {
 const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDownTypes) => {
     const { data: carModels, isLoading, error } = useCarModels();
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading){
+        return (
+            <div className="flex justify-center items-center h-10">
+                <div className="flex border-2 border-t-highGrey h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+            </div>
+        );
+    }
     if (error) return <div>Error: {error.message}</div>;
 
     // Prepare options for MultiSelect
