@@ -8,6 +8,7 @@ import imageIcon from '../../../images/picture.png';
 import textIcon from '../../../images/text.png';
 import pdfIcon from '../../../images/pdf.png';
 import emptyBoxIcon from '../../../images/emptyBox.png';
+import { set } from 'date-fns';
 
 const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -17,6 +18,10 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     const API_URL = import.meta.env.VITE_FILES_URL;
     const navigate = useNavigate();
     const [isLoadingFile, setIsLoadingFiles] = useState(false);
+
+    const [isLoadingOpening, setIsLoadingOpening] = useState(false);
+
+
     const { data: files = [], isLoading, error, refetch } = useDevisFiles(devisId, navigate);
     const { mutateAsync: fetchFileUrl } = useUrlFiles(devisId, navigate);
 
@@ -49,6 +54,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     };
 
     const handleButtonClick = async (filename: string) => {
+        setIsLoadingOpening(true);
         try {
             // Fetch the file metadata including the file path and MIME type
             const fileResponse = await fetchFileUrl(filename);
@@ -83,9 +89,12 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
                 throw new Error('Unsupported file type');
             }
 
+            setIsLoadingOpening(false);
+
             // Open the modal
             setModalOpen(true);
         } catch (error) {
+            setIsLoadingOpening(false);
             console.error('Error fetching file content:', error);
         }
     };
@@ -103,11 +112,16 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
         </div>
     );
 
+
+
     if (error) return <div>Error fetching files: {error.message}</div>;
 
     const renderFiles = () => {
         return (
             <div className="flex flex-wrap">
+                {isLoadingOpening && <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 mt-2">
+                    <div className="text-white font-bold">Veuillez patienter...</div>
+                </div>}
                 {files.map((file) => (
                     <CardContent key={file.id}>
                         <div className='flex flex-col items-center'>

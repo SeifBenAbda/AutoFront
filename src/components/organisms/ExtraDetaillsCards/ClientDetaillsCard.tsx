@@ -36,6 +36,18 @@ export function ClientDetaillsCard({ client, onUpdate }: ClientCardProps) {
                 </CardTitle>
             </div>
 
+
+            {/** Client Name  */}
+            <CardContent>
+                <label className="block text-sm font-medium text-highGrey">Nom</label>
+                <Input
+                    type="text"
+                    value={client.nomClient || ""} // Directly bind to client prop
+                    onChange={(e) => handleChange("nomClient", e.target.value)}
+                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                />
+            </CardContent>
+
             {/** CIN CLIENT  */}
 
             {client.clientType === "Particulier" ? (

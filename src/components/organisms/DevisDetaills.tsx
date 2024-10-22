@@ -26,8 +26,9 @@ interface StepConfig {
 }
 
 
-const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
+const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     const [currentPriority, setPriority] = useState(devis?.PriorityDevis || 'Normale');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const activeNormalStyle = 'font-oswald bg-greenOne border border-greenOne rounded-md text-lightWhite hover:bg-greenOne';
     const activeMoyenneStyle = 'font-oswald bg-yellow-500 border border-yellow-500 rounded-md text-lightWhite hover:bg-yellow-500';
@@ -41,10 +42,10 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
     const [rappels, setRappels] = useState<Rappel[]>(devis?.rappels || []);
     const [client, setClient] = useState<Client | null>(devis?.client || null);
     const [carRequest, setCarRequest] = useState<CarRequest | null>(devis?.carRequests?.[0] || null);
-    
 
 
-    const { mutate: updateDevis } = useUpdateDevis();
+
+    const { mutateAsync: updateDevis } = useUpdateDevis();
 
 
     const activeStyling = "bg-greenOne border border-greenOne rounded-md hover:bg-greenOne"
@@ -58,11 +59,11 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
             setDevis(devis!);
             setRappels(devis!.rappels);
             setActiveStep(0)
-        
-        }else{
+
+        } else {
             setDevis(null);
         }
-        
+
     }, [devis]); // Trigger effect when 'devis' changes
 
 
@@ -103,18 +104,19 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
         }) : null);
     };
 
-   
-    const updatePriority = (priority: "Normale" | "Moyenne" | "Haute")=>{
+
+    const updatePriority = (priority: "Normale" | "Moyenne" | "Haute") => {
         setPriority(priority)
         setDevis(prevDevis => prevDevis ? ({
             ...prevDevis,
-            PriorityDevis:priority,
+            PriorityDevis: priority,
             UpdatedAt: new Date(),
             UpdatedBy: user?.nomUser || "Unknown User"
         }) : null);
     }
 
     const handleSave = async () => {
+        setLoading(true);
         try {
             updateDevis({
                 database: "Commer_2024_AutoPro",
@@ -125,10 +127,12 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
                 updatedItemRequestData: undefined,
                 updatedCarRequestData: myDevis!.carRequests?.[0] || undefined,
                 updatedRappels: rappels || undefined
-            });
+            }).then(() => { setLoading(false) });
         } catch (error) {
             console.error('Failed to save updates:', error);
+
         }
+
     };
 
     const steps: StepConfig[] = myDevis ? [
@@ -284,7 +288,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
                 <div className='flex flex-row space-x-2 items-center'>
                     <img src={clientIcon} alt="Client" className="w-8 h-8" />
                     <span className='text-whiteSecond font-oswald text-lg'>
-                        {devis.client!.clientType=="Entreprise"?"":devis.client!.clientGender} {devis.client!.nomClient}
+                        {devis.client!.clientType == "Entreprise" ? "" : devis.client!.clientGender} {devis.client!.nomClient}
                     </span>
                 </div>
                 <div className='flex flex-row space-x-4 items-center'>
@@ -317,7 +321,13 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis}) => {
     }
 
     return (
-        <div className="justify-start h-[88vh] w-full">
+        <div className="justify-start h-[88vh] w-full relative">  {/* Added relative here */}
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
+                    {/* Removed mt-2 and changed bg-opacity-50 to bg-black/50 for better syntax */}
+                    <div className="text-lightWhite font-bold">Veuillez patienter...</div>
+                </div>
+            )}
             {/* Top Devis Details to Change Priority and apply changes Button */}
             {renderTopHeader()}
             <hr className='border-lightWhite' />
