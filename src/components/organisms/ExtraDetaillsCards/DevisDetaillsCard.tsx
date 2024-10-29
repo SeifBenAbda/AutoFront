@@ -6,6 +6,9 @@ import { Input } from "../../../@/components/ui/input";
 import BanksLeasingDropDown from "../../../components/atoms/BanksLeasingDropDown";
 import { Textarea } from "../../../@/components/ui/textarea";
 import MotifClientSelect from "../../../components/atoms/MotifClientSelect";
+import RegionDropDown from "../../../components/atoms/RegionDropDown";
+import { Label } from "../../../@/components/ui/label";
+import { DatePicker } from "../../../components/atoms/DataSelector";
 
 interface DevisCardProps {
     devis: Devis;
@@ -21,9 +24,16 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
         });
     };
 
+    const handleDateChange = (date: Date | undefined) => {
+        onUpdate({
+            ...devis,
+            ReservationDate: date || devis.ReservationDate,
+        });
+    };
+
     return (
 
-        <Card className="bg-lightWhite border border-lightWhite flex flex-col overflow-y-scroll">
+        <Card className="bg-lightWhite border border-lightWhite flex flex-col ">
 
             {/* Centered Devis N° */}
             <div className="flex justify-center w-full">
@@ -35,7 +45,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
             {/* Status DropDown */}
             <div className="flex flex-row justify-between">
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey2">Status</label>
+                    <Label className=" text-sm font-medium text-highGrey2">Status</Label>
                     <StatusDevisDropDown
                         value={devis.StatusDevis}
                         onChange={(value) => handleChange("StatusDevis", value)}
@@ -44,7 +54,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                 </CardContent>
 
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey2">Motif</label>
+                    <Label className=" text-sm font-medium text-highGrey2">Motif</Label>
                     <MotifClientSelect
                         value={devis.Motivation}
                         onChange={(value) => handleChange("Motivation", value)}
@@ -55,7 +65,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
             {/* Conditionally render ReasonAnnulation based on StatusDevis */}
             {devis.StatusDevis === "Annuler" && (
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey2">Raison de l'annulation</label>
+                    <Label className=" text-sm font-medium text-highGrey2">Raison de l'annulation</Label>
                     <Input
                         type="text"
                         value={devis.ReasonAnnulation || ""}
@@ -63,21 +73,21 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                             handleChange("ReasonAnnulation", e.target.value)
                         }
                         placeholder="Raison de l'annulation"
-                        className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 mr-2  border border-highGrey2 rounded-md  sm:text-sm"
                     />
                 </CardContent>
             )}
 
             {devis.StatusDevis === "Facture" && (
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey2">Numero de Facture</label>
+                    <Label className=" text-sm font-medium text-highGrey2">Numero de Facture</Label>
                     <Input
                         type="text"
                         value={devis.NumFacture || ""}
                         onChange={(e) =>
                             handleChange("NumFacture", e.target.value)
                         }
-                        className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 mr-2  border border-highGrey2   sm:text-sm"
                     />
                 </CardContent>
             )}
@@ -88,7 +98,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Paiements</CardTitle>
 
                     <CardContent className="w-full">
-                        <label className="block text-sm font-medium text-highGrey2 mb-1">Type de Payement</label>
+                        <Label className=" text-sm font-medium text-highGrey2 mb-1">Type de Payement</Label>
                         <PayementMethod
                             value={devis.PayementMethod}
                             onChange={(value) => handleChange("PayementMethod", value)}
@@ -97,29 +107,105 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
                     {/* Conditionally render additional payment details based on PayementMethod */}
                     {(devis.PayementMethod === "Bank" || devis.PayementMethod === "Leasing") && (
-                        <CardContent className="w-full mb-2">
-                            {/* Add the fields related to Bank or Leasing payment details here */}
-                            <label className="block text-sm font-medium text-highGrey2 mb-1">Banque et Leasing</label>
-                            <BanksLeasingDropDown
-                                value={devis.BankAndLeasing}
-                                onChange={(value) => handleChange("BankAndLeasing", value)}
+                        <div className="flex gap-4 w-full">
+                            <CardContent className="w-1/2 ">
+                                <Label className=" text-sm font-medium text-highGrey2 mb-1">Banque et Leasing</Label>
+                                <BanksLeasingDropDown
+                                    value={devis.BankAndLeasing}
+                                    onChange={(value) => handleChange("BankAndLeasing", value)}
+                                />
+                            </CardContent>
+
+                            <CardContent className="w-1/2">
+                                <Label className=" text-sm font-medium text-highGrey2 mb-1">Region Banque ou Leasing</Label>
+                                <RegionDropDown
+                                    value={devis.BankRegion || ""}
+                                    onChange={(value) => handleChange("BankRegion", value)}
+                                    isFiltring={false}
+                                />
+                            </CardContent>
+                        </div>
+                    )}
+
+                    <div className="flex gap-4 w-full">
+                        <CardContent className="w-1/2 ">
+                            <Label className=" text-sm font-medium text-highGrey2 ">Numero Commande</Label>
+                            <Input
+                                type="text"
+                                value={devis.NumBc || ""}
+                                onChange={(e) =>
+                                    handleChange("NumBc", e.target.value)
+                                }
+                                className=" p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm caret-highGrey2"
                             />
                         </CardContent>
-                    )}
+
+                        <CardContent className="w-1/2 ">
+                            <Label className=" relative text-sm font-medium text-highGrey2 ">Montant (DT)</Label>
+                            <Input
+                                type="text"
+                                value={devis.MontantDevis || ""}
+                                onChange={(e) =>
+                                    handleChange("MontantDevis", e.target.value)
+                                }
+                                className=" p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm "
+                            />
+                        </CardContent>
+
+                    </div>
+
+
 
                 </>}
 
 
-            
-            {/* NEW FIELDS */}
 
+            {/* NEW FIELDS : Responsable */}
+            {devis.StatusDevis == "Reserver" && (
+                <>
+                    <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2 ">Responsable</CardTitle>
+                    <div className="flex gap-4 w-full">
+                        <CardContent className="w-full">
+                            <Label className=" relative text-sm font-medium text-highGrey2 ">Nom Responsable</Label>
+                            <Input
+                                type="text"
+                                value={devis.Responsable || ""}
+                                onChange={(e) =>
+                                    handleChange("Responsable", e.target.value)
+                                }
+                                className=" p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm "
+                            />
+                        </CardContent>
 
+                        <CardContent className="w-full">
+                            <Label className=" relative text-sm font-medium text-highGrey2 ">Tel. Responsable</Label>
+                            <Input
+                                type="text"
+                                value={devis.ResponsableNum || ""}
+                                onChange={(e) =>
+                                    handleChange("ResponsableNum", e.target.value)
+                                }
+                                className=" p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm "
+                            />
+                        </CardContent>
+                    </div>
 
+                    <CardContent>
+                        <Label className=" relative text-sm font-medium text-highGrey2 ">Date de Reservation</Label>
+                        <DatePicker
+                            value={devis.ReservationDate || new Date()}
+                            onChange={handleDateChange}
+                            fromYear={new Date().getFullYear()}
+                            toYear={new Date().getFullYear() + 1}
+                        />
+                    </CardContent>
 
+                </>
+            )}
 
-            {/* End New Fields */}        
+            {/* End New Fields */}
 
-            <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Plus d'Informations</CardTitle>
+            <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 ">Plus d'Informations</CardTitle>
             <CardContent className="w-full">
                 <Textarea
                     maxLength={200}
@@ -127,7 +213,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     onChange={(e) =>
                         handleChange("Comments", e.target.value)
                     }
-                    className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
+                    className="p-2 mr-2  border border-highGrey2 rounded-md  sm:text-sm overflow-y-auto max-h-[100px]"
                 />
             </CardContent>
 

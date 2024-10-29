@@ -29,7 +29,8 @@ export const defaultFormDevisGeneral : Devis = {
     Responsable: undefined,
     ResponsableNum: undefined,
     BankRegion: undefined,
-    ReservationDate: undefined
+    ReservationDate: new Date(),
+    MontantDevis: undefined
 };
 
 

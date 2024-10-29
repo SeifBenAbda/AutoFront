@@ -90,6 +90,7 @@ export interface Devis {
   ResponsableNum : string | undefined ,
   BankRegion : string | undefined ,
   ReservationDate : Date | undefined ,
+  MontantDevis : string | undefined ,
 
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis

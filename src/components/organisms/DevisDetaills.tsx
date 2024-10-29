@@ -321,7 +321,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     }
 
     return (
-        <div className="justify-start h-[80vh] w-full relative">  {/* Added relative here */}
+        <div className="justify-start h-[83vh] w-full relative">  {/* Added relative here */}
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50">
                     <div className="text-white font-bold">Veuillez patienter...</div>

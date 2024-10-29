@@ -110,7 +110,7 @@ export const columns: ColumnDef<Devis>[] = [
     id: 'PriorityDevis',
   },
 
-  /*
+  
   {
     header: 'Date Creation',
     accessorFn: (row) => {
@@ -122,7 +122,7 @@ export const columns: ColumnDef<Devis>[] = [
     },
     id: 'DateCreation',
   },
-  */
+  
   {
     header: 'Nom Client',
     accessorFn: (row) => row.client!.nomClient,
@@ -134,7 +134,7 @@ export const columns: ColumnDef<Devis>[] = [
         <span className="mb-2 md:mb-0 md:mr-2">Tel. Client</span>
         <img
           src={phoneIcon}
-          alt="Status"
+          alt="Phone"
           className="w-6 h-6"
         />
       </div>
@@ -149,7 +149,7 @@ export const columns: ColumnDef<Devis>[] = [
         <span className="mb-2 md:mb-0 md:mr-2">Modèle de voiture</span>
         <img
           src={carIcon}
-          alt="Status"
+          alt="car"
           className="w-10 h-10"
         />
       </div>
@@ -252,7 +252,7 @@ export const columns: ColumnDef<Devis>[] = [
         <span className="mb-2 md:mb-0 md:mr-2">Modification</span>
         <img
           src={editDevisIcon}
-          alt="Status"
+          alt="Edit"
           className="w-6 h-6"
         />
       </div>

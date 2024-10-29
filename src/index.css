@@ -17,3 +17,20 @@ body {
       font-style: 'Bree Serif'; /* Example: Italicize text */
 }
 
+::-webkit-scrollbar {
+    width: 12px; /* Width of the entire scrollbar */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Track color */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #888; /* Thumb color */
+    border-radius: 6px; /* Rounded edges */
+    border: 3px solid #f1f1f1; /* Padding around thumb */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Thumb color when hovering */
+  }
