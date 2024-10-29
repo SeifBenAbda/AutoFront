@@ -107,7 +107,7 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
                     {fileName === "" && (
                         <>
                             {showDuration && (
-                                <div className="progress-info text-sm text-highGrey">
+                                <div className="progress-info text-sm text-highGrey2">
                                     {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
                                 </div>
                             )}
@@ -118,14 +118,14 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ fullUrl, fileName
             <div className='flex flex-col space-y-2'>
                 <div className="progress-bar relative w-full h-2 bg-gray-300 rounded-md overflow-hidden">
                     <div
-                        className="progress bg-highGrey h-full"
+                        className="progress bg-highGrey2 h-full"
                         style={{ width: `${progressPercent}%` }}
                     />
                 </div>
                 {fileName !== "" && (
                     <>
                         {showDuration && (
-                            <div className="progress-info text-sm text-highGrey">
+                            <div className="progress-info text-sm text-highGrey2">
                                 {Math.floor(currentTime)} secondes sur {duration !== null ? Math.floor(duration) : '...'} secondes
                             </div>
                         )}

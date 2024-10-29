@@ -19,19 +19,19 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
     <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-      <PopoverTrigger className={styling?styling: "border-highGrey text-highGrey bg-lightWhite hover:bg-lightWhite hover:text-highGrey"} asChild>
+      <PopoverTrigger className={styling?styling: "border-highGrey2 text-highGrey2 bg-lightWhite hover:bg-lightWhite hover:text-highGrey2"} asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal border border-highGrey",
+            "w-full justify-start text-left font-normal border border-highGrey2",
             !value && "text-muted-foreground"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4 text-highGrey" />
-          {value ? format(value, "PPP", { locale: fr }) : <span className="text-highGrey">Choisir une date</span>}
+          <CalendarIcon className="mr-2 h-4 w-4 text-highGrey2" />
+          {value ? format(value, "PPP", { locale: fr }) : <span className="text-highGrey2">Choisir une date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 text-highGrey" align="start" side="bottom" sideOffset={0}>
+      <PopoverContent className="w-full p-0 text-highGrey2" align="start" side="bottom" sideOffset={0}>
         <Calendar
           className="w-full"
           mode="single"
@@ -41,8 +41,8 @@ export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date
           initialFocus
           fromYear={fromYear}
           toYear={toYear}
-          classNames={{day_selected:"border border-greenOne bg-greenOne font-oswald text-highGrey",
-            day_today:"bg-transparent border border-transparent text-highGrey font-oswald p-2"}}
+          classNames={{day_selected:"border border-greenOne bg-greenOne font-oswald text-highGrey2",
+            day_today:"bg-transparent border border-transparent text-highGrey2 font-oswald p-2"}}
         />
       </PopoverContent>
     </Popover>

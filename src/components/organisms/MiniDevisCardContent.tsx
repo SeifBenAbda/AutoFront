@@ -12,16 +12,16 @@ export default function MiniDevisCardContent({ devis, isSelected }: MiniDevisCar
     // Calculate the difference between the creation date and now
     const creationDate = new Date(devis.DateCreation!); // Assuming `devis.creationDate` is a valid date string
     const daysAgo = formatDistance(creationDate, new Date(), { addSuffix: true, locale: fr });
-    const selectedTextColor = isSelected ? "text-highGrey" : "text-whiteSecond"
-    const selectedBackground = isSelected ? "bg-highGrey" : "bg-whiteSecond"
-    const selectedBorderColor = isSelected ? "border-highGrey" : "border-whiteSecond"
+    const selectedTextColor = isSelected ? "text-highGrey2" : "text-whiteSecond"
+    const selectedBackground = isSelected ? "bg-highGrey2" : "bg-whiteSecond"
+    const selectedBorderColor = isSelected ? "border-highGrey2" : "border-whiteSecond"
 
     const getPriorityClassName = (devisPriority: string) => {
         switch (devisPriority) {
             case "Normale":
-                return "bg-whiteSecond border border-whiteSecond text-highGrey"
+                return "bg-whiteSecond border border-whiteSecond text-highGrey2"
             case "Moyenne":
-                return "bg-yellow-400 border border-yellow-400 text-highGrey"
+                return "bg-yellow-400 border border-yellow-400 text-highGrey2"
             case "Haute":
                 return "bg-red-500 border border-red-500 text-lightWhite"
 
@@ -31,17 +31,17 @@ export default function MiniDevisCardContent({ devis, isSelected }: MiniDevisCar
     const getStatusClassName = (devisStatus: string) => {
         switch (devisStatus) {
             case "En Attente":
-                return "bg-gray-300 border border-gray-300 text-highGrey"
+                return "bg-gray-300 border border-gray-300 text-highGrey2"
             case "En Cours":
-                return "bg-yellow-200 border border-yellow-200 text-highGrey"
+                return "bg-yellow-200 border border-yellow-200 text-highGrey2"
             case "Facture":
-                return isSelected ? "bg-highGreen border border-highGreen text-lightWhite" : "bg-green-200 border border-green-200 text-highGrey"
+                return isSelected ? "bg-highGreen border border-highGreen text-lightWhite" : "bg-green-200 border border-green-200 text-highGrey2"
             case "Reserver":
-                return "bg-blue-300 border border-blue-300 text-highGrey"
+                return "bg-blue-300 border border-blue-300 text-highGrey2"
             case "Annuler":
                 return "bg-red-500 border border-red-500 text-lightWhite"
                 case "HDSI":
-                    return "bg-yellow-400 border border-yellow-400 text-highGrey"    
+                    return "bg-yellow-400 border border-yellow-400 text-highGrey2"    
             default:
                 return ""
         }

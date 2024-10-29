@@ -91,7 +91,7 @@ export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: Doc
                 {selectedFiles.length > 0 && (
                     <Button
                         onClick={handleUpload}
-                        className="bg-greenOne border border-greenOne hover:bg-greenOne text-highGrey rounded-md font-oswald"
+                        className="bg-greenOne border border-greenOne hover:bg-greenOne text-highGrey2 rounded-md font-oswald"
                         disabled={loading} // Disable button when loading
                     >
                         Envoyer les fichiers
@@ -104,7 +104,7 @@ export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: Doc
                 {selectedFiles.map((file) => (
                     <div key={file.name} className="flex items-center bg-lightWhite p-1 border border-lightWhite rounded-md">
                         <img src={getFileIcon(file)} alt={file.name} className="w-10 h-10 object-cover" />
-                        <span className="ml-2 text-highGrey font-oswald">{file.name}</span>
+                        <span className="ml-2 text-highGrey2 font-oswald">{file.name}</span>
                         <Button
                             onClick={() => handleDeleteFile(file)}
                             className="ml-4 bg-lightRed border border-lightRed rounded-md text-lightWhite hover:bg-lightRed font-oswald"

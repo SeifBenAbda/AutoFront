@@ -55,7 +55,7 @@ const NavMenu: React.FC = () => {
         <select
           onChange={(e) => handleNavClick(e.target.options[e.target.selectedIndex].text, e.target.value)}
           value={location.pathname}
-          className="bg-veryGrey text-highGrey border rounded-md p-2"
+          className="bg-veryGrey text-highGrey2 border rounded-md p-2"
         >
           <option value="/car-request">Dossier Voiture</option>
           <option value="/carTracking">Suivi Devis Voiture</option>
@@ -70,7 +70,7 @@ const NavMenu: React.FC = () => {
       {/*
       <Button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}
-        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
+        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? 'bg-highGrey2 text-white font-oswald hover:bg-highGrey2' : 'bg-lightWhite text-highGrey2 font-oswald hover:bg-lightWhite'}`}
       >
         <div className="flex items-center space-x-2">
           <LayoutDashboard />
@@ -80,7 +80,7 @@ const NavMenu: React.FC = () => {
        */}
       <Button
         onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
-        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
+        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? 'bg-highGrey2 text-white font-oswald hover:bg-highGrey2' : 'bg-lightWhite text-highGrey2 font-oswald hover:bg-lightWhite'}`}
       >
         <div className="flex items-center space-x-2">
           <Car />
@@ -91,7 +91,7 @@ const NavMenu: React.FC = () => {
 
       <Button
         onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-lightWhite text-highGrey font-oswald hover:bg-lightWhite'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? 'bg-highGrey2 text-white font-oswald hover:bg-highGrey2' : 'bg-lightWhite text-highGrey2 font-oswald hover:bg-lightWhite'}`}
       >
         <div className="flex items-center space-x-2">
           <FilePenLine />
@@ -103,7 +103,7 @@ const NavMenu: React.FC = () => {
       {/*
         <Button
         onClick={() => handleNavClick('Suivi Changement des Pieces', "/itemTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-highGrey text-white font-oswald hover:bg-highGrey' : 'bg-white text-highGrey font-oswald hover:bg-lightWhite'}`}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Changement des Pieces' ? 'bg-highGrey2 text-white font-oswald hover:bg-highGrey2' : 'bg-white text-highGrey2 font-oswald hover:bg-lightWhite'}`}
       >
         <div className="flex items-center space-x-2">
           <FilePenLine />

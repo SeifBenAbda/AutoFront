@@ -22,7 +22,7 @@ const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
         if (isLoading){
             return (
                 <div className="flex justify-center items-center h-10">
-                    <div className="flex border-2 border-t-highGrey h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                    <div className="flex border-2 border-t-highGrey2 h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
                 </div>
             );
         }
@@ -30,17 +30,17 @@ const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-highGrey bg-lightWhite text-highGrey">
+                <SelectTrigger ref={ref} className="w-full border border-highGrey2 bg-lightWhite text-highGrey2">
                     <SelectValue placeholder={value ? value.toString() : "Tous types de voitures"} />
                 </SelectTrigger>
-                <SelectContent className='border-highGrey bg-lightWhite text-highGrey'>
+                <SelectContent className='border-highGrey2 bg-lightWhite text-highGrey2'>
                     {isFiltring && (
-                        <SelectItem key="Tous types de voitures" value="Tous types de voitures" className='text-highGrey focus:text-highGrey'>
+                        <SelectItem key="Tous types de voitures" value="Tous types de voitures" className='text-highGrey2 focus:text-highGrey2'>
                             Tous types de voitures
                         </SelectItem>
                     )}
                     {carModels?.map((car) => (
-                        <SelectItem key={car.carId} value={car.carName} className='text-highGrey'>
+                        <SelectItem key={car.carId} value={car.carName} className='text-highGrey2'>
                             {car.carName}
                         </SelectItem>
                     ))}

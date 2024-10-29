@@ -85,6 +85,12 @@ export interface Devis {
   ReasonAnnulation : string | undefined , 
   BankAndLeasing : string | undefined,
   Comments : string | undefined ,
+
+  Responsable : string | undefined ,
+  ResponsableNum : string | undefined ,
+  BankRegion : string | undefined ,
+  ReservationDate : Date | undefined ,
+
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis

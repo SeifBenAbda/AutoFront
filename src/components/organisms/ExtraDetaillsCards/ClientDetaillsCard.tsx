@@ -31,82 +31,82 @@ export function ClientDetaillsCard({ client, onUpdate }: ClientCardProps) {
 
 
             <div className="flex justify-center w-full">
-                <CardTitle className="text-2xl text-highGrey font-oswald mt-4 mb-3">
+                <CardTitle className="text-2xl text-highGrey2 font-oswald mt-4 mb-3">
                     Informations Client
                 </CardTitle>
             </div>
 
 
-            {/** Client Name  */}
-            <CardContent>
-                <label className="block text-sm font-medium text-highGrey">Nom</label>
-                <Input
-                    type="text"
-                    value={client.nomClient || ""} // Directly bind to client prop
-                    onChange={(e) => handleChange("nomClient", e.target.value)}
-                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                />
-            </CardContent>
-
-            {/** CIN CLIENT  */}
-
-            {client.clientType === "Particulier" ? (
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Cin</label>
+            <div className="grid grid-cols-2 gap-4 p-4">
+                {/* First Row */}
+                <CardContent className="p-2">
+                    <label className="block text-sm font-medium text-highGrey2">Nom</label>
                     <Input
                         type="text"
-                        value={client.cin || ""} // Directly bind to client prop
-                        onChange={(e) => handleChange("cin", e.target.value)}
-                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        value={client.nomClient || ""}
+                        onChange={(e) => handleChange("nomClient", e.target.value)}
+                        className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
-            ) : (
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Matricule Fiscale</label>
+
+                {client.clientType === "Particulier" ? (
+                    <CardContent className="p-2">
+                        <label className="block text-sm font-medium text-highGrey2">Cin</label>
+                        <Input
+                            type="text"
+                            value={client.cin || ""}
+                            onChange={(e) => handleChange("cin", e.target.value)}
+                            className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        />
+                    </CardContent>
+                ) : (
+                    <CardContent className="p-2">
+                        <label className="block text-sm font-medium text-highGrey2">Matricule Fiscale</label>
+                        <Input
+                            type="text"
+                            value={client.mtFiscale}
+                            onChange={(e) => handleChange("mtFiscale", e.target.value)}
+                            className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        />
+                    </CardContent>
+                )}
+
+                {/* Second Row */}
+                <CardContent className="p-2">
+                    <label className="block text-sm font-medium text-highGrey2">Numéro de téléphone</label>
                     <Input
                         type="text"
-                        value={client.mtFiscale} // Directly bind to client prop
-                        onChange={(e) => handleChange("mtFiscale", e.target.value)}
-                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        value={client.telClient}
+                        onChange={(e) => handleChange("telClient", e.target.value)}
+                        className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
-            )}
 
+                {client.clientType === "Particulier" && (
+                    <CardContent className="p-2">
+                        <label className="block text-sm font-medium text-highGrey2">Date de naissance</label>
+                        <DatePicker
+                            value={client.dateOfBirth}
+                            onChange={handleDateChange}
+                            fromYear={new Date().getFullYear() - 70}
+                            toYear={new Date().getFullYear() - 18}
+                        />
+                    </CardContent>
+                )}
+            </div>
 
-            {/** Client Tel  */}
-            <CardContent className="w-full">
-                <label className="block text-sm font-medium text-highGrey">Numéro de téléphone</label>
-                <Input
-                    type="text"
-                    value={client.telClient} // Directly bind to client prop
-                    onChange={(e) => handleChange("telClient", e.target.value)}
-                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                />
-            </CardContent>
-
-
-            {client.clientType == "Particulier" && (
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Date de naissance</label>
-                    <DatePicker
-                        value={client.dateOfBirth}
-                        onChange={handleDateChange}
-                        fromYear={new Date().getFullYear() - 70}
-                        toYear={new Date().getFullYear() - 18}
+            {/* Full-width Address Section */}
+            <div className="px-4 pb-4">
+                <CardContent className="p-2">
+                    <label className="block text-sm font-medium text-highGrey2">Adresse</label>
+                    <Input
+                        type="text"
+                        value={client.adresse}
+                        onChange={(e) => handleChange("adresse", e.target.value)}
+                        className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
-                </CardContent>)}
-
-
-            {/** Client Adress  */}
-            <CardContent className="w-full">
-                <label className="block text-sm font-medium text-highGrey">Adresse</label>
-                <Input
-                    type="text"
-                    value={client.adresse} // Directly bind to client prop
-                    onChange={(e) => handleChange("adresse", e.target.value)}
-                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                />
-            </CardContent>
+                </CardContent>
+            </div>
         </Card>
     )
 

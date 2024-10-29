@@ -15,17 +15,21 @@ export const defaultFormDevisGeneral : Devis = {
     PriorityDevis: "Normale",
     isGarantie: false,
     NumBc: "",
-    NumFacture:"",
+    NumFacture: "",
     client: undefined,
-    ReasonAnnulation:undefined,
-    BankAndLeasing:undefined,
-    Comments : undefined,
+    ReasonAnnulation: undefined,
+    BankAndLeasing: undefined,
+    Comments: undefined,
     itemRequests: [],
     carRequests: [],
-    rappels:[],
+    rappels: [],
     //DevisId: 0,
     clientId: 0,
-    ScheduledLivDate: undefined
+    ScheduledLivDate: undefined,
+    Responsable: undefined,
+    ResponsableNum: undefined,
+    BankRegion: undefined,
+    ReservationDate: undefined
 };
 
 

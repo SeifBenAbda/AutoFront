@@ -102,8 +102,8 @@ const DevisData: React.FC<DevisDataProps> = ({ onDevisClick }) => {
                 {data?.data.map((devis: Devis) => (
                     <div
                         key={devis.DevisId}
-                        className={`font-oswald p-3 bg-highGrey border border-highGrey rounded-xl mb-2 cursor-pointer 
-                            ${selectedDevis?.DevisId! === devis.DevisId ? 'bg-lightGreen border border-lightGreen text-highGrey' : 'text-lightWhite'}`}
+                        className={`font-oswald p-3 bg-highGrey2 border border-highGrey2 rounded-xl mb-2 cursor-pointer 
+                            ${selectedDevis?.DevisId! === devis.DevisId ? 'bg-lightGreen border border-lightGreen text-highGrey2' : 'text-lightWhite'}`}
                         onClick={() => {
                             handleDevisClick(devis);
                         }}

@@ -13,7 +13,7 @@ const CarTrackingLayout: React.FC = () => {
 
                 {/* Main Content */}
                 <main className="flex-1 p-4 bg-whiteSecond flex">
-                    <CarsTrackingPage />
+                    <CarDevisTrackingPage />
                 </main>
             </div>
         </QueryClientProvider>

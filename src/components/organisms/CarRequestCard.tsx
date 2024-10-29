@@ -20,7 +20,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey2 bg-highGrey2">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <CardTitle className="text-whiteSecond text-lg">Information Véhicule</CardTitle>
@@ -46,7 +46,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                                     type="text"
                                     value={carRequest.CarColor} // Directly bind to client prop
                                     onChange={(e) => handleChange("CarColor", e.target.value)}
-                                    className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                                    className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                                 />
                             </CardContent>
 
@@ -60,7 +60,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                                         type="text"
                                         value={carRequest.OldCar} // Directly bind to client prop
                                         onChange={(e) => handleChange("OldCar", e.target.value)}
-                                        className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                                        className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                                     />
                                 </CardContent>)
                             }
@@ -71,7 +71,7 @@ export function CarRequestCard({ carRequest, onUpdate }: CarRequestCardProps) {
                             <CardContent>
                                 <label className="block text-sm font-medium text-whiteSecond">Dernier véhicule possédé</label>
                                 <Textarea
-                                    className="border border-highGrey min-h-[70px]"
+                                    className="border border-highGrey2 min-h-[70px]"
                                     placeholder="Plus d'informations.."
                                     value={carRequest.CarNotes} // Directly bind to client prop
                                     onChange={(e) => handleChange("CarNotes", e.target.value)}

@@ -14,7 +14,7 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
     if (isLoading){
         return (
             <div className="flex justify-center items-center h-10">
-                <div className="flex border-2 border-t-highGrey h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                <div className="flex border-2 border-t-highGrey2 h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -43,7 +43,7 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
             variant="inverted"
             animation={0}
             maxCount={1}
-            className='bg-lightWhite border rounded-md border-highGrey hover:bg-lightWhite text-highGrey'
+            className='bg-lightWhite border rounded-md border-highGrey2 hover:bg-lightWhite text-highGrey2'
         />
     );
 };

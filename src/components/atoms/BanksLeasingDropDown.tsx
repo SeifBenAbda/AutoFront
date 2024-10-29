@@ -21,7 +21,7 @@ const BanksLeasingDropDown = forwardRef<HTMLButtonElement, BanksLeasingDropDownT
         if (isLoading){
             return (
                 <div className="flex justify-center items-center h-10">
-                    <div className="flex border-2 border-t-highGrey h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                    <div className="flex border-2 border-t-highGrey2 h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
                 </div>
             );
         }
@@ -29,7 +29,7 @@ const BanksLeasingDropDown = forwardRef<HTMLButtonElement, BanksLeasingDropDownT
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-highGrey bg-lightWhite text-highGrey">
+                <SelectTrigger ref={ref} className="w-full border border-highGrey2 bg-lightWhite text-highGrey2">
                     <SelectValue placeholder={value ? value.toString() : banksLeasing![0].name} />
                 </SelectTrigger>
                 <SelectContent>

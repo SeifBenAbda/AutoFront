@@ -27,7 +27,7 @@ module.exports = {
   			whiteSecond: '#fbfbfb',
   			blueCiel: '#e1e8f7',
 			greenOne:'#8ebd55',
-			highGrey2:'#343740',
+			highGrey2:'#1b2a4d',
 			lightWhite:'#fbfbfb',
 			lightRed:'#FF6B6B',
 			lightGreen:'#b0ee81',

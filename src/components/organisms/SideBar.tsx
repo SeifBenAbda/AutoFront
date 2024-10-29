@@ -96,7 +96,7 @@ export const Sidebar: React.FC<{
 }> = ({ onNavigate, currentPath, isExpanded, onToggleExpand, className = '' }) => {
   return (
     <div
-      className={`bg-highGrey border rounded-2xl flex flex-col ${className} ${isExpanded ? 'w-44' : 'w-20'} transition-all duration-300 ml-2`}
+      className={`bg-highGrey2 border rounded-2xl flex flex-col ${className} ${isExpanded ? 'w-44' : 'w-20'} transition-all duration-300 ml-2`}
     >
       <Button
         variant="ghost"

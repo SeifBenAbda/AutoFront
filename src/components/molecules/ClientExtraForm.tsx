@@ -27,7 +27,7 @@ const ClientExtraForm: React.FC<any> = ({ form, formId, generalFormId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
                             <Input
-                                className="border border-lightWhite bg-lightWhite text-highGrey"
+                                className="border border-lightWhite bg-lightWhite text-highGrey2"
                                 placeholder="Ancien Vehicule"
                                 {...register(`${formId}.OldCar`)}
                             />

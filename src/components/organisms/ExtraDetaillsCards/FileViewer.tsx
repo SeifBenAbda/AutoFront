@@ -108,7 +108,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
 
     if (isLoading || isLoadingFile) return (
         <div className='flex items-center justify-center w-full h-full'>
-            <div className="w-12 h-12 border-4 border-t-highGrey border-gray-200 rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
         </div>
     );
 
@@ -128,12 +128,12 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
                             <img
                                 key={file.id} // Ensure each button has a unique key
                                 onClick={() => handleButtonClick(file.file_name)} // Call handleButtonClick on click
-                                className="m-2 p-2 border rounded shadow hover:bg-gray-300 bg-highGrey cursor-pointer"
+                                className="m-2 p-2 border rounded shadow hover:bg-gray-300 bg-highGrey2 cursor-pointer"
                                 src={getFileIcon(file.mime_type)}
                                 height={80}
                                 width={80}
                             />
-                            <span className='text-highGrey2 font-oswald'>{file.file_name}</span>
+                            <span className='text-highGrey22 font-oswald'>{file.file_name}</span>
                         </div>
                     </CardContent>
                 ))}
@@ -145,7 +145,7 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
         return (
             <div className='h-full w-full items-center flex flex-col space-x-4'>
                 <img src={emptyBoxIcon} alt='EmptyBox' height={100} width={100} />
-                <span className='text-highGrey text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
+                <span className='text-highGrey2 text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
             </div>
         )
     };

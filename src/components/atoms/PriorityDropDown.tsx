@@ -16,18 +16,18 @@ interface PriorityDevisTypes {
 const PriorityDevisDropDown = ({ value, onChange, isFiltring }: PriorityDevisTypes) => {
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey bg-lightWhite text-highGrey hover:text-highGrey">
+            <SelectTrigger className="w-full border border-highGrey2 bg-lightWhite text-highGrey2 hover:text-highGrey2">
                 <SelectValue placeholder={value ? value.toString() : "Toutes les priorités"} />
             </SelectTrigger>
-            <SelectContent className="hover:text-highGrey">
+            <SelectContent className="hover:text-highGrey2">
                 {isFiltring && (
                     <SelectItem key="Toutes les priorités" value="Toutes les priorités">
                         Toutes les priorités
                     </SelectItem>
                 )}
-                <SelectItem key="Normale" value="Normale" className="text-highGrey hover:text-highGrey">Normale</SelectItem>
-                <SelectItem value="Moyenne" className="text-highGrey hover:text-highGrey">Moyenne</SelectItem>
-                <SelectItem value="Haute" className="text-highGrey hover:text-highGrey">Haute</SelectItem>
+                <SelectItem key="Normale" value="Normale" className="text-highGrey2 hover:text-highGrey2">Normale</SelectItem>
+                <SelectItem value="Moyenne" className="text-highGrey2 hover:text-highGrey2">Moyenne</SelectItem>
+                <SelectItem value="Haute" className="text-highGrey2 hover:text-highGrey2">Haute</SelectItem>
             </SelectContent>
         </Select>
     );

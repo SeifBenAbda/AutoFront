@@ -1,5 +1,5 @@
 import { Badge } from "../@/components/ui/badge";
-import { Devis } from "../types/devisTypes";
+import { Devis, Rappel } from "../types/devisTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -9,42 +9,80 @@ import statusIcon from '../images/status.png'
 import editDevisIcon from '../images/editDevis.png'
 import carIcon from '../images/car.png'
 import PriorityIcon from '../images/prioritize.png'
+import reminderIcon from '../images/reminder_new.png'
 
 
 const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+const getClosestUpcomingReminder = (rappels: Rappel[] | undefined): Rappel | null => {
+  // Filter out reminders with undefined dates or content
+  const validReminders = rappels?.filter(
+    reminder => reminder.RappelDate && reminder.RappelContent
+  ) || [];
 
-const getVariantStatus = (status : string) =>{
-  switch(status){
+  if (validReminders.length === 0) return null;
+
+  const now = new Date().getTime();
+
+  // Find the closest upcoming reminder
+  return validReminders.reduce((closest, current) => {
+    const currentDate = new Date(current.RappelDate!).getTime();
+    const closestDate = closest ? new Date(closest.RappelDate!).getTime() : 0;
+
+    if (currentDate >= now && (!closest || currentDate < closestDate)) {
+      return current;
+    }
+    return closest;
+  }, null as Rappel | null);
+};
+
+// Helper function to format reminder display data
+const formatReminderDisplay = (reminder: Rappel | null) => {
+  if (!reminder) return {
+    display: 'Aucun rappel proche',
+    date: null,
+    content: null
+  };
+
+  return {
+    display: `${new Date(reminder.RappelDate!).toLocaleDateString()}: ${reminder.RappelContent}`,
+    date: reminder.RappelDate,
+    content: reminder.RappelContent
+  };
+};
+
+
+const getVariantStatus = (status: string) => {
+  switch (status) {
     case "En Attente":
       return "default"
     case "En Cours":
       return "medium"
-      case "Annuler":
-        return "destructive"
-       
-        case "Facture":
-          return "running"  
-         
-     default:
-      return "outline";       
+    case "Annuler":
+      return "destructive"
+
+    case "Facture":
+      return "running"
+
+    default:
+      return "outline";
   }
 }
 
-const getVariantPriority = (status : string) =>{
-  switch(status){
+const getVariantPriority = (status: string) => {
+  switch (status) {
     case "Moyenne":
       return "medium"
-      case "Haute":
-        return "destructive"
-       
-        case "Normale":
-          return "running"
-         
-     default:
-      return "normal";       
+    case "Haute":
+      return "destructive"
+
+    case "Normale":
+      return "running"
+
+    default:
+      return "normal";
   }
 }
 
@@ -71,6 +109,8 @@ export const columns: ColumnDef<Devis>[] = [
     ),
     id: 'PriorityDevis',
   },
+
+  /*
   {
     header: 'Date Creation',
     accessorFn: (row) => {
@@ -82,6 +122,7 @@ export const columns: ColumnDef<Devis>[] = [
     },
     id: 'DateCreation',
   },
+  */
   {
     header: 'Nom Client',
     accessorFn: (row) => row.client!.nomClient,
@@ -116,14 +157,34 @@ export const columns: ColumnDef<Devis>[] = [
     accessorFn: (row) => row.carRequests!.map(cr => cr.CarModel).join(', '),
     id: "carModels",
   },
+  /*
   {
     header: 'Motif',
     accessorFn: (row) => row.Motivation,
     id: 'Motif',
   },
+  */
 
-  
+  {
+    header: () => (
+      <div className="flex flex-col md:flex-row items-center justify-center p-2">
+        <span className="mb-2 md:mb-0 md:mr-2">Rappel Prochain</span>
+        <img
+          src={reminderIcon}
+          alt="Reminder"
+          className="w-8 h-8"
+        />
+      </div>
+    ),
+    accessorFn: (row: Devis) => {
+      const closestReminder = getClosestUpcomingReminder(row.rappels);
+      return formatReminderDisplay(closestReminder).display;
+    },
+    id: "nextReminder",
+  },
 
+
+  /*
   {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
@@ -147,6 +208,9 @@ export const columns: ColumnDef<Devis>[] = [
     },
     id: 'scheduledLivrDate',
   },
+  */
+
+  /*
   {
     header: 'Dernière visite',
     accessorFn: (row) => {
@@ -163,6 +227,7 @@ export const columns: ColumnDef<Devis>[] = [
     accessorFn: (row) => row.CreatedBy,
     id: 'CreatedBy',
   },
+  */
   {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
@@ -180,6 +245,7 @@ export const columns: ColumnDef<Devis>[] = [
     ),
     id: 'statusDevis',
   },
+
   {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">

@@ -52,9 +52,9 @@ function General() {
                     }, 3000); // 3000 milliseconds = 3 seconds
 
                 } else {
-                    setMyToastCloseStyle("text-highGrey hover:text-highGrey")
+                    setMyToastCloseStyle("text-highGrey2 hover:text-highGrey2")
                     toast({
-                        className: "bg-greenOne border border-greenOne rounded-md text-highGrey hover:text-highGrey ",
+                        className: "bg-greenOne border border-greenOne rounded-md text-highGrey2 hover:text-highGrey2 ",
                         title: "Profil mis à jour avec succès.",
                     });
                 }
@@ -72,7 +72,7 @@ function General() {
         <div className="relative">
             {/* Overlay loading spinner */}
             {(isLoading || isPending) && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highGrey bg-opacity-50 border rounded-md">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highGrey2 bg-opacity-50 border rounded-md">
                     <Loading />
                 </div>
             )}
@@ -80,7 +80,7 @@ function General() {
             <Toaster tostCloseStyle={myToastCloseStyle} />
 
             {/* Main content that remains in the background */}
-            <Card className="bg-highGrey w-full">
+            <Card className="bg-highGrey2 w-full">
 
                 <CardContent className="w-full">
                     <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">
@@ -91,7 +91,7 @@ function General() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Nom d'utilisateur"
-                        className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
+                        className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
                     />
                 </CardContent>
 
@@ -164,9 +164,9 @@ function Securite() {
 
                 await updatePassword({ newPassword }).then(async (e) => {
                     setIsLoading(false);
-                    setMyToastCloseStyle("text-highGrey hover:text-highGrey")
+                    setMyToastCloseStyle("text-highGrey2 hover:text-highGrey2")
                     const firstToast = toast({
-                        className: "bg-greenOne border border-greenOne rounded-md text-highGrey hover:text-highGrey",
+                        className: "bg-greenOne border border-greenOne rounded-md text-highGrey2 hover:text-highGrey2",
                         title: "Profil mis à jour avec succès.",
                     });
 
@@ -176,7 +176,7 @@ function Securite() {
                     }, 2000));
 
                     // Second toast
-                    setMyToastCloseStyle("text-highGrey hover:text-highGrey")
+                    setMyToastCloseStyle("text-highGrey2 hover:text-highGrey2")
                     const secondToast = toast({
                         className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
                         title: "Vous serez déconnecté dans quelques secondes.",
@@ -192,7 +192,7 @@ function Securite() {
                 });
             } else {
                 setIsLoading(false);
-                setMyToastCloseStyle("text-highGrey hover:text-highGrey")
+                setMyToastCloseStyle("text-highGrey2 hover:text-highGrey2")
                 const secondToast = toast({
                     className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
                     title: "Erreur dans les mots de passe",
@@ -210,13 +210,13 @@ function Securite() {
         <div className="relative">
             {/* Overlay loading spinner */}
             {(isLoading || isPending) && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highGrey bg-opacity-50 border rounded-md">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highGrey2 bg-opacity-50 border rounded-md">
                     <Loading />
                 </div>
             )}
 
             <Toaster tostCloseStyle={myToastCloseStyle} />
-            <Card className="bg-highGrey w-full">
+            <Card className="bg-highGrey2 w-full">
                 <CardContent className="w-full">
                     <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">Ancien mot de passe</label>
                     <PasswordInputNew
@@ -286,7 +286,7 @@ export function ProfileUser() {
 
     return (
         <div className="flex flex-col pl-24 w-full relative">
-            <h1 className="text-4xl text-highGrey font-oswald mb-4">Profil</h1>
+            <h1 className="text-4xl text-highGrey2 font-oswald mb-4">Profil</h1>
 
             <div className="flex justify-start w-full">
                 <Card className="w-11/12">
@@ -296,7 +296,7 @@ export function ProfileUser() {
                                 <Button
                                     key={index}
                                     onClick={() => setActiveStep(index)}
-                                    className={`mt-2 mb-2 w-full font-oswald ${activeStep === index ? "bg-greenOne hover:bg-greenOne text-highGrey" : "text-lightWhite"
+                                    className={`mt-2 mb-2 w-full font-oswald ${activeStep === index ? "bg-greenOne hover:bg-greenOne text-highGrey2" : "text-lightWhite"
                                         }`}
                                 >
                                     {step}

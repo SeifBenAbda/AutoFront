@@ -27,7 +27,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
             {/* Centered Devis N° */}
             <div className="flex justify-center w-full">
-                <CardTitle className="text-2xl text-highGrey font-oswald mt-4 mb-3">
+                <CardTitle className="text-2xl text-highGrey2 font-oswald mt-4 mb-3">
                     Devis N° {devis.DevisId}
                 </CardTitle>
             </div>
@@ -35,7 +35,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
             {/* Status DropDown */}
             <div className="flex flex-row justify-between">
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Status</label>
+                    <label className="block text-sm font-medium text-highGrey2">Status</label>
                     <StatusDevisDropDown
                         value={devis.StatusDevis}
                         onChange={(value) => handleChange("StatusDevis", value)}
@@ -44,7 +44,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                 </CardContent>
 
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Motif</label>
+                    <label className="block text-sm font-medium text-highGrey2">Motif</label>
                     <MotifClientSelect
                         value={devis.Motivation}
                         onChange={(value) => handleChange("Motivation", value)}
@@ -55,7 +55,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
             {/* Conditionally render ReasonAnnulation based on StatusDevis */}
             {devis.StatusDevis === "Annuler" && (
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Raison de l'annulation</label>
+                    <label className="block text-sm font-medium text-highGrey2">Raison de l'annulation</label>
                     <Input
                         type="text"
                         value={devis.ReasonAnnulation || ""}
@@ -63,32 +63,32 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                             handleChange("ReasonAnnulation", e.target.value)
                         }
                         placeholder="Raison de l'annulation"
-                        className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
             )}
 
             {devis.StatusDevis === "Facture" && (
                 <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-highGrey">Numero de Facture</label>
+                    <label className="block text-sm font-medium text-highGrey2">Numero de Facture</label>
                     <Input
                         type="text"
                         value={devis.NumFacture || ""}
                         onChange={(e) =>
                             handleChange("NumFacture", e.target.value)
                         }
-                        className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
             )}
 
             {/* Payement Type */}
-            {devis.StatusDevis !== "Annuler" &&
+            {devis.StatusDevis !== "Annuler" && devis.StatusDevis !== "En Cours" && devis.StatusDevis !== "En Attente" &&
                 <>
-                    <CardTitle className="text-xl text-highGrey font-oswald text-left w-full pl-3 mb-2">Paiements</CardTitle>
+                    <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Paiements</CardTitle>
 
                     <CardContent className="w-full">
-                        <label className="block text-sm font-medium text-highGrey mb-1">Type de Payement</label>
+                        <label className="block text-sm font-medium text-highGrey2 mb-1">Type de Payement</label>
                         <PayementMethod
                             value={devis.PayementMethod}
                             onChange={(value) => handleChange("PayementMethod", value)}
@@ -99,7 +99,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     {(devis.PayementMethod === "Bank" || devis.PayementMethod === "Leasing") && (
                         <CardContent className="w-full mb-2">
                             {/* Add the fields related to Bank or Leasing payment details here */}
-                            <label className="block text-sm font-medium text-highGrey mb-1">Banque et Leasing</label>
+                            <label className="block text-sm font-medium text-highGrey2 mb-1">Banque et Leasing</label>
                             <BanksLeasingDropDown
                                 value={devis.BankAndLeasing}
                                 onChange={(value) => handleChange("BankAndLeasing", value)}
@@ -107,18 +107,30 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                         </CardContent>
                     )}
 
-                    <CardTitle className="text-xl text-highGrey font-oswald text-left w-full pl-3 mb-2">Plus d'Informations</CardTitle>
-                    <CardContent className="w-full">
-                        <Textarea
-                            maxLength={200}
-                            value={devis.Comments || ""}
-                            onChange={(e) =>
-                                handleChange("Comments", e.target.value)
-                            }
-                            className="mt-1 p-2 mr-2 block border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
-                        />
-                    </CardContent>
                 </>}
+
+
+            
+            {/* NEW FIELDS */}
+
+
+
+
+
+            {/* End New Fields */}        
+
+            <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Plus d'Informations</CardTitle>
+            <CardContent className="w-full">
+                <Textarea
+                    maxLength={200}
+                    value={devis.Comments || ""}
+                    onChange={(e) =>
+                        handleChange("Comments", e.target.value)
+                    }
+                    className="mt-1 p-2 mr-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
+                />
+            </CardContent>
+
 
         </Card>
 

@@ -26,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
 
   return (
     <div className="flex items-center w-full m-2 pr-4"> {/* Added pr-4 to add padding-right */}
-      <div className="flex items-center flex-1 border border-highGrey rounded-md bg-white ml-2">
+      <div className="flex items-center flex-1 border border-highGrey2 rounded-md bg-white ml-2">
         <Input
           type="text"
           value={inputValue}
@@ -39,13 +39,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
             onClick={handleClearClick}
             className="border-none bg-transparent hover:bg-transparent p-2"
           >
-            <CloseIcon className="text-highGrey" />
+            <CloseIcon className="text-highGrey2" />
           </Button>
         )}
       </div>
       <Button
         onClick={handleSearchClick}
-        className="bg-highGrey hover:bg-highGrey text-white rounded-md  ml-2" // Added ml-2 to add left margin
+        className="bg-highGrey2 hover:bg-highGrey2 text-white rounded-md  ml-2" // Added ml-2 to add left margin
       >
         Rechercher
       </Button>

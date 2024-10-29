@@ -33,7 +33,7 @@ export function CarsTrackingPage() {
 
                     {/* DevisDetails panel */}
                     <ResizablePanel defaultSize={75} minSize={50} className="h-full">
-                        <div className="flex w-full h-full items-center justify-center bg-highGrey">
+                        <div className="flex w-full h-full items-center justify-center bg-highGrey2">
                             <DevisDetails devis={selectedDevis} />
                         </div>
                     </ResizablePanel>

@@ -15,7 +15,7 @@ interface CarModelSelectTypes {
 const CarModelSelect = ({ value, onChange }:CarModelSelectTypes) => {
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey">
+            <SelectTrigger className="w-full border border-highGrey2">
                 <SelectValue placeholder="Modèle préféré" defaultValue={value} />
             </SelectTrigger>
             <SelectContent>

@@ -74,7 +74,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content, fileType, fileN
 
   const renderHeader = () => {
     return (
-      <div className="sticky top-0 flex flex-row justify-between items-center mb-4 p-2 bg-highGrey border border-highGrey rounded-md space-x-6 z-10">
+      <div className="sticky top-0 flex flex-row justify-between items-center mb-4 p-2 bg-highGrey2 border border-highGrey2 rounded-md space-x-6 z-10">
         <div className="text-lightWhite font-oswald text-xl">{fileName}</div>
         <Button onClick={onClose} className="bg-red-500 text-white rounded-md hover:bg-red-500">
           Fermer

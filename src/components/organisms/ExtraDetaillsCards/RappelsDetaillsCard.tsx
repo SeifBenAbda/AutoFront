@@ -52,7 +52,7 @@ export function RappelsDetaillsCard({ devisId, rappels, onUpdate }: RappelsCardP
               key={rappel.RappelId}
             >
               <div>
-                <div className="text-highGrey font-oswald text-base mt-2 mb-2">
+                <div className="text-highGrey2 font-oswald text-base mt-2 mb-2">
                   Rappel N° {index + 1} : {new Date(rappel.RappelDate!).toLocaleDateString()}
                 </div>
                 <DatePicker
@@ -63,7 +63,7 @@ export function RappelsDetaillsCard({ devisId, rappels, onUpdate }: RappelsCardP
                 />
               </div>
               <div>
-                <div className="text-highGrey font-oswald text-base mt-2 mb-2">
+                <div className="text-highGrey2 font-oswald text-base mt-2 mb-2">
                   Contenu du rappel
                 </div>
                 <Textarea
@@ -71,7 +71,7 @@ export function RappelsDetaillsCard({ devisId, rappels, onUpdate }: RappelsCardP
                   onChange={(e) =>
                     handleChange(rappel.RappelId!, "RappelContent", e.target.value)
                   }
-                  className="mt-1 p-2 block w-full border border-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                  className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                 />
               </div>
             </CardContent>

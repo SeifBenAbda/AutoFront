@@ -47,7 +47,7 @@ const ItemRequestForm: React.FC<DevisFormProps> = ({ form }) => {
         <div className="flex flex-col items-center">
             <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-1">
-                    <Card className="bg-highGrey h-full flex flex-col border border-highGrey rounded-lg">
+                    <Card className="bg-highGrey2 h-full flex flex-col border border-highGrey2 rounded-lg">
                         <CardHeader>
                             <CardTitle className="text-base text-whiteSecond">Etape {currentStep + 1} sur {steps.length}</CardTitle>
                         </CardHeader>
@@ -56,7 +56,7 @@ const ItemRequestForm: React.FC<DevisFormProps> = ({ form }) => {
                                 <CardContent key={index}>
                                     <Button
                                         onClick={() => setCurrentStep(index)}
-                                        className={`font-oswald w-full ${currentStep === index ? "bg-lightGreen hover:bg-lightGreen text-highGrey" : "bg-lightWhite hover:bg-lightWhite text-highGrey"}`}
+                                        className={`font-oswald w-full ${currentStep === index ? "bg-lightGreen hover:bg-lightGreen text-highGrey2" : "bg-lightWhite hover:bg-lightWhite text-highGrey2"}`}
                                     >
                                         {step.label} {hasErrors(index) && (
                                             <span className="text-lightRed">*</span>
@@ -69,7 +69,7 @@ const ItemRequestForm: React.FC<DevisFormProps> = ({ form }) => {
                 </div>
 
                 <div className="md:col-span-3 flex">
-                    <Card className="bg-highGrey border rounded-lg border-highGrey flex-1 flex flex-col">
+                    <Card className="bg-highGrey2 border rounded-lg border-highGrey2 flex-1 flex flex-col">
                         <CardContent className="flex-1 flex justify-center items-center p-6">
                             {steps[currentStep].component}
                         </CardContent>

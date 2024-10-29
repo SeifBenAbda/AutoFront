@@ -18,7 +18,7 @@ export function DevisCard({ devis, onUpdate }: DevisCardProps) {
     };
 
     return (
-        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey bg-highGrey">
+        <Card className="pt-0 mb-5 mt-5 w-full border border-highGrey2 bg-highGrey2">
             <div className="flex flex-col">
                 <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between">
                     <CardTitle className="text-whiteSecond text-lg">Information Devis</CardTitle>

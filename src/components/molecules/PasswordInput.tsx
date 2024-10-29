@@ -20,7 +20,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, o
         name="password"
         value={value}
         onChange={onChange}
-        className="w-full p-2 border border-veryGrey focus:border-highGrey focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
+        className="w-full p-2 border border-veryGrey focus:border-highGrey2 focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
         placeholder="Mot de passe"
       />
       <button
@@ -48,7 +48,7 @@ export const PasswordInputNew: React.FC<PasswordInputProps> = ({ value, onChange
         name="password"
         value={value}
         onChange={onChange}
-        className="w-full mt-1 p-2 mr-2 block border border-highGrey text-highGrey rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
+        className="w-full mt-1 p-2 mr-2 block border border-highGrey2 text-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
         placeholder={placeholder?placeholder:"Mot de passe"}
       />
       <button

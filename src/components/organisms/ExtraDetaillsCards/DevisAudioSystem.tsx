@@ -118,7 +118,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
                 </div>
                 <Button
                     onClick={handleRecordClick}
-                    className="bg-lightWhite text-highGrey hover:bg-lightWhite border border-lightWhite rounded-md flex items-center gap-2 font-oswald"
+                    className="bg-lightWhite text-highGrey2 hover:bg-lightWhite border border-lightWhite rounded-md flex items-center gap-2 font-oswald"
                 >
                     {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
                     {isRecording ? "Arrêter l'enregistrement" : 'Enregistrer'}
@@ -127,7 +127,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
 
             {isLoadingAudios && (
                 <div className='flex items-center justify-center w-full h-full'>
-                    <div className="w-12 h-12 border-4 border-t-highGrey border-gray-200 rounded-full animate-spin"></div>
+                    <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
                 </div>
             )}
 
@@ -153,7 +153,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
                         <CustomAudioPlayer fullUrl={URL.createObjectURL(audioBlob)} fileName={""} />
                     </div>
                     <div className="flex gap-4">
-                        <Button onClick={handleUpload} className="bg-greenOne hover:bg-greenOne text-highGrey rounded-md font-oswald">Transférer</Button>
+                        <Button onClick={handleUpload} className="bg-greenOne hover:bg-greenOne text-highGrey2 rounded-md font-oswald">Transférer</Button>
                         <Button onClick={handleCancel} className="bg-lightRed hover:bg-lightRed rounded-md font-oswald">
                             <Trash2 size={20} />
                         </Button>

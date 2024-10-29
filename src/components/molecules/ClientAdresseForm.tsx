@@ -23,7 +23,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 <div className="text-whiteSecond">
                 <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`} className="flex-1">
                     <Input
-                        className="border border-highGrey bg-lightWhite text-highGrey"
+                        className="border border-highGrey2 bg-lightWhite text-highGrey2"
                         placeholder="Adresse"
                         {...register(`${formId}.adresse`)}
                     />
@@ -35,7 +35,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ville" name={`${formId}.ville`} className="flex-1">
                             <Input
-                                className="border border-highGrey bg-lightWhite text-highGrey"
+                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
                                 placeholder="Ville"
                                 {...register(`${formId}.ville`)}
                             />
@@ -63,7 +63,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`} className="flex-1">
                             <Input
-                                className="border border-highGrey bg-lightWhite text-highGrey"
+                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
                                 placeholder="Code Postal"
                                 {...register(`${formId}.postalCode`)}
                             />
@@ -72,7 +72,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Pays" name={`${formId}.pays`} className="flex-1">
                             <Input
-                                className="border border-highGrey bg-lightWhite text-highGrey"
+                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
                                 placeholder="Pays"
                                 {...register(`${formId}.pays`)}
                             />
@@ -84,7 +84,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 <div className="text-whiteSecond">
                 <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`} className="flex-1 text-whiteSecond">
                     <Textarea
-                        className="border border-highGrey bg-lightWhite min-h-[70px] text-highGrey"
+                        className="border border-highGrey2 bg-lightWhite min-h-[70px] text-highGrey2"
                         placeholder="Plus d'informations.."
                         {...register(`${formId}.addressMoreInfos`)}
                     />

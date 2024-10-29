@@ -321,11 +321,10 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
     }
 
     return (
-        <div className="justify-start h-[88vh] w-full relative">  {/* Added relative here */}
+        <div className="justify-start h-[80vh] w-full relative">  {/* Added relative here */}
             {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-50">
-                    {/* Removed mt-2 and changed bg-opacity-50 to bg-black/50 for better syntax */}
-                    <div className="text-lightWhite font-bold">Veuillez patienter...</div>
+                <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50">
+                    <div className="text-white font-bold">Veuillez patienter...</div>
                 </div>
             )}
             {/* Top Devis Details to Change Priority and apply changes Button */}

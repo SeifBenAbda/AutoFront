@@ -68,10 +68,10 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col mt-16 overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden">
       {/* Header with Devis Title and Filter */}
       <div className='flex-none flex flex-row justify-between mb-4'>
-        <div className="flex items-center justify-center font-oswald text-2xl text-highGrey">
+        <div className="flex items-center justify-center font-oswald text-2xl text-highGrey2">
           {typeDevis === "TC" ? "Devis Voiture" : "Devis Changement des Pieces"}
         </div>
 
@@ -120,7 +120,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} columns={displayedColumns} />
+              <TableData data={data?.data || []} columns={displayedColumns}/>
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable
