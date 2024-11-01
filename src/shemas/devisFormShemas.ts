@@ -119,7 +119,7 @@ export const devisSchema = z.object({
         MailExpert: z.string().optional(),
 
         PhoneExpert: z.string().min(1, {
-            message: "Numero de L'Expert est requis",
+            message: "Numéro de L'Expert est requis",
         }),
 
         CommentOne: z.string().min(10,{

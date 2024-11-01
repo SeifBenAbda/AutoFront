@@ -1,39 +1,56 @@
 import { Button } from "../../../@/components/ui/button";
-import { useUploadFiles } from "../../../hooks/useUploadFiles";
-import { Devis } from "../../../types/devisTypes";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { Input } from "../../../@/components/ui/input";
-import imageIcon from '../../../images/picture.png';
-import textIcon from '../../../images/text.png';
-import pdfIcon from '../../../images/pdf.png';
+import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { Devis } from "../../../types/devisTypes";
+import { useUploadFiles } from "../../../hooks/useUploadFiles";
+import DocumentTypeDropDown from "../../../components/atoms/DocumentTypeSelect";
+
+interface DocumentFile {
+    file: File; // Keep using the native File type
+    typeDocument: string; // Store the document type separately
+}
 
 interface DocumentsUploadProps {
     devis: Devis;
-    onFileSelect: (files: File[]) => void;
-    onUploadSuccess: () => void; // New prop for upload success
+    onFileSelect: (files: DocumentFile[]) => void; // Pass selected files with types
+    onUploadSuccess: () => void;
 }
 
-export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: DocumentsUploadProps) {
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: DocumentsUploadProps) {
+    const [selectedFiles, setSelectedFiles] = useState<DocumentFile[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [uploadMessage, setUploadMessage] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false); // Custom loading state
+    const [loading, setLoading] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
 
+    // Initialize the uploadFiles function without invoking it
     const { refetch: uploadFiles } = useUploadFiles({
         devisId: devis.DevisId!,
-        files: selectedFiles,
+        files: selectedFiles.map(doc => ({ file: doc.file, typeDocument: doc.typeDocument })), // Use an object to pass both file and typeDocument
         navigate,
     });
 
-    useEffect(() => {
-        onFileSelect(selectedFiles);
-    }, [selectedFiles, onFileSelect]);
+    const handleUpload = async () => {
+        if (selectedFiles.length === 0) {
+            setError("Please select files to upload.");
+            return;
+        }
 
-    const handleDeleteFile = (fileToDelete: File) => {
-        setSelectedFiles(prevFiles => prevFiles.filter(file => file !== fileToDelete));
+        setUploadMessage(null); // Clear any previous message
+        setLoading(true); // Set loading to true
+        try {
+            await uploadFiles(); // Trigger the upload
+            setUploadMessage('Upload successful!'); // Set success message
+            setSelectedFiles([]); // Clear selected files
+            onFileSelect([]); // Clear the file selection in parent component
+            onUploadSuccess();
+        } catch (error) {
+            setUploadMessage('Upload failed! Please try again.'); // Set failure message
+        } finally {
+            setLoading(false); // Set loading to false after upload completes
+        }
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,37 +61,56 @@ export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: Doc
 
             if (invalidFiles.length > 0) {
                 setError(`Invalid file types: ${invalidFiles.map(file => file.name).join(', ')}`);
-            } else {
-                setError(null); // Clear any previous error
-                setSelectedFiles(prevFiles => [...prevFiles, ...newFilesArray]);
+                return;
             }
 
-            // Reset the file input to allow selecting the same file again if needed
+            setError(null);
+            const newSelectedFiles = newFilesArray.map(file => ({
+                file,
+                typeDocument: '', // Initialize with an empty type
+            }));
+            setSelectedFiles(newSelectedFiles); // Update selected files with types
+            onFileSelect(newSelectedFiles); // Notify parent of new files
+
+            // Reset the file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
         }
     };
 
-    const handleUpload = async () => {
-        setUploadMessage(null); // Clear any previous message
-        setLoading(true); // Set loading to true
-        try {
-            await uploadFiles(); // Trigger the upload
-            setUploadMessage('Upload successful!'); // Set success message
-            setSelectedFiles([]); // Clear selected files
-            onUploadSuccess();
-        } catch (error) {
-            setUploadMessage('Upload failed! Please try again.'); // Set failure message
-        } finally {
-            setLoading(false); // Set loading to false after upload completes
+    const handleDeleteFile = (fileToDelete: File) => {
+        const updatedFiles = selectedFiles.filter(({ file }) => file !== fileToDelete);
+        setSelectedFiles(updatedFiles);
+        onFileSelect(updatedFiles);
+    };
+
+    const handleTypeChange = (index: number, value: string) => {
+        const updatedFiles = [...selectedFiles];
+        updatedFiles[index].typeDocument = value;
+        setSelectedFiles(updatedFiles);
+        onFileSelect(updatedFiles); // Notify parent of updated types
+    };
+
+
+    const getFileIcon = (file: File) => {
+        const fileType = file.type.split('/')[0];
+        switch (fileType) {
+            case 'image':
+                return '/images/picture.png';
+            case 'application':
+                return '/images/pdf.png';
+            case 'text':
+                return '/images/text.png';
+            default:
+                return '/path/to/file-icon.png';
         }
     };
 
     return (
         <div className="relative p-4">
             {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 mt-2">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50">
                     <div className="text-white font-bold">Veuillez patienter...</div>
                 </div>
             )}
@@ -86,13 +122,13 @@ export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: Doc
                     className="mb-4 cursor-pointer"
                     ref={fileInputRef}
                     accept=".pdf,.txt,.png,.jpg,.jpeg"
-                    disabled={loading} // Disable input when loading
+                    disabled={loading}
                 />
                 {selectedFiles.length > 0 && (
                     <Button
                         onClick={handleUpload}
                         className="bg-greenOne border border-greenOne hover:bg-greenOne text-highGrey2 rounded-md font-oswald"
-                        disabled={loading} // Disable button when loading
+                        disabled={loading}
                     >
                         Envoyer les fichiers
                     </Button>
@@ -101,35 +137,26 @@ export function DocumentsUploadCard({ devis, onFileSelect,onUploadSuccess }: Doc
             {error && <p className="text-red-500">{error}</p>}
             {uploadMessage && <p className="text-green-500">{uploadMessage}</p>}
             <div className="flex flex-wrap gap-4 mb-4">
-                {selectedFiles.map((file) => (
-                    <div key={file.name} className="flex items-center bg-lightWhite p-1 border border-lightWhite rounded-md">
-                        <img src={getFileIcon(file)} alt={file.name} className="w-10 h-10 object-cover" />
-                        <span className="ml-2 text-highGrey2 font-oswald">{file.name}</span>
-                        <Button
-                            onClick={() => handleDeleteFile(file)}
-                            className="ml-4 bg-lightRed border border-lightRed rounded-md text-lightWhite hover:bg-lightRed font-oswald"
-                            disabled={loading} // Disable delete button when loading
-                        >
-                            Supprimer
-                        </Button>
+                {selectedFiles.map((doc, index) => (
+                    <div className="flex flex-col space-y-2" key={doc.file.name}>
+                        <div className="flex items-center bg-lightWhite p-1 border border-lightWhite rounded-md">
+                            <img src={getFileIcon(doc.file)} alt={doc.file.name} className="w-10 h-10 object-cover" />
+                            <span className="ml-2 text-highGrey2 font-oswald">{doc.file.name}</span>
+                            <Button
+                                onClick={() => handleDeleteFile(doc.file)}
+                                className="ml-4 bg-lightRed border border-lightRed rounded-md text-lightWhite hover:bg-lightRed font-oswald"
+                                disabled={loading}
+                            >
+                                Supprimer
+                            </Button>
+                        </div>
+                        <DocumentTypeDropDown
+                            onChange={(value) => handleTypeChange(index, value)}
+                            value={doc.typeDocument} // Pass the current type to the dropdown
+                        />
                     </div>
                 ))}
             </div>
         </div>
     );
 }
-
-const getFileIcon = (file: File) => {
-    const fileType = file.type.split('/')[0];
-
-    switch (fileType) {
-        case 'image':
-            return imageIcon;
-        case 'application':
-            return pdfIcon;
-        case 'text':
-            return textIcon;
-        default:
-            return '/path/to/file-icon.png';
-    }
-};

@@ -9,8 +9,11 @@ import textIcon from '../../../images/text.png';
 import pdfIcon from '../../../images/pdf.png';
 import emptyBoxIcon from '../../../images/emptyBox.png';
 import { set } from 'date-fns';
+import { Button } from '../../../@/components/ui/button';
+import useDocsCheck, { DocumentCondition } from '../../../hooks/useDocsCheck';
+import { Devis } from '../../../types/devisTypes';
 
-const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
+const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devis }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [fileType, setFileType] = useState<'text' | 'image' | 'pdf' | null>(null);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -24,13 +27,39 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
 
     const { data: files = [], isLoading, error, refetch } = useDevisFiles(devisId, navigate);
     const { mutateAsync: fetchFileUrl } = useUrlFiles(devisId, navigate);
+    const {
+        data: devisCheckedDocs = [],
+        isLoading: isLoadingDocs,
+        error: docsError,
+        refetch: refetchDocs
+    } = useDocsCheck(devis.client!.clientType, devis.PayementMethod);
+    const [listAvailableDocsTypes, setListAvailableDocsTypes] = useState<string[]>([]);
 
     useEffect(() => {
         setIsLoadingFiles(true);
-        refetch().then(() => {
-            setIsLoadingFiles(false);
-        });
-    }, [devisId, refetch]); // Add refetch to the dependency array
+
+        const updateDocTypes = async () => {
+            try {
+                await refetchDocs();
+                await refetch();
+
+                // Now we can use the FileData interface for proper typing
+                if (files && Array.isArray(files)) {
+                    const docTypes = files.map((file: FileData) => file.typeDocument);
+                    const uniqueDocTypes = [...new Set(docTypes)];
+                    setListAvailableDocsTypes(uniqueDocTypes);
+                }
+
+                setIsLoadingFiles(false);
+            } catch (error) {
+                console.error('Error updating document types:', error);
+                setIsLoadingFiles(false);
+            }
+        };
+
+        updateDocTypes();
+
+    }, [devisId, refetch, refetchDocs, files]);
 
     const fetchFileWithAuth = async (fileUrl: string) => {
         try {
@@ -116,29 +145,87 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
 
     if (error) return <div>Error fetching files: {error.message}</div>;
 
+
+    const renderDocumentStatus = () => {
+        return (
+            <div className="w-full md:w-1/3 p-4 bg-blueCiel rounded-lg h-fit sticky top-4">
+                <h3 className="font-oswald text-xl mb-4 text-highGrey2">Documents requis</h3>
+                <div className="flex flex-col gap-2">
+                    {devisCheckedDocs.map((doc: DocumentCondition) => {
+                        const hasDocument = files.some(
+                            file => file.typeDocument === doc.DocumentType
+                        );
+
+                        return (
+                            <div
+                                key={doc.DocumentType}
+                                className="flex items-center justify-between p-2 bg-white rounded-lg shadow"
+                            >
+                                <span className="font-oswald text-gray-700">{doc.DocumentType}</span>
+                                <div className={`
+                                    px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap font-oswald
+                                    ${hasDocument
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-red-100 text-red-800'
+                                    }
+                                `}>
+                                    {hasDocument ? 'Présent' : 'Manquant'}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     const renderFiles = () => {
         return (
-            <div className="flex flex-wrap">
-                {isLoadingOpening && <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 mt-2">
-                    <div className="text-white font-bold">Veuillez patienter...</div>
-                </div>}
-                {files.map((file) => (
-                    <CardContent key={file.id}>
-                        <div className='flex flex-col items-center'>
-                            <img
-                                key={file.id} // Ensure each button has a unique key
-                                onClick={() => handleButtonClick(file.file_name)} // Call handleButtonClick on click
-                                className="m-2 p-2 border rounded shadow hover:bg-gray-300 bg-highGrey2 cursor-pointer"
-                                src={getFileIcon(file.mime_type)}
-                                height={80}
-                                width={80}
-                            />
-                            <span className='text-highGrey22 font-oswald'>{file.file_name}</span>
+            <div className="flex-1 p-4 min-h-0">
+                <h3 className="text-xl mb-4 text-highGrey2 font-oswald">Fichiers déposés</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 relative">
+                    {isLoadingOpening && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50 rounded-lg">
+                            <div className="text-white font-bold">Veuillez patienter...</div>
                         </div>
-                    </CardContent>
-                ))}
+                    )}
+                    {files.map((file: FileData) => (
+                        <Card
+                            key={file.id}
+                            className="hover:shadow-lg transition-shadow bg-lightWhite h-fit flex-shrink-0 cursor-pointer"
+                            onClick={() => handleButtonClick(file.file_name)}
+                        >
+                            <CardContent className="p-3">
+                                <div className="flex items-center gap-3">
+
+                                    <img
+                                        className="w-10 h-10 object-contain"
+                                        src={getFileIcon(file.mime_type)}
+                                        alt={file.file_name}
+                                    />
+
+                                    <div className="flex-1 min-w-0">
+                                        <div className="font-oswald text-base text-gray-800 truncate">
+                                            {`${file.file_name.split("_")[0]}.${file.file_name.split(".").pop()}`}
+                                        </div>
+                                        <div
+                                            className={`w-full mt-2 h-8 font-oswald text-sm text-center border rounded-lg flex items-center justify-center
+                                            ${devisCheckedDocs.some(doc => doc.DocumentType === file.typeDocument)
+                                                    ? 'bg-green-500 border-green-500 hover:bg-green-600'
+                                                    : 'bg-red-500 border-red-500 hover:bg-red-600'
+                                                } text-white`}
+                                        >
+                                            {file.typeDocument || 'No Type'}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
             </div>
-        )
+        );
     };
 
     const renderEmptyFiles = () => {
@@ -153,7 +240,11 @@ const FileViewer: React.FC<{ devisId: number }> = ({ devisId }) => {
     return (
         <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 mt-2'>
             <CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle>
-            {files.length > 0 ? renderFiles() : renderEmptyFiles()}
+            {files.length > 0 ?
+                <div className="flex flex-col md:flex-row  bg-gray-50">
+                    {renderFiles()}
+                    {renderDocumentStatus()}
+                </div> : renderEmptyFiles()}
             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
@@ -169,11 +260,11 @@ const getFileIcon = (myFileType: string) => {
     const fileType = myFileType.split('/')[0];
     switch (fileType) {
         case 'image':
-            return imageIcon;
+            return '/images/picture.png';
         case 'application':
-            return pdfIcon;
+            return '/images/pdf.png';
         case 'text':
-            return textIcon;
+            return '/images/text.png';
         default:
             return '/path/to/file-icon.png'; // Default icon for unknown types
     }

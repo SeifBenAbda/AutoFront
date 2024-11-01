@@ -62,8 +62,9 @@ const getVariantStatus = (status: string) => {
       return "medium"
     case "Annuler":
       return "destructive"
-
-    case "Facture":
+      case "Réservé":
+        return "reserved" ;
+    case "Facturé":
       return "running"
 
     default:
@@ -80,7 +81,6 @@ const getVariantPriority = (status: string) => {
 
     case "Normale":
       return "running"
-
     default:
       return "normal";
   }
@@ -88,7 +88,7 @@ const getVariantPriority = (status: string) => {
 
 export const columns: ColumnDef<Devis>[] = [
   {
-    header: 'Numero Devis',
+    header: 'Numéro Devis',
     accessorFn: (row) => row.DevisId,
     id: 'DevisId', // add a unique id to each column for identification
   },
@@ -97,7 +97,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Priorité</span>
         <img
-          src={PriorityIcon}
+          src='/images/prioritize.png'
           alt="PriorityDevis"
           className="w-6 h-6"
         />
@@ -112,7 +112,7 @@ export const columns: ColumnDef<Devis>[] = [
 
   
   {
-    header: 'Date Creation',
+    header: 'Date Création',
     accessorFn: (row) => {
       const formattedDate = format(new Date(row.DateCreation!), "EEEE d MMMM yyyy", {
         locale: fr,
@@ -131,9 +131,9 @@ export const columns: ColumnDef<Devis>[] = [
   {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Tel. Client</span>
+        <span className="mb-2 md:mb-0 md:mr-2">Tél. Client</span>
         <img
-          src={phoneIcon}
+          src='/images/phone.png'
           alt="Phone"
           className="w-6 h-6"
         />
@@ -148,7 +148,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Modèle de voiture</span>
         <img
-          src={carIcon}
+          src='/images/car.png'
           alt="car"
           className="w-10 h-10"
         />
@@ -170,7 +170,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Rappel Prochain</span>
         <img
-          src={reminderIcon}
+          src='/images/reminder_new.png'
           alt="Reminder"
           className="w-8 h-8"
         />
@@ -233,7 +233,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Status</span>
         <img
-          src={statusIcon}
+          src='/images/status.png'
           alt="Status"
           className="w-6 h-6"
         />
@@ -251,7 +251,7 @@ export const columns: ColumnDef<Devis>[] = [
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Modification</span>
         <img
-          src={editDevisIcon}
+          src='/images/editDevis.png'
           alt="Edit"
           className="w-6 h-6"
         />

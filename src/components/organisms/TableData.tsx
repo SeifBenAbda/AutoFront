@@ -67,7 +67,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   };
 
   return (
-    <div className=" w-full">
+    <div className="w-full">
       <div className="relative w-full overflow-auto">
         <Table className="w-full bg-whiteSecond border border-whiteSecond rounded-xl table-fixed">
           <TableHeader className="rounded-t-xl sticky top-0 z-10">
@@ -80,18 +80,30 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                     className={`
                       relative bg-lighGrey hover:bg-lighGrey
                       ${index < headerGroup.headers.length - 1
-                        ? "border-r border-whiteSecond text-center align-middle text-highGrey2 font-oswald"
-                        : "text-highGrey2 border-whiteSecond text-center align-middle font-oswald"
+                        ? "border-r border-whiteSecond text-center align-middle text-highGrey font-oswald"
+                        : "text-highGrey border-whiteSecond text-center align-middle font-oswald"
                       }
+                      ${header.column.id === 'actions' ? 'w-24' : ''}
+                      ${header.column.id === 'statusDevis' ? 'w-24' : ''}
+                      ${header.column.id === 'PriorityDevis' ? 'w-24' : ''}
+                      ${header.column.id === 'client.nomClient' ? 'w-44' : ''}
+                      ${header.column.id === 'carModels' ? 'w-40' : ''}
+                      ${header.column.id === 'DateCreation' ? 'w-36' : ''}
+                      ${header.column.id === 'DevisId' ? 'w-24' : ''}
+                      ${header.column.id === 'client.telClient' ? 'w-36' : ''}
+                      ${header.column.id === 'nextReminder' ? 'w-56' : ''}
+                      
+            
+                      
                     `}
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    {index !== headerGroup.headers.length-1 && <ColumnResizer header={header} />}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    {index !== headerGroup.headers.length - 1 && <ColumnResizer header={header} />}
                   </TableHead>
                 ))}
               </TableRow>
@@ -113,16 +125,18 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       align="center"
                       className={`
                         ${cellIndex < row.getVisibleCells().length - 1
-                          ? "border-r border-gray-300 text-highGrey2"
-                          : "text-highGrey2"
+                          ? "border-r border-gray-300 text-highGrey"
+                          : "text-highGrey"
                         }
+                        
+                        
                       `}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       {cell.column.id === 'actions' && (
                         <Button
                           onClick={() => handleOpenSheet(row.original)}
-                          className="px-4 py-2 text-white bg-highGrey2 rounded"
+                          className="px-4 py-2 text-white bg-highGrey rounded"
                         >
                           Modifier
                         </Button>
@@ -133,8 +147,8 @@ export const TableData = ({ columns, data }: DataTableProps) => {
               ))
             ) : (
               <TableRow>
-                <TableCell 
-                  colSpan={columns.length} 
+                <TableCell
+                  colSpan={columns.length}
                   className="h-24 text-center rounded-b-xl"
                 >
                   Aucun résultat
@@ -144,7 +158,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
           </TableBody>
         </Table>
       </div>
-      
+
       {selectedRow && (
         <DialogDevisDetails
           allData={selectedRow}

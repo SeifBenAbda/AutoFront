@@ -21,7 +21,7 @@ const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
             </SelectTrigger>
             <SelectContent>
                 <SelectItem key="Leasing" value="Leasing">Leasing</SelectItem>
-                <SelectItem value="Bank">Bank</SelectItem>
+                <SelectItem value="Banque">Banque</SelectItem>
                 <SelectItem value="Comptant">Comptant</SelectItem>
                 <SelectItem value="FCR">FCR</SelectItem>
             </SelectContent>

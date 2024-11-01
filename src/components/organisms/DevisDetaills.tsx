@@ -18,6 +18,7 @@ import { ClientDetaillsCard } from './ExtraDetaillsCards/ClientDetaillsCard';
 
 interface DevisDetailsProps {
     devis: Devis | null; // The selected Devis, or null if none is selected
+    onDevisCancel: () => void;
 }
 
 interface StepConfig {
@@ -26,7 +27,7 @@ interface StepConfig {
 }
 
 
-const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
+const DevisDetails: React.FC<DevisDetailsProps> = ({ devis, onDevisCancel }) => {
     const [currentPriority, setPriority] = useState(devis?.PriorityDevis || 'Normale');
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -220,11 +221,23 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis }) => {
         );
     };
 
+
+    const renderCancelButton = () => {
+        return (
+            <Button onClick={onDevisCancel} className="bg-lightRed border border-lightRed hover:bg-lightRed rounded-md">
+                Fermer
+            </Button>
+        );
+    };
+
     const renderTopHeader = () => {
         return (
             <div className="flex flex-row justify-between w-full p-2">
                 {renderPriorities()}
-                {renderApplyChangesButton()}
+                <div className='flex flex-row space-x-2'>
+                    {renderApplyChangesButton()}
+                    {renderCancelButton()}
+                </div>
             </div>
         );
     };

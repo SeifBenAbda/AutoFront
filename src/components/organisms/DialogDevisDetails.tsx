@@ -22,16 +22,10 @@ export function DialogDevisDetails({
 }: DialogDevisDetailsProps) {
     return (
         <Dialog open={isOpen} >
+            <DialogTitle></DialogTitle>
             <DialogContent className="w-[95vw] max-w-[95vw] h-[95vh] max-h-[95vh] overflow-y-auto bg-highGrey2 border border-highGrey2">
-                
-                <DevisDetails devis={allData} />
-
-                <DialogFooter>
-                <Button className="bg-red-500 hover:bg-red-500" onClick={onClose}>Fermer</Button>
-            </DialogFooter>
+                <DevisDetails devis={allData} onDevisCancel={onClose} />
             </DialogContent>
-
-            
         </Dialog>
     );
 }

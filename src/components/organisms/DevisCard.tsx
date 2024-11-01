@@ -39,7 +39,7 @@ export function DevisCard({ devis, onUpdate }: DevisCardProps) {
                 {/** Payement Type  */}
 
                 <CardContent>
-                    <label className="block text-sm font-medium text-whiteSecond">Type de Payement</label>
+                    <label className="block text-sm font-medium text-whiteSecond">Type de paiement</label>
                     <PayementMethod
                         value={devis.PayementMethod}
                         onChange={(value) => handleChange("PayementMethod", value)}

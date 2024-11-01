@@ -405,20 +405,23 @@ export const fetchClients = async (
 export const uploadDocuments = async (
   database: string,
   devisId: number,
-  files: File[], // Accept an array of files
+  files: { file: File; typeDocument: string }[], 
   navigate: (path: string) => void
 ) => {
-  const token = getToken(); // Assume getToken retrieves the token
+  const token = getToken();
   if (!token) {
     navigate('/login');
     throw new Error('No token found');
   }
 
   const formData = new FormData();
-  // Append each file to the FormData
-  files.forEach(file => {
-    formData.append('files', file); // Use the same key 'file' for all files
+
+  // Append each file and its associated `typeDocument` with unique keys
+  files.forEach((doc, index) => {
+    formData.append(`file`, doc.file);            // Unique key for each file
+    formData.append(`typeDocument`, doc.typeDocument);  // Unique key for each typeDocument
   });
+
   formData.append('database', database);
   formData.append('DevisId', devisId.toString());
 
@@ -426,15 +429,13 @@ export const uploadDocuments = async (
     const response = await fetch(`${API_URL}/devis-documents/uploadFiles`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        // 'Content-Type' is not set for FormData; it will be automatically handled
+        'Authorization': `Bearer ${token}`
       },
       body: formData,
     });
 
     if (response.status === 401) {
-      // Token is invalid or expired
-      removeToken(); // Assume removeToken clears the token
+      removeToken();
       navigate('/login');
       throw new Error('Unauthorized: Token is invalid or expired');
     }
@@ -449,6 +450,10 @@ export const uploadDocuments = async (
     throw error;
   }
 };
+
+
+
+
 
 
 export const streamFile = async (filename: string, navigate: (path: string) => void) => {
@@ -526,6 +531,7 @@ interface FileData {
   mime_type: string;
   file_size: number;
   uploaded_at: string;
+  typeDocument : string;
 }
 export const getDevisFiles = async (database: string, devisId: string, navigate: (path: string) => void): Promise<FileData[]> => {
   const token = getToken(); // Retrieve the token
@@ -553,7 +559,6 @@ export const getDevisFiles = async (database: string, devisId: string, navigate:
           navigate('/login');
           throw new Error('Failed to fetch files');
       }
-
       return response.json();
   } catch (error) {
       console.error('Error fetching files:', error);
@@ -650,6 +655,46 @@ export const getAudioFiles = async (
 
     const data = await response.json();
     return data; // Assuming the API response structure is { status: 200, audioFiles: [] }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+
+
+export const fetchDocCheck = async (databasename: string,clientType: string,payementType: string, navigate: (path: string) => void) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database: databasename ,clientType:clientType,payementType:payementType};
+
+  try {
+    const response = await fetch(`${API_URL}/document-conditions/specific`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch car models');
+    }
+
+    return response.json();
   } catch (error) {
     console.error(error);
     throw error;

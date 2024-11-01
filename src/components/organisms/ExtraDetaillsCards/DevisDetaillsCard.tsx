@@ -80,7 +80,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
             {devis.StatusDevis === "Facture" && (
                 <CardContent className="w-full">
-                    <Label className=" text-sm font-medium text-highGrey2">Numero de Facture</Label>
+                    <Label className=" text-sm font-medium text-highGrey2">Numéro de Facture</Label>
                     <Input
                         type="text"
                         value={devis.NumFacture || ""}
@@ -98,7 +98,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Paiements</CardTitle>
 
                     <CardContent className="w-full">
-                        <Label className=" text-sm font-medium text-highGrey2 mb-1">Type de Payement</Label>
+                        <Label className=" text-sm font-medium text-highGrey2 mb-1">Type de paiement</Label>
                         <PayementMethod
                             value={devis.PayementMethod}
                             onChange={(value) => handleChange("PayementMethod", value)}
@@ -106,7 +106,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     </CardContent>
 
                     {/* Conditionally render additional payment details based on PayementMethod */}
-                    {(devis.PayementMethod === "Bank" || devis.PayementMethod === "Leasing") && (
+                    {(devis.PayementMethod === "Banque" || devis.PayementMethod === "Leasing") && (
                         <div className="flex gap-4 w-full">
                             <CardContent className="w-1/2 ">
                                 <Label className=" text-sm font-medium text-highGrey2 mb-1">Banque et Leasing</Label>
@@ -129,7 +129,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
                     <div className="flex gap-4 w-full">
                         <CardContent className="w-1/2 ">
-                            <Label className=" text-sm font-medium text-highGrey2 ">Numero Commande</Label>
+                            <Label className=" text-sm font-medium text-highGrey2 ">Numéro Bon de Commande</Label>
                             <Input
                                 type="text"
                                 value={devis.NumBc || ""}
@@ -161,7 +161,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
 
 
             {/* NEW FIELDS : Responsable */}
-            {devis.StatusDevis == "Reserver" && (
+            {devis.StatusDevis == "Réservé" && (
                 <>
                     <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2 ">Responsable</CardTitle>
                     <div className="flex gap-4 w-full">
@@ -178,7 +178,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                         </CardContent>
 
                         <CardContent className="w-full">
-                            <Label className=" relative text-sm font-medium text-highGrey2 ">Tel. Responsable</Label>
+                            <Label className=" relative text-sm font-medium text-highGrey2 ">Tél. Responsable</Label>
                             <Input
                                 type="text"
                                 value={devis.ResponsableNum || ""}
@@ -191,7 +191,7 @@ export function DevisDetaillsCard({ devis, onUpdate }: DevisCardProps) {
                     </div>
 
                     <CardContent>
-                        <Label className=" relative text-sm font-medium text-highGrey2 ">Date de Reservation</Label>
+                        <Label className=" relative text-sm font-medium text-highGrey2 ">Date de Réservation</Label>
                         <DatePicker
                             value={devis.ReservationDate || new Date()}
                             onChange={handleDateChange}

@@ -20,18 +20,19 @@ interface UploadResponse {
 
 interface UseUploadFilesProps {
     devisId: number;
-    files: File[];
+    files: { file: File; typeDocument: string; }[];
     navigate: (path: string) => void;
 }
 export const useUploadFiles = ({ devisId, files, navigate }: UseUploadFilesProps) => {
     return useQuery({
-      queryKey: ['devisFiles', devisId, files], // Unique key including files to trigger query on change
-      queryFn: () => uploadDocuments("Commer_2024_AutoPro", devisId, files, navigate),
-      enabled: files.length > 0, // Only enable the query if there are files to upload
+      queryKey: ['devisFiles', devisId], // Unique key including files to trigger query on change
+      queryFn: () => uploadDocuments("Commer_2024_AutoPro", devisId, files, navigate), // Use files directly
+      enabled: false, // Only enable the query if there are files to upload
       staleTime: 2000,
-      refetchOnWindowFocus: false, // You can adjust this depending on your needs
+      refetchOnWindowFocus: false,
     });
-  };
+};
+
 
 
 
@@ -66,6 +67,7 @@ export interface FileData {
     mime_type: string;
     file_size: number;
     uploaded_at: string;
+    typeDocument : string;
 }
 
 export const useUrlFiles = (

@@ -48,7 +48,7 @@ export function DocumentsDetaillsCard({ devis, onUpdate }: DocumentsCardProps) {
 
             <div>
                 {activeComponent === 'checkFiles' ? (
-                   <FileViewer devisId={devis!.DevisId!}/>
+                   <FileViewer devisId={devis!.DevisId!} devis={devis}/>
                 ) : (
                     <DocumentsUploadCard devis={devis} onFileSelect={(files) => setHasSelectedFiles(files.length > 0)}  onUploadSuccess={handleUploadSuccess}/>
                 )}
