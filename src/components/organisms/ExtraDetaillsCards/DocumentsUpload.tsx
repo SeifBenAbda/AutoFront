@@ -69,8 +69,10 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                 file,
                 typeDocument: '', // Initialize with an empty type
             }));
-            setSelectedFiles(newSelectedFiles); // Update selected files with types
-            onFileSelect(newSelectedFiles); // Notify parent of new files
+
+            // Merge the new files with the existing selected files
+            setSelectedFiles(prevFiles => [...prevFiles, ...newSelectedFiles]);
+            onFileSelect([...selectedFiles, ...newSelectedFiles]); // Notify parent of updated files
 
             // Reset the file input
             if (fileInputRef.current) {
@@ -78,6 +80,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
             }
         }
     };
+
 
     const handleDeleteFile = (fileToDelete: File) => {
         const updatedFiles = selectedFiles.filter(({ file }) => file !== fileToDelete);
@@ -90,6 +93,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
         updatedFiles[index].typeDocument = value;
         setSelectedFiles(updatedFiles);
         onFileSelect(updatedFiles); // Notify parent of updated types
+        console.log(updatedFiles);
     };
 
 

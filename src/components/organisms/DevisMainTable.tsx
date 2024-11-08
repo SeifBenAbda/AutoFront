@@ -75,9 +75,10 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
           {typeDevis === "TC" ? "Devis Voiture" : "Devis Changement des Pieces"}
         </div>
 
-        <div className="flex-1">
+        {/*<div className="flex-1">
           <FilterColumnsDevis onFiltredListChange={handleFiltredListChange} />
-        </div>
+        </div> */}
+
       </div>
 
       {/* Search Box and Status Dropdown */}
@@ -98,13 +99,13 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
             />
           </div>
           <div className="w-auto">
-          <CarsMultiSelect
+            <CarsMultiSelect
               selectedValues={selectedCars} // Changed to selectedValues
               onChange={handleCarChange} // Updated to handle array of selected values
               isFiltering={true}
             />
           </div>
-          
+
         </div>
         <div className="w-auto">
           <SearchBar onSearch={handleSearch} searchValue={searchValue} />
@@ -120,7 +121,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} columns={displayedColumns}/>
+              <TableData data={data?.data || []} columns={displayedColumns} />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable

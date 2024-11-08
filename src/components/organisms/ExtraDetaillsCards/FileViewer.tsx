@@ -4,12 +4,7 @@ import { useUrlFiles } from '../../../hooks/useUploadFiles'; // Import the useUr
 import Modal from '../../atoms/ModalFileViewer'; // Adjust the import path to your Modal component
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardTitle } from '../../../@/components/ui/card';
-import imageIcon from '../../../images/picture.png';
-import textIcon from '../../../images/text.png';
-import pdfIcon from '../../../images/pdf.png';
 import emptyBoxIcon from '../../../images/emptyBox.png';
-import { set } from 'date-fns';
-import { Button } from '../../../@/components/ui/button';
 import useDocsCheck, { DocumentCondition } from '../../../hooks/useDocsCheck';
 import { Devis } from '../../../types/devisTypes';
 
@@ -83,6 +78,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     };
 
     const handleButtonClick = async (filename: string) => {
+        console.log("Opening new file in new window")
         setIsLoadingOpening(true);
         try {
             // Fetch the file metadata including the file path and MIME type
@@ -90,43 +86,28 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
             if (!fileResponse) {
                 throw new Error('File not found');
             }
-
+    
             const file_path = fileResponse.file_path;
-            const mime_type = fileResponse.mime_type;
-
-            // Sanitize the file path
             const sanitizedFilePath = file_path.replace(/\\/g, '/');
-
-            // Construct the full URL
             const fullUrl = `${API_URL}${encodeURIComponent(sanitizedFilePath)}`;
-
+    
             // Fetch the file content with authorization
             const fileBlob = await fetchFileWithAuth(fullUrl);
+            
+            // Create a blob URL for the downloaded file
             const blobUrl = URL.createObjectURL(fileBlob);
-
-            // Set the file URL and type based on the MIME type
-            setFileUrl(blobUrl);
-            setFileName(filename);
-
-            if (mime_type.startsWith('image/')) {
-                setFileType('image');
-            } else if (mime_type === 'application/pdf') {
-                setFileType('pdf');
-            } else if (mime_type.startsWith('text/')) {
-                setFileType('text');
-            } else {
-                throw new Error('Unsupported file type');
-            }
-
+    
+            // Open the blob URL in a new tab
+            window.open(blobUrl, '_blank');
+    
             setIsLoadingOpening(false);
-
-            // Open the modal
-            setModalOpen(true);
         } catch (error) {
             setIsLoadingOpening(false);
-            console.error('Error fetching file content:', error);
+            console.error('Error opening file:', error);
         }
     };
+    
+    
 
     const handleCloseModal = () => {
         setModalOpen(false);
