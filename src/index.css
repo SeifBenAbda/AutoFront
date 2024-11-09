@@ -34,3 +34,35 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background-color: #555; /* Thumb color when hovering */
   }
+
+  .DialogContent {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: 0 !important;
+    transform: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 40% !important; /* This will be overridden by your responsive classes */
+    height: 100vh !important;
+  }
+  
+  /* Override the default animation if it's interfering */
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }

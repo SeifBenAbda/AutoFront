@@ -11,27 +11,26 @@ const NavMenu: React.FC = () => {
 
   // Update activeLink based on the current pathname
   useEffect(() => {
-    switch (location.pathname) {
-      /*case '/dashboard':
-        setActiveLink('Dashboard');
-        break;*/
-      case '/car-request':
-        setActiveLink('Dossier Voiture');
-        break;
-      /*case '/item-change':
-        setActiveLink('Commande des Pieces');
-        break;*/
-      case '/carTracking':
+    const devisRegex = /^\/carTracking\/devis\/[^/]+$/;
+  
+    switch (true) {
+      case devisRegex.test(location.pathname):
         setActiveLink('Suivi Devis Voiture');
         break;
-        case '/profile':
+      case location.pathname === '/car-request':
+        setActiveLink('Dossier Voiture');
+        break;
+      case location.pathname === '/carTracking':
+        setActiveLink('Suivi Devis Voiture');
+        break;
+      case location.pathname === '/profile':
         setActiveLink('');
         break;
-      /*case '/itemTracking':
-        setActiveLink('Suivi Changement des Pieces');
-        break;*/
+      case location.pathname === '/devis':
+        setActiveLink('Suivi Devis Voiture');
+        break;
       default:
-        setActiveLink('Dossier Voiture'); // Default case if no match
+        setActiveLink('Dossier Voiture');
     }
   }, [location.pathname]);
 
@@ -66,7 +65,7 @@ const NavMenu: React.FC = () => {
 
   return (
     <nav className="hidden md:flex md:text-xs md:space-x-2 lg:text-base justify-center space-x-4 border rounded-2xl border-lightWhite bg-lightWhite">
-      
+
       {/*
       <Button
         onClick={() => handleNavClick('Dashboard', "/dashboard")}

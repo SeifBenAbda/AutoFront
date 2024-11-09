@@ -20,12 +20,12 @@ module.exports = {
   		screens: {
   			'md-custom': '800px',
   			'lg-custom': '1150px',
-			'sm-custom':'768px'
+			'sm-custom':'768px',
   		},
   		colors: {
   			veryGrey: '#f0f7f6',
   			whiteSecond: '#fbfbfb',
-  			blueCiel: '#e1e8f7',
+  			blueCiel: '#dae5ff',
 			greenOne:'#8ebd55',
 			highGrey2:'#1b2a4d',
 			lightWhite:'#fbfbfb',

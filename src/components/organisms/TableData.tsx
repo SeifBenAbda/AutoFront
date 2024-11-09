@@ -15,10 +15,13 @@ import {
   TableRow,
 } from "../../@/components/ui/table";
 import { ColumnResizer } from "../atoms/ColumnResizer";
-import { EditDevisSheet } from "../molecules/EditDevisSheet";
 import { Button } from "../../@/components/ui/button";
 import { Devis } from "@/types/devisTypes";
+
+import { useNavigate } from "react-router-dom";
+import { DevisDetailsPage } from "./DevisDetails/devisDetailsNew";
 import { DialogDevisDetails } from "./DialogDevisDetails";
+
 
 interface DataTableProps {
   columns: ColumnDef<Devis, any>[];
@@ -30,7 +33,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   const [tableData, setTableData] = useState<Devis[]>(data); // Manage table data state
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   // Update tableData when data prop changes
   useEffect(() => {
     setTableData(data);
@@ -68,9 +71,9 @@ export const TableData = ({ columns, data }: DataTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="relative w-full overflow-auto">
-        <Table className="w-full bg-whiteSecond border border-whiteSecond rounded-xl table-fixed">
-          <TableHeader className="rounded-t-xl sticky top-0 z-10">
+      <div className="relative w-full overflow-auto rounded-xl  border-highGrey2 border-2">
+        <Table className="w-full bg-whiteSecond   table-fixed">
+          <TableHeader className=" sticky top-0 z-10 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-lighGrey hover:bg-lighGrey">
                 {headerGroup.headers.map((header, index) => (
@@ -80,8 +83,8 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                     className={`
                       relative bg-lighGrey hover:bg-lighGrey
                       ${index < headerGroup.headers.length - 1
-                        ? "border-r border-whiteSecond text-center align-middle text-highGrey font-oswald"
-                        : "text-highGrey border-whiteSecond text-center align-middle font-oswald"
+                        ? " text-center align-middle text-highGrey font-oswald"
+                        : "text-highGrey  text-center align-middle font-oswald"
                       }
                       ${header.column.id === 'actions' ? 'w-24' : ''}
                       ${header.column.id === 'statusDevis' ? 'w-24' : ''}
@@ -125,7 +128,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       align="center"
                       className={`
                         ${cellIndex < row.getVisibleCells().length - 1
-                          ? "border-r border-gray-300 text-highGrey"
+                          ? "  text-highGrey"
                           : "text-highGrey"
                         }
                         
@@ -135,7 +138,9 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       {cell.column.id === 'actions' && (
                         <Button
-                          onClick={() => handleOpenSheet(row.original)}
+                          onClick={
+                            () => handleOpenSheet(row.original)                    
+                          }
                           className="px-4 py-2 text-white bg-highGrey rounded"
                         >
                           Modifier

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
-import DashboardLayout from './templates/DashboardLayout';
 import CarRequestPage from './templates/CarRequestLayout';
-import ItemChangePage from './templates/ItemChangeLayout';
 import LoginPage from './templates/LoginPage';
 import ItemChangeTrackingPage from './pages/ItemChangeTrackingPage';
 import CarTrackingLayout from './templates/CarTrackingLayout';
 import Loading from './components/atoms/Loading';
 import ProfileUserPage from './pages/ProfileUserPage';
+
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
@@ -56,6 +55,7 @@ const App: React.FC = () => {
           path="/profile"
           element={isLoggedIn ? <ProfileUserPage /> : <Navigate to="/login" />}
         />
+
         <Route path="*" element={<Navigate to={isLoggedIn ? "/car-request" : "/login"} />} />
       </Routes>
     </Router>
