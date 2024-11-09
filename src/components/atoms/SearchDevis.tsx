@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
   };
 
   return (
-    <div className="flex items-center w-full m-2 pr-4"> {/* Added pr-4 to add padding-right */}
+    <div className="flex items-center w-full"> {/* Added pr-4 to add padding-right */}
       <div className="flex items-center flex-1 border border-highGrey2 rounded-md bg-white ml-2">
         <Input
           type="text"

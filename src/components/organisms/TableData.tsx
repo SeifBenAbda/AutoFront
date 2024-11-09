@@ -165,7 +165,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
       </div>
 
       {selectedRow && (
-        <DialogDevisDetails
+        <DevisDetailsPage
           allData={selectedRow}
           isOpen={isSheetOpen}
           onClose={handleCloseSheet}
