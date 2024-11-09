@@ -141,7 +141,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                           onClick={
                             () => handleOpenSheet(row.original)                    
                           }
-                          className="px-4 py-2 text-white bg-highGrey rounded"
+                          className="px-4 py-2 text-white bg-highGrey2 rounded"
                         >
                           Modifier
                         </Button>
