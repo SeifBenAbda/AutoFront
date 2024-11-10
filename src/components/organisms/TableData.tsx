@@ -19,8 +19,9 @@ import { Button } from "../../@/components/ui/button";
 import { Devis } from "@/types/devisTypes";
 
 import { useNavigate } from "react-router-dom";
-import { DevisDetailsPage } from "./DevisDetails/devisDetailsNew";
-import { DialogDevisDetails } from "./DialogDevisDetails";
+import { DevisDetailsPage } from "./DevisDetails/DevisDetailsNewDialog";
+
+
 
 
 interface DataTableProps {
@@ -71,9 +72,9 @@ export const TableData = ({ columns, data }: DataTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="relative w-full overflow-auto rounded-xl  border-highGrey2 border-2">
+      <div className="relative w-full overflow-auto rounded-xl  border-highGrey2 border-[1px]">
         <Table className="w-full bg-whiteSecond   table-fixed">
-          <TableHeader className=" sticky top-0 z-10 ">
+          <TableHeader className="sticky top-0 z-10 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-lighGrey hover:bg-lighGrey">
                 {headerGroup.headers.map((header, index) => (

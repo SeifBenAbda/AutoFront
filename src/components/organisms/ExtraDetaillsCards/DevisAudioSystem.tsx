@@ -108,7 +108,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
             
             <div className="flex justify-between items-center mb-4">
                 <div className='flex flex-row space-x-2 items-center'>
-                    <h2 className="text-xl font-bold text-white font-oswald">Rappels Audio</h2>
+                    <h2 className="text-xl font-bold text-highGrey2 font-oswald">Rappels Audio</h2>
                     {/* Display upload messages */}
                     {uploadMessage && (
                         <div className="p-2 text-center bg-red-500 border-red-500 rounded-md text-lightWhite font-oswald">
@@ -118,10 +118,10 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
                 </div>
                 <Button
                     onClick={handleRecordClick}
-                    className="bg-lightWhite text-highGrey2 hover:bg-lightWhite border border-lightWhite rounded-md flex items-center gap-2 font-oswald"
+                    className="bg-blueCiel text-highGrey2 hover:bg-blueCiel border border-blueCiel rounded-md flex items-center gap-2 font-oswald"
                 >
                     {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
-                    {isRecording ? "Arrêter l'enregistrement" : 'Enregistrer'}
+                    {isRecording ? "Arrêter l'enregistrement" : 'Enregistrer audio'}
                 </Button>
             </div>
 

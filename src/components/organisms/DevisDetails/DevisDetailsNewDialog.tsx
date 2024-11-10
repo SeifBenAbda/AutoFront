@@ -1,0 +1,186 @@
+import React, { useState, useEffect } from "react";
+import { Devis, Rappel } from "../../../types/devisTypes";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "../../../@/components/ui/dialog";
+import { CircleX } from "lucide-react";
+import DevisDetailsNewMain from "./DevisDetaillsNewMain";
+import phoneIcon from '../../../images/phone.png';
+import clientIcon from '../../../images/client.png';
+import reminderIcon from '../../../images/reminder_new.png';
+import { Button } from "@/@/components/ui/button";
+type DevisDetailsPageProps = {
+    allData: Devis;
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (data: Devis) => void;
+};
+
+// Create custom components for each state
+const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; phone: string }) => (
+    <div className="flex items-center space-x-8 px-3 py-1">
+        <div className="flex flex-row space-x-2">
+            <img src={clientIcon} alt="Agent" className="w-5 h-5" />
+            <span className="text-highGrey2 font-oswald">{geneder} {name}</span>
+        </div>
+        <div className="flex flex-row space-x-2">
+            <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
+            <span className="text-highGrey2 font-oswald">{phone}</span>
+        </div>
+    </div>
+);
+
+const ReminderInfo = ({ rappels }: { rappels: Rappel[] | undefined }) => {
+    const closestReminder = getClosestUpcomingReminder(rappels);
+
+    const formatReminderDate = (date: string): string => {
+        const reminderDate = new Date(date);
+        const today = new Date();
+
+        // Set time of today to midnight for comparison purposes
+        today.setHours(0, 0, 0, 0);
+        reminderDate.setHours(0, 0, 0, 0);
+
+        if (reminderDate.getTime() === today.getTime()) {
+            return "Aujourd'hui !"; // Same day as today
+        }
+
+        // Otherwise, format the date as "le [date]"
+        return `${reminderDate.toLocaleDateString("fr-FR")} : `; // French date format
+    };
+
+    return (
+        <div className="flex items-center space-x-2 px-3 py-1">
+            {closestReminder ? (
+                <>
+                    <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
+                    <span className="text-highGrey2 font-oswald">
+                        {formatReminderDate(closestReminder.RappelDate!.toString())}
+                    </span>
+                    <span className="text-highGrey2 font-oswald">
+                        {closestReminder.RappelContent}
+                    </span>
+
+                </>
+            ) : (
+                <span className="text-highGrey2 font-oswald">Aucun rappel à venir</span>
+            )}
+        </div>
+    );
+};
+
+
+function getPriorityClassName(devisPriority: string) {
+    switch (devisPriority) {
+        case "Normale":
+            return "bg-lightGreen border border-whiteSecond text-highGrey";
+        case "Moyenne":
+            return "bg-yellow-400 border border-yellow-400 text-highGrey2";
+        case "Haute":
+            return "bg-red-400 border border-red-400 text-lightWhite";
+    }
+}
+
+const getClosestUpcomingReminder = (rappels: Rappel[] | undefined): Rappel | null => {
+    // Filter out reminders with undefined dates or content
+    const validReminders = rappels?.filter(
+        reminder => reminder.RappelDate && reminder.RappelContent
+    ) || [];
+
+    if (validReminders.length === 0) return null;
+
+    const now = new Date().getTime();
+
+    // Find the closest upcoming reminder
+    return validReminders.reduce((closest, current) => {
+        const currentDate = new Date(current.RappelDate!).getTime();
+        const closestDate = closest ? new Date(closest.RappelDate!).getTime() : 0;
+
+        if (currentDate >= now && (!closest || currentDate < closestDate)) {
+            return current;
+        }
+        return closest;
+    }, null as Rappel | null);
+};
+
+export function DevisDetailsPage({
+    allData,
+    isOpen,
+    onClose,
+    onSave
+}: DevisDetailsPageProps) {
+    const [currentComponent, setCurrentComponent] = useState<'client' | 'reminder'>('client');
+    const [direction, setDirection] = useState('center'); // 'right' | 'center' | 'left'
+
+
+    useEffect(() => {
+        if (isOpen) {
+            const timer = setInterval(() => {
+                // Start exit animation
+                setDirection('left');
+
+                // Change component and reset position after exit animation
+                setTimeout(() => {
+                    setCurrentComponent((prev) =>
+                        prev === 'client' ? 'reminder' : 'client'
+                    );
+                    setDirection('right');
+
+                    // Trigger entrance animation
+                    requestAnimationFrame(() => {
+                        setDirection('center');
+                    });
+                }, 600);
+            }, 9000);
+
+            return () => clearInterval(timer);
+        }
+    }, [isOpen]);
+
+    const getTextPosition = () => {
+        switch (direction) {
+            case 'right':
+                return 'translate-x-full opacity-0';
+            case 'left':
+                return '-translate-x-full opacity-0';
+            default:
+                return 'translate-x-0 opacity-100';
+        }
+    };
+
+    return (
+        <Dialog open={isOpen}>
+            <DialogContent
+                style={{ transform: 'none' }}
+                className="flex flex-col h-[92vh] !fixed !inset-y-0 !right-0 !left-auto w-full text-start sm-custom:w-[62%] md-custom:w-[62%] min-[1300px]:w-[37%] max-[550px]:w-[78%] max-[788px]:w-[65%] min-[900px]:w-[52%] min-[1040px]:w-[47%] p-0 m-4 mt-14 rounded-lg border-whiteSecond bg-whiteSecond shadow-lg !max-w-none duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+            >
+                <DialogTitle className="pt-4 pl-2 flex flex-row justify-between items-center space-x-4 mr-2">
+                    <div className={`font-medium font-oswald text-sm rounded-md px-2 py-1 ${getPriorityClassName(allData.PriorityDevis)}`}>
+                        Priorité {allData.PriorityDevis}
+                    </div>
+                    <div className="font-oswald text-2xl flex-1 text-center pr-8">Devis N° {allData.DevisId}</div>
+                    <CircleX className="h-7 w-7 cursor-pointer" onClick={onClose} />
+                </DialogTitle>
+
+                <hr className="bg-highGrey2 w-full" />
+
+                {/* Scrollable Content */}
+                <div className="flex-grow overflow-y-auto px-2">
+                    <div className="relative flex min-h-10 border border-blueCiel items-center justify-center overflow-visible bg-blueCiel rounded-md">
+                        <div className={`absolute transform transition-all duration-500 ease-in-out ${getTextPosition()}`}>
+                            {currentComponent === 'client' ? (
+                                <ClientInfo
+                                    geneder={allData.client?.clientGender ?? ""}
+                                    name={allData.client?.nomClient ?? ""}
+                                    phone={allData.client?.telClient ?? ""}
+                                />
+                            ) : (
+                                <ReminderInfo rappels={allData.rappels} />
+                            )}
+                        </div>
+                    </div>
+                    <DevisDetailsNewMain devis={allData} isOpen={isOpen} onClose={onClose} onSave={onSave} />
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+
+}

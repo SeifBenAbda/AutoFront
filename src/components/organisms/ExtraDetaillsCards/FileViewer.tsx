@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FileData, useDevisFiles } from '../../../hooks/useUploadFiles'; // Adjust the import path as needed
 import { useUrlFiles } from '../../../hooks/useUploadFiles'; // Import the useUrlFiles hook
 import Modal from '../../atoms/ModalFileViewer'; // Adjust the import path to your Modal component
@@ -29,6 +29,58 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         refetch: refetchDocs
     } = useDocsCheck(devis.client!.clientType, devis.PayementMethod);
     const [listAvailableDocsTypes, setListAvailableDocsTypes] = useState<string[]>([]);
+
+
+    // States and references
+    const [isPaused, setIsPaused] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
+    const [startPos, setStartPos] = useState(0);
+    const [currentScroll, setCurrentScroll] = useState(0);
+
+    useEffect(() => {
+        const scrollContainer = scrollRef.current;
+        if (!scrollContainer || isPaused) return;
+
+        const scroll = () => {
+            if (scrollContainer) {
+                if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+                    setScrollDirection(-1); // Switch to scroll left
+                } else if (scrollContainer.scrollLeft <= 0) {
+                    setScrollDirection(1); // Switch to scroll right
+                }
+                scrollContainer.scrollLeft += scrollDirection; // Adjust scroll direction
+            }
+        };
+
+        const animationInterval = setInterval(scroll, 30);
+        return () => clearInterval(animationInterval);
+    }, [isPaused, scrollDirection]);
+
+    // Mouse Events for Dragging
+    const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+        setIsDragging(true);
+        setIsPaused(true);
+        const pos = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        setStartPos(pos);
+        if (scrollRef.current) {
+            setCurrentScroll(scrollRef.current.scrollLeft);
+        }
+    };
+
+    const handleDragEnd = () => {
+        setIsDragging(false);
+        setIsPaused(false);
+    };
+
+    const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+        if (!isDragging || !scrollRef.current) return;
+        e.preventDefault();
+        const pos = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        const walk = pos - startPos;
+        scrollRef.current.scrollLeft = currentScroll - walk;
+    };
 
     useEffect(() => {
         setIsLoadingFiles(true);
@@ -78,36 +130,45 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     };
 
     const handleButtonClick = async (filename: string) => {
-        console.log("Opening new file in new window")
+        console.log("Opening new file in new window");
         setIsLoadingOpening(true);
+
         try {
             // Fetch the file metadata including the file path and MIME type
             const fileResponse = await fetchFileUrl(filename);
             if (!fileResponse) {
                 throw new Error('File not found');
             }
-    
+
             const file_path = fileResponse.file_path;
             const sanitizedFilePath = file_path.replace(/\\/g, '/');
             const fullUrl = `${API_URL}${encodeURIComponent(sanitizedFilePath)}`;
-    
+
             // Fetch the file content with authorization
             const fileBlob = await fetchFileWithAuth(fullUrl);
-            
+
+            // Check if the file is not empty or invalid
+            if (!fileBlob || fileBlob.size === 0) {
+                throw new Error('Invalid file content');
+            }
+
             // Create a blob URL for the downloaded file
             const blobUrl = URL.createObjectURL(fileBlob);
-    
+
             // Open the blob URL in a new tab
             window.open(blobUrl, '_blank');
-    
-            setIsLoadingOpening(false);
+
         } catch (error) {
-            setIsLoadingOpening(false);
             console.error('Error opening file:', error);
+            // Optionally, you can show a message to the user about the error
+            alert("Échec de l'ouverture du fichier. Veuillez réessayer.");
+        } finally {
+            // Ensure loading state is reset regardless of success or failure
+            setIsLoadingOpening(false);
         }
     };
-    
-    
+
+
 
     const handleCloseModal = () => {
         setModalOpen(false);
@@ -129,9 +190,9 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
 
     const renderDocumentStatus = () => {
         return (
-            <div className="w-full md:w-1/3 p-4 bg-blueCiel rounded-lg h-fit sticky top-4">
+            <div className="w-full  p-4  rounded-lg h-fit sticky top-4">
                 <h3 className="font-oswald text-xl mb-4 text-highGrey2">Documents requis</h3>
-                <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg-custom:grid-cols-3 gap-2">
                     {devisCheckedDocs.map((doc: DocumentCondition) => {
                         const hasDocument = files.some(
                             file => file.typeDocument === doc.DocumentType
@@ -140,11 +201,11 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
                         return (
                             <div
                                 key={doc.DocumentType}
-                                className="flex items-center justify-between p-2 bg-white rounded-lg shadow"
+                                className="flex flex-col p-1 space-y-2 items-center justify-between  bg-blueCiel rounded-lg"
                             >
-                                <span className="font-oswald text-gray-700">{doc.DocumentType}</span>
+                                <span className="font-oswald text-gray-700 text-sm">{doc.DocumentType}</span>
                                 <div className={`
-                                    px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap font-oswald
+                                    px-3 py-1 rounded-md text-sm font-medium whitespace-nowrap font-oswald
                                     ${hasDocument
                                         ? 'bg-green-100 text-green-800'
                                         : 'bg-red-100 text-red-800'
@@ -160,54 +221,61 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         );
     };
 
-    const renderFiles = () => {
-        return (
-            <div className="flex-1 p-4 min-h-0">
-                <h3 className="text-xl mb-4 text-highGrey2 font-oswald">Fichiers déposés</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 relative">
-                    {isLoadingOpening && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50 rounded-lg">
-                            <div className="text-white font-bold">Veuillez patienter...</div>
-                        </div>
-                    )}
-                    {files.map((file: FileData) => (
-                        <Card
-                            key={file.id}
-                            className="hover:shadow-lg transition-shadow bg-lightWhite h-fit flex-shrink-0 cursor-pointer"
-                            onClick={() => handleButtonClick(file.file_name)}
-                        >
-                            <CardContent className="p-3">
-                                <div className="flex items-center gap-3">
 
-                                    <img
-                                        className="w-10 h-10 object-contain"
-                                        src={getFileIcon(file.mime_type)}
-                                        alt={file.file_name}
-                                    />
 
-                                    <div className="flex-1 min-w-0">
-                                        <div className="font-oswald text-base text-gray-800 truncate">
-                                            {`${file.file_name.split("_")[0]}.${file.file_name.split(".").pop()}`}
-                                        </div>
-                                        <div
-                                            className={`w-full mt-2 h-8 font-oswald text-sm text-center border rounded-lg flex items-center justify-center
-                                            ${devisCheckedDocs.some(doc => doc.DocumentType === file.typeDocument)
-                                                    ? 'bg-green-500 border-green-500 hover:bg-green-600'
-                                                    : 'bg-red-500 border-red-500 hover:bg-red-600'
-                                                } text-white`}
-                                        >
-                                            {file.typeDocument || 'No Type'}
-                                        </div>
-
+    const renderFiles = () => (
+        <div className="flex-1 p-4 min-h-0">
+            <div
+                ref={scrollRef}
+                className="flex overflow-x-scroll relative gap-3 scroll-smooth cursor-grab active:cursor-grabbing"
+                onMouseDown={handleDragStart}
+                onMouseUp={handleDragEnd}
+                onMouseLeave={handleDragEnd}
+                onMouseMove={handleDragMove}
+                onTouchStart={handleDragStart}
+                onTouchEnd={handleDragEnd}
+                onTouchMove={handleDragMove}
+            >
+                {isLoadingOpening && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50 rounded-lg">
+                        <div className="text-white font-bold">Veuillez patienter...</div>
+                    </div>
+                )}
+                {files.map((file: FileData) => (
+                    <Card
+                        key={file.id}
+                        className="flex-none w-[300px] hover:shadow-lg transition-all bg-lightWhite select-none"
+                        onClick={() => !isDragging && handleButtonClick(file.file_name)}
+                    >
+                        <CardContent className="p-3">
+                            <div className="flex items-center gap-3">
+                                <img
+                                    className="w-10 h-10 object-contain pointer-events-none"
+                                    src={getFileIcon(file.mime_type)}
+                                    alt={file.file_name}
+                                    draggable="false"
+                                />
+                                <div className="flex-1 min-w-0 pointer-events-none">
+                                    <div className="font-oswald text-base text-gray-800 truncate">
+                                        {`${file.file_name.split("_")[0]}.${file.file_name.split(".").pop()}`}
+                                    </div>
+                                    <div
+                                        className={`w-full mt-2 h-8 font-oswald text-sm text-center border rounded-lg flex items-center justify-center
+                                        ${devisCheckedDocs.some(doc => doc.DocumentType === file.typeDocument)
+                                                ? 'bg-green-500 border-green-500 hover:bg-green-600'
+                                                : 'bg-red-500 border-red-500 hover:bg-red-600'
+                                            } text-white`}
+                                    >
+                                        {file.typeDocument || 'No Type'}
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
-        );
-    };
+        </div>
+    );
 
     const renderEmptyFiles = () => {
         return (
@@ -218,21 +286,39 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         )
     };
 
+    const loadingFiles = () => {
+        (
+            <div className='flex items-center justify-center w-full h-full'>
+                <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
+            </div>
+
+        )
+    }
+
     return (
-        <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 mt-2'>
-            <CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle>
+        <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 '>
+            {/**<CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle> */}
+            {isLoading && loadingFiles()}
             {files.length > 0 ?
-                <div className="flex flex-col md:flex-row  bg-gray-50">
+                <div className="flex flex-col   bg-gray-50">
                     {renderFiles()}
                     {renderDocumentStatus()}
-                </div> : renderEmptyFiles()}
-            <Modal
+                </div> : 
+                <div className="flex flex-col   bg-gray-50">
+                     {renderEmptyFiles()}
+                     {renderDocumentStatus()}
+                </div>
+                
+            }
+            {/**
+             <Modal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 content={fileUrl}
                 fileType={fileType}
                 fileName={fileName!}
             />
+             */}
         </Card>
     );
 };

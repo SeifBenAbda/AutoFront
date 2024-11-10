@@ -131,7 +131,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                 {selectedFiles.length > 0 && (
                     <Button
                         onClick={handleUpload}
-                        className="bg-greenOne border border-greenOne hover:bg-greenOne text-highGrey2 rounded-md font-oswald"
+                        className="bg-blueCiel border border-blueCiel hover:bg-blueCiel text-highGrey2 rounded-md font-oswald"
                         disabled={loading}
                     >
                         Envoyer les fichiers
@@ -142,8 +142,8 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
             {uploadMessage && <p className="text-green-500">{uploadMessage}</p>}
             <div className="flex flex-wrap gap-4 mb-4">
                 {selectedFiles.map((doc, index) => (
-                    <div className="flex flex-col space-y-2" key={doc.file.name}>
-                        <div className="flex items-center bg-lightWhite p-1 border border-lightWhite rounded-md">
+                    <div className="flex flex-col space-y-2 p-2 bg-blueCiel border rounded-md border-blueCiel" key={doc.file.name} >
+                        <div className="flex items-center  p-1 ">
                             <img src={getFileIcon(doc.file)} alt={doc.file.name} className="w-10 h-10 object-cover" />
                             <span className="ml-2 text-highGrey2 font-oswald">{doc.file.name}</span>
                             <Button
