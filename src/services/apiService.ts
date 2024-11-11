@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 
@@ -271,6 +271,41 @@ export const updateDevis = async (
 
   return response.json();
 };
+
+
+export const deletedDevis = async (
+  database: string,
+  devisId: number,
+  deletedBy: string
+): Promise<{ devis?: Devis; status: HttpStatus }> => {  // Adjusted return type
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/devis/delete`, {  // Adjusted the endpoint to match the backend
+    method: 'POST',  // Or 'PATCH' if your backend uses it for updates
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      devisId,
+      database,
+      deletedBy,
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  const result = await response.json();
+
+  // Handle the status and optional devis data
+  return {
+    status: result.status,  // Assuming the backend returns 'status' as part of the response
+    devis: result.data?.devis,  // Optional 'devis' object
+  };
+};
+
 
 
 export const createDevis = async (

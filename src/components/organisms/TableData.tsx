@@ -20,6 +20,8 @@ import { Devis } from "@/types/devisTypes";
 
 import { useNavigate } from "react-router-dom";
 import { DevisDetailsPage } from "./DevisDetails/DevisDetailsNewDialog";
+import { useDeletedDevis } from "../../hooks/useDevis";
+import { useUser } from "../../context/userContext";
 
 
 
@@ -35,6 +37,10 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { user } = useUser();
+  const { mutateAsync: deleteDevis } = useDeletedDevis();
+
+
   // Update tableData when data prop changes
   useEffect(() => {
     setTableData(data);
@@ -55,6 +61,22 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   const handleOpenSheet = (row: Devis) => {
     setSelectedRow(row);
     setIsSheetOpen(true);
+  };
+
+
+  const handleDeleteRow = (row: Devis) => {
+    const updatedData = tableData.filter((item) => item.DevisId !== row.DevisId);
+
+    
+    deleteDevis({
+      database: "Commer_2024_AutoPro",
+      devisId: row.DevisId!,
+      deletedBy: user?.nomUser || "Unknown User",
+    }).then((data) => {
+      if(data.status===200){
+        setTableData(updatedData);
+      }
+    })    
   };
 
   const handleCloseSheet = () => {
@@ -88,6 +110,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                         : "text-highGrey  text-center align-middle font-oswald"
                       }
                       ${header.column.id === 'actions' ? 'w-24' : ''}
+                      ${header.column.id === 'delete' ? 'w-24' : ''}
                       ${header.column.id === 'statusDevis' ? 'w-24' : ''}
                       ${header.column.id === 'PriorityDevis' ? 'w-24' : ''}
                       ${header.column.id === 'client.nomClient' ? 'w-44' : ''}
@@ -142,9 +165,19 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                           onClick={
                             () => handleOpenSheet(row.original)                    
                           }
-                          className="px-4 py-2 text-white bg-highGrey2 rounded"
+                          className="px-4 py-2 text-white bg-highGrey2 rounded-md font-oswald"
                         >
                           Modifier
+                        </Button>
+                      )}
+                      {cell.column.id === 'delete' && (
+                        <Button
+                          onClick={
+                            () => handleDeleteRow(row.original)                    
+                          }
+                          className="px-2 py-2 text-white bg-lightRed hover:bg-lightRed rounded-md font-oswald"
+                        >
+                          Supprimer
                         </Button>
                       )}
                     </TableCell>

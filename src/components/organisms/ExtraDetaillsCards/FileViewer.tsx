@@ -7,6 +7,7 @@ import { Card, CardContent, CardTitle } from '../../../@/components/ui/card';
 import emptyBoxIcon from '../../../images/emptyBox.png';
 import useDocsCheck, { DocumentCondition } from '../../../hooks/useDocsCheck';
 import { Devis } from '../../../types/devisTypes';
+import Loading from '../../../components/atoms/Loading';
 
 const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devis }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -34,34 +35,47 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     // States and references
     const [isPaused, setIsPaused] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [autoScroll, setAutoScroll] = useState(true);
     const scrollRef = useRef<HTMLDivElement>(null);
-    const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
     const [startPos, setStartPos] = useState(0);
     const [currentScroll, setCurrentScroll] = useState(0);
+    const [scrollDirection, setScrollDirection] = useState(1); // 1 for right, -1 for left
 
+    // Handle auto-scroll logic
     useEffect(() => {
-        const scrollContainer = scrollRef.current;
-        if (!scrollContainer || isPaused) return;
+        if (autoScroll && !isDragging) {
+            const scrollInterval = setInterval(() => {
+                if (scrollRef.current) {
+                    const scrollContainer = scrollRef.current;
 
-        const scroll = () => {
-            if (scrollContainer) {
-                if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-                    setScrollDirection(-1); // Switch to scroll left
-                } else if (scrollContainer.scrollLeft <= 0) {
-                    setScrollDirection(1); // Switch to scroll right
+                    // Check if we are at the end or beginning of the scroll container
+                    if (scrollDirection === 1) {
+                        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+                            // Reverse direction at the end
+                            setScrollDirection(-1);
+                        } else {
+                            // Continue scrolling right
+                            scrollContainer.scrollLeft += 2; // Auto-scroll speed
+                        }
+                    } else {
+                        if (scrollContainer.scrollLeft <= 0) {
+                            // Reverse direction at the beginning
+                            setScrollDirection(1);
+                        } else {
+                            // Continue scrolling left
+                            scrollContainer.scrollLeft -= 2; // Auto-scroll speed
+                        }
+                    }
                 }
-                scrollContainer.scrollLeft += scrollDirection; // Adjust scroll direction
-            }
-        };
+            }, 20); // Frequency of auto-scroll steps
 
-        const animationInterval = setInterval(scroll, 30);
-        return () => clearInterval(animationInterval);
-    }, [isPaused, scrollDirection]);
+            return () => clearInterval(scrollInterval);
+        }
+    }, [autoScroll, isDragging, scrollDirection]);
 
-    // Mouse Events for Dragging
-    const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    const handleDragStart = (e: MouseEvent | TouchEvent) => {
         setIsDragging(true);
-        setIsPaused(true);
+        setAutoScroll(false); // Pause auto-scroll during manual scroll
         const pos = 'touches' in e ? e.touches[0].clientX : e.clientX;
         setStartPos(pos);
         if (scrollRef.current) {
@@ -69,18 +83,44 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         }
     };
 
-    const handleDragEnd = () => {
-        setIsDragging(false);
-        setIsPaused(false);
-    };
-
-    const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    const handleDragMove = (e: MouseEvent | TouchEvent) => {
         if (!isDragging || !scrollRef.current) return;
         e.preventDefault();
         const pos = 'touches' in e ? e.touches[0].clientX : e.clientX;
         const walk = pos - startPos;
         scrollRef.current.scrollLeft = currentScroll - walk;
     };
+
+    const handleDragEnd = () => {
+        setIsDragging(false);
+        setAutoScroll(true); // Resume auto-scroll after manual scrolling
+    };
+
+    useEffect(() => {
+        const scrollContainer = scrollRef.current;
+        if (!scrollContainer) return;
+
+        // Adding native event listeners directly
+        scrollContainer.addEventListener('mousedown', handleDragStart);
+        scrollContainer.addEventListener('mouseup', handleDragEnd);
+        scrollContainer.addEventListener('mouseleave', handleDragEnd);
+        scrollContainer.addEventListener('mousemove', handleDragMove as EventListener);
+
+        scrollContainer.addEventListener('touchstart', handleDragStart);
+        scrollContainer.addEventListener('touchend', handleDragEnd);
+        scrollContainer.addEventListener('touchmove', handleDragMove as EventListener);
+
+        return () => {
+            scrollContainer.removeEventListener('mousedown', handleDragStart);
+            scrollContainer.removeEventListener('mouseup', handleDragEnd);
+            scrollContainer.removeEventListener('mouseleave', handleDragEnd);
+            scrollContainer.removeEventListener('mousemove', handleDragMove as EventListener);
+
+            scrollContainer.removeEventListener('touchstart', handleDragStart);
+            scrollContainer.removeEventListener('touchend', handleDragEnd);
+            scrollContainer.removeEventListener('touchmove', handleDragMove as EventListener);
+        };
+    }, [isDragging, currentScroll]);
 
     useEffect(() => {
         setIsLoadingFiles(true);
@@ -228,17 +268,10 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
             <div
                 ref={scrollRef}
                 className="flex overflow-x-scroll relative gap-3 scroll-smooth cursor-grab active:cursor-grabbing"
-                onMouseDown={handleDragStart}
-                onMouseUp={handleDragEnd}
-                onMouseLeave={handleDragEnd}
-                onMouseMove={handleDragMove}
-                onTouchStart={handleDragStart}
-                onTouchEnd={handleDragEnd}
-                onTouchMove={handleDragMove}
             >
                 {isLoadingOpening && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#1b2a4d]/80 z-50 rounded-lg">
-                        <div className="text-white font-bold">Veuillez patienter...</div>
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
+                        <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
                     </div>
                 )}
                 {files.map((file: FileData) => (
@@ -286,29 +319,26 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         )
     };
 
-    const loadingFiles = () => {
-        (
-            <div className='flex items-center justify-center w-full h-full'>
-                <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
-            </div>
-
-        )
-    }
+    const LoadingFile = () => (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 z-20 flex items-center justify-center">
+            <div className="spinner-border text-white w-12 h-12 border-4 border-t-4 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    );
 
     return (
         <Card className='bg-lightWhite border border-lightWhite rounded-md p-2 '>
             {/**<CardTitle className='text-center mb-5 mt-2 text-2xl font-oswald'>Visualisation des fichiers</CardTitle> */}
-            {isLoading && loadingFiles()}
+            {isLoading && <Loading />}
             {files.length > 0 ?
                 <div className="flex flex-col   bg-gray-50">
                     {renderFiles()}
                     {renderDocumentStatus()}
-                </div> : 
+                </div> :
                 <div className="flex flex-col   bg-gray-50">
-                     {renderEmptyFiles()}
-                     {renderDocumentStatus()}
+                    {renderEmptyFiles()}
+                    {renderDocumentStatus()}
                 </div>
-                
+
             }
             {/**
              <Modal

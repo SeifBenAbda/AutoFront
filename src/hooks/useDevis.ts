@@ -1,6 +1,6 @@
 // src/hooks/useDevis.ts
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from '../types/devisTypes';
-import { createDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
+import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWebSocketForDevis } from './useWebSocket';
 import { io } from 'socket.io-client';
@@ -104,6 +104,39 @@ export const useCreateDevis = () => {
     onSuccess: (data) => {
     },
     onError: (error) => {
+    },
+  });
+};
+
+
+export const useDeletedDevis = () => {
+  return useMutation({
+    mutationFn: async ({
+      database,
+      devisId,
+      deletedBy
+    }: {
+      database: string;
+      devisId: number;
+      deletedBy: string;
+    }) => {
+      return deletedDevis(
+        database,
+        devisId,
+        deletedBy
+      );
+    },
+    // Optional: Define onSuccess, onError, etc.
+    onSuccess: (data) => {
+      // Handle success (e.g., show a notification, invalidate queries)
+      socket.emit('devisUpdate', {
+        client: data.devis!.client,
+        devis: data.devis,
+        //rappelDevis: data.rappelDevis,
+      });
+    },
+    onError: (error) => {
+      // Handle error (e.g., show an error message)
     },
   });
 };

@@ -3,13 +3,7 @@ import { Devis, Rappel } from "../types/devisTypes";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import phoneIcon from '../images/phone.png';
-import delieveryScheduleIcon from "../images/delieverySchedule.png"
-import statusIcon from '../images/status.png'
-import editDevisIcon from '../images/editDevis.png'
-import carIcon from '../images/car.png'
-import PriorityIcon from '../images/prioritize.png'
-import reminderIcon from '../images/reminder_new.png'
+
 
 
 const capitalizeFirstLetter = (str: string) => {
@@ -258,5 +252,18 @@ export const columns: ColumnDef<Devis>[] = [
       </div>
     ),
     id: 'actions',
+  },
+  {
+    header: () => (
+      <div className="flex flex-col md:flex-row items-center justify-center p-2">
+        <span className="mb-2 md:mb-0 md:mr-2">Supprimer</span>
+        <img
+          src='/images/delete-file.png'
+          alt="delete"
+          className="w-6 h-6"
+        />
+      </div>
+    ),
+    id: 'delete',
   },
 ];
