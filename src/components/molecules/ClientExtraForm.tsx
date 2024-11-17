@@ -1,4 +1,4 @@
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import React from "react";
 import {
     Form,
@@ -15,9 +15,40 @@ import ClientSourceSelect from "../atoms/ClientSourceSelect";
 import PayementMethod from "../atoms/PayementMethod";
 import CarsDropDown from "../atoms/CarsDropDown";
 import PriorityDevisDropDown from "../atoms/PriorityDropDown";
+import RegionDropDown from "../atoms/RegionDropDown";
+import BanksLeasingDropDown from "../atoms/BanksLeasingDropDown";
+import { Textarea } from "../../@/components/ui/textarea";
 
-const ClientExtraForm: React.FC<any> = ({ form, formId, generalFormId }) => {
+interface ClientExtraFormProps {
+    form: any; // Keep the any type since that's what you're using
+    formId: string;
+    generalFormId: string;
+    payementFormId: string;
+}
+
+const ClientExtraForm: React.FC<ClientExtraFormProps> = ({ 
+    form, 
+    formId, 
+    generalFormId, 
+    payementFormId 
+}) => {
     const { register, control } = form;
+
+    // Watch for changes in the PaymentMethod field
+    const paymentMethod = useWatch({
+        control,
+        name: `${payementFormId}.PaymentMethod`
+    });
+
+    // Reset bank fields when payment method changes to Comptant or FCR
+    React.useEffect(() => {
+        if (paymentMethod === "Comptant" || paymentMethod === "FCR") {
+            form.setValue(`${payementFormId}.BankRegion`, undefined);
+            form.setValue(`${payementFormId}.BankAndLeasing`, undefined);
+        }
+    }, [paymentMethod, form, payementFormId]);
+
+    const showBankFields = paymentMethod === "Banque" || paymentMethod === "Leasing";
 
     return (
         <Form {...form} className="flex-1">
@@ -82,23 +113,6 @@ const ClientExtraForm: React.FC<any> = ({ form, formId, generalFormId }) => {
                     </div>
                 </div>
 
-                {/* Delivery Date */}
-                {/*
-                <FormCardContent form={form} label="Date de livraison prévue" name={`${generalFormId}.ScheduledLivDate`}>
-                    <Controller
-                        name={`${generalFormId}.ScheduledLivDate`}
-                        control={control}
-                        render={({ field }) => (
-                            <DatePicker
-                                value={field.value}
-                                onChange={field.onChange}
-                                fromYear={new Date().getFullYear()}
-                                toYear={new Date().getFullYear() + 2}
-                            />
-                        )}
-                    />
-                </FormCardContent>
-                */}
                 {/* Priority */}
                 <FormCardContent form={form} label="Priorité" name={`${generalFormId}.PriorityDevis`}>
                     <Controller
@@ -114,25 +128,72 @@ const ClientExtraForm: React.FC<any> = ({ form, formId, generalFormId }) => {
                     />
                 </FormCardContent>
 
+                {/* More Infos */}
+                <FormCardContent form={form} label="Plus d'informations véhicule" name={`${formId}.CarNotes`}>
+                    <Textarea
+                        className="border border-lightWhite bg-lightWhite text-highGrey2"
+                        placeholder="Plus d'informations véhicule"
+                        {...register(`${formId}.CarNotes`)}
+                    />
+                </FormCardContent>
                 <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Paiements</div>
 
                 {/* Payment Method */}
                 <div className="text-whiteSecond">
-                <FormCardContent form={form} label="Moyen de Payement" name={`${generalFormId}.PayementMethod`} className="flex-1">
-                    <Controller
-                        name={`${generalFormId}.PayementMethod`}
-                        control={control}
-                        render={({ field }) => (
-                            <PayementMethod
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
-                            />
-                        )}
-                    />
-                </FormCardContent>
+                    <FormCardContent form={form} label="Moyen de Payement" name={`${payementFormId}.PaymentMethod`} className="flex-1">
+                        <Controller
+                            name={`${payementFormId}.PaymentMethod`}
+                            control={control}
+                            defaultValue="Comptant"
+                            render={({ field }) => (
+                                <PayementMethod
+                                    value={field.value}
+                                    onChange={(value) => field.onChange(value)}
+                                />
+                            )}
+                        />
+                    </FormCardContent>
                 </div>
 
-                
+                {/* Bank and Region fields */}
+                {showBankFields && (
+                    <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
+                        <FormCardContent form={form} label="Banque et Leasing" name={`${payementFormId}.BankAndLeasing`} className="flex-1">
+                            <Controller
+                                name={`${payementFormId}.BankAndLeasing`}
+                                control={control}
+                                defaultValue=""
+                                rules={{ 
+                                    required: showBankFields 
+                                }}
+                                render={({ field }) => (
+                                    <BanksLeasingDropDown
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                    />
+                                )}
+                            />
+                        </FormCardContent>
+
+                        <FormCardContent form={form} label="Region Banque ou Leasing" name={`${payementFormId}.BankRegion`} className="flex-1">
+                            <Controller
+                                name={`${payementFormId}.BankRegion`}
+                                control={control}
+                                defaultValue=""
+                                rules={{ 
+                                    required: showBankFields 
+                                }}
+                                render={({ field }) => (
+                                    <RegionDropDown
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                        isFiltring={false}
+                                    />
+                                )}
+                            />
+                        </FormCardContent>
+                    </div>
+                )}
             </div>
         </Form>
     );

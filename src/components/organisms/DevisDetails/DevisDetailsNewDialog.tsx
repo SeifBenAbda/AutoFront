@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Devis, Rappel } from "../../../types/devisTypes";
+import { Devis, DevisPayementDetails, DevisReserved, Rappel } from "../../../types/devisTypes";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "../../../@/components/ui/dialog";
 import { CircleX } from "lucide-react";
 import DevisDetailsNewMain from "./DevisDetaillsNewMain";
 import phoneIcon from '../../../images/phone.png';
 import clientIcon from '../../../images/client.png';
 import reminderIcon from '../../../images/reminder_new.png';
-import { Button } from "@/@/components/ui/button";
+import carIcon from '../../../images/car.png';
+import { useUser } from "../../../context/userContext";
 type DevisDetailsPageProps = {
     allData: Devis;
     isOpen: boolean;
@@ -25,6 +26,13 @@ const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; p
             <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
             <span className="text-highGrey2 font-oswald">{phone}</span>
         </div>
+    </div>
+);
+
+const VehicleModel = ({ model }: { model: string }) => (
+    <div className="flex items-center space-x-2 px-3 py-1">
+        <img src={carIcon} alt="Car" className="w-7 h-7" />
+        <span className="text-highGrey2 font-oswald">{model}</span>
     </div>
 );
 
@@ -107,9 +115,17 @@ export function DevisDetailsPage({
     onClose,
     onSave
 }: DevisDetailsPageProps) {
-    const [currentComponent, setCurrentComponent] = useState<'client' | 'reminder'>('client');
+    const [currentComponent, setCurrentComponent] = useState<'client' | 'reminder' | 'vehicle'>('client');
     const [direction, setDirection] = useState('center'); // 'right' | 'center' | 'left'
+    const { user } = useUser();
+    const [isAdmin, setIsAdmin] = useState(false);
 
+    // Determine if the user is an admin
+    useEffect(() => {
+        if (user?.groupe === 'ADMIN') {
+            setIsAdmin(true);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (isOpen) {
@@ -119,9 +135,12 @@ export function DevisDetailsPage({
 
                 // Change component and reset position after exit animation
                 setTimeout(() => {
-                    setCurrentComponent((prev) =>
-                        prev === 'client' ? 'reminder' : 'client'
-                    );
+                    setCurrentComponent((prev) => {
+                        if (prev === 'client') return 'reminder';
+                        if (prev === 'reminder') return 'vehicle';
+                        return 'client'; // Loop back to 'client' after 'vehicle'
+                    });
+
                     setDirection('right');
 
                     // Trigger entrance animation
@@ -134,6 +153,7 @@ export function DevisDetailsPage({
             return () => clearInterval(timer);
         }
     }, [isOpen]);
+
 
     const getTextPosition = () => {
         switch (direction) {
@@ -172,12 +192,12 @@ export function DevisDetailsPage({
                                     name={allData.client?.nomClient ?? ""}
                                     phone={allData.client?.telClient ?? ""}
                                 />
-                            ) : (
+                            ) : currentComponent === 'reminder' ? (
                                 <ReminderInfo rappels={allData.rappels} />
-                            )}
+                            ) : <VehicleModel model={allData.carRequests?.[0]?.CarModel ?? ""} />}
                         </div>
                     </div>
-                    <DevisDetailsNewMain devis={allData} isOpen={isOpen} onClose={onClose} onSave={onSave} />
+                    <DevisDetailsNewMain devis={allData} isOpen={isOpen} onClose={onClose} onSave={onSave} isAdmin={isAdmin} />
                 </div>
             </DialogContent>
         </Dialog>

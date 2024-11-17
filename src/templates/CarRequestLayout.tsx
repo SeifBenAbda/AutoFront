@@ -2,22 +2,23 @@ import DevisPage from "../pages/DevisPage";
 import Header from "../components/organisms/Header";
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Sidebar } from "../components/organisms/SideBar"; // Import the Sidebar component
+import { Sidebar } from "../components/organisms/SideBar";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/atoms/Loading";
 
 const CarRequestLayout: React.FC = () => {
   const queryClient = new QueryClient();
-  const [isExpanded, setIsExpanded] = useState(true); // Track Sidebar expand/collapse state
-  const [currentPath, setCurrentPath] = useState("/main"); // Track Sidebar expand/collapse state
-  const [isMobile, setIsMobile] = useState(false); // For mobile responsiveness
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Manage sidebar visibility on mobile
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [currentPath, setCurrentPath] = useState("/main");
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Manage loading state here
   const navigate = useNavigate();
-
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // Adjust for mobile view
+      setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -25,11 +26,11 @@ const CarRequestLayout: React.FC = () => {
   }, []);
 
   const handleToggleSidebar = () => {
-    setIsExpanded(!isExpanded); // Toggle sidebar expansion
+    setIsExpanded(!isExpanded);
   };
 
   const handleSidebarToggle = () => {
-    setIsSidebarVisible(!isSidebarVisible); // Toggle sidebar visibility on mobile
+    setIsSidebarVisible(!isSidebarVisible);
   };
 
   const handleNavigate = (path: string) => {
@@ -37,40 +38,27 @@ const CarRequestLayout: React.FC = () => {
     setCurrentPath(path);
     navigate(path);
     if (isMobile) {
-      setIsSidebarVisible(false); // Close the mobile sidebar when navigating
+      setIsSidebarVisible(false);
     }
   };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen flex flex-col">
+      {isLoading && <Loading />}
+      <div className="flex flex-col">
         {/* Header */}
         <Header />
 
         {/* Sidebar + Main Layout */}
         <div className="flex flex-1">
-          {/* Sidebar */}
-
-          {/* Button to toggle sidebar on mobile 
-          <Sidebar
-            onNavigate={handleNavigate}
-            currentPath={currentPath}
-            isExpanded={isExpanded}
-            onToggleExpand={handleToggleSidebar}
-           
-            className="flex-shrink-0 mb-6"
-          />
-
-          */}
-
-          {/* Button to toggle mobile sidebar */}
-          
-
           {/* Main Content */}
           <main
             className={`flex-1 w-full overflow-auto transition-all duration-300 sticky`}
           >
-            <DevisPage />
+            {/* Pass isLoading and setIsLoading to DevisPage */}
+            <DevisPage isLoading={isLoading} setIsLoading={setIsLoading} />
+            {/* Render Loading component here */}
+            
           </main>
         </div>
       </div>

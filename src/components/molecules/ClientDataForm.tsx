@@ -90,7 +90,18 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                             {...register(`${formId}.telClient`)}
                         />
                     </FormCardContent>
+                    
+                    <FormCardContent form={form} label="Numéro de téléphone 2" name={`${formId}.telClient2`} className="flex-1">
+                        <Input
+                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            placeholder="Numéro de téléphone"
+                            {...register(`${formId}.telClient2`)}
+                        />
+                    </FormCardContent>
 
+                </div>
+
+                <div className="text-whiteSecond">
                     <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1">
                         <Input
                             className="border border-highGrey2 bg-lightWhite text-highGrey2"

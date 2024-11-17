@@ -28,7 +28,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         isLoading: isLoadingDocs,
         error: docsError,
         refetch: refetchDocs
-    } = useDocsCheck(devis.client!.clientType, devis.PayementMethod);
+    } = useDocsCheck(devis.client!.clientType, devis.devisPayementDetails.PaymentMethod);
     const [listAvailableDocsTypes, setListAvailableDocsTypes] = useState<string[]>([]);
 
 

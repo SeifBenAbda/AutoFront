@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisPayementDetails, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 
@@ -40,6 +40,31 @@ export const updateUser = async (
     body: JSON.stringify({
       updatedUser,
       newUserName
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  return response.json();
+};
+
+
+export const createUser = async (
+  createdUser?: Partial<User>,
+): Promise<{ user: User }> => {
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/users/newUser`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    // Directly sending the updatedUser object
+    body: JSON.stringify({
+      "user":createdUser,
     }),
   });
 
@@ -314,7 +339,8 @@ export const createDevis = async (
   devis: Devis,
   itemRequestData?: ItemRequest[],
   carRequestData?: CarRequest,
-  rappelData? : Rappel[]
+  rappelData? : Rappel[],
+  devisPayementDetails? : DevisPayementDetails
 ) => {
   const token = getToken();
 
@@ -331,7 +357,8 @@ export const createDevis = async (
       "devis":devis,
       "itemRequest":itemRequestData,
       "carRequest":carRequestData,
-      "rappelsDevis":rappelData
+      "rappelsDevis":rappelData,
+      "devisPayementDetails":devisPayementDetails
     }),
   });
 

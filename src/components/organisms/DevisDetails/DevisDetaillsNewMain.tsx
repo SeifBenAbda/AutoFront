@@ -15,6 +15,7 @@ interface DevisDetailsNewMainProps {
     devis: Devis;
     isOpen: boolean;
     onClose: () => void;
+    isAdmin : boolean;
     onSave: (data: Devis) => void;
 }
 
@@ -55,7 +56,7 @@ const StepCircle = ({ isActive, onClick, stepIcon: Icon, stepLabel }: StepCircle
     </div>
 );
 
-const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen, onClose, onSave }) => {
+const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen, onClose, isAdmin, onSave }) => {
     const [activeStep, setActiveStep] = useState<number>(0);
     const { user } = useUser();
     const [myDevis, setDevis] = useState<Devis | null>(devis);
@@ -83,7 +84,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     };
 
     const handleDevisUpdate = (updatedDevis: Devis) => {
-
+        console.log("updatedDevis", updatedDevis);
         setDevis(prevDevis => ({
             ...prevDevis,
             ...updatedDevis, // Spread the existing devis and updatedDevis fields
@@ -135,7 +136,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     };
 
     const steps: StepConfig[] = myDevis ? [
-        { label: 'Devis', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} /> },
+        { label: 'Devis', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
         { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} /> },
         { label: 'Vehicule', component: <DevisVehiculeDetails carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} /> },

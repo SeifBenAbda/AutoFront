@@ -72,9 +72,24 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                         onChange={(e) => handleChange("telClient", e.target.value)}
                         className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
+
+                </CardContent>
+                <CardContent className="flex flex-col p-2">
+                    <Label className="text-sm font-oswald text-highGrey2">Numéro de téléphone 2</Label>
+                    <Input
+                        type="text"
+                        value={client.telClient2}
+                        onChange={(e) => handleChange("telClient2", e.target.value)}
+                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    />
+
                 </CardContent>
 
-                {client.clientType === "Particulier" && (
+
+
+                {/* 
+                
+                    {client.clientType === "Particulier" && (
                     <CardContent className="flex flex-col p-2">
                         <Label className="text-sm font-oswald text-highGrey2 mb-1">Date de naissance</Label>
                         <DatePicker
@@ -85,8 +100,9 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                         />
                     </CardContent>
                 )}
+                */}
 
-                {/* Address Ville + Region + Code Postale + Pays */}
+                {/* Address Ville + Region + Code Postale + Pays 
 
                 <CardContent className="flex flex-col p-2 w-full">
                     <Label className="text-sm font-oswald text-highGrey2">Pays</Label>
@@ -128,8 +144,9 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                     />
                 </CardContent>
 
-
+                    */}
             </div>
+
             <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
                 <Label className="text-sm font-oswald text-highGrey2">Adresse</Label>
                 <Textarea

@@ -29,7 +29,14 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
 
     return (
         <>
-            <div className="grid grid-cols-2 gap-4 p-4">
+            <div className="grid grid-cols-2 gap-0 pt-4 pl-6 pr-6">
+                <CardContent className="w-full">
+                    <Label className="block text-sm font-oswald text-highGrey2">Véhicule</Label>
+                    <div
+
+                        className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    >{carRequest.CarModel}</div>
+                </CardContent>
                 <CardContent className="w-full">
                     <Label className="block text-sm font-oswald text-highGrey2">Couleur du véhicule</Label>
                     <Input
@@ -78,7 +85,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     </div>
                 )}
             </div>
-            <div className="pl-4 pr-4">
+            <div className="pl-6 pr-6 mt-2">
                 <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full mb-2 ml-3 mr-3 ">Plus d'Informations</CardTitle>
                 <CardContent className="w-full">
                     <Textarea

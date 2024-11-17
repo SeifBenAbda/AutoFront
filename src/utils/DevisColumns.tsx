@@ -253,17 +253,19 @@ export const columns: ColumnDef<Devis>[] = [
     ),
     id: 'actions',
   },
+  /*
   {
     header: () => (
       <div className="flex flex-col md:flex-row items-center justify-center p-2">
         <span className="mb-2 md:mb-0 md:mr-2">Supprimer</span>
         <img
-          src='/images/delete-file.png'
-          alt="delete"
+          src={deleteIcon}
+          alt="Delete"
           className="w-6 h-6"
         />
       </div>
     ),
     id: 'delete',
   },
+  */
 ];

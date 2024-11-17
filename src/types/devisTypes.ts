@@ -7,6 +7,7 @@ export interface Client {
   nomClient:string,
   mtFiscale:string | undefined,
   telClient:string,
+  telClient2:string,
   email:string,
   socialReason:string,
   dateOfBirth:Date | undefined,
@@ -70,7 +71,6 @@ export interface Devis {
   clientId: number;
   CreatedBy:string,
   DateCreation:string | Date | undefined,
-  PayementMethod:string,
   Motivation:string,
   Source:string,
   UpdatedBy:string,
@@ -79,23 +79,17 @@ export interface Devis {
   StatusDevis:string | undefined,
   PriorityDevis:"Normale" | "Moyenne" | "Haute",
   isGarantie:boolean | undefined,
-  NumBc:string | undefined,  
-  NumFacture:string | undefined,
-  ScheduledLivDate:Date | undefined,
   ReasonAnnulation : string | undefined , 
-  BankAndLeasing : string | undefined,
   Comments : string | undefined ,
-
   Responsable : string | undefined ,
   ResponsableNum : string | undefined ,
-  BankRegion : string | undefined ,
-  ReservationDate : Date | undefined ,
-  MontantDevis : string | undefined ,
-
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis
-  rappels:Rappel[]
+  rappels:Rappel[];
+  devisPayementDetails:DevisPayementDetails; 
+  devisFacture:DevisFacture;
+  devisReserved:DevisReserved;
 }
 
 
@@ -111,6 +105,34 @@ export interface Rappel{
   UpdatedAt : Date | undefined , 
   RappelContent:string | undefined
 }
+
+
+export interface DevisFacture {
+  devisId?: number;
+  DateFacturation: Date;
+  FactureNumero: string;
+  StatutBRD: boolean;
+  DateBRD: Date | undefined;
+  Rendezvous: Date | undefined;
+  isLivraison: boolean;
+  DateLivraison: Date | undefined;
+}
+
+export interface DevisReserved {
+  devisId?: number;
+  DateReservation: Date | null;
+  NumBonCommande: string;
+}
+
+export interface DevisPayementDetails {
+  devisId?: number;
+  TotalTTC: number | null;
+  TotalAPRem: number | null;
+  BankAndLeasing: string;
+  BankRegion: string;
+  PaymentMethod:"Banque" | "Leasing" |  "Comptant" | "FCR" ,
+}
+
 
 
 

@@ -1,37 +1,54 @@
-import { CarRequest, Client, Devis, ItemRequest, Rappel } from "@/types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from "@/types/devisTypes";
 
 // src/defaultFormValues.ts
 export const defaultFormDevisGeneral : Devis = {
     // Client Extra Form
     Motivation: "", // assuming this is a string; update if necessary
     Source: "", // assuming this is a string; update if necessary
-    PayementMethod: "",
     CreatedBy: "",
     DateCreation: new Date(),
     UpdatedBy: "",
     UpdatedAt: new Date(),
     TypeDevis: "",
-    StatusDevis: "En Attente",
+    StatusDevis: "En Cours",
     PriorityDevis: "Normale",
     isGarantie: false,
-    NumBc: "",
-    NumFacture: "",
     client: undefined,
     ReasonAnnulation: undefined,
-    BankAndLeasing: undefined,
     Comments: undefined,
     itemRequests: [],
     carRequests: [],
     rappels: [],
     //DevisId: 0,
     clientId: 0,
-    ScheduledLivDate: undefined,
     Responsable: undefined,
-    ResponsableNum: undefined,
-    BankRegion: undefined,
-    ReservationDate: new Date(),
-    MontantDevis: undefined
+    ResponsableNum: undefined, 
 };
+
+
+export const defaultFormPayementDetails : DevisPayementDetails = {
+    TotalTTC: 0,
+    TotalAPRem: 0,
+    BankAndLeasing: "",
+    BankRegion: "",
+    PaymentMethod: "Comptant"
+}
+
+export const defaultFormCarDevisFacture : DevisFacture = {
+    DateFacturation: new Date(),
+    FactureNumero: "",
+    StatutBRD: false,
+    DateBRD: undefined,
+    Rendezvous: undefined,
+    isLivraison: false,
+    DateLivraison: undefined
+}
+
+export const defaultFormDevisReserved : DevisReserved = {
+    DateReservation: null,
+    NumBonCommande: ""
+}
+
 
 
 export const defaultFormCarDevis : CarRequest = {
@@ -50,6 +67,7 @@ export const defaultFormClient : Client = {
     // Client Info Form
     nomClient: "",
     telClient: "",
+    telClient2: "",
     email: "",
     socialReason: "",
     clientGender: "Monsieur", // Default value for enum "Monsieur" or "Madame"
@@ -62,7 +80,7 @@ export const defaultFormClient : Client = {
     ville: "",
     region: "", // assuming this is a string; update if necessary
     postalCode: "",
-    pays: "",
+    pays: "Tunisie",
     addressMoreInfos: "",
     
     cin: "",

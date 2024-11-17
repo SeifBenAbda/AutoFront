@@ -34,6 +34,8 @@ export const devisSchema = z.object({
             message: "Tel Client est requis.",
         }),
 
+        telClient2 : z.string().optional(),
+
         email: z.string().optional(),
 
         socialReason: z.string().optional(),
@@ -78,7 +80,8 @@ export const devisSchema = z.object({
         }),
     }),
 
-    devisGeneralForm: z.object({
+
+      devisGeneralForm: z.object({
         Motivation: z.string().min(1, {
             message: "Motif est requis.",
         }),
@@ -86,12 +89,7 @@ export const devisSchema = z.object({
         Source: z.string().min(1, {
             message: "Source est requis.",
         }),
-
-        PayementMethod: z.string().min(1, {
-            message: "Moyen de Payement est requis.",
-        }),
-
-        ScheduledLivDate: z.date().optional(),
+        
         PriorityDevis: z.enum(["Normale", "Moyenne", "Haute"], {
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),
@@ -135,9 +133,50 @@ export const devisSchema = z.object({
         TypeDossier:z.enum(["Atelier Mecanique", "Magasin", "Carosserie"], {
             message: "Type de Devis",
         }),
-    })
+    }),
+
+    devisPayementForm : z.discriminatedUnion("PaymentMethod", [
+        // For Bank and Leasing
+        z.object({
+          PaymentMethod: z.enum(["Banque", "Leasing"]),
+          TotalTTC: z.number().nullable().optional(),
+          TotalAPRem: z.number().nullable().optional(),
+          BankRegion: z.string().min(1, { 
+            message: "Region Banque est requis pour les payements par banque ou leasing." 
+          }),
+          BankAndLeasing: z.string().min(1, { 
+            message: "Banque et leasing est requis pour les payements par banque ou leasing." 
+          }),
+        }),
+        // For Comptant and FCR
+        z.object({
+          PaymentMethod: z.enum(["Comptant", "FCR"]),
+          TotalTTC: z.number().nullable().optional(),
+          TotalAPRem: z.number().nullable().optional(),
+          // Remove these fields entirely for Comptant/FCR instead of making them optional
+          // This makes the discrimination clearer
+        }).strict(), // .strict() ensures no extra fields are allowed
+      ]),
 
 });
+
+export const DevisFactureSchema = z.object({
+    DateFacturation: z.date().optional(),
+    FactureNumero: z.string(),
+    StatutBRD: z.boolean(),
+    DateBRD: z.date(),
+    Rendezvous: z.date(),
+    isLivraison: z.boolean(),
+    DateLivraison: z.date(),
+});
+
+export const DevisReservedSchema = z.object({
+    devisId: z.number(),
+    DateReservation: z.date().nullable(),
+    NumBonCommande: z.string().max(20),
+});
+
+
 
 
 export const devisSchemaForCar = devisSchema.omit({
