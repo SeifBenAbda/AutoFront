@@ -27,18 +27,28 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
         });
     };
 
+    const handleDateLivraisonChange = (date: Date | undefined) => {
+        onUpdateDevis({
+            ...devis,
+            devisFacture: {
+                ...devis.devisFacture,
+                DateLivraison: date || new Date()
+            }
+        });
+    }
+
     return (
         <>
             <div className="grid grid-cols-2 gap-0 pt-4 pl-6 pr-6">
                 <CardContent className="w-full">
-                    <Label className="block text-sm font-oswald text-highGrey2">Véhicule</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Véhicule</Label>
                     <div
 
                         className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     >{carRequest.CarModel}</div>
                 </CardContent>
                 <CardContent className="w-full">
-                    <Label className="block text-sm font-oswald text-highGrey2">Couleur du véhicule</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Couleur du véhicule</Label>
                     <Input
                         type="text"
                         value={carRequest.CarColor || ""}
@@ -49,7 +59,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                 </CardContent>
 
                 <CardContent className="w-full">
-                    <Label className="block text-sm font-oswald text-highGrey2">Dernier véhicule possédé</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Dernier véhicule possédé</Label>
                     <Input
                         type="text"
                         value={carRequest.OldCar || ""}
@@ -59,29 +69,31 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     />
                 </CardContent>
 
-                {devis.StatusDevis === "Facturé" && (
+                {(devis.StatusDevis === "Facturé" && devis.devisFacture.isLivraison) && (
                     <div className="col-span-2">
                         <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Informations après-vente</CardTitle>
-                        <CardContent className="w-full">
-                            <Label className="block text-sm font-oswald text-highGrey2">Immatriculation</Label>
-                            <Input
-                                maxLength={30}
-                                value={carRequest.Immatriculation || ""}
-                                onChange={(e) => handleChange("Immatriculation", e.target.value)}
-                                placeholder="Numéro d'immatriculation"
-                                className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                            />
-                        </CardContent>
+                        <div className="flex gap-4 w-full">
+                            <CardContent className="w-full">
+                                <Label className="relative text-sm font-medium text-highGrey2 ">Immatriculation</Label>
+                                <Input
+                                    maxLength={30}
+                                    value={carRequest.Immatriculation || ""}
+                                    onChange={(e) => handleChange("Immatriculation", e.target.value)}
+                                    placeholder="Numéro d'immatriculation"
+                                    className="p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm"
+                                />
+                            </CardContent>
 
-                        <CardContent className="w-full">
-                            <Label className="block text-sm font-oswald text-highGrey2">Date de Livraison</Label>
-                            <DatePicker
-                                value={devis.ScheduledLivDate}
-                                onChange={(value: Date | undefined) => handleChangeDevis("ScheduledLivDate", value)}
-                                fromYear={new Date().getFullYear()}
-                                toYear={new Date().getFullYear() + 1}
-                            />
-                        </CardContent>
+                            <CardContent className="w-full">
+                                <Label className="relative text-sm font-medium text-highGrey2 ">Date de Livraison</Label>
+                                <DatePicker
+                                    value={devis.devisFacture.DateLivraison}
+                                    onChange={handleDateLivraisonChange}
+                                    fromYear={new Date().getFullYear()}
+                                    toYear={new Date().getFullYear() + 1}
+                                />
+                            </CardContent>
+                        </div>
                     </div>
                 )}
             </div>

@@ -1,5 +1,5 @@
 import { Controller, useWatch } from "react-hook-form";
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Form,
     FormControl,
@@ -26,11 +26,11 @@ interface ClientExtraFormProps {
     payementFormId: string;
 }
 
-const ClientExtraForm: React.FC<ClientExtraFormProps> = ({ 
-    form, 
-    formId, 
-    generalFormId, 
-    payementFormId 
+const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
+    form,
+    formId,
+    generalFormId,
+    payementFormId
 }) => {
     const { register, control } = form;
 
@@ -41,10 +41,11 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
     });
 
     // Reset bank fields when payment method changes to Comptant or FCR
-    React.useEffect(() => {
+    // Modify your useEffect to properly reset the fields
+    useEffect(() => {
         if (paymentMethod === "Comptant" || paymentMethod === "FCR") {
-            form.setValue(`${payementFormId}.BankRegion`, undefined);
-            form.setValue(`${payementFormId}.BankAndLeasing`, undefined);
+            form.unregister(`${payementFormId}.BankRegion`);
+            form.unregister(`${payementFormId}.BankAndLeasing`);
         }
     }, [paymentMethod, form, payementFormId]);
 
@@ -148,13 +149,19 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                             render={({ field }) => (
                                 <PayementMethod
                                     value={field.value}
-                                    onChange={(value) => field.onChange(value)}
+                                    onChange={(value) => {
+                                        field.onChange(value);
+                                        // If switching to Comptant or FCR, ensure bank fields are cleared
+                                        if (value === "Comptant" || value === "FCR") {
+                                            form.unregister(`${payementFormId}.BankRegion`);
+                                            form.unregister(`${payementFormId}.BankAndLeasing`);
+                                        }
+                                    }}
                                 />
                             )}
                         />
                     </FormCardContent>
                 </div>
-
                 {/* Bank and Region fields */}
                 {showBankFields && (
                     <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
@@ -163,13 +170,17 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                 name={`${payementFormId}.BankAndLeasing`}
                                 control={control}
                                 defaultValue=""
-                                rules={{ 
-                                    required: showBankFields 
-                                }}
                                 render={({ field }) => (
                                     <BanksLeasingDropDown
                                         value={field.value}
-                                        onChange={(value) => field.onChange(value)}
+                                        onChange={(value) => {
+                                            field.onChange(value);
+                                            // Ensure the form value is updated
+                                            form.setValue(`${payementFormId}.BankAndLeasing`, value, {
+                                                shouldValidate: true,
+                                                shouldDirty: true,
+                                            });
+                                        }}
                                     />
                                 )}
                             />
@@ -180,13 +191,17 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                 name={`${payementFormId}.BankRegion`}
                                 control={control}
                                 defaultValue=""
-                                rules={{ 
-                                    required: showBankFields 
-                                }}
                                 render={({ field }) => (
                                     <RegionDropDown
                                         value={field.value}
-                                        onChange={(value) => field.onChange(value)}
+                                        onChange={(value) => {
+                                            field.onChange(value);
+                                            // Ensure the form value is updated
+                                            form.setValue(`${payementFormId}.BankRegion`, value, {
+                                                shouldValidate: true,
+                                                shouldDirty: true,
+                                            });
+                                        }}
                                         isFiltring={false}
                                     />
                                 )}

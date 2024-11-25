@@ -41,7 +41,7 @@ const formatReminderDisplay = (reminder: Rappel | null) => {
   };
 
   return {
-    display: `${new Date(reminder.RappelDate!).toLocaleDateString()}: ${reminder.RappelContent}`,
+    display: `${new Date(reminder.RappelDate!).toLocaleDateString()}`, //: ${reminder.RappelContent}
     date: reminder.RappelDate,
     content: reminder.RappelContent
   };

@@ -32,7 +32,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
             <div className="grid grid-cols-2 gap-0 pt-2 pl-6 pr-6">
                 {/* First Row */}
                 <CardContent className="flex flex-col p-2">
-                    <Label className="text-sm font-oswald text-highGrey2">Nom</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Nom</Label>
                     <Input
                         type="text"
                         value={client.nomClient || ""}
@@ -43,7 +43,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
                 {client.clientType === "Particulier" ? (
                     <CardContent className="flex flex-col p-2">
-                        <Label className="text-sm font-oswald text-highGrey2">Cin</Label>
+                        <Label className="relative text-sm font-medium text-highGrey2 ">Cin</Label>
                         <Input
                             type="text"
                             value={client.cin || ""}
@@ -53,7 +53,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                     </CardContent>
                 ) : (
                     <CardContent className="flex flex-col p-2">
-                        <Label className="text-sm font-oswald text-highGrey2">Matricule Fiscale</Label>
+                        <Label className="relative text-sm font-medium text-highGrey2 ">Matricule Fiscale</Label>
                         <Input
                             type="text"
                             value={client.mtFiscale}
@@ -65,7 +65,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
                 {/* Second Row */}
                 <CardContent className="flex flex-col p-2">
-                    <Label className="text-sm font-oswald text-highGrey2">Numéro de téléphone</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Numéro de téléphone</Label>
                     <Input
                         type="text"
                         value={client.telClient}
@@ -75,7 +75,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
                 </CardContent>
                 <CardContent className="flex flex-col p-2">
-                    <Label className="text-sm font-oswald text-highGrey2">Numéro de téléphone 2</Label>
+                    <Label className="relative text-sm font-medium text-highGrey2 ">Numéro de téléphone 2</Label>
                     <Input
                         type="text"
                         value={client.telClient2}
@@ -148,7 +148,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
             </div>
 
             <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
-                <Label className="text-sm font-oswald text-highGrey2">Adresse</Label>
+                <Label className="relative text-sm font-medium text-highGrey2 ">Adresse</Label>
                 <Textarea
 
                     value={client.adresse}

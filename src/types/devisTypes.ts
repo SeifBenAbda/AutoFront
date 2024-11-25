@@ -116,6 +116,7 @@ export interface DevisFacture {
   Rendezvous: Date | undefined;
   isLivraison: boolean;
   DateLivraison: Date | undefined;
+  BRDNumero : string | undefined ,
 }
 
 export interface DevisReserved {

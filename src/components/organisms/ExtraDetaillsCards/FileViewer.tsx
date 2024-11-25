@@ -170,7 +170,6 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     };
 
     const handleButtonClick = async (filename: string) => {
-        console.log("Opening new file in new window");
         setIsLoadingOpening(true);
 
         try {

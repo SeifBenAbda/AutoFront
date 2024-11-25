@@ -1,5 +1,32 @@
 import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from "@/types/devisTypes";
 
+
+export const defaultFormPayementDetails : DevisPayementDetails = {
+    TotalTTC: 0,
+    TotalAPRem: 0,
+    BankAndLeasing: "",
+    BankRegion: "",
+    PaymentMethod: "Comptant"
+}
+
+
+export const defaultFormCarDevisFacture : DevisFacture = {
+    DateFacturation: new Date(),
+    FactureNumero: "",
+    StatutBRD: false,
+    DateBRD: new Date(),
+    Rendezvous: new Date(),
+    isLivraison: false,
+    DateLivraison: new Date(),
+    BRDNumero: ""
+}
+
+export const defaultFormDevisReserved : DevisReserved = {
+    DateReservation: null,
+    NumBonCommande: ""
+}
+
+
 // src/defaultFormValues.ts
 export const defaultFormDevisGeneral : Devis = {
     // Client Extra Form
@@ -22,33 +49,11 @@ export const defaultFormDevisGeneral : Devis = {
     //DevisId: 0,
     clientId: 0,
     Responsable: undefined,
-    ResponsableNum: undefined, 
+    ResponsableNum: undefined,
+    devisPayementDetails: { ...defaultFormPayementDetails },
+    devisFacture: { ...defaultFormCarDevisFacture },
+    devisReserved: { ...defaultFormDevisReserved }
 };
-
-
-export const defaultFormPayementDetails : DevisPayementDetails = {
-    TotalTTC: 0,
-    TotalAPRem: 0,
-    BankAndLeasing: "",
-    BankRegion: "",
-    PaymentMethod: "Comptant"
-}
-
-export const defaultFormCarDevisFacture : DevisFacture = {
-    DateFacturation: new Date(),
-    FactureNumero: "",
-    StatutBRD: false,
-    DateBRD: undefined,
-    Rendezvous: undefined,
-    isLivraison: false,
-    DateLivraison: undefined
-}
-
-export const defaultFormDevisReserved : DevisReserved = {
-    DateReservation: null,
-    NumBonCommande: ""
-}
-
 
 
 export const defaultFormCarDevis : CarRequest = {

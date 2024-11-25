@@ -34,7 +34,6 @@ const CarRequestLayout: React.FC = () => {
   };
 
   const handleNavigate = (path: string) => {
-    console.log(path);
     setCurrentPath(path);
     navigate(path);
     if (isMobile) {

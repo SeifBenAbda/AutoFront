@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, DevisPayementDetails, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 
@@ -268,10 +268,14 @@ export const updateDevis = async (
   updatedClient?: Partial<Client>,
   updatedItemRequestData?: Partial<ItemRequest>,
   updatedCarRequestData?: Partial<CarRequest>,
-  updatedRappels?: Partial<Rappel[]>
-): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[]}> => {
+  updatedRappels?: Partial<Rappel[]>,
+  updatedDevisFacture?: Partial<DevisFacture>,
+  updatedDevisReserved?: Partial<DevisReserved>,
+  updatedDevisPayementDetails?: Partial<DevisPayementDetails>
+): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[];
+  devisFacture?: DevisFacture; devisReserved?: DevisReserved; devisPayementDetails?: DevisPayementDetails
+}> => {
   const token = getToken();
-
   if (!token) throw new Error('No token found');
 
   const response = await fetch(`${API_URL}/devis/update`, {
@@ -288,7 +292,10 @@ export const updateDevis = async (
       "updatedClient": updatedClient,
       "updatedItemRequest": updatedItemRequestData,
       "updatedCarRequest" : updatedCarRequestData,
-      "updatedRappels":updatedRappels
+      "updatedRappels":updatedRappels,
+      "updatedDevisFacture": updatedDevisFacture,
+      "updatedDevisReserved":updatedDevisReserved,
+      "updatedDevisPayementDetails":updatedDevisPayementDetails
     }),
   });
 

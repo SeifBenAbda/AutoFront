@@ -12,9 +12,9 @@ const useBanksAndLeasing = () => {
     return useQuery<BanksAndLeasing[]>({
         queryKey: ['banksAndLeasing'],
         queryFn: () => fetchBanksAndLeasing("Commer_2024_AutoPro"),
-        //refetchInterval: 5000,
-        staleTime: 0,
+        staleTime: Infinity,
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
     });
 };
 

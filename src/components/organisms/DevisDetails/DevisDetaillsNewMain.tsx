@@ -64,6 +64,8 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     const [loading, setLoading] = useState<boolean>(false);
     const [client, setClient] = useState<Client>(devis.client!);
     const [carRequest, setCarRequest] = useState<CarRequest | null>(devis.carRequests?.[0] || null);
+    const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite");
+
     const { mutateAsync: updateDevis } = useUpdateDevis();
     const totalSteps = [
         { icon: FileText, label: "Devis" },
@@ -84,7 +86,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     };
 
     const handleDevisUpdate = (updatedDevis: Devis) => {
-        console.log("updatedDevis", updatedDevis);
+        console.log(updatedDevis);
         setDevis(prevDevis => ({
             ...prevDevis,
             ...updatedDevis, // Spread the existing devis and updatedDevis fields
@@ -115,7 +117,9 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     };
 
 
+
     const handleSave = async () => {
+
         setLoading(true);
         try {
             updateDevis({
@@ -126,7 +130,10 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                 updatedClient: myDevis!.client,
                 updatedItemRequestData: undefined,
                 updatedCarRequestData: myDevis!.carRequests?.[0] || undefined,
-                updatedRappels: rappels || undefined
+                updatedRappels: rappels || undefined,
+                updatedDevisFacture: myDevis!.devisFacture || undefined,
+                updatedDevisReserved: myDevis!.devisReserved || undefined,
+                updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined
             }).then(() => { onSave(myDevis!); setLoading(false); onClose(); });
         } catch (error) {
             console.error('Failed to save updates:', error);

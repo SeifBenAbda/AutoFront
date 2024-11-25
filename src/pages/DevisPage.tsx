@@ -81,7 +81,7 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
                         </div>
                         <div className="mt-2 md:mt-0">
                             <Button
-                                onClick={form.handleSubmit(onSubmit)}
+                                onClick={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
                                 type="button"
                                 disabled={isLoading}
                                 className="bg-greenOne hover:bg-greenOne"

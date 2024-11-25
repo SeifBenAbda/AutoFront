@@ -7,10 +7,9 @@ import FileViewer from "./FileViewer";
 
 interface DocumentsCardProps {
     devis: Devis;
-    onUpdate: (updatedDevis: Devis) => void;
 }
 
-export function DocumentsDetaillsCard({ devis, onUpdate }: DocumentsCardProps) {
+export function DocumentsDetaillsCard({ devis }: DocumentsCardProps) {
     const [activeComponent, setActiveComponent] = useState<'checkFiles' | 'uploadFile'>('checkFiles');
     const [hasSelectedFiles, setHasSelectedFiles] = useState<boolean>(false);
 

@@ -93,7 +93,6 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
         updatedFiles[index].typeDocument = value;
         setSelectedFiles(updatedFiles);
         onFileSelect(updatedFiles); // Notify parent of updated types
-        console.log(updatedFiles);
     };
 
 

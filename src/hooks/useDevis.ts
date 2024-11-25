@@ -1,5 +1,5 @@
 // src/hooks/useDevis.ts
-import { CarRequest, Client, Devis, DevisPayementDetails, ItemRequest, Rappel } from '../types/devisTypes';
+import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWebSocketForDevis } from './useWebSocket';
@@ -42,6 +42,9 @@ export const useUpdateDevis = () => {
       updatedItemRequestData,
       updatedCarRequestData,
       updatedRappels,
+      updatedDevisFacture,
+      updatedDevisReserved,
+      updatedDevisPayementDetails
     }: {
       database: string;
       devisId: number;
@@ -51,6 +54,9 @@ export const useUpdateDevis = () => {
       updatedItemRequestData?: Partial<ItemRequest>;
       updatedCarRequestData?: Partial<CarRequest>;
       updatedRappels?: Partial<Rappel[]>;
+      updatedDevisFacture?: Partial<DevisFacture>;
+      updatedDevisReserved?: Partial<DevisReserved>;
+      updatedDevisPayementDetails?: Partial<DevisPayementDetails>;
     }) => {
       return updateDevis(
         database,
@@ -60,7 +66,10 @@ export const useUpdateDevis = () => {
         updatedClient,
         updatedItemRequestData,
         updatedCarRequestData,
-        updatedRappels
+        updatedRappels,
+        updatedDevisFacture,
+        updatedDevisReserved,
+        updatedDevisPayementDetails
       );
     },
     // Optional: Define onSuccess, onError, etc.

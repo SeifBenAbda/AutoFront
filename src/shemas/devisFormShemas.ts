@@ -135,7 +135,7 @@ export const devisSchema = z.object({
         }),
     }),
 
-    devisPayementForm : z.discriminatedUnion("PaymentMethod", [
+     devisPayementForm : z.discriminatedUnion("PaymentMethod", [
         // For Bank and Leasing
         z.object({
           PaymentMethod: z.enum(["Banque", "Leasing"]),
@@ -147,16 +147,15 @@ export const devisSchema = z.object({
           BankAndLeasing: z.string().min(1, { 
             message: "Banque et leasing est requis pour les payements par banque ou leasing." 
           }),
-        }),
+        }).strict(), // Add .strict() here too
+      
         // For Comptant and FCR
         z.object({
           PaymentMethod: z.enum(["Comptant", "FCR"]),
           TotalTTC: z.number().nullable().optional(),
           TotalAPRem: z.number().nullable().optional(),
-          // Remove these fields entirely for Comptant/FCR instead of making them optional
-          // This makes the discrimination clearer
-        }).strict(), // .strict() ensures no extra fields are allowed
-      ]),
+        }).strict(),
+      ])
 
 });
 

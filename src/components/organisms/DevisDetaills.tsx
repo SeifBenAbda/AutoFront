@@ -127,7 +127,10 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis, onDevisCancel }) => 
                 updatedClient: myDevis!.client,
                 updatedItemRequestData: undefined,
                 updatedCarRequestData: myDevis!.carRequests?.[0] || undefined,
-                updatedRappels: rappels || undefined
+                updatedRappels: rappels || undefined,
+                updatedDevisFacture: myDevis!.devisFacture || undefined,
+                updatedDevisReserved: myDevis!.devisReserved || undefined,
+                updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined
             }).then(() => { setLoading(false) });
         } catch (error) {
             console.error('Failed to save updates:', error);
@@ -141,7 +144,7 @@ const DevisDetails: React.FC<DevisDetailsProps> = ({ devis, onDevisCancel }) => 
         { label: 'Client', component: <ClientDetaillsCard client={myDevis.client!} onUpdate={handleClientUpdate} /> },
         { label: 'Vehicule', component: <VehiculeDetaillsCard carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Rappels', component: <RappelsDetaillsCard rappels={myDevis.rappels || []} onUpdate={handleRappelUpdate} devisId={myDevis.DevisId!} /> },
-        { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis} onUpdate={() => console.log("test")} /> },
+        { label: 'Documents', component: <DocumentsDetaillsCard devis={myDevis}  /> },
     ] : [];
 
     function getClosestFutureDate(): Rappel | null {

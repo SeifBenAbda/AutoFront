@@ -12,9 +12,9 @@ const useRegions = () => {
     return useQuery<Region[]>({
         queryKey: ['regions'],
         queryFn: () => fetchRegions("Commer_2024_AutoPro"),
-        //refetchInterval: 5000,
-        staleTime: 0,
+        staleTime: Infinity,
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
     });
 };
 

@@ -55,9 +55,6 @@ const ItemChangePage: React.FC = () => {
         client: selectedClient, // Use the selected client data
         itemRequestData: itemRequests,
       };
-
-      // Submit the merged data
-      console.log("Submitted Data: ", mergedValues);
       setIsLoading(false);
     } catch (error) {
       console.error("Error submitting form:", error);
