@@ -17,7 +17,7 @@ type DevisDetailsPageProps = {
 
 // Create custom components for each state
 const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; phone: string }) => (
-    <div className="flex items-center space-x-8 px-3 py-1">
+    <div className="flex items-center space-x-8 px-3 py-1 justify-center">
         <div className="flex flex-row space-x-2">
             <img src={clientIcon} alt="Agent" className="w-5 h-5" />
             <span className="text-highGrey2 font-oswald">{geneder} {name}</span>
@@ -30,7 +30,7 @@ const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; p
 );
 
 const VehicleModel = ({ model }: { model: string }) => (
-    <div className="flex items-center space-x-2 px-3 py-1">
+    <div className="flex items-center space-x-2 px-3 py-1 justify-center">
         <img src={carIcon} alt="Car" className="w-7 h-7" />
         <span className="text-highGrey2 font-oswald">{model}</span>
     </div>
@@ -52,18 +52,20 @@ const ReminderInfo = ({ rappels }: { rappels: Rappel[] | undefined }) => {
         }
 
         // Otherwise, format the date as "le [date]"
-        return `${reminderDate.toLocaleDateString("fr-FR")} : `; // French date format
+        return `${reminderDate.toLocaleDateString("fr-FR")}`; // French date format
     };
 
     return (
-        <div className="flex items-center space-x-2 px-3 py-1">
+        <div className="flex items-center space-x-2 justify-center">
             {closestReminder ? (
                 <>
-                    <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
-                    <span className="text-highGrey2 font-oswald">
-                        {formatReminderDate(closestReminder.RappelDate!.toString())}
-                    </span>
-                    <span className="text-highGrey2 font-oswald">
+                    <div className="flex flex-row">
+                        <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
+                        <span className="text-highGrey2 font-oswald min-w-[30%]">
+                            {formatReminderDate(closestReminder.RappelDate!.toString())}
+                        </span>
+                    </div>
+                    <span className="text-highGrey2 font-oswald max-w-[60%]">
                         {closestReminder.RappelContent}
                     </span>
 
@@ -184,8 +186,8 @@ export function DevisDetailsPage({
 
                 {/* Scrollable Content */}
                 <div className="flex-grow overflow-y-auto px-2">
-                    <div className="relative flex min-h-10 border border-blueCiel items-center justify-center overflow-visible bg-blueCiel rounded-md">
-                        <div className={`absolute transform transition-all duration-500 ease-in-out ${getTextPosition()}`}>
+                    <div className="text-center flex min-h-12 border border-blueCiel items-center justify-center bg-blueCiel rounded-md relative">
+                        <div className={`w-full px-2 transform transition-all duration-500 ease-in-out ${getTextPosition()}`}>
                             {currentComponent === 'client' ? (
                                 <ClientInfo
                                     geneder={allData.client?.clientGender ?? ""}
@@ -194,10 +196,19 @@ export function DevisDetailsPage({
                                 />
                             ) : currentComponent === 'reminder' ? (
                                 <ReminderInfo rappels={allData.rappels} />
-                            ) : <VehicleModel model={allData.carRequests?.[0]?.CarModel ?? ""} />}
+                            ) : (
+                                <VehicleModel model={allData.carRequests?.[0]?.CarModel ?? ""}
+                                />
+                            )}
                         </div>
                     </div>
-                    <DevisDetailsNewMain devis={allData} isOpen={isOpen} onClose={onClose} onSave={onSave} isAdmin={isAdmin} />
+                    <DevisDetailsNewMain
+                        devis={allData}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        onSave={onSave}
+                        isAdmin={isAdmin}
+                    />
                 </div>
             </DialogContent>
         </Dialog>

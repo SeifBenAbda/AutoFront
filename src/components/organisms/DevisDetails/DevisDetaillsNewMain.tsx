@@ -86,7 +86,6 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     };
 
     const handleDevisUpdate = (updatedDevis: Devis) => {
-        console.log(updatedDevis);
         setDevis(prevDevis => ({
             ...prevDevis,
             ...updatedDevis, // Spread the existing devis and updatedDevis fields

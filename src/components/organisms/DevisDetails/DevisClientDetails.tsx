@@ -146,7 +146,15 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
                     */}
             </div>
-
+            <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
+                <Label className="relative text-sm font-medium text-highGrey2 ">Email</Label>
+                <Input
+                    value={client.email}
+                    type="email"
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                />
+            </CardContent>
             <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
                 <Label className="relative text-sm font-medium text-highGrey2 ">Adresse</Label>
                 <Textarea

@@ -233,14 +233,14 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
                 <h3 className="font-oswald text-xl mb-4 text-highGrey2">Documents requis</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg-custom:grid-cols-3 gap-2">
                     {devisCheckedDocs.map((doc: DocumentCondition) => {
-                        const hasDocument = files.some(
+                        const hasDocument = Array.isArray(files) ? files.some(
                             file => file.typeDocument === doc.DocumentType
-                        );
+                        ) : false;
 
                         return (
                             <div
                                 key={doc.DocumentType}
-                                className="flex flex-col p-1 space-y-2 items-center justify-between  bg-blueCiel rounded-lg"
+                                className="flex flex-col space-y-1 items-center justify-between text-center p-2  bg-blueCiel rounded-lg"
                             >
                                 <span className="font-oswald text-gray-700 text-sm">{doc.DocumentType}</span>
                                 <div className={`

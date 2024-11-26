@@ -44,7 +44,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         }
     };
 
-    const fetchNumBonCommande = async (databaseName: string, refCompteur: string): Promise<number | undefined> => {
+    const fetchNumBonCommande = async (databaseName: string, refCompteur: string,devisId:number): Promise<number | undefined> => {
         try {
             const response = await fetch(`${API_URL}/compteur-commande`, {
                 method: 'POST',
@@ -52,15 +52,14 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ databaseName, refCompteur })
+                body: JSON.stringify({ databaseName, refCompteur, devisId })
             });
-
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
-            const data: CompteurCommande = await response.json();
-            return data.COMPTEUR;
+            const data: number = await response.json();
+            return data;
         } catch (error) {
             console.error('Failed to fetch Numéro Bon de Commande:', error);
             return undefined;
@@ -74,7 +73,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
             switch (newStatus) {
                 case "Réservé": {
-                    const compteur = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW");
+                    const compteur = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW",devis.DevisId?devis.DevisId:0);
                     if (!compteur) {
                         throw new Error("Failed to fetch bon commande number");
                     }
