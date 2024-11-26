@@ -1,6 +1,6 @@
 import React from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid'; // Ensure this is the correct import
-import { Input } from '../../@/components/ui/input';
+import { Input } from '../../../@/components/ui/input';
 
 interface PasswordInputProps {
   value: string;

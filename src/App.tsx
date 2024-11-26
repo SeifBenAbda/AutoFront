@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import CarRequestPage from './templates/CarRequestLayout';
-import LoginPage from './templates/LoginPage';
+import LoginPage from './pages/LoginPage';
 import ItemChangeTrackingPage from './pages/ItemChangeTrackingPage';
 import CarTrackingLayout from './templates/CarTrackingLayout';
 import Loading from './components/atoms/Loading';

@@ -2,17 +2,11 @@ import { Controller } from "react-hook-form";
 import React from "react";
 import {
     Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../@/components/ui/form";
-import { Input } from "../../@/components/ui/input";
+} from "../../../@/components/ui/form";
+import { Input } from "../../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
-import { DatePicker } from "../atoms/DataSelector";
-import ClientGender from "../atoms/ClientGender";
-import TypeClient from "../atoms/ClientTypeSelect";
+import ClientGender from "../../atoms/ClientGender";
+import TypeClient from "../../atoms/ClientTypeSelect";
 
 const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;

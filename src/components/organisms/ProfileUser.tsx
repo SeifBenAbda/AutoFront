@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/use-toast";
 import { ToastAction } from "../../@/components/ui/toast";
 import { Toaster } from "../../@/components/ui/toaster";
-import { PasswordInputNew } from "../molecules/PasswordInput";
+import { PasswordInputNew } from "../molecules/Login/PasswordInput";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../@/components/ui/select";
 import { User } from "../../models/user.model";
 

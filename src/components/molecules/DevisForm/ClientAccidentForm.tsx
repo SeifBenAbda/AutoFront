@@ -7,10 +7,10 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../@/components/ui/form";
+} from "../../../@/components/ui/form";
 import FormCardContent from "./FormCardContent";
-import { Input } from "../../@/components/ui/input";
-import { Textarea } from "../../@/components/ui/textarea";
+import { Input } from "../../../@/components/ui/input";
+import { Textarea } from "../../../@/components/ui/textarea";
 
 const ClientAccidentForm: React.FC<{ form: any; formId: string}> = ({ form, formId}) => {
     const { register, control } = form;

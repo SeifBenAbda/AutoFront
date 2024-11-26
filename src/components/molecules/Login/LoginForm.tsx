@@ -1,10 +1,10 @@
 // src/components/pages/LoginForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 import { PasswordInput } from './PasswordInput';
-import Loading from '../atoms/Loading';
-import { Input } from '../../@/components/ui/input';
+import Loading from '../../atoms/Loading';
+import { Input } from '../../../@/components/ui/input';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');

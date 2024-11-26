@@ -2,15 +2,10 @@ import { Controller } from "react-hook-form";
 import React from "react";
 import {
     Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../@/components/ui/form";
+} from "../../../@/components/ui/form";
 import FormCardContent from "./FormCardContent";
-import { DatePicker } from "../atoms/DataSelector";
-import { Textarea } from "../../@/components/ui/textarea";
+import { DatePicker } from "../../atoms/DataSelector";
+import { Textarea } from "../../../@/components/ui/textarea";
 
 const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formId }) => {
     const { register, control } = form;

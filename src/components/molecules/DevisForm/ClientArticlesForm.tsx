@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import ArticleModal from '../atoms/ArticleModal';
 import { Article } from '@/types/otherTypes';
 import {
     Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '../../@/components/ui/form';
-import FormCardContent from './FormCardContent';
-import { Controller } from 'react-hook-form';
-import { Button } from '../../@/components/ui/button';
-import { Input } from '../../@/components/ui/input';
+} from '../../../@/components/ui/form';
+
 
 const ArticleFormSection: React.FC<any> = ({ form, formId }) => {
     const { control, setValue, formState: { errors } } = form;

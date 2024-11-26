@@ -7,17 +7,17 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../@/components/ui/form";
-import { Input } from "../../@/components/ui/input";
+} from "../../../@/components/ui/form";
+import { Input } from "../../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
-import MotifClientSelect from "../atoms/MotifClientSelect";
-import ClientSourceSelect from "../atoms/ClientSourceSelect";
-import PayementMethod from "../atoms/PayementMethod";
-import CarsDropDown from "../atoms/CarsDropDown";
-import PriorityDevisDropDown from "../atoms/PriorityDropDown";
-import RegionDropDown from "../atoms/RegionDropDown";
-import BanksLeasingDropDown from "../atoms/BanksLeasingDropDown";
-import { Textarea } from "../../@/components/ui/textarea";
+import MotifClientSelect from "../../atoms/MotifClientSelect";
+import ClientSourceSelect from "../../atoms/ClientSourceSelect";
+import PayementMethod from "../../atoms/PayementMethod";
+import CarsDropDown from "../../atoms/CarsDropDown";
+import PriorityDevisDropDown from "../../atoms/PriorityDropDown";
+import RegionDropDown from "../../atoms/RegionDropDown";
+import BanksLeasingDropDown from "../../atoms/BanksLeasingDropDown";
+import { Textarea } from "../../../@/components/ui/textarea";
 
 interface ClientExtraFormProps {
     form: any; // Keep the any type since that's what you're using

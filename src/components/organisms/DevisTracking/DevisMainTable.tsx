@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from 'react';
-import { TableData } from './TableData';
-import { columns as initialColumns } from '../../utils/DevisColumns';
-import { PaginationTable } from '../atoms/TablePagination';
-import { SheetProvider } from '../../context/sheetContext';
-import FilterColumnsDevis from '../molecules/FilterColumnsDevis';
-import useDevis from '../../hooks/useDevis';
-import Loading from '../atoms/Loading';
-import SearchBar from '../atoms/SearchDevis';
-import StatusDevisDropDown from '../atoms/StatusDevis';
-import PriorityDevisDropDown from '../atoms/PriorityDropDown';
-import CarsMultiSelect from '../atoms/CarsMultiSelect';
+import { TableData } from '../TableData';
+import { columns as initialColumns } from '../../../utils/DevisColumns';
+import { PaginationTable } from '../../atoms/TablePagination';
+import { SheetProvider } from '../../../context/sheetContext';
+import FilterColumnsDevis from '../../molecules/FilterColumnsDevis';
+import useDevis from '../../../hooks/useDevis';
+import Loading from '../../atoms/Loading';
+import SearchBar from '../../atoms/SearchDevis';
+import StatusDevisDropDown from '../../atoms/StatusDevis';
+import PriorityDevisDropDown from '../../atoms/PriorityDropDown';
+import CarsMultiSelect from '../../atoms/CarsMultiSelect';
 
 interface DataTableProps {
   typeDevis: string;

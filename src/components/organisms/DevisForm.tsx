@@ -2,10 +2,10 @@ import { z } from "zod";
 import { FieldErrors, UseFormReturn } from "react-hook-form";
 import React, { useState } from "react";
 import { devisSchemaForCar } from "../../shemas/devisFormShemas";
-import ClientDataForm from "../molecules/ClientDataForm";
-import ClientExtraForm from "../molecules/ClientExtraForm";
-import ClientAdresseForm from "../molecules/ClientAdresseForm";
-import ClientRappelForm from "../molecules/ClientRappelForm";
+import ClientDataForm from "../molecules/DevisForm/ClientDataForm";
+import ClientExtraForm from "../molecules/DevisForm/ClientExtraForm";
+import ClientAdresseForm from "../molecules/DevisForm/ClientAdresseForm";
+import ClientRappelForm from "../molecules/DevisForm/ClientRappelForm";
 import { Card, CardContent, CardHeader, CardTitle } from "../../@/components/ui/card";
 import { Button } from "../../@/components/ui/button";
 
