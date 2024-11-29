@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 
@@ -271,7 +271,8 @@ export const updateDevis = async (
   updatedRappels?: Partial<Rappel[]>,
   updatedDevisFacture?: Partial<DevisFacture>,
   updatedDevisReserved?: Partial<DevisReserved>,
-  updatedDevisPayementDetails?: Partial<DevisPayementDetails>
+  updatedDevisPayementDetails?: Partial<DevisPayementDetails>,
+  updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>
 ): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[];
   devisFacture?: DevisFacture; devisReserved?: DevisReserved; devisPayementDetails?: DevisPayementDetails
 }> => {
@@ -295,7 +296,8 @@ export const updateDevis = async (
       "updatedRappels":updatedRappels,
       "updatedDevisFacture": updatedDevisFacture,
       "updatedDevisReserved":updatedDevisReserved,
-      "updatedDevisPayementDetails":updatedDevisPayementDetails
+      "updatedDevisPayementDetails":updatedDevisPayementDetails,
+      "updatedDevisGesteCommerciale":updatedDevisGesteCommerciale
     }),
   });
 

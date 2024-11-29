@@ -132,7 +132,8 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                 updatedRappels: rappels || undefined,
                 updatedDevisFacture: myDevis!.devisFacture || undefined,
                 updatedDevisReserved: myDevis!.devisReserved || undefined,
-                updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined
+                updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined,
+                updatedDevisGesteCommerciale : myDevis!.gesteCommer || undefined
             }).then(() => { onSave(myDevis!); setLoading(false); onClose(); });
         } catch (error) {
             console.error('Failed to save updates:', error);
