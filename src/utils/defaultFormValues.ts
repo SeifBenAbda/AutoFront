@@ -23,7 +23,11 @@ export const defaultFormCarDevisFacture : DevisFacture = {
 
 export const defaultFormDevisReserved : DevisReserved = {
     DateReservation: null,
-    NumBonCommande: ""
+    NumBonCommande: "",
+    ReservedBy: "",
+    ReservedAt: new Date(),
+    isCanceled: undefined,
+    CanceledBy: undefined
 }
 
 export const defaultFormDevisGesteCommer : DevisGesteCommer = {

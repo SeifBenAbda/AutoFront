@@ -12,6 +12,7 @@ import { getToken } from "../../../services/authService";
 import { useEffect, useState } from "react";
 import { Checkbox } from "../../../@/components/ui/checkbox";
 import { NumericInput } from "../../../components/atoms/NumericInput";
+import { useUser } from "../../../context/userContext";
 
 
 interface DevisGlobalDetailsProps {
@@ -25,11 +26,18 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const [devisBcNumber, setDevisBcNumber] = useState<number | undefined>(0);
     const API_URL = import.meta.env.VITE_API_URL;
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
-        setDevisBcNumber(0);
-    }
-        , [devis]);
+        if (devis.DevisId) {
+            setIsLoading(true);
+            const fetchData = async () => {
+                const bc_num = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId?devis.DevisId:0);
+                setDevisBcNumber(bc_num);
+            };
+            fetchData().then(() => setIsLoading(false));
+        }
+    }, [devis.DevisId]);
 
 
     const handleChange = (field: keyof Devis, value: string | Date | undefined | boolean) => {
@@ -69,19 +77,19 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     };
 
     const handleStatusChange = async (newStatus: string) => {
-        setIsLoading(true);
+      //  setIsLoading(true);
         try {
             let updatedDevis: Devis = { ...devis, StatusDevis: newStatus };
 
             switch (newStatus) {
                 case "Réservé": {
-                    const counter = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId ? devis.DevisId : 0);
-                    setDevisBcNumber(counter);
+                    //const counter = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId ? devis.DevisId : 0);
+                    //setDevisBcNumber(counter);
                     updatedDevis = {
                         ...updatedDevis,
                         devisReserved: {
                             ...devis.devisReserved,
-                            DateReservation: new Date()
+                            ReservedBy: user?.nomUser
                         }
                     };
                     break;
@@ -122,12 +130,22 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 };
             }
 
+            if(updatedDevis.StatusDevis === "Annulé" || updatedDevis.StatusDevis === "En Cours") {
+                updatedDevis = {
+                    ...updatedDevis,
+                    devisReserved: {
+                        ...devis.devisReserved,
+                        CanceledBy: user?.nomUser
+                    }
+                };
+            }
+
             onUpdate(updatedDevis);
         } catch (error) {
             console.error('Error updating status:', error);
             // You might want to add error handling UI here
         } finally {
-            setIsLoading(false);
+           // setIsLoading(false);
         }
     };
 
@@ -274,7 +292,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
 
                 </div>
-                {devis.StatusDevis === "Annuler" && (
+                {devis.StatusDevis === "Annulé" && (
                     <CardContent className="w-full">
                         <Label className=" text-sm font-medium text-highBlue">Raison de l'annulation</Label>
                         <Input
@@ -425,7 +443,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                             className="w-full p-2 border border-highBlue rounded-md sm:text-sm caret-highBlue"
                         >
-                            {devis.devisReserved?.NumBonCommande}
+                            {devisBcNumber}
                         </div>
                     </CardContent>)}
 
@@ -544,7 +562,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const gesteCommercialSettings = () => {
         return (
             <>
-                <CardTitle className="text-xl text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center font-oswald">Geste Commerciale</CardTitle>
+                <CardTitle className="text-xl text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center font-oswald">Geste Commercial</CardTitle>
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Demande Remise</Label>
@@ -613,12 +631,18 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
     return (
         <div className="p-4 relative">
-            {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-lightWhite bg-opacity-75 z-50">
-                    <span className="ml-2 text-lg font-medium font-oswald text-highBlue">Chargement du numéro de bon de commande...</span>
-                </div>
-            )}
             {globalDevisSettings()}
+            {isLoading && (
+            <div className="absolute inset-0 flex items-start justify-center bg-lightWhite bg-opacity-75 z-50 pt-10">
+            <div className="flex items-center">
+            <svg className="animate-spin h-5 w-5 text-highBlue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span className="ml-2 text-lg font-medium font-oswald text-highBlue">Veuillez Patienter...</span>
+            </div>
+            </div>
+            )}
             {devis.StatusDevis !== "Annuler" && payementSettings()}
             {devis.StatusDevis !== "Annuler" && responsableSettings()}
         </div>

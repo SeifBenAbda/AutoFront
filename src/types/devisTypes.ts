@@ -125,6 +125,10 @@ export interface DevisReserved {
   devisId?: number;
   DateReservation: Date | null;
   NumBonCommande: string;
+  ReservedBy: string | undefined;
+  ReservedAt: Date | undefined;
+  isCanceled: boolean | undefined;
+  CanceledBy: string | undefined;
 }
 
 export interface DevisPayementDetails {
