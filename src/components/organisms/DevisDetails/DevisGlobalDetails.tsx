@@ -643,8 +643,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             </div>
             </div>
             )}
-            {devis.StatusDevis !== "Annuler" && payementSettings()}
-            {devis.StatusDevis !== "Annuler" && responsableSettings()}
+            {devis.StatusDevis !== "Annulé" && payementSettings()}
+            {devis.StatusDevis !== "Annulé" && responsableSettings()}
         </div>
     )
 }
