@@ -15,7 +15,7 @@ interface ClientSourceSelectTypes {
 const ClientSourceSelect = ({ value, onChange }:ClientSourceSelectTypes) => {
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey2 bg-lightWhite text-highGrey2">
+            <SelectTrigger className="w-full border border-highBlue bg-lightWhite text-highBlue">
                 <SelectValue placeholder="Source" defaultValue={value} />
             </SelectTrigger>
             <SelectContent>

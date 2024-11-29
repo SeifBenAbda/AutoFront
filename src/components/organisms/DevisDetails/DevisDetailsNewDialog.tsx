@@ -20,11 +20,11 @@ const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; p
     <div className="flex items-center space-x-8 px-3 py-1 justify-center">
         <div className="flex flex-row space-x-2">
             <img src={clientIcon} alt="Agent" className="w-5 h-5" />
-            <span className="text-highGrey2 font-oswald">{geneder} {name}</span>
+            <span className="text-highBlue font-oswald">{geneder} {name}</span>
         </div>
         <div className="flex flex-row space-x-2">
             <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
-            <span className="text-highGrey2 font-oswald">{phone}</span>
+            <span className="text-highBlue font-oswald">{phone}</span>
         </div>
     </div>
 );
@@ -32,7 +32,7 @@ const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; p
 const VehicleModel = ({ model }: { model: string }) => (
     <div className="flex items-center space-x-2 px-3 py-1 justify-center">
         <img src={carIcon} alt="Car" className="w-7 h-7" />
-        <span className="text-highGrey2 font-oswald">{model}</span>
+        <span className="text-highBlue font-oswald">{model}</span>
     </div>
 );
 
@@ -61,17 +61,17 @@ const ReminderInfo = ({ rappels }: { rappels: Rappel[] | undefined }) => {
                 <>
                     <div className="flex flex-row">
                         <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
-                        <span className="text-highGrey2 font-oswald min-w-[30%]">
+                        <span className="text-highBlue font-oswald min-w-[30%]">
                             {formatReminderDate(closestReminder.RappelDate!.toString())}
                         </span>
                     </div>
-                    <span className="text-highGrey2 font-oswald max-w-[60%]">
+                    <span className="text-highBlue font-oswald max-w-[60%]">
                         {closestReminder.RappelContent}
                     </span>
 
                 </>
             ) : (
-                <span className="text-highGrey2 font-oswald">Aucun rappel à venir</span>
+                <span className="text-highBlue font-oswald">Aucun rappel à venir</span>
             )}
         </div>
     );
@@ -83,7 +83,7 @@ function getPriorityClassName(devisPriority: string) {
         case "Normale":
             return "bg-lightGreen border border-whiteSecond text-highGrey";
         case "Moyenne":
-            return "bg-yellow-400 border border-yellow-400 text-highGrey2";
+            return "bg-yellow-400 border border-yellow-400 text-highBlue";
         case "Haute":
             return "bg-red-400 border border-red-400 text-lightWhite";
     }
@@ -182,7 +182,7 @@ export function DevisDetailsPage({
                     <CircleX className="h-7 w-7 cursor-pointer" onClick={onClose} />
                 </DialogTitle>
 
-                <hr className="bg-highGrey2 w-full" />
+                <hr className="bg-highBlue w-full" />
 
                 {/* Scrollable Content */}
                 <div className="flex-grow overflow-y-auto px-2">

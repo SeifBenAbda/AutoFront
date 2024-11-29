@@ -32,55 +32,55 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
             <div className="grid grid-cols-2 gap-0 pt-2 pl-6 pr-6">
                 {/* First Row */}
                 <CardContent className="flex flex-col p-2">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Nom</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Nom</Label>
                     <Input
                         type="text"
                         value={client.nomClient || ""}
                         onChange={(e) => handleChange("nomClient", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
                 {client.clientType === "Particulier" ? (
                     <CardContent className="flex flex-col p-2">
-                        <Label className="relative text-sm font-medium text-highGrey2 ">Cin</Label>
+                        <Label className="relative text-sm font-medium text-highBlue ">Cin</Label>
                         <Input
                             type="text"
                             value={client.cin || ""}
                             onChange={(e) => handleChange("cin", e.target.value)}
-                            className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                         />
                     </CardContent>
                 ) : (
                     <CardContent className="flex flex-col p-2">
-                        <Label className="relative text-sm font-medium text-highGrey2 ">Matricule Fiscale</Label>
+                        <Label className="relative text-sm font-medium text-highBlue ">Matricule Fiscale</Label>
                         <Input
                             type="text"
                             value={client.mtFiscale}
                             onChange={(e) => handleChange("mtFiscale", e.target.value)}
-                            className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                         />
                     </CardContent>
                 )}
 
                 {/* Second Row */}
                 <CardContent className="flex flex-col p-2">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Numéro de téléphone</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Numéro de téléphone</Label>
                     <Input
                         type="text"
                         value={client.telClient}
                         onChange={(e) => handleChange("telClient", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
 
                 </CardContent>
                 <CardContent className="flex flex-col p-2">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Numéro de téléphone 2</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Numéro de téléphone 2</Label>
                     <Input
                         type="text"
                         value={client.telClient2}
                         onChange={(e) => handleChange("telClient2", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
 
                 </CardContent>
@@ -91,7 +91,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                 
                     {client.clientType === "Particulier" && (
                     <CardContent className="flex flex-col p-2">
-                        <Label className="text-sm font-oswald text-highGrey2 mb-1">Date de naissance</Label>
+                        <Label className="text-sm font-oswald text-highBlue mb-1">Date de naissance</Label>
                         <DatePicker
                             value={client.dateOfBirth}
                             onChange={handleDateChange}
@@ -105,28 +105,28 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                 {/* Address Ville + Region + Code Postale + Pays 
 
                 <CardContent className="flex flex-col p-2 w-full">
-                    <Label className="text-sm font-oswald text-highGrey2">Pays</Label>
+                    <Label className="text-sm font-oswald text-highBlue">Pays</Label>
                     <Input
                         type="text"
                         value={client.pays}
                         onChange={(e) => handleChange("pays", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
 
                 <CardContent className="flex flex-col p-2 w-full">
-                    <Label className="text-sm font-oswald text-highGrey2">Ville</Label>
+                    <Label className="text-sm font-oswald text-highBlue">Ville</Label>
                     <Input
                         type="text"
                         value={client.ville}
                         onChange={(e) => handleChange("ville", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
                 <CardContent className="flex flex-col p-2 w-full">
-                    <Label className="text-sm font-oswald text-highGrey2 mb-1">Region</Label>
+                    <Label className="text-sm font-oswald text-highBlue mb-1">Region</Label>
                     <RegionDropDown
                         value={client.region}
                         onChange={(value) => handleChange("region", value)}
@@ -135,33 +135,33 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
                 </CardContent>
 
                 <CardContent className="flex flex-col p-2 w-full">
-                    <Label className="text-sm font-oswald text-highGrey2">Code Postal</Label>
+                    <Label className="text-sm font-oswald text-highBlue">Code Postal</Label>
                     <Input
                         type="text"
                         value={client.postalCode}
                         onChange={(e) => handleChange("postalCode", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
                     */}
             </div>
             <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
-                <Label className="relative text-sm font-medium text-highGrey2 ">Email</Label>
+                <Label className="relative text-sm font-medium text-highBlue ">Email</Label>
                 <Input
                     value={client.email}
                     type="email"
                     onChange={(e) => handleChange("email", e.target.value)}
-                    className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                 />
             </CardContent>
             <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
-                <Label className="relative text-sm font-medium text-highGrey2 ">Adresse</Label>
+                <Label className="relative text-sm font-medium text-highBlue ">Adresse</Label>
                 <Textarea
 
                     value={client.adresse}
                     onChange={(e) => handleChange("adresse", e.target.value)}
-                    className="mt-1 p-2 w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                 />
             </CardContent>
         </>

@@ -14,7 +14,7 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
     if (isLoading){
         return (
             <div className="flex justify-center items-center h-10">
-                <div className="flex border-2 border-t-highGrey2 h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                <div className="flex border-2 border-t-highBlue h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -33,6 +33,8 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
             value: 'Tous types de voitures',
         });*/
     }
+    const hoverItem = "cursor-pointer  hover:rounded-md hover:bg-normalGrey";
+    const hoverItemCommand = "cursor-pointer   hover:bg-normalGrey";
 
     return (
         <MultiSelect
@@ -43,7 +45,10 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
             variant="inverted"
             animation={0}
             maxCount={1}
-            className='bg-lightWhite border rounded-md border-highGrey2 hover:bg-lightWhite text-highGrey2'
+            className={`w-full border border-normalGrey  bg-normalGrey font-oswald text-highBlue ${hoverItem}`}
+            classNameCommand={`w-full border border-normalGrey border border-normalGrey bg-normalGrey text-highBlue ${hoverItemCommand}`}
+            classNameSearch={`w-full border border-normalGrey  bg-normalGrey text-highBlue  ${hoverItemCommand}`}
+            borderCommand='border border-normalGrey'
         />
     );
 };

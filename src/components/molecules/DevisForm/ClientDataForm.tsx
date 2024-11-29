@@ -60,7 +60,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Nom et prénom Client"
                             {...register(`${formId}.nomClient`)}
                         />
@@ -68,7 +68,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
 
                     <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Profession / Secteur Activite"
                             {...register(`${formId}.socialReason`)}
                         />
@@ -79,7 +79,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Numéro de téléphone"
                             {...register(`${formId}.telClient`)}
                         />
@@ -87,7 +87,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                     
                     <FormCardContent form={form} label="Numéro de téléphone 2" name={`${formId}.telClient2`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Numéro de téléphone"
                             {...register(`${formId}.telClient2`)}
                         />
@@ -98,7 +98,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="text-whiteSecond">
                     <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Email"
                             {...register(`${formId}.email`)}
                         />
@@ -110,7 +110,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Cin" name={`${formId}.cin`} className="flex-1">
                         <Input
-                            className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                            className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Cin"
                             {...register(`${formId}.cin`)}
                         />

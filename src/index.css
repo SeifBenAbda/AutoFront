@@ -8,14 +8,20 @@
 /* Custom styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #fbfbfb;
+    background-color: #f1f6f9;
+    margin: 0;
+
+    padding: 0;
 }
   
 .placeholder-custom::placeholder {
-      color: #fbfbfb; /* Example: Custom color */
+      color: #f1f6f9; /* Example: Custom color */
       opacity: 1; /* Example: Full opacity */
       font-style: 'Bree Serif'; /* Example: Italicize text */
 }
+
+
+
 
 ::-webkit-scrollbar {
     width: 12px; /* Width of the entire scrollbar */

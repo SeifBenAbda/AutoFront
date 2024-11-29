@@ -39,18 +39,18 @@ const StepCircle = ({ isActive, onClick, stepIcon: Icon, stepLabel }: StepCircle
                 w-14 h-14 rounded-full 
                 border-2 border-dashed 
                 flex items-center justify-center 
-                cursor-pointer ${isActive ? "border-highGrey2" : "border-gray-400"
+                cursor-pointer ${isActive ? "border-highBlue" : "border-gray-400"
                 }`}
         >
             {isActive ? (
                 <div className="w-10 h-10 rounded-full bg-blueCiel flex items-center justify-center">
-                    <Icon className="text-highGrey2 h-6 w-6" />
+                    <Icon className="text-highBlue h-6 w-6" />
                 </div>
             ) : (
                 <Icon className="text-gray-700 h-6 w-6" />
             )}
         </div>
-        <span className={`mt-2 text-base font-oswald text-highGrey2 ${isActive ? "font-semibold" : ""}`}>
+        <span className={`mt-2 text-base font-oswald text-highBlue ${isActive ? "font-semibold" : ""}`}>
             {stepLabel}
         </span>
     </div>
@@ -193,7 +193,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             {/* Sticky Bottom Button */}
             {steps[activeStep]?.label !== "Documents" && (
                 <div className="sticky bottom-0 bg-transprent p-2 pr-7 pl-7">
-                    <Button onClick={handleSave} className="w-full py-2 text-white bg-highGrey2 rounded-md">
+                    <Button onClick={handleSave} className="w-full py-2 text-white bg-highBlue rounded-md">
                         Enregistrer
                     </Button>
                 </div>

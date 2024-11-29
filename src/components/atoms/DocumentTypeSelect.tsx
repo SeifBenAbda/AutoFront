@@ -14,7 +14,7 @@ interface DocumentTypeDropDownProps {
 const DocumentTypeDropDown = ({ value, onChange }: DocumentTypeDropDownProps) => {
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey2">
+            <SelectTrigger className="w-full border border-highBlue">
                 <SelectValue placeholder={value ? value.toString() : "Tous Types"} />
             </SelectTrigger>
             <SelectContent>

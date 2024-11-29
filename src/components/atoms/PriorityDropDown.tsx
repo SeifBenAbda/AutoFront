@@ -6,28 +6,28 @@ import {
     SelectValue,
 } from "../../@/components/ui/select";
 
-
 interface PriorityDevisTypes {
     value?: string; // Updated to match the value type used in ClientTypeSelect
     onChange: (value: string) => void; // Callback now expects a string
-    isFiltring : boolean;
+    isFiltring: boolean;
 }
 
 const PriorityDevisDropDown = ({ value, onChange, isFiltring }: PriorityDevisTypes) => {
+    const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey2 bg-lightWhite text-highGrey2 hover:text-highGrey2">
-                <SelectValue placeholder={value ? value.toString() : "Toutes les priorités"} />
+            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey font-oswald">
+                <SelectValue placeholder={value ? value.toString() : "Toutes les priorités"} className={hoverItem} />
             </SelectTrigger>
-            <SelectContent className="hover:text-highGrey2">
+            <SelectContent className="bg-normalGrey border-normalGrey">
                 {isFiltring && (
-                    <SelectItem key="Toutes les priorités" value="Toutes les priorités">
+                    <SelectItem key="Toutes les priorités" value="Toutes les priorités" className={hoverItem}>
                         Toutes les priorités
                     </SelectItem>
                 )}
-                <SelectItem key="Normale" value="Normale" className="text-highGrey2 hover:text-highGrey2">Normale</SelectItem>
-                <SelectItem value="Moyenne" className="text-highGrey2 hover:text-highGrey2">Moyenne</SelectItem>
-                <SelectItem value="Haute" className="text-highGrey2 hover:text-highGrey2">Haute</SelectItem>
+                <SelectItem key="Normale" value="Normale" className={hoverItem}>Normale</SelectItem>
+                <SelectItem key="Moyenne" value="Moyenne" className={hoverItem}>Moyenne</SelectItem>
+                <SelectItem key="Haute" value="Haute" className={hoverItem}>Haute</SelectItem>
             </SelectContent>
         </Select>
     );

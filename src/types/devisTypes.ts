@@ -79,6 +79,7 @@ export interface Devis {
   StatusDevis:string | undefined,
   PriorityDevis:"Normale" | "Moyenne" | "Haute",
   isGarantie:boolean | undefined,
+  isGesteCommerciale:boolean | undefined,
   ReasonAnnulation : string | undefined , 
   Comments : string | undefined ,
   Responsable : string | undefined ,
@@ -90,6 +91,7 @@ export interface Devis {
   devisPayementDetails:DevisPayementDetails; 
   devisFacture:DevisFacture;
   devisReserved:DevisReserved;
+  gesteCommer:DevisGesteCommer;
 }
 
 
@@ -133,6 +135,17 @@ export interface DevisPayementDetails {
   BankRegion: string;
   PaymentMethod:"Banque" | "Leasing" |  "Comptant" | "FCR" ,
 }
+
+export interface DevisGesteCommer {
+  devisId?: number;
+  DemandeRemise: string;
+  RemiseAccepte: string;
+  DemandeDeFranchise: string;
+  FranchiseAccepte: string;
+  Voucher: string;
+  VoucherAccepte: string;
+}
+
 
 
 

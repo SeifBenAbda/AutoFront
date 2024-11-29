@@ -59,7 +59,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
                             <Input
-                                className="border border-lightWhite bg-lightWhite text-highGrey2"
+                                className="border border-lightWhite bg-lightWhite text-highBlue"
                                 placeholder="Ancien Vehicule"
                                 {...register(`${formId}.OldCar`)}
                             />
@@ -132,7 +132,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                 {/* More Infos */}
                 <FormCardContent form={form} label="Plus d'informations véhicule" name={`${formId}.CarNotes`}>
                     <Textarea
-                        className="border border-lightWhite bg-lightWhite text-highGrey2"
+                        className="border border-lightWhite bg-lightWhite text-highBlue"
                         placeholder="Plus d'informations véhicule"
                         {...register(`${formId}.CarNotes`)}
                     />

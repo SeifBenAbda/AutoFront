@@ -41,51 +41,51 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
         <>
             <div className="grid grid-cols-2 gap-0 pt-4 pl-6 pr-6">
                 <CardContent className="w-full">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Véhicule</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Véhicule</Label>
                     <div
 
-                        className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     >{carRequest.CarModel}</div>
                 </CardContent>
                 <CardContent className="w-full">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Couleur du véhicule</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Couleur du véhicule</Label>
                     <Input
                         type="text"
                         value={carRequest.CarColor || ""}
                         onChange={(e) => handleChange("CarColor", e.target.value)}
                         placeholder="Couleur du véhicule"
-                        className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
                 <CardContent className="w-full">
-                    <Label className="relative text-sm font-medium text-highGrey2 ">Dernier véhicule possédé</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Dernier véhicule possédé</Label>
                     <Input
                         type="text"
                         value={carRequest.OldCar || ""}
                         onChange={(e) => handleChange("OldCar", e.target.value)}
                         placeholder="Dernier véhicule possédé"
-                        className="mt-1 p-2 block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                     />
                 </CardContent>
 
                 {(devis.StatusDevis === "Facturé" && devis.devisFacture.isLivraison) && (
                     <div className="col-span-2">
-                        <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full pl-3 mb-2">Informations après-vente</CardTitle>
+                        <CardTitle className="text-xl text-highBlue font-oswald text-left w-full pl-3 mb-2">Informations après-vente</CardTitle>
                         <div className="flex gap-4 w-full">
                             <CardContent className="w-full">
-                                <Label className="relative text-sm font-medium text-highGrey2 ">Immatriculation</Label>
+                                <Label className="relative text-sm font-medium text-highBlue ">Immatriculation</Label>
                                 <Input
                                     maxLength={30}
                                     value={carRequest.Immatriculation || ""}
                                     onChange={(e) => handleChange("Immatriculation", e.target.value)}
                                     placeholder="Numéro d'immatriculation"
-                                    className="p-2 mr-2  border border-highGrey2 rounded-md sm:text-sm"
+                                    className="p-2 mr-2  border border-highBlue rounded-md sm:text-sm"
                                 />
                             </CardContent>
 
                             <CardContent className="w-full">
-                                <Label className="relative text-sm font-medium text-highGrey2 ">Date de Livraison</Label>
+                                <Label className="relative text-sm font-medium text-highBlue ">Date de Livraison</Label>
                                 <DatePicker
                                     value={devis.devisFacture.DateLivraison}
                                     onChange={handleDateLivraisonChange}
@@ -98,14 +98,14 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                 )}
             </div>
             <div className="pl-6 pr-6 mt-2">
-                <CardTitle className="text-xl text-highGrey2 font-oswald text-left w-full mb-2 ml-3 mr-3 ">Plus d'Informations</CardTitle>
+                <CardTitle className="text-xl text-highBlue font-oswald text-left w-full mb-2 ml-3 mr-3 ">Plus d'Informations</CardTitle>
                 <CardContent className="w-full">
                     <Textarea
                         maxLength={200}
                         value={carRequest.CarNotes || ""}
                         onChange={(e) => handleChange("CarNotes", e.target.value)}
                         placeholder="Notes sur le véhicule"
-                        className="block border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
+                        className="block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
                     />
                 </CardContent>
             </div>

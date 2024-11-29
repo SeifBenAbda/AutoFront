@@ -35,7 +35,7 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
 
                         <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-whiteSecond">
                             <Textarea
-                                className="border border-highGrey2 bg-lightWhite min-h-[70px] text-highGrey2"
+                                className="border border-highBlue bg-lightWhite min-h-[70px] text-highBlue"
                                 placeholder="Contenu de rappel.."
                                 name={`${formId}[${index}].RappelContent`}
                                 {...register(`${formId}[${index}].RappelContent`)}

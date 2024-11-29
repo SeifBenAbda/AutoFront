@@ -61,9 +61,9 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-lightWhite bg-opacity-55">
       <div
         ref={modalRef}
-        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-highGrey2 flex flex-1 flex-col"
+        className="bg-lightWhite p-6 rounded-lg max-w-[90vh] border border-highBlue flex flex-1 flex-col"
       >
-        <h1 className="text-xl mb-4 text-highGrey2 font-oswald">Choisir un client</h1>
+        <h1 className="text-xl mb-4 text-highBlue font-oswald">Choisir un client</h1>
 
         <div className="flex">
           <Input
@@ -76,13 +76,13 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
                 handleSearch();
               }
             }}
-            className="w-full mb-4 p-2 border border-highGrey2 bg-lightWhite rounded-md"
+            className="w-full mb-4 p-2 border border-highBlue bg-lightWhite rounded-md"
           />
           <Button onClick={handleSearch} className="ml-2 bg-greenOne hover:bg-greenOne">Rechercher</Button>
         </div>
 
         {isLoading || isFetching ? (
-          <div className='text-highGrey2 font-oswald flex justify-center'>Chargement ...</div>
+          <div className='text-highBlue font-oswald flex justify-center'>Chargement ...</div>
         ) : error ? (
           <div className='text-red-500 font-oswald flex justify-center'>Erreur: {error.message}</div>
         ) : data && data.data.length > 0 ? (
@@ -98,7 +98,7 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
                     }}
                     className={`font-oswald flex flex-row justify-between items-center w-full p-5 border rounded-lg ${selectedClient?.id === client.id
                       ? 'bg-gray-400 cursor-not-allowed hover:cursor-not-allowed'
-                      : 'bg-highGrey2 hover:bg-lightWhite hover:text-highGrey2 hover:border-highGrey2'
+                      : 'bg-highBlue hover:bg-lightWhite hover:text-highBlue hover:border-highBlue'
                       }`}
                   >
                     <div className="flex-1 text-left">
@@ -117,7 +117,7 @@ const ClientModal: React.FC<ClientModalProps> = ({ isOpen, onClose, onSelectClie
             </div>
           </>
         ) : (
-          <div className='text-highGrey2 font-oswald flex justify-center'>Aucun client trouvé</div>
+          <div className='text-highBlue font-oswald flex justify-center'>Aucun client trouvé</div>
         )}
       </div>
     </div>
