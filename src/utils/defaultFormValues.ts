@@ -22,7 +22,7 @@ export const defaultFormCarDevisFacture : DevisFacture = {
 }
 
 export const defaultFormDevisReserved : DevisReserved = {
-    DateReservation: null,
+    DateReservation: new Date(),
     NumBonCommande: "",
     ReservedBy: "",
     ReservedAt: new Date(),
