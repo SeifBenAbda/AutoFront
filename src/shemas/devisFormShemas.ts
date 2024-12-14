@@ -82,9 +82,7 @@ export const devisSchema = z.object({
 
 
       devisGeneralForm: z.object({
-        Motivation: z.string().min(1, {
-            message: "Motif est requis.",
-        }),
+        Motivation: z.string().optional(),
 
         Source: z.string().min(1, {
             message: "Source est requis.",

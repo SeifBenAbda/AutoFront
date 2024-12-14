@@ -71,10 +71,10 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
 
     return (
         <div className="relative overflow-hidden">
-            <Card className="h-full p-2 m-1 bg-lightWhite border border-lightWhite overflow-auto">
+            <Card className="h-full p-2 m-1 bg-bgColorLight border border-bgColorLight overflow-auto">
                 <div className="flex flex-col">
                     {/* Sticky CardHeader */}
-                    <CardHeader className="sticky top-0 left-0 right-0 bg-lightWhite z-10 p-4 border-b border-lightWhite flex flex-col md:flex-row md:items-center md:justify-between ml-4 mr-4">
+                    <CardHeader className="sticky top-0 left-0 right-0 bg-bgColorLight z-10 p-4 border-b border-bgColorLight flex flex-col md:flex-row md:items-center md:justify-between ml-4 mr-4">
                         <div>
                             <CardTitle className="text-darkGrey">Devis</CardTitle>
                             <CardDescription>Devis pour voiture</CardDescription>
