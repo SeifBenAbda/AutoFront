@@ -123,7 +123,7 @@ export interface DevisFacture {
 
 export interface DevisReserved {
   devisId?: number;
-  DateReservation: Date | null;
+  DateReservation: Date ;
   NumBonCommande: string;
   ReservedBy: string | undefined;
   ReservedAt: Date | undefined;

@@ -141,12 +141,8 @@ export const devisSchema = z.object({
           PaymentMethod: z.enum(["Banque", "Leasing"]),
           TotalTTC: z.number().nullable().optional(),
           TotalAPRem: z.number().nullable().optional(),
-          BankRegion: z.string().min(1, { 
-            message: "Region Banque est requis pour les payements par banque ou leasing." 
-          }),
-          BankAndLeasing: z.string().min(1, { 
-            message: "Banque et leasing est requis pour les payements par banque ou leasing." 
-          }),
+          BankRegion: z.string().optional(),
+          BankAndLeasing: z.string().optional(),
         }).strict(), // Add .strict() here too
       
         // For Comptant and FCR
@@ -171,7 +167,7 @@ export const DevisFactureSchema = z.object({
 
 export const DevisReservedSchema = z.object({
     devisId: z.number(),
-    DateReservation: z.date().nullable(),
+    DateReservation: z.date(),
     NumBonCommande: z.string().max(20),
 });
 

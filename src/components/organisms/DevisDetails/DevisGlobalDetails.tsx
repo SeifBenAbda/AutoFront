@@ -89,7 +89,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         ...updatedDevis,
                         devisReserved: {
                             ...devis.devisReserved,
-                            ReservedBy: user?.nomUser
+                            ReservedBy: user?.nomUser,
+                            DateReservation: new Date()
                         }
                     };
                     break;
@@ -155,7 +156,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             ...devis,
             devisReserved: {
                 ...devis.devisReserved,
-                DateReservation: date || null
+                DateReservation: date || new Date()
             }
         });
     };
