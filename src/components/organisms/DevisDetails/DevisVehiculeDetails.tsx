@@ -4,15 +4,19 @@ import { Input } from "../../../@/components/ui/input";
 import { Textarea } from "../../../@/components/ui/textarea";
 import { DatePicker } from "../../../components/atoms/DataSelector"
 import { Label } from "../../../@/components/ui/label";
+import CarsDropDown from "../../../components/atoms/CarsDropDown";
+import { params } from "../../../utils/params";
 
 interface DevisVehiculeDetailsProps {
     carRequest: CarRequest;
     devis: Devis;
     onUpdate: (updatedCarRequest: CarRequest) => void;
     onUpdateDevis: (updatedDevis: Devis) => void;
+    isAdmin?: boolean;
 }
 
-export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevis }: DevisVehiculeDetailsProps) {
+export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevis, isAdmin }: DevisVehiculeDetailsProps) {
+
     const handleChange = (field: keyof CarRequest, value: string | Date | undefined) => {
         onUpdate({
             ...carRequest,
@@ -42,10 +46,21 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
             <div className="grid grid-cols-2 gap-0 pt-4 pl-6 pr-6">
                 <CardContent className="w-full">
                     <Label className="relative text-sm font-medium text-highBlue ">Véhicule</Label>
-                    <div
+                    {isAdmin ? (
+                        <div className="mt-1 block">
+                        <CarsDropDown
+                            value={carRequest.CarModel || ""}
+                            onChange={(value) => handleChange("CarModel", value)}
+                            isFiltring={false}
+                        />
+                        </div>
 
-                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
-                    >{carRequest.CarModel}</div>
+                    ) : (
+                        <div className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}>
+                            {carRequest.CarModel}
+                        </div>
+                    )}
+
                 </CardContent>
                 <CardContent className="w-full">
                     <Label className="relative text-sm font-medium text-highBlue ">Couleur du véhicule</Label>
@@ -54,7 +69,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                         value={carRequest.CarColor || ""}
                         onChange={(e) => handleChange("CarColor", e.target.value)}
                         placeholder="Couleur du véhicule"
-                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                     />
                 </CardContent>
 
@@ -65,7 +80,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                         value={carRequest.OldCar || ""}
                         onChange={(e) => handleChange("OldCar", e.target.value)}
                         placeholder="Dernier véhicule possédé"
-                        className="mt-1 p-2 block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                     />
                 </CardContent>
 
@@ -80,7 +95,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                                     value={carRequest.Immatriculation || ""}
                                     onChange={(e) => handleChange("Immatriculation", e.target.value)}
                                     placeholder="Numéro d'immatriculation"
-                                    className="p-2 mr-2  border border-highBlue rounded-md sm:text-sm"
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             </CardContent>
 
@@ -104,8 +119,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                         maxLength={200}
                         value={carRequest.CarNotes || ""}
                         onChange={(e) => handleChange("CarNotes", e.target.value)}
-                        placeholder="Notes sur le véhicule"
-                        className="block border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px]"
+                        className={`rounded-md  focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px] ${params.inputBoxStyle}`}
                     />
                 </CardContent>
             </div>

@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "../../../@/components/ui/checkbox";
 import { NumericInput } from "../../../components/atoms/NumericInput";
 import { useUser } from "../../../context/userContext";
-
+import { params } from "../../../utils/params";
 
 interface DevisGlobalDetailsProps {
     devis: Devis;
@@ -32,7 +32,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
-                const bc_num = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId?devis.DevisId:0);
+                const bc_num = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId ? devis.DevisId : 0);
                 setDevisBcNumber(bc_num);
             };
             fetchData().then(() => setIsLoading(false));
@@ -77,7 +77,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     };
 
     const handleStatusChange = async (newStatus: string) => {
-      //  setIsLoading(true);
+        //  setIsLoading(true);
         try {
             let updatedDevis: Devis = { ...devis, StatusDevis: newStatus };
 
@@ -131,7 +131,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 };
             }
 
-            if(updatedDevis.StatusDevis === "Annulé" || updatedDevis.StatusDevis === "En Cours") {
+            if (updatedDevis.StatusDevis === "Annulé" || updatedDevis.StatusDevis === "En Cours") {
                 updatedDevis = {
                     ...updatedDevis,
                     devisReserved: {
@@ -146,7 +146,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             console.error('Error updating status:', error);
             // You might want to add error handling UI here
         } finally {
-           // setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 
@@ -219,21 +219,21 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 [field]: value,
             },
         };
-    
+
         if ((field === "RemiseAccepte" || field === "VoucherAccepte") && updatedDevis.devisPayementDetails.TotalTTC !== 0) {
             const parseNumber = (value: string) => {
                 const parsedValue = parseFloat(value.replace(/\s/g, '').replace(',', '.'));
                 return isNaN(parsedValue) ? 0 : parsedValue;
             };
-    
+
             const remise = parseNumber(updatedDevis.gesteCommer.RemiseAccepte || "0");
             const voucher = parseNumber(updatedDevis.gesteCommer.VoucherAccepte || "0");
             const totalTTC = parseNumber(updatedDevis.devisPayementDetails.TotalTTC?.toString() || "0");
             const totalAPRem = totalTTC - (remise + voucher);
-    
+
             updatedDevis.devisPayementDetails.TotalAPRem = totalAPRem >= 0 ? totalAPRem : totalTTC;
         }
-    
+
         onUpdate(updatedDevis);
     };
 
@@ -303,7 +303,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                                 handleChange("ReasonAnnulation", e.target.value)
                             }
                             placeholder="Raison de l'annulation"
-                            className="mt-1 p-2 mr-2  border border-highBlue rounded-md  sm:text-sm"
+                            className="mt-1 p-2 mr-2  border border-normalGrey bg-normalGrey rounded-md  sm:text-sm"
                         />
                     </CardContent>
                 )}
@@ -330,7 +330,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                                 checked={devis.isGesteCommerciale}
                                 onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
                                 className=" border border-highBlue rounded-md h-5 w-5"
-                                id="statusBrd" />
+                                id="isGesteCommerciale" />
                         </div>
                     </div>
                 </CardTitle>
@@ -348,45 +348,40 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.devisPayementDetails?.TotalTTC || ""}
                             onChange={(value) => handleChangedevisPayementDetails("TotalTTC", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={params.inputBoxStyle}
                         />
                     </CardContent>
 
                     {devis.isGesteCommerciale && (
                         <CardContent className="flex-1 min-w-[200px]">
                             <Label className="relative text-sm font-medium text-highBlue">Total TTC après remise</Label>
-                            <div className="w-full p-2 border border-highBlue rounded-md sm:text-sm caret-highBlue">
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
                                 <span>{devis.devisPayementDetails.TotalAPRem}</span>
                             </div>
                         </CardContent>
                     )}
                 </div>
 
-
-
                 {/* Conditionally render additional payment details based on PayementMethod */}
                 {(devis.devisPayementDetails.PaymentMethod === "Banque" || devis.devisPayementDetails.PaymentMethod === "Leasing") && (
                     <div className="flex md:gap-4 lg:gap-4  w-full sm:flex-col md:flex-row min-[400px]:flex-col">
                         <CardContent className="w-1/2 sm:w-full min-[400px]:w-full">
-                            <TruncatedDropdownField label="Banque et Leasing">
-                                <BanksLeasingDropDown
-                                    value={devis.devisPayementDetails.BankAndLeasing}
-                                    onChange={(value) => handleChangedevisPayementDetails("BankAndLeasing", value)}
-                                />
-                            </TruncatedDropdownField>
+                            <Label className="relative text-sm font-medium text-highBlue">Banque et Leasing</Label>
+                            <BanksLeasingDropDown
+                                value={devis.devisPayementDetails.BankAndLeasing}
+                                onChange={(value) => handleChangedevisPayementDetails("BankAndLeasing", value)}
+                            />
                         </CardContent>
 
                         <CardContent className="w-1/2 sm:w-full min-[400px]:w-full">
-                            <TruncatedDropdownField label="Region Banque ou Leasing">
-                                <RegionDropDown
-                                    value={devis.devisPayementDetails.BankRegion || ""}
-                                    onChange={(value) => handleChangedevisPayementDetails("BankRegion", value)}
-                                    isFiltring={false}
-                                />
-                            </TruncatedDropdownField>
+                            <Label className="relative text-sm font-medium text-highBlue">Region Banque ou Leasing</Label>
+                            <RegionDropDown
+                                value={devis.devisPayementDetails.BankRegion || ""}
+                                onChange={(value) => handleChangedevisPayementDetails("BankRegion", value)}
+                                isFiltring={false}
+                            />
                         </CardContent>
                     </div>
-
                 )}
                 {devis.isGesteCommerciale && gesteCommercialSettings()}
             </>
@@ -406,7 +401,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={(e) =>
                                 handleChange("Responsable", e.target.value)
                             }
-                            className=" p-2 mr-2  border border-highBlue rounded-md sm:text-sm "
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
 
@@ -418,13 +413,10 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={(e) =>
                                 handleChange("ResponsableNum", e.target.value)
                             }
-                            className=" p-2 mr-2  border border-highBlue rounded-md sm:text-sm "
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                 </div>
-
-
-
             </>
         )
     }
@@ -441,8 +433,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             Numéro Bon de Commande
                         </Label>
                         <div
-
-                            className="w-full p-2 border border-highBlue rounded-md sm:text-sm caret-highBlue"
+                            className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}
                         >
                             {devisBcNumber}
                         </div>
@@ -456,12 +447,13 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={handleDateReservationChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
+                            styling={params.inputBoxStyle}
                         />
                     </CardContent>
                 ) : (
                     <CardContent className={`${devisBcNumber === 0 ? 'w-full' : 'w-1/2'} `}>
                         <Label className="relative text-sm font-medium text-highBlue">Date de Réservation</Label>
-                        <div className="w-full p-2 border border-highBlue rounded-md sm:text-sm caret-highBlue">
+                        <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
                             <span>{devis.devisReserved?.DateReservation ? new Date(devis.devisReserved.DateReservation).toLocaleDateString() : new Date().toLocaleDateString()}</span>
                         </div>
                     </CardContent>
@@ -498,11 +490,14 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 </CardTitle>
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
-                        <Label className=" relative text-sm font-medium text-highBlue ">Numéro de Facture</Label>
+                        <div>
+                            <Label className=" relative text-sm font-medium text-highBlue ">Numéro de Facture</Label>
+                            {devis.devisFacture?.FactureNumero == null || devis.devisFacture?.FactureNumero.length < 5 && <span className="text-lightRed font-oswald">*</span>}
+                        </div>
                         <NumericInput
                             value={devis.devisFacture?.FactureNumero || ""}
                             onChange={(value) => handleChangedevisFacture("FactureNumero", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                     <CardContent className="w-full">
@@ -512,10 +507,9 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={handleDateFacturationChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
+                            styling={params.inputBoxStyle}
                         />
                     </CardContent>
-
-
                 </div>
                 {devis.devisFacture?.StatutBRD && bordoreauDetails()}
             </>
@@ -542,8 +536,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             }
                         }}
                         onChange={(e) => handleChangedevisFacture("BRDNumero", e.target.value)}
-                        placeholder="Numero de BRD"
-                        className="mt-1 p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                        //placeholder="Numero de BRD"
+                        className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                     />
                 </CardContent>
                 <CardContent className="w-full">
@@ -553,9 +547,9 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         onChange={handleDateBorderauChange}
                         fromYear={new Date().getFullYear()}
                         toYear={new Date().getFullYear() + 1}
+                        styling={params.inputBoxStyle}
                     />
                 </CardContent>
-
             </div>
         )
     }
@@ -570,7 +564,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.gesteCommer?.DemandeRemise || ""}
                             onChange={(value) => handleChangedevisGesteCommer("DemandeRemise", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                     <CardContent className="w-full">
@@ -578,11 +572,10 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.gesteCommer?.RemiseAccepte || ""}
                             onChange={(value) => handleChangedevisGesteCommer("RemiseAccepte", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                 </div>
-
 
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
@@ -590,7 +583,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.gesteCommer?.DemandeDeFranchise || ""}
                             onChange={(value) => handleChangedevisGesteCommer("DemandeDeFranchise", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                     <CardContent className="w-full">
@@ -598,11 +591,9 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.gesteCommer?.FranchiseAccepte || ""}
                             onChange={(value) => handleChangedevisGesteCommer("FranchiseAccepte", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
-
-
                 </div>
 
                 <div className="flex gap-4 w-full">
@@ -610,8 +601,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <Label className=" relative text-sm font-medium text-highBlue ">Voucher</Label>
                         <NumericInput
                             value={devis.gesteCommer?.Voucher || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("DemandeDeFranchise", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            onChange={(value) => handleChangedevisGesteCommer("Voucher", value.toString())}
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                     <CardContent className="w-full">
@@ -619,11 +610,9 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <NumericInput
                             value={devis.gesteCommer?.VoucherAccepte || ""}
                             onChange={(value) => handleChangedevisGesteCommer("VoucherAccepte", value.toString())}
-                            className="p-2 mr-2 border border-highBlue rounded-md sm:text-sm"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
-
-
                 </div>
             </>
         )
@@ -634,15 +623,15 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         <div className="p-4 relative">
             {globalDevisSettings()}
             {isLoading && (
-            <div className="absolute inset-0 flex items-start justify-center bg-lightWhite bg-opacity-75 z-50 pt-10">
-            <div className="flex items-center">
-            <svg className="animate-spin h-5 w-5 text-highBlue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            <span className="ml-2 text-lg font-medium font-oswald text-highBlue">Veuillez Patienter...</span>
-            </div>
-            </div>
+                <div className="absolute inset-0 flex items-start justify-center bg-bgColorLight bg-opacity-75 z-50 pt-10">
+                    <div className="flex items-center justify-center min-h-[calc(100vh/1.4)]">
+                        <svg className="animate-spin h-5 w-5 text-highBlue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        <span className="ml-2 text-lg font-medium font-oswald text-highBlue">Veuillez Patienter...</span>
+                    </div>
+                </div>
             )}
             {devis.StatusDevis !== "Annulé" && payementSettings()}
             {devis.StatusDevis !== "Annulé" && responsableSettings()}

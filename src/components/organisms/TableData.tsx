@@ -95,7 +95,7 @@ export const TableData = ({ columns, data }: DataTableProps) => {
   return (
     <div className="w-full">
       <div className="relative w-full overflow-auto rounded-xl  border-highBlue border-[1px]">
-        <Table className="w-full bg-whiteSecond   table-fixed">
+        <Table className="w-full bg-bgColorLight   table-fixed">
           <TableHeader className="sticky top-0 z-10 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-lighGrey hover:bg-lighGrey">

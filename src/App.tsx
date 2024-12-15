@@ -8,10 +8,10 @@ import CarTrackingLayout from './templates/CarTrackingLayout';
 import Loading from './components/atoms/Loading';
 import ProfileUserPage from './pages/ProfileUserPage';
 
-
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
   const [loading, setLoading] = useState(true); // Add loading state
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800); // Add state to track screen size
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -20,25 +20,29 @@ const App: React.FC = () => {
     };
 
     initializeAuth();
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 800);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (loading) {
-    return <Loading />
+    return <Loading />;
+  }
+
+  if (isMobile) {
+    return <div style={{ textAlign: 'center', marginTop: '50%' }}>Mobile Version Coming Soon</div>;
   }
 
   const isLoggedIn = Boolean(user); // Check if the user is logged in based on the hook
-  {/**
-      <Route
-          path="/dashboard"
-          element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />}
-        />  
-    */}
-  return (
 
+  return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
         <Route
           path="/car-request"
           element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />}
@@ -55,7 +59,6 @@ const App: React.FC = () => {
           path="/profile"
           element={isLoggedIn ? <ProfileUserPage /> : <Navigate to="/login" />}
         />
-
         <Route path="*" element={<Navigate to={isLoggedIn ? "/car-request" : "/login"} />} />
       </Routes>
     </Router>

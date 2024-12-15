@@ -172,7 +172,10 @@ export function DevisDetailsPage({
         <Dialog open={isOpen}>
             <DialogContent
                 style={{ transform: 'none' }}
-                className="flex flex-col h-[92vh] !fixed !inset-y-0 !right-0 !left-auto w-full text-start sm-custom:w-[62%] md-custom:w-[62%] min-[1300px]:w-[37%] max-[550px]:w-[78%] max-[788px]:w-[65%] min-[900px]:w-[52%] min-[1040px]:w-[47%] p-0 m-4 mt-14 rounded-lg border-whiteSecond bg-whiteSecond shadow-lg !max-w-none duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+                className="flex flex-col h-[92vh] !fixed !inset-y-0 !right-0 !left-auto w-full 
+                text-start min-[1300px]:w-[75%] sm-custom:w-[90%] md-custom:w-[90%]  max-[550px]:w-[78%] max-[788px]:w-[85%] min-[900px]:w-[75%] 
+                min-[1040px]:w-[75%] p-0 m-4 mt-14 rounded-lg border-bgColorLight bg-bgColorLight  !max-w-none duration-500 
+                data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
             >
                 <DialogTitle className="pt-4 pl-2 flex flex-row justify-between items-center space-x-4 mr-2">
                     <div className={`font-medium font-oswald text-sm rounded-md px-2 py-1 ${getPriorityClassName(allData.PriorityDevis)}`}>

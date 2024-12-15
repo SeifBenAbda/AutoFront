@@ -12,18 +12,18 @@ interface DatePickerProps {
   onChange: (date: Date | undefined) => void;
   fromYear?: number;
   toYear?: number;
-  styling?:string
+  styling?:string;
 }
 
 export function DatePicker({ value, onChange, fromYear = 1960, toYear = new Date().getFullYear() - 18 ,styling}: DatePickerProps) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   return (
     <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-      <PopoverTrigger className={styling?styling: "border-highBlue text-highBlue bg-lightWhite hover:bg-lightWhite hover:text-highBlue"} asChild>
+      <PopoverTrigger className={styling?styling: "border-normalGrey bg-normalGrey text-highBlue  hover:bg-lightWhite hover:text-highBlue"} asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal border border-highBlue",
+            "w-full justify-start text-left font-normal border border-normalGrey bg-normalGrey hover:border-normalGrey hover:bg-normalGrey",
             !value && "text-muted-foreground"
           )}
         >

@@ -1,15 +1,14 @@
 import { Client } from "../../../types/devisTypes";
 import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
 import { Input } from "../../../@/components/ui/input";
-import { DatePicker } from "../../../components/atoms/DataSelector";
 import { Label } from "../../../@/components/ui/label";
-import RegionDropDown from "../../../components/atoms/RegionDropDown";
+
 import { Textarea } from "../../../@/components/ui/textarea";
+import { params } from "../../../utils/params";
 interface DevisClientDetailsProps {
     client: Client;
     onUpdate: (updatedClient: Client) => void;
 }
-
 
 export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps) {
 
@@ -29,63 +28,63 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
     return (
         <>
-            <div className="grid grid-cols-2 gap-0 pt-2 pl-6 pr-6">
+            <CardTitle className="text-xl text-highBlue pt-4 pl-6 pr-6 font-oswald">Informations générales</CardTitle>
+            <div className="grid grid-cols-2 gap-0 pt-2 pl-3  pr-6">
                 {/* First Row */}
-                <CardContent className="flex flex-col p-2">
+
+                <CardContent className="flex flex-col ">
                     <Label className="relative text-sm font-medium text-highBlue ">Nom</Label>
                     <Input
                         type="text"
                         value={client.nomClient || ""}
                         onChange={(e) => handleChange("nomClient", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className={`mt-1 p-2 w-full rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                     />
                 </CardContent>
 
                 {client.clientType === "Particulier" ? (
-                    <CardContent className="flex flex-col p-2">
+                    <CardContent className="flex flex-col">
                         <Label className="relative text-sm font-medium text-highBlue ">Cin</Label>
                         <Input
                             type="text"
                             value={client.cin || ""}
                             onChange={(e) => handleChange("cin", e.target.value)}
-                            className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                 ) : (
-                    <CardContent className="flex flex-col p-2">
+                    <CardContent className="flex flex-col">
                         <Label className="relative text-sm font-medium text-highBlue ">Matricule Fiscale</Label>
                         <Input
                             type="text"
                             value={client.mtFiscale}
                             onChange={(e) => handleChange("mtFiscale", e.target.value)}
-                            className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                            className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                         />
                     </CardContent>
                 )}
 
                 {/* Second Row */}
-                <CardContent className="flex flex-col p-2">
+                <CardContent className="flex flex-col">
                     <Label className="relative text-sm font-medium text-highBlue ">Numéro de téléphone</Label>
                     <Input
                         type="text"
                         value={client.telClient}
                         onChange={(e) => handleChange("telClient", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                     />
 
                 </CardContent>
-                <CardContent className="flex flex-col p-2">
+                <CardContent className="flex flex-col">
                     <Label className="relative text-sm font-medium text-highBlue ">Numéro de téléphone 2</Label>
                     <Input
                         type="text"
                         value={client.telClient2}
                         onChange={(e) => handleChange("telClient2", e.target.value)}
-                        className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                        className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                     />
 
                 </CardContent>
-
-
 
                 {/* 
                 
@@ -146,22 +145,22 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
                     */}
             </div>
-            <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
+            <CardContent className="flex flex-col pl-6 pr-8 w-full pt-2">
                 <Label className="relative text-sm font-medium text-highBlue ">Email</Label>
                 <Input
                     value={client.email}
                     type="email"
                     onChange={(e) => handleChange("email", e.target.value)}
-                    className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                 />
             </CardContent>
-            <CardContent className="flex flex-col pl-8 pr-8 w-full pt-2">
+            <CardContent className="flex flex-col pl-6 pr-8 w-full pt-2">
                 <Label className="relative text-sm font-medium text-highBlue ">Adresse</Label>
                 <Textarea
 
                     value={client.adresse}
                     onChange={(e) => handleChange("adresse", e.target.value)}
-                    className="mt-1 p-2 w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                    className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
                 />
             </CardContent>
         </>

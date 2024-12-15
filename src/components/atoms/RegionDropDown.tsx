@@ -16,6 +16,7 @@ interface RegionsDropDownTypes {
 
 const RegionDropDown = forwardRef<HTMLButtonElement, RegionsDropDownTypes>(
     ({ value, onChange, isFiltring }, ref) => {
+        const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
         const { data: regions, isLoading, error } = useRegions();
 
         if (isLoading){
@@ -29,17 +30,17 @@ const RegionDropDown = forwardRef<HTMLButtonElement, RegionsDropDownTypes>(
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-highBlue bg-lightWhite text-highBlue">
-                    <SelectValue placeholder={value ? value.toString() : "Toutes les régions"} />
+                <SelectTrigger ref={ref} className={`w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue }`}>
+                    <SelectValue placeholder={value ? value.toString() : "Toutes les régions"} className={hoverItem} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-normalGrey border-normalGrey">
                     {isFiltring && (
-                        <SelectItem key="Toutes les régions" value="Toutes les régions">
+                        <SelectItem key="Toutes les régions" value="Toutes les régions" className={hoverItem}>
                             Toutes les régions
                         </SelectItem>
                     )}
                     {regions?.map((region) => (
-                        <SelectItem key={region.RegionID} value={region.RegionName}>
+                        <SelectItem key={region.RegionID} value={region.RegionName} className={hoverItem}>
                             {region.RegionName}
                         </SelectItem>
                     ))}

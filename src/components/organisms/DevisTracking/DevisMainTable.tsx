@@ -68,7 +68,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden ">
       {/* Header with Devis Title and Filter */}
       <div className='flex-none flex flex-row justify-between mb-4'>
         <div className="flex items-center justify-center font-oswald text-2xl text-highBlue">
