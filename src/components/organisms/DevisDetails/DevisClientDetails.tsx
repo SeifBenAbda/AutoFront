@@ -28,7 +28,7 @@ export function DevisClientDetails({ client, onUpdate }: DevisClientDetailsProps
 
     return (
         <>
-            <CardTitle className="text-xl text-highBlue pt-4 pl-6 pr-6 font-oswald">Informations générales</CardTitle>
+            <CardTitle className="text-xl text-highBlue pt-4 pl-6 pr-6 font-oswald">Informations Client</CardTitle>
             <div className="grid grid-cols-2 gap-0 pt-2 pl-3  pr-6">
                 {/* First Row */}
 

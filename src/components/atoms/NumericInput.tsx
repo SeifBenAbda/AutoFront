@@ -16,13 +16,13 @@ export const NumericInput = ({ value, onChange, className }: { value: string | n
             type="text"
             inputMode="decimal"  // Shows numeric keyboard with decimal on mobile
             maxLength={10}      // Native length limit
-            pattern="[0-9]*,?[0-9]*"    // HTML5 validation
+            pattern="[0-9]*.?[0-9]*"    // HTML5 validation
             autoComplete="off"  // Prevents unwanted autocomplete
             value={value}
             onBeforeInput={(e: React.FormEvent<HTMLInputElement>) => {
-                // Allow numeric input and a single comma
+                // Allow numeric input and a single decimal point
                 const inputEvent = e as unknown as InputEvent;
-                if (!/^\d*,?\d*$/.test(inputEvent.data || '')) {
+                if (!/^\d*\.?\d*$/.test(inputEvent.data || '')) {
                     e.preventDefault();
                 }
             }}

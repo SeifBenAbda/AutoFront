@@ -25,8 +25,6 @@ export const getModificationErros = (devis : Devis): string => {
 
 
 export const isErrorBanqueSelection = (banque: string): boolean => {
-    
-    console.log(banque);
     if(banque === ""){
         return true;
     }

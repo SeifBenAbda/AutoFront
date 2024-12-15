@@ -33,8 +33,9 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
             case 1:
                 return !!form.formState.errors.clientForm; // Checks if there are any errors in `clientForm`    
             case 2:
-                return !!form.formState.errors.devisCarForm || !!form.formState.errors.devisGeneralForm; // Checks if there are any errors in `clientForm`        
-            // Add more cases here if you have more steps
+                return !!form.formState.errors.devisCarForm || !!form.formState.errors.devisGeneralForm; // Checks if there are any errors in `clientForm`    
+            case 3:
+                return !!form.formState.errors.rappelForm; // Checks if there are any errors in `rappelForm`
             default:
                 return false; // Return false if no step matches or there are no errors
         }
@@ -44,7 +45,7 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
         <div className="flex flex-col items-center">
             <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-1">
-                    <Card className="bg-highBlue h-full flex flex-col border border-highBlue rounded-lg">
+                    <Card className="bg-blueGrey h-full flex flex-col border border-blueGrey rounded-lg">
                         <CardHeader>
                             <CardTitle className="text-base text-whiteSecond">Etape {currentStep + 1} sur {steps.length}</CardTitle>
                         </CardHeader>
@@ -66,7 +67,7 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
                 </div>
 
                 <div className="md:col-span-3 flex">
-                    <Card className="bg-highBlue border rounded-lg border-highBlue flex-1 flex flex-col">
+                    <Card className="bg-blueGrey border rounded-lg border-blueGrey flex-1 flex flex-col">
                         <CardContent className="flex-1 flex justify-center items-center p-6">
                             {steps[currentStep].component}
                         </CardContent>

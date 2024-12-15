@@ -95,7 +95,19 @@ export const devisSchema = z.object({
             message: "Devis Origine",
         }),*/
     }),
-    rappelForm: z.array(rappelFormSchema),
+    rappelForm: z.array(rappelFormSchema)
+    .refine(
+        (data) => {
+            if (data.length === 0) return true;
+            const today = new Date();
+            const firstDate = data[0].RappelDate;
+            return today.toDateString() !== firstDate.toDateString();
+        },
+        {
+            message: "Le premier rappel ne peut pas être aujourd'hui",
+            path: ["rappelForm"]
+        }
+    ),
 
     itemChangeForm: z.object({
         OldCar: z.string().min(1,{

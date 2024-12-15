@@ -41,17 +41,15 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
 
     const handleChange = (field: keyof Devis, value: string | Date | undefined | boolean) => {
-        onUpdate({
+        const updatedDevis = {
             ...devis,
             [field]: value,
-        });
-        if (devis.devisFacture.StatutBRD) {
-            handleDateBorderauChange(new Date());
-        }
-        if (devis.devisFacture.isLivraison) {
-            handleDateReservationChange(new Date());
-        }
+        };
+        
+        onUpdate(updatedDevis);
     };
+
+
 
     const fetchNumBonCommande = async (databaseName: string, refCompteur: string, devisId: number): Promise<number | undefined> => {
         try {
@@ -150,6 +148,16 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         }
     };
 
+    const handleDateLivrasonChange = (date: Date | undefined) => {
+        onUpdate({
+            ...devis,
+            devisFacture: {
+                ...devis.devisFacture,
+                DateLivraison: date || new Date()
+            }
+        });
+    }
+
 
     const handleDateReservationChange = (date: Date | undefined) => {
         onUpdate({
@@ -166,7 +174,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             ...devis,
             devisFacture: {
                 ...devis.devisFacture,
-                DateBRD: date || undefined
+                DateBRD: date || new Date()
             }
         });
     };
@@ -260,7 +268,12 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const globalDevisSettings = () => {
         return (
             <>
-                <CardTitle className="text-xl text-highBlue  text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center font-oswald">Informations générales</CardTitle>
+                <CardTitle className="text-xl text-highBlue text-left w-full pl-3 pr-3 mb-2 flex items-center justify-between">
+                    <span className="font-oswald">Informations générales</span>
+                    <div className="flex items-center">
+                        {checkBoxes()}
+                    </div>
+                </CardTitle>
                 <div className="flex flex-col max-[700px]:flex-col sm:flex-col md:flex-row justify-between gap-4 mb-1">
 
                     <CardContent className="w-full">
@@ -323,16 +336,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             <>
                 <CardTitle className="text-xl text-highBlue  text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center">
                     <span className="font-oswald">Paiements</span>
-                    <div className="flex flex-row space-x-4">
-                        <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
-                            <div className="text-sm font-normal ">Geste Commercial</div>
-                            <Checkbox
-                                checked={devis.isGesteCommerciale}
-                                onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
-                                className=" border border-highBlue rounded-md h-5 w-5"
-                                id="isGesteCommerciale" />
-                        </div>
-                    </div>
+
                 </CardTitle>
                 <div className="flex flex-row w-full gap-4 flex-wrap">
                     <CardContent className="flex-1 min-w-[200px]">
@@ -383,7 +387,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         </CardContent>
                     </div>
                 )}
-                {devis.isGesteCommerciale && gesteCommercialSettings()}
+                
             </>
         )
     }
@@ -391,7 +395,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const responsableSettings = () => {
         return (
             <>
-                <CardTitle className="text-xl text-highBlue font-oswald text-left w-full pl-3 mb-2 ">Responsable</CardTitle>
+               
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Nom Responsable</Label>
@@ -468,25 +472,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             <>
                 <CardTitle className="text-xl text-highBlue  text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center">
                     <span className="font-oswald">Facturation</span>
-                    <div className="flex flex-row space-x-4">
-                        <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
-                            <div className="text-sm font-normal ">Bordereau est validé</div>
-                            <Checkbox
-                                checked={devis.devisFacture?.StatutBRD}
-                                onCheckedChange={(e) => handleChangedevisFacture("StatutBRD", e.valueOf())}
-                                className=" border border-highBlue rounded-md h-5 w-5"
-                                id="statusBrd" />
-                        </div>
 
-                        <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
-                            <div className="text-sm font-normal ">Véhicule est livré</div>
-                            <Checkbox
-                                checked={devis.devisFacture?.isLivraison}
-                                onCheckedChange={(e) => handleChangedevisFacture("isLivraison", e.valueOf())}
-                                className=" border border-highBlue rounded-md h-5 w-5"
-                                id="vehiculeDelievered" />
-                        </div>
-                    </div>
                 </CardTitle>
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
@@ -618,9 +604,42 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         )
     }
 
+    const checkBoxes = () => {
+        return (
+            <div className="flex flex-row space-x-4">
+                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                    <div className="text-sm font-normal ">Bordereau est validé</div>
+                    <Checkbox
+                        checked={devis.devisFacture?.StatutBRD}
+                        onCheckedChange={(e) => handleChangedevisFacture("StatutBRD", e.valueOf())}
+                        className=" border border-highBlue rounded-md h-5 w-5"
+                        id="statusBrd" />
+                </div>
+
+
+                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                    <div className="text-sm font-normal ">Véhicule est livré</div>
+                    <Checkbox
+                        checked={devis.devisFacture?.isLivraison}
+                        onCheckedChange={(e) => handleChangedevisFacture("isLivraison", e.valueOf())}
+                        className=" border border-highBlue rounded-md h-5 w-5"
+                        id="vehiculeDelievered" />
+                </div>
+                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                    <div className="text-sm font-normal ">Geste Commercial</div>
+                    <Checkbox
+                        checked={devis.isGesteCommerciale}
+                        onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
+                        className=" border border-highBlue rounded-md h-5 w-5"
+                        id="isGesteCommerciale" />
+                </div>
+            </div>
+        )
+    }
+
 
     return (
-        <div className="p-4 relative">
+        <div className="p-4 pt-3 relative">
             {globalDevisSettings()}
             {isLoading && (
                 <div className="absolute inset-0 flex items-start justify-center bg-bgColorLight bg-opacity-75 z-50 pt-10">
@@ -634,7 +653,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 </div>
             )}
             {devis.StatusDevis !== "Annulé" && payementSettings()}
-            {devis.StatusDevis !== "Annulé" && responsableSettings()}
+            {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod=="Banque" || devis.devisPayementDetails.PaymentMethod=="Leasing") && responsableSettings()}
+            {devis.isGesteCommerciale && gesteCommercialSettings()}
         </div>
     )
 }

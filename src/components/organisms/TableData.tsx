@@ -163,7 +163,11 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       {cell.column.id === 'actions' && (
                         <Button
                           onClick={
-                            () => handleOpenSheet(row.original)                    
+                            () => {
+                              if(user?.groupe.toLowerCase() === "admin"){
+                                handleOpenSheet(row.original)
+                              }
+                            }        
                           }
                           className="px-4 py-2 text-white bg-highBlue rounded-md font-oswald"
                         >
