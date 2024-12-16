@@ -1,7 +1,17 @@
 import React, { useRef, useEffect } from 'react';
 import { Input } from "../../@/components/ui/input";
 
-export const NumericInput = ({ value, onChange, className }: { value: string | number, onChange: (value: string | number) => void, className: string }) => {
+export const NumericInput = ({ 
+    value, 
+    onChange, 
+    className = '', 
+    placeholder 
+}: { 
+    value: string | number, 
+    onChange: (value: string | number) => void, 
+    className?: string, 
+    placeholder?: string 
+}) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -13,6 +23,7 @@ export const NumericInput = ({ value, onChange, className }: { value: string | n
     return (
         <Input
             ref={inputRef}
+            placeholder={placeholder}
             type="text"
             inputMode="decimal"  // Shows numeric keyboard with decimal on mobile
             maxLength={10}      // Native length limit

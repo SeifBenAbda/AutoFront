@@ -133,7 +133,7 @@ export const fetchDevisDetailled = async (page: number): Promise<ApiResponse> =>
 
 export const fetchDevisAllData = async (
   database: string,
-  clientName?: string,
+  searchValue?: string,
   page: number = 1,
   status?:string, 
   priority?:string,
@@ -145,9 +145,9 @@ export const fetchDevisAllData = async (
     throw new Error('No token found');
   }
 
-  const endpoint = clientName ? '/devis/filter-client' : '/devis/completeDevis';
-  const body = clientName 
-    ? { database, clientName, page ,status,priority,cars}
+  const endpoint = searchValue ? '/devis/searchDevis' : '/devis/completeDevis';
+  const body = searchValue 
+    ? { database, searchValue, page ,status,priority,cars}
     : { database, page ,status,priority,cars};
 
   try {

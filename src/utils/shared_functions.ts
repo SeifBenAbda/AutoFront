@@ -17,9 +17,12 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 export const getModificationErros = (devis : Devis): string => {
-    if(!isModificationFactureCorrect(devis)){
-        return "Erreur dans les modifications de la facture";
+    if(devis.StatusDevis === "Facturé"){
+        if(!isModificationFactureCorrect(devis)){
+            return "Erreur dans les modifications de la facture";
+        }
     }
+    
     return "";
 }
 

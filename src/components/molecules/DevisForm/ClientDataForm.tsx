@@ -7,6 +7,7 @@ import { Input } from "../../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
 import ClientGender from "../../atoms/ClientGender";
 import TypeClient from "../../atoms/ClientTypeSelect";
+import { NumericInputForm } from "../../../components/atoms/NumericInputForm";
 
 const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
@@ -78,18 +79,20 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 {/* Numero de tel + Email */}
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1">
-                        <Input
+                        <NumericInputForm
                             className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Numéro de téléphone"
                             {...register(`${formId}.telClient`)}
+                            maxLength={8}
                         />
                     </FormCardContent>
                     
                     <FormCardContent form={form} label="Numéro de téléphone 2" name={`${formId}.telClient2`} className="flex-1">
-                        <Input
+                        <NumericInputForm
                             className="border border-highBlue bg-lightWhite text-highBlue"
                             placeholder="Numéro de téléphone"
                             {...register(`${formId}.telClient2`)}
+                            maxLength={8}
                         />
                     </FormCardContent>
 

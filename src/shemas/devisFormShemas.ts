@@ -30,11 +30,24 @@ export const devisSchema = z.object({
 
         mtFiscale: z.string().optional(),
 
-        telClient: z.string().min(8, {
-            message: "Tel Client est requis.",
-        }),
+        telClient: z.string().max(8)
+            .refine((val) => {
+                if (!val) return false;
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && val.length >= 8 && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide ou requis",
+            }),
 
-        telClient2 : z.string().optional(),
+        telClient2: z.string().max(8)
+            .optional()
+            .refine((val) => {
+                if (!val) return true;
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide",
+            }),
 
         email: z.string().optional(),
 
@@ -126,9 +139,16 @@ export const devisSchema = z.object({
 
         MailExpert: z.string().optional(),
 
-        PhoneExpert: z.string().min(1, {
-            message: "Numéro de L'Expert est requis",
-        }),
+        PhoneExpert: z.string()
+            .min(1, {
+                message: "Numéro de L'Expert est requis",
+            })
+            .refine((val) => {
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide",
+            }),
 
         CommentOne: z.string().min(10,{
             message: "Commentaire de L'Expert 1",

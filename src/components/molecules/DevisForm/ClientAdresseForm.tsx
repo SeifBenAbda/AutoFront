@@ -12,6 +12,7 @@ import FormCardContent from "./FormCardContent";
 import RegionDropDown from "../../atoms/RegionDropDown";
 import { Textarea } from "../../../@/components/ui/textarea";
 import { Controller } from "react-hook-form";
+import { NumericInputForm } from "../../../components/atoms/NumericInputForm";
 
 const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
     const { register, control } = form;
@@ -62,10 +63,11 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
                     <div className="flex-1">
                         <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`} className="flex-1">
-                            <Input
+                            <NumericInputForm
                                 className="border border-highBlue bg-lightWhite text-highBlue"
                                 placeholder="Code Postal"
                                 {...register(`${formId}.postalCode`)}
+                                maxLength={5}
                             />
                         </FormCardContent>
                     </div>
