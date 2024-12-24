@@ -137,7 +137,8 @@ export const fetchDevisAllData = async (
   page: number = 1,
   status?:string, 
   priority?:string,
-  cars?:string[]
+  cars?:string[],
+  clients?:string[]
 ): Promise<ApiResponse> => {
   const token = getToken();
 
@@ -147,8 +148,8 @@ export const fetchDevisAllData = async (
 
   const endpoint = searchValue ? '/devis/searchDevis' : '/devis/completeDevis';
   const body = searchValue 
-    ? { database, searchValue, page ,status,priority,cars}
-    : { database, page ,status,priority,cars};
+    ? { database, searchValue, page ,status,priority,cars,clients}
+    : { database, page ,status,priority,cars,clients};
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -456,6 +457,41 @@ export const fetchClients = async (
     });
 
     if (response.status === 401) { // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+
+export const fetchClientsAll = async (
+  database: string
+): Promise<Client[]> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/clients?database=${encodeURIComponent(database)}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.status === 401) {
       removeToken();
       throw new Error('Unauthorized: Token is invalid or expired');
     }

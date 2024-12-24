@@ -3,13 +3,13 @@ import { TableData } from '../TableData';
 import { columns as initialColumns } from '../../../utils/DevisColumns';
 import { PaginationTable } from '../../atoms/TablePagination';
 import { SheetProvider } from '../../../context/sheetContext';
-import FilterColumnsDevis from '../../molecules/FilterColumnsDevis';
 import useDevis from '../../../hooks/useDevis';
 import Loading from '../../atoms/Loading';
 import SearchBar from '../../atoms/SearchDevis';
 import StatusDevisDropDown from '../../atoms/StatusDevis';
 import PriorityDevisDropDown from '../../atoms/PriorityDropDown';
 import CarsMultiSelect from '../../atoms/CarsMultiSelect';
+import ClientsMultiSelect from '../../../components/atoms/ClientsMultiSelect';
 
 interface DataTableProps {
   typeDevis: string;
@@ -22,9 +22,9 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
   const [selectedCars, setSelectedCars] = useState<string[]>([]); // Changed to an array
-
+  const [selectedClients, setSelectedClients] = useState<string[]>([]); // Changed to an array
   // Fetch data from the API based on current filters and pagination
-  const { data, isLoading, error } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars);
+  const { data, isLoading, error } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars,selectedClients);
 
   const columnMapping: { [key: string]: string } = {
     'Motif': 'Motif',
@@ -44,6 +44,11 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
   const handleCarChange = (cars: string[]) => {
     setSelectedCars(cars);
+    setPage(1); // Reset to first page on car change
+  };
+
+  const handleClientChange = (clients: string[]) => {
+    setSelectedClients(clients);
     setPage(1); // Reset to first page on car change
   };
 
@@ -105,6 +110,15 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
               isFiltering={true}
             />
           </div>
+          <div className="w-auto">
+            <ClientsMultiSelect
+              selectedValues={selectedClients} // Changed to selectedValues
+              onChange={handleClientChange} // Updated to handle array of selected values
+              isFiltering={true}
+            />
+          </div>
+
+          
 
         </div>
         <div className="w-auto">

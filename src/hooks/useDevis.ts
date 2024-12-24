@@ -19,12 +19,12 @@ interface ApiResponse {
   };
 }
 
-const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
+const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[], clients?:string[]) => {
   useWebSocketForDevis(page, searchValue, status, priority, cars);
 
   return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue, status, priority, cars], // Include all dependencies in the key
-    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars),
+    queryKey: ['data', page, searchValue, status, priority, cars,clients], // Include all dependencies in the key
+    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars,clients),
     staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
