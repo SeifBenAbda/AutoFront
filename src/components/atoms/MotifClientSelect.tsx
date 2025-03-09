@@ -16,16 +16,18 @@ interface MotifSelectTypes {
 }
 
 const MotifClientSelect = ({ value, onChange }:MotifSelectTypes) => {
+    const optionStyle = "text-highBlue cursor-pointer";
+    const selectedOptionStyle = "text-highBlue cursor-pointer font-oswald font-bold";
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highBlue bg-lightWhite text-highBlue">
-                <SelectValue placeholder="Motif" defaultValue={value} />
+            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey text-highBlue font-oswald">
+                <SelectValue className={selectedOptionStyle} placeholder="Motif" defaultValue={value} />
             </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="Volonté d'acquisition">Volonté d'acquisition</SelectItem>
-                <SelectItem value="Visite / Curiosité">Visite / Curiosité</SelectItem>
-                <SelectItem value="Comparaison de Modèles">Comparaison de Modèles</SelectItem>
-                <SelectItem value="Comparaison des Prix">Comparaison des Prix</SelectItem>
+            <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
+                <SelectItem className={optionStyle} value="Volonté d'acquisition">Volonté d'acquisition</SelectItem>
+                <SelectItem className={optionStyle} value="Visite / Curiosité">Visite / Curiosité</SelectItem>
+                <SelectItem className={optionStyle} value="Comparaison de Modèles">Comparaison de Modèles</SelectItem>
+                <SelectItem className={optionStyle} value="Comparaison des Prix">Comparaison des Prix</SelectItem>
             </SelectContent>
         </Select>
     );

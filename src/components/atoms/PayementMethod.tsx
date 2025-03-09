@@ -23,9 +23,9 @@ const PayementMethod = ({ value, onChange }: PayementMethodTypes) => {
             </SelectTrigger>
             <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
                 <SelectItem className={optionStyle} key="Leasing" value="Leasing">Leasing</SelectItem>
-                <SelectItem value="Banque">Banque</SelectItem>
-                <SelectItem value="Comptant">Comptant</SelectItem>
-                <SelectItem value="FCR">FCR</SelectItem>
+                <SelectItem className={optionStyle} value="Banque">Banque</SelectItem>
+                <SelectItem  className={optionStyle}value="Comptant">Comptant</SelectItem>
+                <SelectItem  className={optionStyle} value="FCR">FCR</SelectItem>
             </SelectContent>
         </Select>
 

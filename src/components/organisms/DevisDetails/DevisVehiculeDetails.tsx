@@ -2,7 +2,7 @@ import { CarRequest, Devis } from "../../../types/devisTypes";
 import { CardContent, CardTitle } from "../../../@/components/ui/card";
 import { Input } from "../../../@/components/ui/input";
 import { Textarea } from "../../../@/components/ui/textarea";
-import { DatePicker } from "../../../components/atoms/DataSelector"
+import { DatePicker } from "../../atoms/DateSelector"
 import { Label } from "../../../@/components/ui/label";
 import CarsDropDown from "../../../components/atoms/CarsDropDown";
 import { params } from "../../../utils/params";
@@ -84,7 +84,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     />
                 </CardContent>
 
-                {(devis.StatusDevis === "Facturé" && devis.devisFacture.isLivraison) && (
+                {devis.StatusDevis == "Livré" && (
                     <div className="col-span-2">
                         <CardTitle className="text-xl text-highBlue font-oswald text-left w-full pl-3 mb-2">Informations après-vente</CardTitle>
                         <div className="flex gap-4 w-full">

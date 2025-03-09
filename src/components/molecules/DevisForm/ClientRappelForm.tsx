@@ -4,7 +4,7 @@ import {
     Form,
 } from "../../../@/components/ui/form";
 import FormCardContent from "./FormCardContent";
-import { DatePicker } from "../../atoms/DataSelector";
+import { DatePicker } from "../../atoms/DateSelector";
 import { Textarea } from "../../../@/components/ui/textarea";
 
 const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formId }) => {
@@ -14,11 +14,12 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
     return (
         <Form {...form} className="flex-1">
             <div className="w-full">
+                
 
                 {[...Array(rappelCount)].map((_, index) => (
-                    <React.Fragment key={index}>
+                    <div key={index}>
                         {/* Rappel Date */}
-                        <FormCardContent form={form} label={`Date Rappel N°${index + 1}`} name={`${formId}[${index}].RappelDate`}>
+                        <FormCardContent form={form} label={`Date Rappel N°${index + 1}`} name={`${formId}[${index}].RappelDate`} >
                             <Controller
                                 name={`${formId}[${index}].RappelDate`}
                                 control={control}
@@ -36,15 +37,15 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
                             />
                         </FormCardContent>
 
-                        <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-whiteSecond">
+                        <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-highBlue">
                             <Textarea
-                                className="border border-highBlue bg-lightWhite min-h-[70px] text-highBlue"
+                                className="border border-highBlue bg-bgColorLight min-h-[70px] text-highBlue"
                                 placeholder="Contenu de rappel.."
                                 name={`${formId}[${index}].RappelContent`}
                                 {...register(`${formId}[${index}].RappelContent`)}
                             />
                         </FormCardContent>
-                    </React.Fragment>
+                    </div>
                 ))}
 
             </div>

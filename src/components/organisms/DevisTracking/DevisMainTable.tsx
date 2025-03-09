@@ -10,6 +10,7 @@ import StatusDevisDropDown from '../../atoms/StatusDevis';
 import PriorityDevisDropDown from '../../atoms/PriorityDropDown';
 import CarsMultiSelect from '../../atoms/CarsMultiSelect';
 import ClientsMultiSelect from '../../../components/atoms/ClientsMultiSelect';
+import { DatePicker } from '../../../components/atoms/DateSelector';
 
 interface DataTableProps {
   typeDevis: string;
@@ -23,13 +24,31 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
   const [selectedCars, setSelectedCars] = useState<string[]>([]); // Changed to an array
   const [selectedClients, setSelectedClients] = useState<string[]>([]); // Changed to an array
+  const [dateRappelFrom, setDateRappelFrom] = useState<Date | undefined>();
+  const [dateRappelTo, setDateRappelTo] = useState<Date | undefined>();
+
   // Fetch data from the API based on current filters and pagination
-  const { data, isLoading, error } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars,selectedClients);
+  const { data, isLoading, error } = useDevis(
+    page, searchValue, selectedStatus, 
+    selectedPriority, selectedCars, selectedClients,
+    dateRappelFrom,
+    dateRappelTo);
 
   const columnMapping: { [key: string]: string } = {
     'Motif': 'Motif',
     'Créé par': 'CreatedBy',
     'Date Livraison prévue': 'scheduledLivrDate',
+  };
+
+
+  const handleDateRappelFromChange = (date: Date | undefined) => {
+    setDateRappelFrom(date);
+    setPage(1);
+  };
+
+  const handleDateRappelToChange = (date: Date | undefined) => {
+    setDateRappelTo(date);
+    setPage(1);
   };
 
   const handleStatusChange = (status: string) => {
@@ -118,7 +137,26 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
             />
           </div>
 
-          
+          <div className="flex gap-4">
+            <div className="w-auto">
+              <DatePicker
+                value={dateRappelFrom}
+                onChange={handleDateRappelFromChange}
+                fromYear={new Date().getFullYear() - 1}
+                toYear={new Date().getFullYear() + 1}
+                styling="w-full border border-normalGrey bg-normalGrey"
+              />
+            </div>
+            <div className="w-auto">
+              <DatePicker
+                value={dateRappelTo}
+                onChange={handleDateRappelToChange}
+                fromYear={new Date().getFullYear() - 1}
+                toYear={new Date().getFullYear() + 1}
+                styling="w-full border border-normalGrey bg-normalGrey"
+              />
+            </div>
+          </div>
 
         </div>
         <div className="w-auto">

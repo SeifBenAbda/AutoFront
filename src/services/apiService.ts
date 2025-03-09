@@ -138,7 +138,9 @@ export const fetchDevisAllData = async (
   status?:string, 
   priority?:string,
   cars?:string[],
-  clients?:string[]
+  clients?:string[],
+  dateRappelFrom?: Date | undefined,
+  dateRappelTo?: Date | undefined
 ): Promise<ApiResponse> => {
   const token = getToken();
 
@@ -148,8 +150,8 @@ export const fetchDevisAllData = async (
 
   const endpoint = searchValue ? '/devis/searchDevis' : '/devis/completeDevis';
   const body = searchValue 
-    ? { database, searchValue, page ,status,priority,cars,clients}
-    : { database, page ,status,priority,cars,clients};
+    ? { database, searchValue, page ,status,priority,cars,clients,dateRappelFrom,dateRappelTo}
+    : { database, page ,status,priority,cars,clients,dateRappelFrom,dateRappelTo};
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {

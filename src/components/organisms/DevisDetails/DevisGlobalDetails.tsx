@@ -7,7 +7,7 @@ import BanksLeasingDropDown from "../../../components/atoms/BanksLeasingDropDown
 import RegionDropDown from "../../../components/atoms/RegionDropDown";
 import { Input } from "../../../@/components/ui/input";
 import PayementMethod from "../../../components/atoms/PayementMethod";
-import { DatePicker } from "../../../components/atoms/DataSelector";
+import { DatePicker } from "../../atoms/DateSelector";
 import { getToken } from "../../../services/authService";
 import { useEffect, useState } from "react";
 import { Checkbox } from "../../../@/components/ui/checkbox";
@@ -45,7 +45,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             ...devis,
             [field]: value,
         };
-        
+
         onUpdate(updatedDevis);
     };
 
@@ -189,15 +189,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         });
     }
 
-    const handleChangedevisReserved = (field: keyof DevisReserved, value: string) => {
-        onUpdate({
-            ...devis,
-            devisReserved: {
-                ...devis.devisReserved,
-                [field]: value,
-            },
-        });
-    }
 
     const handleChangedevisPayementDetails = (field: keyof DevisPayementDetails, value: string) => {
         onUpdate({
@@ -210,13 +201,27 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     }
 
     const handleChangedevisFacture = (field: keyof DevisFacture, value: string | boolean) => {
-        onUpdate({
+        const updatedDevis = {
             ...devis,
             devisFacture: {
                 ...devis.devisFacture,
                 [field]: value,
             },
-        });
+        };
+
+        // If the isLivraison checkbox is being toggled
+        if (field === "isLivraison") {
+            // If checked, set status to "Livré"
+            if (value === true) {
+                updatedDevis.StatusDevis = "Livré";
+            }
+            // If unchecked and current status is "Livré", revert to "Facturé"
+            else if (devis.StatusDevis === "Livré") {
+                updatedDevis.StatusDevis = "Facturé";
+            }
+        }
+
+        onUpdate(updatedDevis);
     }
 
     const handleChangedevisGesteCommer = (field: string, value: string) => {
@@ -246,24 +251,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     };
 
 
-
-
-    const TruncatedDropdownField = ({ label, children }: any) => (
-        <div className="relative group">
-            <Label
-                className="text-sm font-medium text-highBlue mb-1 block truncate"
-                title={label}
-            >
-                {label}
-            </Label>
-            <span className="absolute bottom-full left-0 mb-1 w-max px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                {label}
-            </span>
-            <div className="w-full">
-                {children}
-            </div>
-        </div>
-    );
 
     const globalDevisSettings = () => {
         return (
@@ -387,7 +374,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         </CardContent>
                     </div>
                 )}
-                
+
             </>
         )
     }
@@ -395,7 +382,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const responsableSettings = () => {
         return (
             <>
-               
+
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Nom Responsable</Label>
@@ -509,20 +496,11 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     <Label className=" relative text-sm font-medium text-highBlue ">Numéro de BRD</Label>
                     <Input
                         type="text"
-                        inputMode="numeric"  // Shows numeric keyboard on mobile
-                        maxLength={10}      // Native length limit
-                        pattern="[0-9]*"    // HTML5 validation
+                        inputMode="text"
+                        maxLength={20}      // Increased length limit for alphanumeric input
                         autoComplete="off"  // Prevents unwanted autocomplete
                         value={devis.devisFacture.BRDNumero || ""}
-                        onBeforeInput={(e: React.FormEvent<HTMLInputElement>) => {
-                            // Most efficient way to block non-numeric input
-                            const inputEvent = e as unknown as InputEvent;
-                            if (!/^\d*$/.test(inputEvent.data || '')) {
-                                e.preventDefault();
-                            }
-                        }}
                         onChange={(e) => handleChangedevisFacture("BRDNumero", e.target.value)}
-                        //placeholder="Numero de BRD"
                         className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                     />
                 </CardContent>
@@ -608,6 +586,16 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         return (
             <div className="flex flex-row space-x-4">
                 <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                    <div className="text-sm font-normal ">Geste Commercial</div>
+                    <Checkbox
+                        checked={devis.isGesteCommerciale}
+                        onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
+                        className=" border border-highBlue rounded-md h-5 w-5"
+                        id="isGesteCommerciale" />
+                </div>
+
+
+                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Bordereau est validé</div>
                     <Checkbox
                         checked={devis.devisFacture?.StatutBRD}
@@ -615,8 +603,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         className=" border border-highBlue rounded-md h-5 w-5"
                         id="statusBrd" />
                 </div>
-
-
                 <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Véhicule est livré</div>
                     <Checkbox
@@ -625,14 +611,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         className=" border border-highBlue rounded-md h-5 w-5"
                         id="vehiculeDelievered" />
                 </div>
-                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
-                    <div className="text-sm font-normal ">Geste Commercial</div>
-                    <Checkbox
-                        checked={devis.isGesteCommerciale}
-                        onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
-                        className=" border border-highBlue rounded-md h-5 w-5"
-                        id="isGesteCommerciale" />
-                </div>
+
             </div>
         )
     }
@@ -652,8 +631,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </div>
                 </div>
             )}
-            {devis.StatusDevis !== "Annulé" && payementSettings()}
-            {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod=="Banque" || devis.devisPayementDetails.PaymentMethod=="Leasing") && responsableSettings()}
+            {devis.StatusDevis !== "Annulé" && devis.StatusDevis != "Réservé" && payementSettings()}
+            {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod == "Banque" || devis.devisPayementDetails.PaymentMethod == "Leasing") && responsableSettings()}
             {devis.isGesteCommerciale && gesteCommercialSettings()}
         </div>
     )

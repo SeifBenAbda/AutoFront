@@ -2,7 +2,7 @@ import { Rappel } from "../../../types/devisTypes";
 import AudioRecorder from "./DevisAudioSystem";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../@/components/ui/card";
 import { Textarea } from "../../../@/components/ui/textarea";
-import { DatePicker } from "../../../components/atoms/DataSelector";
+import { DatePicker } from "../../atoms/DateSelector";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../@/components/ui/accordion";
 interface DevisRappelsDetailsProps {
     devisId: number,

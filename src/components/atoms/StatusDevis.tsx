@@ -30,6 +30,7 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                 <SelectItem key="En Attente" value="En Attente" className={hoverItem}>En Attente</SelectItem>
                 <SelectItem key="HDSI" value="HDSI" className={hoverItem}>HDSI</SelectItem>
                 <SelectItem key="Facturé" value="Facturé" className={hoverItem}>Facturé</SelectItem>
+                <SelectItem key="Livré" value="Livré" className={hoverItem}>Livré</SelectItem>
                 <SelectItem key="Annulé" value="Annulé" className={hoverItem}>Annulé</SelectItem>
             </SelectContent>
         </Select>

@@ -54,7 +54,7 @@ const getVariantStatus = (status: string) => {
       return "default"
     case "En Cours":
       return "medium"
-    case "Annuler":
+    case "Annulé":
       return "destructive"
       case "Réservé":
         return "reserved" ;

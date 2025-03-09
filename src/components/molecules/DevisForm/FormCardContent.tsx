@@ -14,19 +14,19 @@ const FormCardContent: React.FC<any> = ({ form, name, label, children, className
             <FormField
                 control={form.control}
                 name={name}
-                render={({ field }) => (
+                render={({ field, fieldState: { error } }) => (
                     <FormItem className="w-full">
                         <div className="flex justify-between w-full p-1 flex-col">
                             <FormLabel
-                                className={`${className ? className : 'text-white mb-1'}`}
+                                className={`${className ? className : 'text-highBlue mb-1'}`}
                             >
-                                {label}
+                                {label} 
+                                {error && <span className="text-red-500 ml-1">*</span>}
                             </FormLabel>
                         </div>
                         <FormControl className="w-full">
                             {children}
                         </FormControl>
-                        {/* Remove FormMessage to avoid displaying the error message */}
                     </FormItem>
                 )}
             />
