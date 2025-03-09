@@ -15,148 +15,132 @@ const itemSchema = z.object({
 
 export const devisSchema = z.object({
     clientForm: z.object({
-        clientGender: z.string().min(5, {
+        clientGender: z.string().trim().min(5, {
             message: "Genre est requis.",
         }),
-        clientType: z.string().min(1, {
+        clientType: z.string().trim().min(1, {
             message: "Type de Client is required.",
         }),
-
-        cin: z.string().optional(),
-
-        nomClient: z.string().min(1, {
+        cin: z.string().trim().optional(),
+        nomClient: z.string().trim().min(1, {
             message: "Nom Client est requis.",
         }),
-
-        mtFiscale: z.string().optional(),
-
-        telClient: z.string().min(8, {
-            message: "Tel Client est requis.",
-        }),
-
-        telClient2 : z.string().optional(),
-
-        email: z.string().optional(),
-
-        socialReason: z.string().optional(),
-
+        mtFiscale: z.string().trim().optional(),
+        telClient: z.string().trim().max(8)
+            .refine((val) => {
+                if (!val) return false;
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && val.length >= 8 && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide ou requis",
+            }),
+        telClient2: z.string().trim().max(8)
+            .optional()
+            .refine((val) => {
+                if (!val) return true;
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide",
+            }),
+        email: z.string().trim().optional(),
+        socialReason: z.string().trim().optional(),
         dateOfBirth: z.date().optional(),
-
-        adresse: z.string().optional(),
-
-        ville: z.string().optional(),
-
-        region: z.string().min(1, {
+        adresse: z.string().trim().optional(),
+        ville: z.string().trim().optional(),
+        region: z.string().trim().min(1, {
             message: "Region est requis.",
         }),
-
-        postalCode: z.string().optional(),
-
-        pays: z.string().min(2, {
+        postalCode: z.string().trim().optional(),
+        pays: z.string().trim().min(2, {
             message: "Pays est requis.",
         }),
-
-        addressMoreInfos: z.string().optional(),
+        addressMoreInfos: z.string().trim().optional(),
     }),
-
-    /*
-    .refine((data)=>{
-        if(data.clientType == "Particulier" && !data.dateOfBirth){
-            return false;
-        }
-        return true ;
-    },{
-        message:"Date de Naissance !",
-        path:['dateOfBirth']
-    }),
-    */
-
 
     devisCarForm: z.object({
-        OldCar: z.string().optional(),
-
-        CarModel: z.string().min(1, {
+        OldCar: z.string().trim().optional(),
+        CarModel: z.string().trim().min(1, {
             message: "Modèle préféré est requis.",
         }),
     }),
 
-
-      devisGeneralForm: z.object({
-        Motivation: z.string().min(1, {
-            message: "Motif est requis.",
-        }),
-
-        Source: z.string().min(1, {
+    devisGeneralForm: z.object({
+        Motivation: z.string().trim().optional(),
+        Source: z.string().trim().min(1, {
             message: "Source est requis.",
         }),
-        
         PriorityDevis: z.enum(["Normale", "Moyenne", "Haute"], {
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),
-        /*Origin:z.enum(["Envoyé par Mail", "Au comptoire"], {
-            message: "Devis Origine",
-        }),*/
     }),
-    rappelForm: z.array(rappelFormSchema),
+    rappelForm: z.array(rappelFormSchema)
+    .refine(
+        (data) => {
+            if (data.length === 0) return true;
+            const today = new Date();
+            const firstDate = data[0].RappelDate;
+            return today.toDateString() !== firstDate.toDateString();
+        },
+        {
+            message: "Le premier rappel ne peut pas être aujourd'hui",
+            path: ["rappelForm"]
+        }
+    ),
 
     itemChangeForm: z.object({
-        OldCar: z.string().min(1,{
+        OldCar: z.string().trim().min(1,{
             message:"Voiture Ancienne"
         }),
-
-        Immatriculation:z.string().min(1, {
+        Immatriculation:z.string().trim().min(1, {
             message: "Immatriculation",
         }),
     }),
 
     itemRequests: z.array(itemSchema),
 
-    accidentDetails : z.object({
-        NomExpert: z.string().min(1,{message:"Nom de L'Expert est requis"}),
-
-        MailExpert: z.string().optional(),
-
-        PhoneExpert: z.string().min(1, {
-            message: "Numéro de L'Expert est requis",
-        }),
-
-        CommentOne: z.string().min(10,{
+    accidentDetails: z.object({
+        NomExpert: z.string().trim().min(1,{message:"Nom de L'Expert est requis"}),
+        MailExpert: z.string().trim().optional(),
+        PhoneExpert: z.string().trim()
+            .min(1, {
+                message: "Numéro de L'Expert est requis",
+            })
+            .refine((val) => {
+                const numVal = parseInt(val);
+                return !isNaN(numVal) && numVal > 11111111;
+            }, {
+                message: "Numéro de téléphone invalide",
+            }),
+        CommentOne: z.string().trim().min(10,{
             message: "Commentaire de L'Expert 1",
         }),
-        CommentTwo: z.string().min(10, {
+        CommentTwo: z.string().trim().min(10, {
             message: "Commentaire de L'Expert 2",
         }),
-        CommentThree: z.string().min(10, {
+        CommentThree: z.string().trim().min(10, {
             message: "Commentaire de L'Expert 3",
         }),
-        Assurance:z.string().min(1,{message:"Assurance"}),
+        Assurance:z.string().trim().min(1,{message:"Assurance"}),
         TypeDossier:z.enum(["Atelier Mecanique", "Magasin", "Carosserie"], {
             message: "Type de Devis",
         }),
     }),
 
-     devisPayementForm : z.discriminatedUnion("PaymentMethod", [
-        // For Bank and Leasing
+    devisPayementForm: z.discriminatedUnion("PaymentMethod", [
         z.object({
           PaymentMethod: z.enum(["Banque", "Leasing"]),
           TotalTTC: z.number().nullable().optional(),
           TotalAPRem: z.number().nullable().optional(),
-          BankRegion: z.string().min(1, { 
-            message: "Region Banque est requis pour les payements par banque ou leasing." 
-          }),
-          BankAndLeasing: z.string().min(1, { 
-            message: "Banque et leasing est requis pour les payements par banque ou leasing." 
-          }),
-        }).strict(), // Add .strict() here too
-      
-        // For Comptant and FCR
+          BankRegion: z.string().trim().optional(),
+          BankAndLeasing: z.string().trim().optional(),
+        }).strict(),
         z.object({
           PaymentMethod: z.enum(["Comptant", "FCR"]),
           TotalTTC: z.number().nullable().optional(),
           TotalAPRem: z.number().nullable().optional(),
         }).strict(),
-      ])
-
+    ])
 });
 
 export const DevisFactureSchema = z.object({
@@ -171,7 +155,7 @@ export const DevisFactureSchema = z.object({
 
 export const DevisReservedSchema = z.object({
     devisId: z.number(),
-    DateReservation: z.date().nullable(),
+    DateReservation: z.date(),
     NumBonCommande: z.string().max(20),
 });
 

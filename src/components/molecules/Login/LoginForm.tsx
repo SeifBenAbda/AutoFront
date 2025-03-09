@@ -1,10 +1,10 @@
 // src/components/pages/LoginForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 import { PasswordInput } from './PasswordInput';
-import Loading from '../atoms/Loading';
-import { Input } from '../../@/components/ui/input';
+import Loading from '../../atoms/Loading';
+import { Input } from '../../../@/components/ui/input';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -40,7 +40,7 @@ const LoginForm: React.FC = () => {
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-veryGrey focus:border-highGrey2 focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
+            className="w-full p-2 border border-veryGrey focus:border-highBlue focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
             placeholder="Nom d'utilisateur"
           />
         </div>
@@ -54,7 +54,7 @@ const LoginForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-white text-highGrey2 p-2 rounded-lg hover:highGrey2 transition duration-300 font-oswald"
+          className="w-full bg-white text-highBlue p-2 rounded-lg hover:highBlue transition duration-300 font-oswald"
           disabled={isLoading}
         >
           {isLoading ? 'Chargement...' : 'Se Connecter'}

@@ -7,17 +7,17 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../@/components/ui/form";
-import { Input } from "../../@/components/ui/input";
+} from "../../../@/components/ui/form";
+import { Input } from "../../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
-import MotifClientSelect from "../atoms/MotifClientSelect";
-import ClientSourceSelect from "../atoms/ClientSourceSelect";
-import PayementMethod from "../atoms/PayementMethod";
-import CarsDropDown from "../atoms/CarsDropDown";
-import PriorityDevisDropDown from "../atoms/PriorityDropDown";
-import RegionDropDown from "../atoms/RegionDropDown";
-import BanksLeasingDropDown from "../atoms/BanksLeasingDropDown";
-import { Textarea } from "../../@/components/ui/textarea";
+import MotifClientSelect from "../../atoms/MotifClientSelect";
+import ClientSourceSelect from "../../atoms/ClientSourceSelect";
+import PayementMethod from "../../atoms/PayementMethod";
+import CarsDropDown from "../../atoms/CarsDropDown";
+import PriorityDevisDropDown from "../../atoms/PriorityDropDown";
+import RegionDropDown from "../../atoms/RegionDropDown";
+import BanksLeasingDropDown from "../../atoms/BanksLeasingDropDown";
+import { Textarea } from "../../../@/components/ui/textarea";
 
 interface ClientExtraFormProps {
     form: any; // Keep the any type since that's what you're using
@@ -59,14 +59,14 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
                             <Input
-                                className="border border-lightWhite bg-lightWhite text-highGrey2"
+                                className="border border-highBlue bg-bgColorLight text-highBlue"
                                 placeholder="Ancien Vehicule"
                                 {...register(`${formId}.OldCar`)}
                             />
                         </FormCardContent>
                     </div>
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Modèle préféré" name={`${formId}.CarModel`} className="flex-1">
+                        <FormCardContent form={form} label="Modèle préféré" name={`${formId}.CarModel`} className="flex-1 text-highBlue">
                             <Controller
                                 name={`${formId}.CarModel`}
                                 control={control}
@@ -85,7 +85,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                 {/* Motif and Source */}
                 <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Motif" name={`${generalFormId}.Motivation`} className="flex-1">
+                        <FormCardContent form={form} label="Motif" name={`${generalFormId}.Motivation`} className="flex-1 text-highBlue">
                             <Controller
                                 name={`${generalFormId}.Motivation`}
                                 control={control}
@@ -99,7 +99,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                         </FormCardContent>
                     </div>
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`} className="flex-1">
+                        <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`} className="flex-1 text-highBlue">
                             <Controller
                                 name={`${generalFormId}.Source`}
                                 control={control}
@@ -132,15 +132,15 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                 {/* More Infos */}
                 <FormCardContent form={form} label="Plus d'informations véhicule" name={`${formId}.CarNotes`}>
                     <Textarea
-                        className="border border-lightWhite bg-lightWhite text-highGrey2"
+                        className="border border-highBlue bg-bgColorLight text-highBlue"
                         placeholder="Plus d'informations véhicule"
                         {...register(`${formId}.CarNotes`)}
                     />
                 </FormCardContent>
-                <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-white">Paiements</div>
+                <div className="pl-3 mt-2 font-oswald text-lg mb-2 text-highBlue">Paiements</div>
 
                 {/* Payment Method */}
-                <div className="text-whiteSecond">
+                <div className="text-highBlue">
                     <FormCardContent form={form} label="Moyen de Payement" name={`${payementFormId}.PaymentMethod`} className="flex-1">
                         <Controller
                             name={`${payementFormId}.PaymentMethod`}

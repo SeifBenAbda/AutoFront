@@ -117,6 +117,12 @@ interface MultiSelectProps
    * Optional, can be used to add custom styles.
    */
   className?: string;
+
+  classNameCommand?: string;
+
+  classNameSearch?: string;
+
+  borderCommand?: string;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -135,6 +141,9 @@ export const MultiSelect = React.forwardRef<
       modalPopover = false,
       asChild = false,
       className,
+      classNameCommand,
+      classNameSearch,
+      borderCommand,
       ...props
     },
     ref
@@ -208,13 +217,13 @@ export const MultiSelect = React.forwardRef<
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "flex p-1 bg-highGrey2 rounded-md border min-h-10 h-auto items-center  ml-auto mt-auto mb-auto",
+              "flex p-1 bg-highBlue rounded-md border min-h-10 h-auto items-center  ml-auto mt-auto mb-auto",
               className
             )}
           >
             {selectedValues.length > 0 ? (
-              <div className="flex justify-between items-center">
-                <div className="flex flex-wrap items-center">
+              <div className={`flex justify-between items-center ${className}`}>
+                <div className={`flex flex-wrap items-center ${className}`}>
                 {selectedValues.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
@@ -288,16 +297,17 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className={`w-auto p-0 ${borderCommand} `}
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
-          <Command>
+          <Command className={classNameSearch}>
             <CommandInput
               placeholder="Rechercher..."
               onKeyDown={handleInputKeyDown}
+              className={classNameSearch}
             />
-            <CommandList>
+            <CommandList className={classNameCommand}>
               <CommandEmpty>Pas de resultat</CommandEmpty>
               <CommandGroup>
                 <CommandItem
@@ -307,9 +317,9 @@ export const MultiSelect = React.forwardRef<
                 >
                   <div
                     className={cn(
-                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border  border-highGrey bg-transparent",
                       selectedValues.length === options.length
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-highBlue text-white"
                         : "opacity-50 [&_svg]:invisible"
                     )}
                   >
@@ -327,7 +337,7 @@ export const MultiSelect = React.forwardRef<
                     >
                       <div
                         className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-highGrey",
                           isSelected
                             ? "bg-primary text-primary-foreground"
                             : "opacity-50 [&_svg]:invisible"

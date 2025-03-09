@@ -14,11 +14,25 @@ interface DocumentTypeDropDownProps {
 const DocumentTypeDropDown = ({ value, onChange }: DocumentTypeDropDownProps) => {
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey2">
+            <SelectTrigger className="w-full border border-highBlue">
                 <SelectValue placeholder={value ? value.toString() : "Tous Types"} />
             </SelectTrigger>
             <SelectContent>
                 <SelectItem key="BC Interne" value="BC Interne">BC Interne</SelectItem>
+                <SelectItem key="Copie du passeport (30 pages)" value="Copie du passeport (30 pages)">
+                    Copie du passeport (30 pages)
+                </SelectItem>
+                <SelectItem key="Carte d'identité nationale (CIN) / CIN du conjoint" value="Carte d'identité nationale (CIN) / CIN du conjoint">
+                    Carte d'identité nationale (CIN) / CIN du conjoint
+                </SelectItem>
+                <SelectItem key="DUR 2023 (quittance d’impôt)" value="DUR 2023 (quittance d’impôt)">
+                    DUR 2023 (quittance d’impôt)
+                </SelectItem>
+                <SelectItem key="Extrait de naissance" value="Extrait de naissance">Extrait de naissance</SelectItem>
+                <SelectItem key="Virement bancaire" value="Virement bancaire">Virement bancaire</SelectItem>
+                <SelectItem key="Demande de retour définitif" value="Demande de retour définitif">
+                    Demande de retour définitif
+                </SelectItem>
                 <SelectItem key="CIN" value="CIN">CIN</SelectItem>
                 <SelectItem key="Quittance" value="Quittance">Quittance</SelectItem>
                 <SelectItem key="Acompte" value="Acompte">Acompte</SelectItem>
@@ -35,5 +49,6 @@ const DocumentTypeDropDown = ({ value, onChange }: DocumentTypeDropDownProps) =>
         </Select>
     );
 };
+
 
 export default DocumentTypeDropDown;

@@ -1,4 +1,4 @@
-import DataTable from "../components/organisms/DevisMainTable";
+import DataTable from "../components/organisms/DevisTracking/DevisMainTable";
 
 const CarDevisTrackingPage: React.FC = () => {
     return (

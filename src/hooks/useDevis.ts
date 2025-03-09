@@ -1,5 +1,5 @@
 // src/hooks/useDevis.ts
-import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWebSocketForDevis } from './useWebSocket';
@@ -19,12 +19,13 @@ interface ApiResponse {
   };
 }
 
-const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
+const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, 
+  cars?: string[], clients?:string[],dateRappelFrom?: Date | undefined , dateRappelTo? : Date | undefined) => {
   useWebSocketForDevis(page, searchValue, status, priority, cars);
 
   return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue, status, priority, cars], // Include all dependencies in the key
-    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars),
+    queryKey: ['data', page, searchValue, status, priority, cars,clients,dateRappelFrom,dateRappelTo], // Include all dependencies in the key
+    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars,clients,dateRappelFrom,dateRappelTo),
     staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
@@ -44,7 +45,8 @@ export const useUpdateDevis = () => {
       updatedRappels,
       updatedDevisFacture,
       updatedDevisReserved,
-      updatedDevisPayementDetails
+      updatedDevisPayementDetails,
+      updatedDevisGesteCommerciale
     }: {
       database: string;
       devisId: number;
@@ -57,6 +59,7 @@ export const useUpdateDevis = () => {
       updatedDevisFacture?: Partial<DevisFacture>;
       updatedDevisReserved?: Partial<DevisReserved>;
       updatedDevisPayementDetails?: Partial<DevisPayementDetails>;
+      updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>;
     }) => {
       return updateDevis(
         database,
@@ -69,7 +72,8 @@ export const useUpdateDevis = () => {
         updatedRappels,
         updatedDevisFacture,
         updatedDevisReserved,
-        updatedDevisPayementDetails
+        updatedDevisPayementDetails,
+        updatedDevisGesteCommerciale
       );
     },
     // Optional: Define onSuccess, onError, etc.

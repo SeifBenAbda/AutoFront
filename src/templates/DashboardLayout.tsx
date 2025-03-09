@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/organisms/Header'; // Import the Header component
-import DataTable from '../components/organisms/DevisMainTable';
+import DataTable from '../components/organisms/DevisTracking/DevisMainTable';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 

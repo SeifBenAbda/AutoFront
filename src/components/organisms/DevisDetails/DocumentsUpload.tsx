@@ -130,7 +130,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                 {selectedFiles.length > 0 && (
                     <Button
                         onClick={handleUpload}
-                        className="bg-blueCiel border border-blueCiel hover:bg-blueCiel text-highGrey2 rounded-md font-oswald"
+                        className="bg-blueCiel border border-blueCiel hover:bg-blueCiel text-highBlue rounded-md font-oswald"
                         disabled={loading}
                     >
                         Envoyer les fichiers
@@ -144,7 +144,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                     <div className="flex flex-col space-y-2 p-2 bg-blueCiel border rounded-md border-blueCiel" key={doc.file.name} >
                         <div className="flex items-center  p-1 ">
                             <img src={getFileIcon(doc.file)} alt={doc.file.name} className="w-10 h-10 object-cover" />
-                            <span className="ml-2 text-highGrey2 font-oswald">{doc.file.name}</span>
+                            <span className="ml-2 text-highBlue font-oswald">{doc.file.name}</span>
                             <Button
                                 onClick={() => handleDeleteFile(doc.file)}
                                 className="ml-4 bg-lightRed border border-lightRed rounded-md text-lightWhite hover:bg-lightRed font-oswald"

@@ -1,4 +1,4 @@
-import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from "@/types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from "@/types/devisTypes";
 
 
 export const defaultFormPayementDetails : DevisPayementDetails = {
@@ -22,8 +22,21 @@ export const defaultFormCarDevisFacture : DevisFacture = {
 }
 
 export const defaultFormDevisReserved : DevisReserved = {
-    DateReservation: null,
-    NumBonCommande: ""
+    DateReservation: new Date(),
+    NumBonCommande: "",
+    ReservedBy: "",
+    ReservedAt: new Date(),
+    isCanceled: undefined,
+    CanceledBy: undefined
+}
+
+export const defaultFormDevisGesteCommer : DevisGesteCommer = {
+    DemandeRemise: "",
+    RemiseAccepte: "",
+    DemandeDeFranchise: "0",
+    FranchiseAccepte: "0",
+    Voucher: "",
+    VoucherAccepte: ""
 }
 
 
@@ -52,7 +65,9 @@ export const defaultFormDevisGeneral : Devis = {
     ResponsableNum: undefined,
     devisPayementDetails: { ...defaultFormPayementDetails },
     devisFacture: { ...defaultFormCarDevisFacture },
-    devisReserved: { ...defaultFormDevisReserved }
+    devisReserved: { ...defaultFormDevisReserved },
+    gesteCommer: { ...defaultFormDevisGesteCommer },
+    isGesteCommerciale: false
 };
 
 

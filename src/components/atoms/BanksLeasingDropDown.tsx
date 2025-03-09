@@ -16,12 +16,13 @@ interface BanksLeasingDropDownTypes {
 
 const BanksLeasingDropDown = forwardRef<HTMLButtonElement, BanksLeasingDropDownTypes>(
     ({ value, onChange }, ref) => {
+        const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
         const { data: banksLeasing, isLoading, error } = useBanksAndLeasing();
 
         if (isLoading){
             return (
                 <div className="flex justify-center items-center h-10">
-                    <div className="flex border-2 border-t-highGrey2 h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
+                    <div className="flex border-2 border-t-highBlue h-4 w-4 border-gray-200 rounded-full animate-spin"></div>
                 </div>
             );
         }
@@ -29,12 +30,12 @@ const BanksLeasingDropDown = forwardRef<HTMLButtonElement, BanksLeasingDropDownT
 
         return (
             <Select onValueChange={onChange}>
-                <SelectTrigger ref={ref} className="w-full border border-highGrey2 bg-lightWhite text-highGrey2">
-                    <SelectValue placeholder={value ? value.toString() : banksLeasing![0].name} />
+                <SelectTrigger ref={ref} className="w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue">
+                    <SelectValue placeholder={value ? value.toString() : "Non déterminé"} className={hoverItem}/>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-normalGrey border-normalGrey">
                     {banksLeasing?.map((bankLeasing) => (
-                        <SelectItem key={bankLeasing.id} value={bankLeasing.name}>
+                        <SelectItem key={bankLeasing.id} value={bankLeasing.name} className={hoverItem}>
                             {bankLeasing.name}<span className='ml-1 mr-1'>-</span>({bankLeasing.type})
                         </SelectItem>
                     ))}

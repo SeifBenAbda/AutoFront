@@ -2,15 +2,10 @@ import { Controller } from "react-hook-form";
 import React from "react";
 import {
     Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../@/components/ui/form";
+} from "../../../@/components/ui/form";
 import FormCardContent from "./FormCardContent";
-import { DatePicker } from "../atoms/DataSelector";
-import { Textarea } from "../../@/components/ui/textarea";
+import { DatePicker } from "../../atoms/DateSelector";
+import { Textarea } from "../../../@/components/ui/textarea";
 
 const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formId }) => {
     const { register, control } = form;
@@ -19,18 +14,22 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
     return (
         <Form {...form} className="flex-1">
             <div className="w-full">
+                
 
                 {[...Array(rappelCount)].map((_, index) => (
-                    <React.Fragment key={index}>
+                    <div key={index}>
                         {/* Rappel Date */}
-                        <FormCardContent form={form} label={`Date Rappel N°${index + 1}`} name={`${formId}[${index}].RappelDate`}>
+                        <FormCardContent form={form} label={`Date Rappel N°${index + 1}`} name={`${formId}[${index}].RappelDate`} >
                             <Controller
                                 name={`${formId}[${index}].RappelDate`}
                                 control={control}
                                 render={({ field }) => (
                                     <DatePicker
                                         value={field.value}
-                                        onChange={field.onChange}
+                                        onChange={(value)=> {
+                                            console.log(value);
+                                            field.onChange(value)
+                                        }}
                                         fromYear={new Date().getFullYear()}
                                         toYear={new Date().getFullYear() + 1}
                                     />
@@ -38,15 +37,15 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
                             />
                         </FormCardContent>
 
-                        <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-whiteSecond">
+                        <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-highBlue">
                             <Textarea
-                                className="border border-highGrey2 bg-lightWhite min-h-[70px] text-highGrey2"
+                                className="border border-highBlue bg-bgColorLight min-h-[70px] text-highBlue"
                                 placeholder="Contenu de rappel.."
                                 name={`${formId}[${index}].RappelContent`}
                                 {...register(`${formId}[${index}].RappelContent`)}
                             />
                         </FormCardContent>
-                    </React.Fragment>
+                    </div>
                 ))}
 
             </div>

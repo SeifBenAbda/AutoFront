@@ -9,7 +9,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-highGrey2 bg-white text-highGrey2 hover:bg-white dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/80",
+          "border-highBlue bg-white text-highBlue hover:bg-white dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/80",
         secondary:
           "border-transparent bg-slate-100 text-slate-900 hover:bg-slate-100/80 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-800/80",
         destructive:
@@ -22,7 +22,7 @@ const badgeVariants = cva(
           normal:
           "border-transparent bg-gray-300 text-slate-50 hover:bg-gray-300 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/80",  
           reserved:
-          "border-green-500 bg-lightWhite text-highGrey2 hover:bg-lightWhite dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/80", 
+          "border-green-500 bg-lightWhite text-highBlue hover:bg-lightWhite dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/80", 
       },
     },
     defaultVariants: {

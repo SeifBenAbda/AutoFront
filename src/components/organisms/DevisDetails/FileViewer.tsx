@@ -218,7 +218,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
 
     if (isLoading || isLoadingFile) return (
         <div className='flex items-center justify-center w-full h-full'>
-            <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-t-highBlue border-gray-200 rounded-full animate-spin"></div>
         </div>
     );
 
@@ -230,7 +230,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     const renderDocumentStatus = () => {
         return (
             <div className="w-full  p-4  rounded-lg h-fit sticky top-4">
-                <h3 className="font-oswald text-xl mb-4 text-highGrey2">Documents requis</h3>
+                <h3 className="font-oswald text-xl mb-4 text-highBlue">Documents requis</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg-custom:grid-cols-3 gap-2">
                     {devisCheckedDocs.map((doc: DocumentCondition) => {
                         const hasDocument = files.some(
@@ -270,7 +270,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
             >
                 {isLoadingOpening && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10 z-50">
-                        <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
+                        <div className="w-12 h-12 border-4 border-t-highBlue border-gray-200 rounded-full animate-spin"></div>
                     </div>
                 )}
                 {files.map((file: FileData) => (
@@ -313,7 +313,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
         return (
             <div className='h-full w-full items-center flex flex-col space-x-4'>
                 <img src={emptyBoxIcon} alt='EmptyBox' height={100} width={100} />
-                <span className='text-highGrey2 text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
+                <span className='text-highBlue text-lg font-oswald text-center'>Il n'y a actuellement aucun fichier ici </span>
             </div>
         )
     };

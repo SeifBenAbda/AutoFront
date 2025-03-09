@@ -13,17 +13,19 @@ interface ClientSourceSelectTypes {
 }
 
 const ClientSourceSelect = ({ value, onChange }:ClientSourceSelectTypes) => {
+    const optionStyle = "text-highBlue cursor-pointer";
+    const selectedOptionStyle = "text-highBlue cursor-pointer font-oswald font-bold";
     return (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highGrey2 bg-lightWhite text-highGrey2">
-                <SelectValue placeholder="Source" defaultValue={value} />
+            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey text-highBlue font-oswald">
+                <SelectValue className={selectedOptionStyle} placeholder="Source" defaultValue={value} />
             </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="Web">Web</SelectItem>
-                <SelectItem value="Téléphone">Téléphone</SelectItem>
-                <SelectItem value="ShowRoom">ShowRoom</SelectItem>
-                <SelectItem value="Prospection">Prospection</SelectItem>
-                <SelectItem value="Email">Email</SelectItem>
+            <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
+                <SelectItem className={optionStyle} value="Web">Web</SelectItem>
+                <SelectItem className={optionStyle} value="Téléphone">Téléphone</SelectItem>
+                <SelectItem className={optionStyle} value="ShowRoom">ShowRoom</SelectItem>
+                <SelectItem className={optionStyle} value="Prospection">Prospection</SelectItem>
+                <SelectItem className={optionStyle} value="Email">Email</SelectItem>
             </SelectContent>
         </Select>
     );

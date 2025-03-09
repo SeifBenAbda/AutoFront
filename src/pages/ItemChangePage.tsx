@@ -98,7 +98,7 @@ const ItemChangePage: React.FC = () => {
         <div className="flex flex-col">
           <CardHeader className="ml-4 mr-4 flex flex-col md:flex-row md:items-center md:justify-between fixed top-[60px] left-0 right-0 bg-veryGrey z-10 p-4 border-b border-veryGrey">
             <div className="flex-1">
-              <CardTitle className="text-highGrey2">Devis</CardTitle>
+              <CardTitle className="text-highBlue">Devis</CardTitle>
               <CardDescription>Devis pour Changement des Pieces</CardDescription>
             </div>
             <div className="flex flex-row space-x-2 mt-2 md:mt-0 md:flex-1 md:justify-end">
@@ -106,7 +106,7 @@ const ItemChangePage: React.FC = () => {
                 onClick={() => setIsClientModalOpen(true)} // Open modal on click
                 type="button"
                 disabled={isLoading}
-                className="bg-lightWhite hover:bg-lightWhite border border-highGrey2 text-highGrey2"
+                className="bg-lightWhite hover:bg-lightWhite border border-highBlue text-highBlue"
               >
                 Client existant
               </Button>

@@ -1,15 +1,16 @@
 import React, { useState, useCallback } from 'react';
-import { TableData } from './TableData';
-import { columns as initialColumns } from '../../utils/DevisColumns';
-import { PaginationTable } from '../atoms/TablePagination';
-import { SheetProvider } from '../../context/sheetContext';
-import FilterColumnsDevis from '../molecules/FilterColumnsDevis';
-import useDevis from '../../hooks/useDevis';
-import Loading from '../atoms/Loading';
-import SearchBar from '../atoms/SearchDevis';
-import StatusDevisDropDown from '../atoms/StatusDevis';
-import PriorityDevisDropDown from '../atoms/PriorityDropDown';
-import CarsMultiSelect from '../atoms/CarsMultiSelect';
+import { TableData } from '../TableData';
+import { columns as initialColumns } from '../../../utils/DevisColumns';
+import { PaginationTable } from '../../atoms/TablePagination';
+import { SheetProvider } from '../../../context/sheetContext';
+import useDevis from '../../../hooks/useDevis';
+import Loading from '../../atoms/Loading';
+import SearchBar from '../../atoms/SearchDevis';
+import StatusDevisDropDown from '../../atoms/StatusDevis';
+import PriorityDevisDropDown from '../../atoms/PriorityDropDown';
+import CarsMultiSelect from '../../atoms/CarsMultiSelect';
+import ClientsMultiSelect from '../../../components/atoms/ClientsMultiSelect';
+import { DatePicker } from '../../../components/atoms/DateSelector';
 
 interface DataTableProps {
   typeDevis: string;
@@ -22,14 +23,32 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
   const [selectedCars, setSelectedCars] = useState<string[]>([]); // Changed to an array
+  const [selectedClients, setSelectedClients] = useState<string[]>([]); // Changed to an array
+  const [dateRappelFrom, setDateRappelFrom] = useState<Date | undefined>();
+  const [dateRappelTo, setDateRappelTo] = useState<Date | undefined>();
 
   // Fetch data from the API based on current filters and pagination
-  const { data, isLoading, error } = useDevis(page, searchValue, selectedStatus, selectedPriority, selectedCars);
+  const { data, isLoading, error } = useDevis(
+    page, searchValue, selectedStatus, 
+    selectedPriority, selectedCars, selectedClients,
+    dateRappelFrom,
+    dateRappelTo);
 
   const columnMapping: { [key: string]: string } = {
     'Motif': 'Motif',
     'Créé par': 'CreatedBy',
     'Date Livraison prévue': 'scheduledLivrDate',
+  };
+
+
+  const handleDateRappelFromChange = (date: Date | undefined) => {
+    setDateRappelFrom(date);
+    setPage(1);
+  };
+
+  const handleDateRappelToChange = (date: Date | undefined) => {
+    setDateRappelTo(date);
+    setPage(1);
   };
 
   const handleStatusChange = (status: string) => {
@@ -44,6 +63,11 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
   const handleCarChange = (cars: string[]) => {
     setSelectedCars(cars);
+    setPage(1); // Reset to first page on car change
+  };
+
+  const handleClientChange = (clients: string[]) => {
+    setSelectedClients(clients);
     setPage(1); // Reset to first page on car change
   };
 
@@ -68,10 +92,10 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden ">
       {/* Header with Devis Title and Filter */}
       <div className='flex-none flex flex-row justify-between mb-4'>
-        <div className="flex items-center justify-center font-oswald text-2xl text-highGrey2">
+        <div className="flex items-center justify-center font-oswald text-2xl text-highBlue">
           {typeDevis === "TC" ? "Devis Voiture" : "Devis Changement des Pieces"}
         </div>
 
@@ -104,6 +128,34 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
               onChange={handleCarChange} // Updated to handle array of selected values
               isFiltering={true}
             />
+          </div>
+          <div className="w-auto">
+            <ClientsMultiSelect
+              selectedValues={selectedClients} // Changed to selectedValues
+              onChange={handleClientChange} // Updated to handle array of selected values
+              isFiltering={true}
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <div className="w-auto">
+              <DatePicker
+                value={dateRappelFrom}
+                onChange={handleDateRappelFromChange}
+                fromYear={new Date().getFullYear() - 1}
+                toYear={new Date().getFullYear() + 1}
+                styling="w-full border border-normalGrey bg-normalGrey"
+              />
+            </div>
+            <div className="w-auto">
+              <DatePicker
+                value={dateRappelTo}
+                onChange={handleDateRappelToChange}
+                fromYear={new Date().getFullYear() - 1}
+                toYear={new Date().getFullYear() + 1}
+                styling="w-full border border-normalGrey bg-normalGrey"
+              />
+            </div>
           </div>
 
         </div>

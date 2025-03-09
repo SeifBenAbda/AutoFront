@@ -94,8 +94,8 @@ export const TableData = ({ columns, data }: DataTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="relative w-full overflow-auto rounded-xl  border-highGrey2 border-[1px]">
-        <Table className="w-full bg-whiteSecond   table-fixed">
+      <div className="relative w-full overflow-auto rounded-xl  border-highBlue border-[1px]">
+        <Table className="w-full bg-bgColorLight   table-fixed">
           <TableHeader className="sticky top-0 z-10 ">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-lighGrey hover:bg-lighGrey">
@@ -163,9 +163,11 @@ export const TableData = ({ columns, data }: DataTableProps) => {
                       {cell.column.id === 'actions' && (
                         <Button
                           onClick={
-                            () => handleOpenSheet(row.original)                    
+                            () => {
+                              handleOpenSheet(row.original);
+                            }        
                           }
-                          className="px-4 py-2 text-white bg-highGrey2 rounded-md font-oswald"
+                          className="px-4 py-2 text-white bg-highBlue rounded-md font-oswald"
                         >
                           Modifier
                         </Button>

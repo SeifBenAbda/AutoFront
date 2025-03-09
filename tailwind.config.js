@@ -32,7 +32,15 @@ module.exports = {
 			lightRed:'#FF6B6B',
 			lightGreen:'#b0ee81',
 			highGrey: '#0f172a' ,//'#272e45',
-			highGreen:'#1e390a'
+			highGreen:'#1e390a',
+			//new
+			highBlue:'#1d222e',
+			highYellow:'#ffd52e',
+			lightGrey:'#adb2c0',
+			blueGrey:'#313847',
+			bgColorLight:'#f1f6f9',
+			normalBlue:'#004daa',
+			normalGrey:'#e8ecf1'
   		},
   		fontFamily: {
   			oswald: ['Fjalla One','sans-serif']

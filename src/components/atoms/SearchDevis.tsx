@@ -25,27 +25,27 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchValue }) => {
   };
 
   return (
-    <div className="flex items-center w-full"> {/* Added pr-4 to add padding-right */}
-      <div className="flex items-center flex-1 border border-highGrey2 rounded-md bg-white ml-2">
+    <div className="flex space-x-2 items-center w-full">
+      <div className="relative flex-grow">
         <Input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder="Rechercher Client..."
-          className="flex-1 border-none rounded-l-md outline-none px-2 py-1"
+          placeholder="Rechercher Devis.."
+          className="border-normalGrey rounded-md bg-normalGrey w-full pr-10 text-base"
         />
         {inputValue && (
-          <Button
+          <button
             onClick={handleClearClick}
-            className="border-none bg-transparent hover:bg-transparent p-2"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-highBlue"
           >
-            <CloseIcon className="text-highGrey2" />
-          </Button>
+            <CloseIcon fontSize="small" />
+          </button>
         )}
       </div>
       <Button
         onClick={handleSearchClick}
-        className="bg-highGrey2 hover:bg-highGrey2 text-white rounded-md  ml-2" // Added ml-2 to add left margin
+        className="bg-highBlue hover:bg-highBlue text-white rounded-md ml-2"
       >
         Rechercher
       </Button>

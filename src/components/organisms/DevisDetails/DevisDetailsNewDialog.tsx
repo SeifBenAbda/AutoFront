@@ -17,22 +17,22 @@ type DevisDetailsPageProps = {
 
 // Create custom components for each state
 const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; phone: string }) => (
-    <div className="flex items-center space-x-8 px-3 py-1">
+    <div className="flex items-center space-x-8 px-3 py-1 justify-center">
         <div className="flex flex-row space-x-2">
             <img src={clientIcon} alt="Agent" className="w-5 h-5" />
-            <span className="text-highGrey2 font-oswald">{geneder} {name}</span>
+            <span className="text-highBlue font-oswald">{geneder} {name}</span>
         </div>
         <div className="flex flex-row space-x-2">
             <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
-            <span className="text-highGrey2 font-oswald">{phone}</span>
+            <span className="text-highBlue font-oswald">{phone}</span>
         </div>
     </div>
 );
 
 const VehicleModel = ({ model }: { model: string }) => (
-    <div className="flex items-center space-x-2 px-3 py-1">
+    <div className="flex items-center space-x-2 px-3 py-1 justify-center">
         <img src={carIcon} alt="Car" className="w-7 h-7" />
-        <span className="text-highGrey2 font-oswald">{model}</span>
+        <span className="text-highBlue font-oswald">{model}</span>
     </div>
 );
 
@@ -52,24 +52,26 @@ const ReminderInfo = ({ rappels }: { rappels: Rappel[] | undefined }) => {
         }
 
         // Otherwise, format the date as "le [date]"
-        return `${reminderDate.toLocaleDateString("fr-FR")} : `; // French date format
+        return `${reminderDate.toLocaleDateString("fr-FR")}`; // French date format
     };
 
     return (
-        <div className="flex items-center space-x-2 px-3 py-1">
+        <div className="flex items-center space-x-2 justify-center">
             {closestReminder ? (
                 <>
-                    <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
-                    <span className="text-highGrey2 font-oswald">
-                        {formatReminderDate(closestReminder.RappelDate!.toString())}
-                    </span>
-                    <span className="text-highGrey2 font-oswald">
+                    <div className="flex flex-row">
+                        <img src={reminderIcon} alt="reminderCal" className="w-5 h-5" />
+                        <span className="text-highBlue font-oswald min-w-[30%]">
+                            {formatReminderDate(closestReminder.RappelDate!.toString())}
+                        </span>
+                    </div>
+                    <span className="text-highBlue font-oswald max-w-[60%]">
                         {closestReminder.RappelContent}
                     </span>
 
                 </>
             ) : (
-                <span className="text-highGrey2 font-oswald">Aucun rappel à venir</span>
+                <span className="text-highBlue font-oswald">Aucun rappel à venir</span>
             )}
         </div>
     );
@@ -81,7 +83,7 @@ function getPriorityClassName(devisPriority: string) {
         case "Normale":
             return "bg-lightGreen border border-whiteSecond text-highGrey";
         case "Moyenne":
-            return "bg-yellow-400 border border-yellow-400 text-highGrey2";
+            return "bg-yellow-400 border border-yellow-400 text-highBlue";
         case "Haute":
             return "bg-red-400 border border-red-400 text-lightWhite";
     }
@@ -170,7 +172,10 @@ export function DevisDetailsPage({
         <Dialog open={isOpen}>
             <DialogContent
                 style={{ transform: 'none' }}
-                className="flex flex-col h-[92vh] !fixed !inset-y-0 !right-0 !left-auto w-full text-start sm-custom:w-[62%] md-custom:w-[62%] min-[1300px]:w-[37%] max-[550px]:w-[78%] max-[788px]:w-[65%] min-[900px]:w-[52%] min-[1040px]:w-[47%] p-0 m-4 mt-14 rounded-lg border-whiteSecond bg-whiteSecond shadow-lg !max-w-none duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+                className="flex flex-col h-[92vh] !fixed !inset-y-0 !right-0 !left-auto w-full 
+                text-start min-[1300px]:w-[75%] sm-custom:w-[90%] md-custom:w-[90%]  max-[550px]:w-[78%] max-[788px]:w-[85%] min-[900px]:w-[75%] 
+                min-[1040px]:w-[75%] p-0 m-4 mt-14 rounded-lg border-bgColorLight bg-bgColorLight  !max-w-none duration-500 
+                data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
             >
                 <DialogTitle className="pt-4 pl-2 flex flex-row justify-between items-center space-x-4 mr-2">
                     <div className={`font-medium font-oswald text-sm rounded-md px-2 py-1 ${getPriorityClassName(allData.PriorityDevis)}`}>
@@ -180,12 +185,12 @@ export function DevisDetailsPage({
                     <CircleX className="h-7 w-7 cursor-pointer" onClick={onClose} />
                 </DialogTitle>
 
-                <hr className="bg-highGrey2 w-full" />
+                <hr className="bg-highBlue w-full" />
 
                 {/* Scrollable Content */}
                 <div className="flex-grow overflow-y-auto px-2">
-                    <div className="relative flex min-h-10 border border-blueCiel items-center justify-center overflow-visible bg-blueCiel rounded-md">
-                        <div className={`absolute transform transition-all duration-500 ease-in-out ${getTextPosition()}`}>
+                    <div className="text-center flex min-h-12 border border-blueCiel items-center justify-center bg-blueCiel rounded-md relative">
+                        <div className={`w-full px-2 transform transition-all duration-500 ease-in-out ${getTextPosition()}`}>
                             {currentComponent === 'client' ? (
                                 <ClientInfo
                                     geneder={allData.client?.clientGender ?? ""}
@@ -194,10 +199,19 @@ export function DevisDetailsPage({
                                 />
                             ) : currentComponent === 'reminder' ? (
                                 <ReminderInfo rappels={allData.rappels} />
-                            ) : <VehicleModel model={allData.carRequests?.[0]?.CarModel ?? ""} />}
+                            ) : (
+                                <VehicleModel model={allData.carRequests?.[0]?.CarModel ?? ""}
+                                />
+                            )}
                         </div>
                     </div>
-                    <DevisDetailsNewMain devis={allData} isOpen={isOpen} onClose={onClose} onSave={onSave} isAdmin={isAdmin} />
+                    <DevisDetailsNewMain
+                        devis={allData}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        onSave={onSave}
+                        isAdmin={isAdmin}
+                    />
                 </div>
             </DialogContent>
         </Dialog>

@@ -108,7 +108,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
             
             <div className="flex justify-between items-center mb-4">
                 <div className='flex flex-row space-x-2 items-center'>
-                    <h2 className="text-xl font-bold text-highGrey2 font-oswald">Rappels Audio</h2>
+                    <h2 className="text-xl font-bold text-highBlue font-oswald">Rappels Audio</h2>
                     {/* Display upload messages */}
                     {uploadMessage && (
                         <div className="p-2 text-center bg-red-500 border-red-500 rounded-md text-lightWhite font-oswald">
@@ -118,7 +118,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
                 </div>
                 <Button
                     onClick={handleRecordClick}
-                    className="bg-blueCiel text-highGrey2 hover:bg-blueCiel border border-blueCiel rounded-md flex items-center gap-2 font-oswald"
+                    className="bg-blueCiel text-highBlue hover:bg-blueCiel border border-blueCiel rounded-md flex items-center gap-2 font-oswald"
                 >
                     {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
                     {isRecording ? "Arrêter l'enregistrement" : 'Enregistrer audio'}
@@ -127,7 +127,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
 
             {isLoadingAudios && (
                 <div className='flex items-center justify-center w-full h-full'>
-                    <div className="w-12 h-12 border-4 border-t-highGrey2 border-gray-200 rounded-full animate-spin"></div>
+                    <div className="w-12 h-12 border-4 border-t-highBlue border-gray-200 rounded-full animate-spin"></div>
                 </div>
             )}
 
@@ -153,7 +153,7 @@ const AudioRecorder: React.FC<{ devisId: number }> = ({ devisId }) => {
                         <CustomAudioPlayer fullUrl={URL.createObjectURL(audioBlob)} fileName={""} />
                     </div>
                     <div className="flex gap-4">
-                        <Button onClick={handleUpload} className="bg-greenOne hover:bg-greenOne text-highGrey2 rounded-md font-oswald">Transférer</Button>
+                        <Button onClick={handleUpload} className="bg-greenOne hover:bg-greenOne text-highBlue rounded-md font-oswald">Transférer</Button>
                         <Button onClick={handleCancel} className="bg-lightRed hover:bg-lightRed rounded-md font-oswald">
                             <Trash2 size={20} />
                         </Button>

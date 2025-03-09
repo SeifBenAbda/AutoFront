@@ -6,12 +6,13 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../@/components/ui/form";
-import { Input } from "../../@/components/ui/input";
+} from "../../../@/components/ui/form";
+import { Input } from "../../../@/components/ui/input";
 import FormCardContent from "./FormCardContent";
-import RegionDropDown from "../atoms/RegionDropDown";
-import { Textarea } from "../../@/components/ui/textarea";
+import RegionDropDown from "../../atoms/RegionDropDown";
+import { Textarea } from "../../../@/components/ui/textarea";
 import { Controller } from "react-hook-form";
+import { NumericInputForm } from "../../../components/atoms/NumericInputForm";
 
 const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
     const { register, control } = form;
@@ -21,9 +22,9 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
             <div className="w-full space-y-4">
                 {/* Adresse */}
                 <div className="text-whiteSecond">
-                <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`} className="flex-1">
+                <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`} className="flex-1 text-highBlue">
                     <Input
-                        className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                        className="border border-highBlue bg-bgColorLight text-highBlue"
                         placeholder="Adresse"
                         {...register(`${formId}.adresse`)}
                     />
@@ -33,16 +34,16 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 {/* Ville and Region */}
                 <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Ville" name={`${formId}.ville`} className="flex-1">
+                        <FormCardContent form={form} label="Ville" name={`${formId}.ville`} className="flex-1 text-highBlue">
                             <Input
-                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                                className="border border-highBlue bg-bgColorLight text-highBlue"
                                 placeholder="Ville"
                                 {...register(`${formId}.ville`)}
                             />
                         </FormCardContent>
                     </div>
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Region" name={`${formId}.region`} className="flex-1">
+                        <FormCardContent form={form} label="Region" name={`${formId}.region`} className="flex-1 text-highBlue">
                             <Controller
                                 name={`${formId}.region`}
                                 control={control}
@@ -61,18 +62,19 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                 {/* Code Postal and Pays */}
                 <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`} className="flex-1">
-                            <Input
-                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                        <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`} className="flex-1 text-highBlue">
+                            <NumericInputForm
+                                className="border border-highBlue bg-bgColorLight text-highBlue"
                                 placeholder="Code Postal"
                                 {...register(`${formId}.postalCode`)}
+                                maxLength={5}
                             />
                         </FormCardContent>
                     </div>
                     <div className="flex-1">
-                        <FormCardContent form={form} label="Pays" name={`${formId}.pays`} className="flex-1">
+                        <FormCardContent form={form} label="Pays" name={`${formId}.pays`} className="flex-1 text-highBlue">
                             <Input
-                                className="border border-highGrey2 bg-lightWhite text-highGrey2"
+                                className="border border-highBlue bg-bgColorLight text-highBlue"
                                 placeholder="Pays"
                                 {...register(`${formId}.pays`)}
                             />
@@ -82,9 +84,9 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
 
                 {/* Plus d'informations Adresse */}
                 <div className="text-whiteSecond">
-                <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`} className="flex-1 text-whiteSecond">
+                <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`} className="flex-1 text-highBlue">
                     <Textarea
-                        className="border border-highGrey2 bg-lightWhite min-h-[70px] text-highGrey2"
+                        className="border border-highBlue bg-bgColorLight min-h-[70px] text-highBlue"
                         placeholder="Plus d'informations.."
                         {...register(`${formId}.addressMoreInfos`)}
                     />

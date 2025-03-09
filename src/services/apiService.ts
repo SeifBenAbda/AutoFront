@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, DevisFacture, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 
@@ -133,11 +133,14 @@ export const fetchDevisDetailled = async (page: number): Promise<ApiResponse> =>
 
 export const fetchDevisAllData = async (
   database: string,
-  clientName?: string,
+  searchValue?: string,
   page: number = 1,
   status?:string, 
   priority?:string,
-  cars?:string[]
+  cars?:string[],
+  clients?:string[],
+  dateRappelFrom?: Date | undefined,
+  dateRappelTo?: Date | undefined
 ): Promise<ApiResponse> => {
   const token = getToken();
 
@@ -145,10 +148,10 @@ export const fetchDevisAllData = async (
     throw new Error('No token found');
   }
 
-  const endpoint = clientName ? '/devis/filter-client' : '/devis/completeDevis';
-  const body = clientName 
-    ? { database, clientName, page ,status,priority,cars}
-    : { database, page ,status,priority,cars};
+  const endpoint = searchValue ? '/devis/searchDevis' : '/devis/completeDevis';
+  const body = searchValue 
+    ? { database, searchValue, page ,status,priority,cars,clients,dateRappelFrom,dateRappelTo}
+    : { database, page ,status,priority,cars,clients,dateRappelFrom,dateRappelTo};
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -271,7 +274,8 @@ export const updateDevis = async (
   updatedRappels?: Partial<Rappel[]>,
   updatedDevisFacture?: Partial<DevisFacture>,
   updatedDevisReserved?: Partial<DevisReserved>,
-  updatedDevisPayementDetails?: Partial<DevisPayementDetails>
+  updatedDevisPayementDetails?: Partial<DevisPayementDetails>,
+  updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>
 ): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[];
   devisFacture?: DevisFacture; devisReserved?: DevisReserved; devisPayementDetails?: DevisPayementDetails
 }> => {
@@ -295,7 +299,8 @@ export const updateDevis = async (
       "updatedRappels":updatedRappels,
       "updatedDevisFacture": updatedDevisFacture,
       "updatedDevisReserved":updatedDevisReserved,
-      "updatedDevisPayementDetails":updatedDevisPayementDetails
+      "updatedDevisPayementDetails":updatedDevisPayementDetails,
+      "updatedDevisGesteCommerciale":updatedDevisGesteCommerciale
     }),
   });
 
@@ -454,6 +459,41 @@ export const fetchClients = async (
     });
 
     if (response.status === 401) { // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    return response.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+
+export const fetchClientsAll = async (
+  database: string
+): Promise<Client[]> => {
+  const token = getToken();
+
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/clients?database=${encodeURIComponent(database)}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.status === 401) {
       removeToken();
       throw new Error('Unauthorized: Token is invalid or expired');
     }

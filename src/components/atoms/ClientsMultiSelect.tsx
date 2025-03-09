@@ -1,15 +1,15 @@
 // src/components/PriorityDevisDropDown.tsx
-import useCarModels from '../../hooks/useCars';
 import { MultiSelect } from '../../@/components/ui/multi-select';
+import useClients from '../../hooks/useClients';
 
-interface CarsDropDownTypes {
+interface ClientsDownTypes {
     selectedValues: string[]; // Adjust to handle multiple selections
     onChange: (values: string[]) => void;
     isFiltering: boolean;
 }
 
-const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDownTypes) => {
-    const { data: carModels, isLoading, error } = useCarModels();
+const ClientsMultiSelect = ({ selectedValues, onChange, isFiltering }: ClientsDownTypes) => {
+    const { data: clients, isLoading, error } = useClients();
 
     if (isLoading){
         return (
@@ -21,9 +21,9 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
     if (error) return <div>Error: {error.message}</div>;
 
     // Prepare options for MultiSelect
-    const options = carModels?.map((car) => ({
-        label: car.carName,
-        value: car.carName,
+    const options = clients?.map((client) => ({
+        label: client.nomClient,
+        value: client.nomClient,
     })) || [];
 
     // Add a default "All types of cars" option if filtering
@@ -41,7 +41,7 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
             options={options}
             onValueChange={onChange}
             defaultValue={selectedValues}
-            placeholder="Tous types de voitures"
+            placeholder="Tous les clients"
             variant="inverted"
             animation={0}
             maxCount={1}
@@ -53,4 +53,4 @@ const CarsMultiSelect = ({ selectedValues, onChange, isFiltering }: CarsDropDown
     );
 };
 
-export default CarsMultiSelect;
+export default ClientsMultiSelect;

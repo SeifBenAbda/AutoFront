@@ -1,8 +1,8 @@
 import { Rappel } from "../../../types/devisTypes";
-import AudioRecorder from "../ExtraDetaillsCards/DevisAudioSystem";
+import AudioRecorder from "./DevisAudioSystem";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../@/components/ui/card";
 import { Textarea } from "../../../@/components/ui/textarea";
-import { DatePicker } from "../../../components/atoms/DataSelector";
+import { DatePicker } from "../../atoms/DateSelector";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../../@/components/ui/accordion";
 interface DevisRappelsDetailsProps {
     devisId: number,
@@ -50,7 +50,7 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                                     Rappel N° {index + 1} : {new Date(rappel.RappelDate!).toLocaleDateString()}
                                 </AccordionTrigger>
                                 <AccordionContent>
-                                    <div className='text-highGrey2 font-oswald text-base mt-2 mb-2'>Date du rappel</div>
+                                    <div className='text-highBlue font-oswald text-base mt-2 mb-2'>Date du rappel</div>
                                     <DatePicker
                                         value={rappel.RappelDate}
                                         onChange={(date) => handleDateChange(rappel.RappelId!, date)}
@@ -59,11 +59,11 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                                     />
                                 </AccordionContent>
                                 <AccordionContent>
-                                    <div className='text-highGrey2 font-oswald text-base mt-2 mb-2'>Contenu du rappel</div>
+                                    <div className='text-highBlue font-oswald text-base mt-2 mb-2'>Contenu du rappel</div>
                                     <Textarea
                                         value={rappel.RappelContent || ""} // Directly bind to client prop
                                         onChange={(e) => handleChange(rappel.RappelId!, "RappelContent", e.target.value)}
-                                        className="mt-1 p-2 block w-full border border-highGrey2 rounded-md shadow-sm focus:ring-0 sm:text-sm"
+                                        className="mt-1 p-2 block w-full border border-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm"
                                     />
                                 </AccordionContent>
                             </AccordionItem>
@@ -73,7 +73,7 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
 
             </div>
 
-            <hr className=" bg-highGrey2 mt-1 mb-1 pl-2 mr-2 ml-2" />    
+            <hr className=" bg-highBlue mt-1 mb-1 pl-2 mr-2 ml-2" />    
 
             <div className="pl-2 ">
                 <AudioRecorder devisId={devisId} />

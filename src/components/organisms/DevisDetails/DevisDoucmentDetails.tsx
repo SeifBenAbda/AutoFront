@@ -2,8 +2,8 @@ import { Devis } from "@/types/devisTypes";
 import { useState } from 'react';
 import uploadIcon from '../../../images/file.png';
 import checkDocIcon from '../../../images/checkDoc.png';
-import FileViewer from "../ExtraDetaillsCards/FileViewer";
-import { DocumentsUploadCard } from "../ExtraDetaillsCards/DocumentsUpload";
+import FileViewer from "./FileViewer";
+import { DocumentsUploadCard } from "./DocumentsUpload";
 
 
 interface DevisDoucmentDetailsProps {
