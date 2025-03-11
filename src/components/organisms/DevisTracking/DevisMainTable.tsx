@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { TableData } from '../TableData';
-import { columns as initialColumns } from '../../../utils/DevisColumns';
 import { PaginationTable } from '../../atoms/TablePagination';
 import { SheetProvider } from '../../../context/sheetContext';
 import useDevis from '../../../hooks/useDevis';
@@ -11,6 +10,15 @@ import PriorityDevisDropDown from '../../atoms/PriorityDropDown';
 import CarsMultiSelect from '../../atoms/CarsMultiSelect';
 import ClientsMultiSelect from '../../../components/atoms/ClientsMultiSelect';
 import { DatePicker } from '../../../components/atoms/DateSelector';
+
+import { X as XIcon, Filter as FilterIcon, Calendar as CalendarIcon } from "lucide-react";
+import { Button } from '../../../@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../@/components/ui/popover";
+import { PopoverClose } from '@radix-ui/react-popover';
 
 interface DataTableProps {
   typeDevis: string;
@@ -78,9 +86,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
     setHiddenColumns(columnsToHide);
   }, []);
 
-  const displayedColumns = initialColumns.filter(
-    (col) => !hiddenColumns.includes(col.id as string)
-  );
+
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -105,61 +111,124 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
       </div>
 
-      {/* Search Box and Status Dropdown */}
-      <div className="flex justify-between mb-4">
-        <div className="flex gap-4">
-          <div className="w-auto">
-            <StatusDevisDropDown
-              value={selectedStatus}
-              onChange={handleStatusChange}
-              isFiltring={true}
-            />
-          </div>
-          <div className="w-auto">
-            <PriorityDevisDropDown
-              value={selectedPriority}
-              onChange={handlePriorityChange}
-              isFiltring={true}
-            />
-          </div>
-          <div className="w-auto">
-            <CarsMultiSelect
-              selectedValues={selectedCars} // Changed to selectedValues
-              onChange={handleCarChange} // Updated to handle array of selected values
-              isFiltering={true}
-            />
-          </div>
-          <div className="w-auto">
-            <ClientsMultiSelect
-              selectedValues={selectedClients} // Changed to selectedValues
-              onChange={handleClientChange} // Updated to handle array of selected values
-              isFiltering={true}
-            />
-          </div>
-
-          <div className="flex gap-4">
+      {/* Improved Filters Section */}
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+        {/* Filter Controls */}
+        <div className="flex flex-col space-y-2">
+          <div className="flex flex-wrap gap-2">
+            {/* Status & Priority Popover */}
             <div className="w-auto">
-              <DatePicker
-                value={dateRappelFrom}
-                onChange={handleDateRappelFromChange}
-                fromYear={new Date().getFullYear() - 1}
-                toYear={new Date().getFullYear() + 1}
-                styling="w-full border border-normalGrey bg-normalGrey"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
+                  >
+                    <FilterIcon size={16} />
+                    <span className='font-oswald'>Status & Priorité</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-64 p-3 border border-gray-200 shadow-md bg-white rounded-md"
+                  align="start"
+                  sideOffset={5}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-oswald text-highBlue text-base">Filtres</h3>
+                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                      <XIcon size={14} />
+                      <span className="sr-only">Close</span>
+                    </PopoverClose>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="w-full">
+                      <label className="block text-xs font-medium text-highBlue mb-1">Status</label>
+                      <StatusDevisDropDown
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        isFiltring={true}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block text-xs font-medium text-highBlue mb-1">Priorité</label>
+                      <PriorityDevisDropDown
+                        value={selectedPriority}
+                        onChange={handlePriorityChange}
+                        isFiltring={true}
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="w-auto">
+              <CarsMultiSelect
+                selectedValues={selectedCars}
+                onChange={handleCarChange}
+                isFiltering={true}
               />
             </div>
             <div className="w-auto">
-              <DatePicker
-                value={dateRappelTo}
-                onChange={handleDateRappelToChange}
-                fromYear={new Date().getFullYear() - 1}
-                toYear={new Date().getFullYear() + 1}
-                styling="w-full border border-normalGrey bg-normalGrey"
+              <ClientsMultiSelect
+                selectedValues={selectedClients}
+                onChange={handleClientChange}
+                isFiltering={true}
               />
             </div>
+            
+            {/* Date Range Filters in a popover */}
+            <div className="w-auto">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
+                  >
+                    <CalendarIcon size={16} />
+                    <span className='font-oswald'>Période (Rappels)</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-96 p-4 border border-gray-200 shadow-md bg-white rounded-md"
+                  align="start"
+                  sideOffset={5}
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-oswald text-highBlue text-base">Période (Rappels)</h3>
+                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                      <XIcon size={14} />
+                      <span className="sr-only">Close</span>
+                    </PopoverClose>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-1/2">
+                      <label className="block text-sm font-medium text-highBlue mb-1.5">De</label>
+                      <DatePicker
+                        value={dateRappelFrom}
+                        onChange={handleDateRappelFromChange}
+                        fromYear={new Date().getFullYear() - 1}
+                        toYear={new Date().getFullYear() + 1}
+                        styling="w-full border border-normalGrey rounded-md bg-normalGrey hover:bg-lightGrey transition-colors"
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-sm font-medium text-highBlue mb-1.5">À</label>
+                      <DatePicker
+                        value={dateRappelTo}
+                        onChange={handleDateRappelToChange}
+                        fromYear={new Date().getFullYear() - 1}
+                        toYear={new Date().getFullYear() + 1}
+                        styling="w-full border border-normalGrey rounded-md bg-normalGrey hover:bg-lightGrey transition-colors"
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
-
         </div>
-        <div className="w-auto">
+        
+        {/* Search Box */}
+        <div className="w-full md:w-auto">
           <SearchBar onSearch={handleSearch} searchValue={searchValue} />
         </div>
       </div>
@@ -173,7 +242,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} columns={displayedColumns} />
+              <TableData data={data?.data || []}  />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable

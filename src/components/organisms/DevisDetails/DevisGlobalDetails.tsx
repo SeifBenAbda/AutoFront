@@ -585,24 +585,25 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const checkBoxes = () => {
         return (
             <div className="flex flex-row space-x-4">
-                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                {devis.StatusDevis != "Annulé" && (<div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Geste Commercial</div>
                     <Checkbox
                         checked={devis.isGesteCommerciale}
                         onCheckedChange={(e) => handleChange("isGesteCommerciale", e.valueOf())}
                         className=" border border-highBlue rounded-md h-5 w-5"
                         id="isGesteCommerciale" />
-                </div>
+                </div>)}
 
 
-                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
-                    <div className="text-sm font-normal ">Bordereau est validé</div>
-                    <Checkbox
-                        checked={devis.devisFacture?.StatutBRD}
-                        onCheckedChange={(e) => handleChangedevisFacture("StatutBRD", e.valueOf())}
-                        className=" border border-highBlue rounded-md h-5 w-5"
-                        id="statusBrd" />
-                </div>
+                {devis.StatusDevis === "Facturé" && (
+                    <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                        <div className="text-sm font-normal ">Bordereau est validé</div>
+                        <Checkbox
+                            checked={devis.devisFacture?.StatutBRD}
+                            onCheckedChange={(e) => handleChangedevisFacture("StatutBRD", e.valueOf())}
+                            className=" border border-highBlue rounded-md h-5 w-5"
+                            id="statusBrd" />
+                    </div>)}
                 <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Véhicule est livré</div>
                     <Checkbox
