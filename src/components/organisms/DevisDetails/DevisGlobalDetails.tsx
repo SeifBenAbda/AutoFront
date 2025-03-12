@@ -14,6 +14,7 @@ import { Checkbox } from "../../../@/components/ui/checkbox";
 import { NumericInput } from "../../../components/atoms/NumericInput";
 import { useUser } from "../../../context/userContext";
 import { params } from "../../../utils/params";
+import PhoneInput from "../../../components/atoms/PhoneInput";
 
 interface DevisGlobalDetailsProps {
     devis: Devis;
@@ -398,11 +399,10 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Tél. Responsable</Label>
-                        <Input
-                            type="text"
+                        <PhoneInput
                             value={devis.ResponsableNum || ""}
-                            onChange={(e) =>
-                                handleChange("ResponsableNum", e.target.value)
+                            onChange={(value) => 
+                                handleChange("ResponsableNum", value)
                             }
                             className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
