@@ -240,6 +240,28 @@ export const fetchRegions = async (databasename:string) => {
   return response.json();
 };
 
+
+//fetching Client Sectors 
+export const fetchClientSectors = async (databasename:string) => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+  const body = {"database":databasename}
+  const response = await fetch(`${API_URL}/client-sectors`, {
+    method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch client Sectors');
+  }
+
+  return response.json();
+};
+
 //fetching Banks And Leasing 
 export const fetchBanksAndLeasing = async (databasename:string) => {
   const token = getToken();

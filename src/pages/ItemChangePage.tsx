@@ -22,6 +22,7 @@ import { useUser } from "../context/userContext";
 import ItemRequestForm from "../components/organisms/ItemRequestForm";
 import Loading from "../components/atoms/Loading";
 import ClientModal from "../components/atoms/ClientModal"; // Import the modal
+import { databaseName } from "../utils/shared_functions";
 
 const ItemChangePage: React.FC = () => {
   const [isClientModalOpen, setIsClientModalOpen] = useState(false); // Modal state
@@ -51,7 +52,7 @@ const ItemChangePage: React.FC = () => {
       }));
 
       const mergedValues = {
-        database: "Commer_2024_AutoPro",
+        database: databaseName,
         client: selectedClient, // Use the selected client data
         itemRequestData: itemRequests,
       };

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {fetchClients, fetchClientsAll } from '../services/apiService';
 import { Client } from '@/types/devisTypes';
 import { useNavigate } from 'react-router-dom';
+import { databaseName } from '../utils/shared_functions';
 
 interface ApiResponse {
     data: Client[];
@@ -15,7 +16,7 @@ interface ApiResponse {
 export const useClients = (page: number, searchValue?: string) => {
   return useQuery<ApiResponse>({
     queryKey: ['clients', page, searchValue], // Include all dependencies in the key
-    queryFn: () => fetchClients("Commer_2024_AutoPro", searchValue, page),
+    queryFn: () => fetchClients(databaseName, searchValue, page),
     staleTime: 0, // Data is always considered stale
     refetchOnWindowFocus: false, // Optional: Disable refetching on window focus if not needed
   });
@@ -26,7 +27,7 @@ export const useClients = (page: number, searchValue?: string) => {
 const useClientsList = () => {
     return useQuery<Client[]>({
         queryKey: ['clients'],
-        queryFn: () => fetchClientsAll("Commer_2024_AutoPro"), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchClientsAll(databaseName), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });

@@ -26,6 +26,8 @@ const ClientSourceSelect = ({ value, onChange }:ClientSourceSelectTypes) => {
                 <SelectItem className={optionStyle} value="ShowRoom">ShowRoom</SelectItem>
                 <SelectItem className={optionStyle} value="Prospection">Prospection</SelectItem>
                 <SelectItem className={optionStyle} value="Email">Email</SelectItem>
+                <SelectItem className={optionStyle} value="Cold Calling">Cold Calling</SelectItem>
+                <SelectItem className={optionStyle} value="Campagne publicitaire">Campagne publicitaire</SelectItem>
             </SelectContent>
         </Select>
     );

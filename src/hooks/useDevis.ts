@@ -4,6 +4,7 @@ import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../se
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useWebSocketForDevis } from './useWebSocket';
 import { io } from 'socket.io-client';
+import { databaseName } from '../utils/shared_functions';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
 
@@ -25,7 +26,7 @@ const useDevis = (page: number, searchValue?: string, status?: string, priority?
 
   return useQuery<ApiResponse>({
     queryKey: ['data', page, searchValue, status, priority, cars,clients,dateRappelFrom,dateRappelTo], // Include all dependencies in the key
-    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars,clients,dateRappelFrom,dateRappelTo),
+    queryFn: () => fetchDevisAllData(databaseName, searchValue, page, status, priority, cars,clients,dateRappelFrom,dateRappelTo),
     staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });

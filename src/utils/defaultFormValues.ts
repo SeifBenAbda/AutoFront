@@ -59,6 +59,7 @@ export const defaultFormDevisGeneral : Devis = {
     itemRequests: [],
     carRequests: [],
     rappels: [],
+    numberCars: 1,
     //DevisId: 0,
     clientId: 0,
     Responsable: undefined,

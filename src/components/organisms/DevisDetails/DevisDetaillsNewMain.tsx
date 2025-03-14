@@ -10,7 +10,7 @@ import { DevisRappelsDetails } from "./DevisRappelsDetails";
 import { DevisDoucmentDetails } from "./DevisDoucmentDetails";
 import { Button } from "../../../@/components/ui/button";
 import Loading from "../../../components/atoms/Loading";
-import { getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
+import { databaseName, getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
 import { Toaster } from "../../../@/components/ui/toaster";
 import { useToast } from "../../../hooks/use-toast";
 import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
@@ -151,7 +151,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             setLoading(true);
             try {
                 updateDevis({
-                    database: "Commer_2024_AutoPro",
+                    database: databaseName,
                     devisId: devis!.DevisId!,
                     clientId: myDevis!.client?.id!,
                     updatedDevis: myDevis!,
@@ -235,7 +235,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                         Enregistrer
                     </Button>
                 </div>
-                {devisNotes()}
+                {/*devisNotes()*/}
             </div>
 
             <div className="flex flex-col w-3/4 overflow-y-auto h-auto">

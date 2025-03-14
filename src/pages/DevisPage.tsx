@@ -17,6 +17,7 @@ import { useCreateDevis } from "../hooks/useDevis";
 import { useUser } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { Rappel } from "@/types/devisTypes";
+import { databaseName } from "../utils/shared_functions";
 
 type DevisPageProps = {
     isLoading: boolean;
@@ -51,7 +52,7 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
             }));
 
             const mergedValues = {
-                database: "Commer_2024_AutoPro",
+                database: databaseName,
                 client: { ...defaultFormClient, ...values.clientForm },
                 devis: { ...defaultFormDevisGeneral, ...values.devisGeneralForm, TypeDevis: "OC", CreatedBy: user!.nomUser },
                 carRequestData: { ...defaultFormCarDevis, ...values.devisCarForm },

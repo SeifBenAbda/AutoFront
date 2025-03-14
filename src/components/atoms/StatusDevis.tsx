@@ -26,7 +26,6 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                 { key: "Tous Status", value: "Tous Status" },
                 { key: "En Cours", value: "En Cours" },
                 { key: "Réservé", value: "Réservé" },
-                { key: "En Attente", value: "En Attente" },
                 { key: "HDSI", value: "HDSI" },
                 { key: "Facturé", value: "Facturé" },
                 { key: "Livré", value: "Livré" },
@@ -37,6 +36,12 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
         // Always base options on the initial value, not the current value
         switch (initialValueRef.current) {
             case "Réservé":
+                return [
+                    { key: "HDSI", value: "HDSI" },
+                    { key: "Facturé", value: "Facturé" },
+                    { key: "Annulé", value: "Annulé" },
+                ];
+            case "HDSI":
                 return [
                     { key: "Facturé", value: "Facturé" },
                     { key: "Annulé", value: "Annulé" },
@@ -54,7 +59,6 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                 return [
                     { key: "En Cours", value: "En Cours" },
                     { key: "Réservé", value: "Réservé" },
-                    { key: "En Attente", value: "En Attente" },
                     { key: "HDSI", value: "HDSI" },
                     { key: "Facturé", value: "Facturé" },
                     { key: "Livré", value: "Livré" },

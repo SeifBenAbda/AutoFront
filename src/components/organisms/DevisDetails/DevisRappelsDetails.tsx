@@ -201,7 +201,8 @@ export function DevisRappelsDetails({ devisId, rappels: initialRappels, onUpdate
                     <CardTitle className="font-oswald text-highBlue text-xl">Rappels</CardTitle>
                     <Button
                         onClick={addNewRappel}
-                        className="bg-highBlue hover:bg-blue-700 text-white flex items-center gap-1"
+                        className="bg-highBlue hover:bg-highBlue text-white flex items-center gap-1"
+                        disabled={true}
                     >
                         <Plus size={16} /> Nouveau Rappel
                     </Button>

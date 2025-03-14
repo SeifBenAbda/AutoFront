@@ -207,7 +207,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                         onChange={handleDateRappelFromChange}
                         fromYear={new Date().getFullYear() - 1}
                         toYear={new Date().getFullYear() + 1}
-                        styling="w-full border border-normalGrey rounded-md bg-normalGrey hover:bg-lightGrey transition-colors"
+                        
                       />
                     </div>
                     <div className="w-1/2">
@@ -217,7 +217,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                         onChange={handleDateRappelToChange}
                         fromYear={new Date().getFullYear() - 1}
                         toYear={new Date().getFullYear() + 1}
-                        styling="w-full border border-normalGrey rounded-md bg-normalGrey hover:bg-lightGrey transition-colors"
+                        
                       />
                     </div>
                   </div>

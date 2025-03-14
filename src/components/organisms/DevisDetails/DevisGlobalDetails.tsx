@@ -15,6 +15,7 @@ import { NumericInput } from "../../../components/atoms/NumericInput";
 import { useUser } from "../../../context/userContext";
 import { params } from "../../../utils/params";
 import PhoneInput from "../../../components/atoms/PhoneInput";
+import { databaseName } from "../../../utils/shared_functions";
 
 interface DevisGlobalDetailsProps {
     devis: Devis;
@@ -33,7 +34,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
-                const bc_num = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId ? devis.DevisId : 0);
+                const bc_num = await fetchNumBonCommande(databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
                 setDevisBcNumber(bc_num);
             };
             fetchData().then(() => setIsLoading(false));
@@ -82,7 +83,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
             switch (newStatus) {
                 case "Réservé": {
-                    //const counter = await fetchNumBonCommande("Commer_2024_AutoPro", "BCW", devis.DevisId ? devis.DevisId : 0);
+                    //const counter = await fetchNumBonCommande(databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
                     //setDevisBcNumber(counter);
                     updatedDevis = {
                         ...updatedDevis,
@@ -401,7 +402,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <Label className=" relative text-sm font-medium text-highBlue ">Tél. Responsable</Label>
                         <PhoneInput
                             value={devis.ResponsableNum || ""}
-                            onChange={(value) => 
+                            onChange={(value) =>
                                 handleChange("ResponsableNum", value)
                             }
                             className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
@@ -438,7 +439,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={handleDateReservationChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
-                            styling={params.inputBoxStyle}
                         />
                     </CardContent>
                 ) : (
@@ -480,7 +480,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             onChange={handleDateFacturationChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
-                            styling={params.inputBoxStyle}
                         />
                     </CardContent>
                 </div>
@@ -511,7 +510,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         onChange={handleDateBorderauChange}
                         fromYear={new Date().getFullYear()}
                         toYear={new Date().getFullYear() + 1}
-                        styling={params.inputBoxStyle}
                     />
                 </CardContent>
             </div>
@@ -604,14 +602,15 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             className=" border border-highBlue rounded-md h-5 w-5"
                             id="statusBrd" />
                     </div>)}
-                <div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+                
+                    {devis.StatusDevis != "Annulé" &&  (<div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Véhicule est livré</div>
                     <Checkbox
                         checked={devis.devisFacture?.isLivraison}
                         onCheckedChange={(e) => handleChangedevisFacture("isLivraison", e.valueOf())}
                         className=" border border-highBlue rounded-md h-5 w-5"
                         id="vehiculeDelievered" />
-                </div>
+                </div>)}
 
             </div>
         )
@@ -634,7 +633,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             )}
             {devis.StatusDevis !== "Annulé" && devis.StatusDevis != "Réservé" && payementSettings()}
             {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod == "Banque" || devis.devisPayementDetails.PaymentMethod == "Leasing") && responsableSettings()}
-            {devis.isGesteCommerciale && gesteCommercialSettings()}
+            {devis.StatusDevis !== "Annulé" && devis.isGesteCommerciale && gesteCommercialSettings()}
         </div>
     )
 }

@@ -8,6 +8,7 @@ import FormCardContent from "./FormCardContent";
 import ClientGender from "../../atoms/ClientGender";
 import TypeClient from "../../atoms/ClientTypeSelect";
 import { NumericInputForm } from "../../../components/atoms/NumericInputForm";
+import ClientSectorsDropDown from "../../../components/atoms/ClientSectorsDroppDown";
 
 const ClientDataForm: React.FC<any> = ({ form, formId }) => {
     const { register, control, watch } = form;
@@ -61,18 +62,26 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`} className="flex-1 text-highBlue">
                         <Input
-                            className="border border-highBlue bg-bgColorLight text-highBlue"
+                            className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                             placeholder="Nom et prénom Client"
                             {...register(`${formId}.nomClient`)}
                         />
                     </FormCardContent>
 
                     <FormCardContent form={form} label="Profession / Secteur Activite" name={`${formId}.socialReason`} className="flex-1 text-highBlue">
-                        <Input
-                            className="border border-highBlue bg-bgColorLight text-highBlue"
-                            placeholder="Profession / Secteur Activite"
-                            {...register(`${formId}.socialReason`)}
+
+                        <Controller
+                            name={`${formId}.socialReason`}
+                            control={control}
+                            render={({ field }) => (
+                                <ClientSectorsDropDown
+                                    value={field.value}
+                                    onChange={(value) => field.onChange(value)}
+
+                                />
+                            )}
                         />
+
                     </FormCardContent>
                 </div>
 
@@ -80,17 +89,17 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Numéro de téléphone" name={`${formId}.telClient`} className="flex-1 text-highBlue">
                         <NumericInputForm
-                            className="border border-highBlue bg-bgColorLight text-highBlue"
+                            className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                             placeholder="Numéro de téléphone"
                             {...register(`${formId}.telClient`)}
                             maxLength={8}
                         />
                     </FormCardContent>
-                    
+
                     <FormCardContent form={form} label="Numéro de téléphone 2" name={`${formId}.telClient2`} className="flex-1 text-highBlue">
                         <NumericInputForm
-                            className="border border-highBlue bg-bgColorLight text-highBlue"
-                            placeholder="Numéro de téléphone"
+                            className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
+                            placeholder="Numéro de téléphone 2"
                             {...register(`${formId}.telClient2`)}
                             maxLength={8}
                         />
@@ -101,7 +110,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="text-whiteSecond">
                     <FormCardContent form={form} label="Email" name={`${formId}.email`} className="flex-1 text-highBlue">
                         <Input
-                            className="border border-highBlue bg-bgColorLight text-highBlue"
+                            className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                             placeholder="Email"
                             {...register(`${formId}.email`)}
                         />

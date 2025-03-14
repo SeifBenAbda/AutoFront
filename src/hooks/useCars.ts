@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCarModels } from '../services/apiService';
 import { useNavigate } from 'react-router-dom';
+import { databaseName } from '../utils/shared_functions';
 
 interface CarModel {
     carId: number;
@@ -18,7 +19,7 @@ const useCarModels = () => {
 
     return useQuery<CarModel[]>({
         queryKey: ['carModels'],
-        queryFn: () => fetchCarModels("Commer_2024_AutoPro", navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchCarModels(databaseName, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
