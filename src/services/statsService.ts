@@ -9,7 +9,6 @@ export const fetchDossierStats = async (
   navigate: (path: string) => void
 ): Promise<DossierStat[]> => {
   const token = getToken();
-  console.log("status", status);
   if (!token) throw new Error("No token found fethcu ser data");
 
   const response = await fetch(`${API_URL}/dashboard/global-stats`, {
@@ -24,7 +23,6 @@ export const fetchDossierStats = async (
     }),
   });
 
-  console.log("response", response);
 
   if (response.status === 401) {
     removeToken();

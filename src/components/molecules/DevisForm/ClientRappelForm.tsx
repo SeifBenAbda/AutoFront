@@ -27,7 +27,6 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
                                     <DatePicker
                                         value={field.value}
                                         onChange={(value)=> {
-                                            console.log(value);
                                             field.onChange(value)
                                         }}
                                         fromYear={new Date().getFullYear()}

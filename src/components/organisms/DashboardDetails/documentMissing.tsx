@@ -15,11 +15,11 @@ function chunkArray<T>(arr: T[], chunkSize: number): T[][] {
 
 // Helper function to format a date as dd/MM/yyyy
 function formatDate(date: string | Date): string {
-    if(date){
+    if (date) {
         const d = new Date(date);
         return d.toLocaleDateString("en-GB");
     }
-    return 'N/A'; // Return 'N/A' if date is invalid or not provided
+    return 'N/A';
 }
 
 const DocumentMissingStats: React.FC = () => {
@@ -33,18 +33,12 @@ const DocumentMissingStats: React.FC = () => {
         setPage(1); // Reset page number on status change
     };
 
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
-
-    if (isError || !data) {
-        return <p>Error: {error?.message || 'No Data Found'}</p>;
-    }
-
     return (
         <div className="w-full max-w-full bg-highBlue rounded-md shadow-none p-6">
             <div className="flex items-center justify-between mb-4">
-                <div className="text-xl text-whiteSecond font-oswald">Dossier(s) pas encore fermé(s) [ {data.meta.totalItems} ]</div>
+                <div className="text-xl text-whiteSecond font-oswald">
+                    Dossier(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]
+                </div>
                 <div className="w-40">
                     <StatusDevisDropDownUntracked value={status} onChange={handleStatusChange} />
                 </div>
@@ -62,7 +56,24 @@ const DocumentMissingStats: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {
+                        {isError ? (
+                            <tr>
+                                <td colSpan={5} className="text-center py-4 text-red-500">
+                                    Error: {error?.message || 'No Data Found'}
+                                </td>
+                            </tr>
+                        ) : isLoading || !data ? (
+                            // Show skeleton rows when loading
+                            Array.from({ length: 5 }).map((_, index) => (
+                                <tr key={index} className="animate-pulse">
+                                    {Array.from({ length: 5 }).map((__, cellIndex) => (
+                                        <td key={cellIndex} className="px-4 py-2 text-center">
+                                            <div className="bg-gray-200 rounded h-4 mx-auto" style={{ width: cellIndex === 3 ? '80px' : '100px' }} />
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))
+                        ) : data.result.length > 0 ? (
                             data.result.map((row: DocumentMissingData) => (
                                 <tr key={row.devisId} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">{row.devisId}</td>
@@ -75,7 +86,7 @@ const DocumentMissingStats: React.FC = () => {
                                         {chunkArray(row.missingDocuments, 2).map((chunk, index) => (
                                             <div key={index}>
                                                 {chunk.map((doc, i) => (
-                                                    <span key={i} className="mr-4 text-center">
+                                                    <span key={i} className="mr-4">
                                                         {doc}
                                                     </span>
                                                 ))}
@@ -84,14 +95,20 @@ const DocumentMissingStats: React.FC = () => {
                                     </td>
                                 </tr>
                             ))
-                        }
+                        ) : (
+                            <tr>
+                                <td colSpan={5} className="text-center py-4">
+                                    No data available
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
 
             <CustomPagination
                 currentPage={page}
-                totalPages={data.meta.totalPages}
+                totalPages={data?.meta.totalPages || 0}
                 onPageChange={(newPage) => setPage(newPage)}
                 containerClassName="flex items-center justify-center mt-4 space-x-2"
                 previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
@@ -100,7 +117,6 @@ const DocumentMissingStats: React.FC = () => {
                 inactivePageClassName="bg-transparent text-gray-200"
                 dotClassName="px-3 py-1 text-whiteSecond"
             />
-            
         </div>
     );
 };
