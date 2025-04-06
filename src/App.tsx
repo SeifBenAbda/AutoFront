@@ -7,6 +7,7 @@ import ItemChangeTrackingPage from './pages/ItemChangeTrackingPage';
 import CarTrackingLayout from './templates/CarTrackingLayout';
 import Loading from './components/atoms/Loading';
 import ProfileUserPage from './pages/ProfileUserPage';
+import DashboardLayout from './templates/DashboardLayout';
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth(); // Use the hook to get user data and determine login state
@@ -43,6 +44,10 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/dashboard"
+          element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />}
+        />
         <Route
           path="/car-request"
           element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />}

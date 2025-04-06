@@ -13,7 +13,7 @@ interface StatusDevisTypes {
     isFiltring?: boolean; // Optional prop to control whether "Tous Statuts" is shown
 }
 
-const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) => {
+const StatusDevisDropDownUntracked = ({ value, onChange, isFiltring }: StatusDevisTypes) => {
     const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     // Keep track of the initial value
     const initialValueRef = useRef<string | undefined>(value);
@@ -35,43 +35,13 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
         
         // Always base options on the initial value, not the current value
         switch (initialValueRef.current) {
-            case "En Cours":
-                return [
-                    { key: "En Cours", value: "En Cours" },
-                    { key: "Réservé", value: "Réservé" },
-                    { key: "Annulé", value: "Annulé" },
-                ];
-            case "Réservé":
-                return [
-                    { key: "Réservé", value: "Réservé" },
-                    { key: "HDSI", value: "HDSI" },
-                    { key: "Facturé", value: "Facturé" },
-                    { key: "Annulé", value: "Annulé" },
-                ];
-            case "HDSI":
-                return [
-                    { key: "HDSI", value: "HDSI" },
-                    { key: "Facturé", value: "Facturé" },
-                    { key: "Annulé", value: "Annulé" },
-                ];
-            case "Facturé":
-                return [
-                    { key: "Facturé", value: "Facturé" },
-                    { key: "Livré", value: "Livré" },
-                    { key: "Annulé", value: "Annulé" },
-                ];
-            case "Annulé":
-                // No options when initial status is cancelled
-                return [];
             default:
                 // Default options for other initial statuses
                 return [
-                    { key: "En Cours", value: "En Cours" },
+                   
                     { key: "Réservé", value: "Réservé" },
                     { key: "HDSI", value: "HDSI" },
                     { key: "Facturé", value: "Facturé" },
-                    { key: "Livré", value: "Livré" },
-                    { key: "Annulé", value: "Annulé" },
                 ];
         }
     };
@@ -99,4 +69,4 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
     );
 };
 
-export default StatusDevisDropDown;
+export default StatusDevisDropDownUntracked;

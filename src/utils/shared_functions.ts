@@ -1,7 +1,7 @@
 import { Devis } from "../types/devisTypes";
 
 
-export const databaseName = "AutoPro_Platform";
+export const databaseName = "AutoPro_Platform_Testing";
 
 const isModificationFactureCorrect = (devis: Devis): boolean => {
         if(!devis.devisFacture.FactureNumero) {

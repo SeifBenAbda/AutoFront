@@ -107,6 +107,7 @@ export interface Rappel{
   UpdatedBy : string | undefined , 
   UpdatedAt : Date | undefined , 
   RappelContent:string | undefined
+  isClosed:boolean | undefined ,
 }
 
 

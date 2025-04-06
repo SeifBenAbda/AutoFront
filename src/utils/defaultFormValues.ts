@@ -117,7 +117,8 @@ export const defaultRappelForm: Rappel = {
     CreatedAt: new Date(),
     UpdatedBy: "",
     UpdatedAt: new Date(),
-    RappelContent: ""
+    RappelContent: "",
+    isClosed: false,
 };
 
 export const defaultRappelList = [
