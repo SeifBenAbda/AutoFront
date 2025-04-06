@@ -83,17 +83,13 @@ const DocumentMissingStats: React.FC = () => {
                                         {formatDate(row.facturationDate)}
                                     </td>
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">
-                                        {chunkArray(row.missingDocuments, 2).map((chunk, index) => (
-                                            <div key={index} className="flex gap-2 mb-2">
-                                                {chunk.map((doc, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="px-3 py-1 border border-gray-300 rounded-md text-gray-700 bg-gray-50 shadow-sm hover:bg-gray-100 transition-colors"
-                                                    >
-                                                        {doc}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                        {row.missingDocuments.map((doc, i) => (
+                                            <span
+                                                key={i}
+                                                className="px-3 py-1 mr-2 mb-2 inline-block border border-gray-300 rounded-md text-gray-700 bg-gray-50 shadow-sm hover:bg-gray-100 transition-colors"
+                                            >
+                                                {doc}
+                                            </span>
                                         ))}
                                     </td>
                                 </tr>
