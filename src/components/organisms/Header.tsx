@@ -2,6 +2,7 @@
 import React from 'react';
 import NavMenu from '../molecules/NavMenu';
 import AgentInfo from '../molecules/AgentInfo';
+import SessionTimer from './SessionNotification/SessionTimer';
 
 const Header: React.FC = () => {
   return (
@@ -10,6 +11,7 @@ const Header: React.FC = () => {
         <div className='pl-2 flex flex-row space-x-2 items-center'>
           <div className='font-oswald text-lightWhite'>UniversSoft</div>
           <div className='bg-highYellow text-base font-oswald border border-highYellow rounded-md text-center p-1'>BETA</div>
+          <SessionTimer />
         </div>
       </div>
 

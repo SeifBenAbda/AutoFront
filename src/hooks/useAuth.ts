@@ -1,11 +1,11 @@
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
 import { useUser } from '../context/userContext';
-import { User } from '../models/user.model'; // Adjust the path as needed
+import { User } from '../models/user.model';
 
 interface DecodedToken {
-  exp: number; // This is the expiration time in seconds
+  exp: number;
 }
 
 const useAuth = () => {
@@ -15,18 +15,18 @@ const useAuth = () => {
   // Check if the token is expired
   const isTokenExpired = (token: string) => {
     const decoded: DecodedToken = jwtDecode(token);
-    return decoded.exp * 1000 < Date.now(); // Convert exp from seconds to milliseconds and compare
+    return decoded.exp * 1000 < Date.now();
   };
 
   const checkAuth = async () => {
     const token = getToken();
     if (token && !isTokenExpired(token)) {
       try {
-        const userData: User = await fetchUserData(); // Get user data with valid token
+        const userData: User = await fetchUserData();
         if (userData) {
           setUser(userData);
         } else {
-          removeToken(); // Token is invalid
+          removeToken();
           setUser(null);
         }
       } catch (err) {
@@ -35,15 +35,15 @@ const useAuth = () => {
         setUser(null);
       }
     } else {
-      removeToken(); // Token is expired or doesn't exist
+      removeToken();
       setUser(null);
     }
   };
 
   const handleLogin = async (username: string, password: string, navigate: (path: string) => void) => {
     try {
-      const token = await loginUser(username, password);
-      saveToken(token.accessToken);
+      const { accessToken, expiresAt } = await loginUser(username, password);
+      saveToken(accessToken, expiresAt);
       const userData: User = await fetchUserData();
       setUser(userData);
       navigate('/car-request');
