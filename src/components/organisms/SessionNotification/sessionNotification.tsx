@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface SessionNotificationProps {
   isExpiring: boolean;
-  timeRemaining: number | null; 
+  timeRemaining: number | null;
   onExtend: () => void;
   onLogout: () => void;
 }
@@ -14,81 +14,64 @@ const SessionNotification: React.FC<SessionNotificationProps> = ({
   onLogout,
 }) => {
   const [formattedTime, setFormattedTime] = useState<string>('');
-  
-  // Update the formatted time every second for a smooth countdown
+  const lastUpdateRef = useRef<number>(Date.now()); // Use useRef for tracking the last update time
+
   useEffect(() => {
     const updateFormattedTime = () => {
       if (timeRemaining === null) return;
       
-      const remaining = Math.max(0, timeRemaining - (Date.now() - lastUpdate));
+      // Calculate remaining time since the last update
+      const remaining = Math.max(0, timeRemaining - (Date.now() - lastUpdateRef.current));
+      
       const minutes = Math.floor(remaining / 60000);
       const seconds = Math.floor((remaining % 60000) / 1000);
+      
       setFormattedTime(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
     };
-    
-    // Keep track of when we last received a timeRemaining update
-    const lastUpdate = Date.now();
-    
-    // Update immediately
-    updateFormattedTime();
-    
-    // Then update every second
-    const interval = setInterval(updateFormattedTime, 1000);
-    
-    return () => clearInterval(interval);
+
+    lastUpdateRef.current = Date.now(); // Update the last update time
+
+    updateFormattedTime(); // Immediate update
+    const interval = setInterval(updateFormattedTime, 1000); // Update every second
+
+    return () => clearInterval(interval); // Cleanup on unmount
   }, [timeRemaining]);
 
   if (!isExpiring) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        backgroundColor: '#fff',
-        boxShadow: '0 0 10px rgba(0,0,0,0.2)',
-        padding: '20px',
-        borderRadius: '4px',
-        zIndex: 1000,
-        maxWidth: '400px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-      }}
-    >
-      <h3 style={{ margin: '0 0 10px', fontSize: '16px', fontWeight: 'bold' }}>
-        Session Expiring
-      </h3>
-      <p style={{ margin: '0 0 10px', fontSize: '14px' }}>
-        Your session will expire in <span style={{ fontWeight: 'bold' }}>{formattedTime}</span>. 
-        Would you like to extend your session?
+    <div className="fixed bottom-5 right-5 max-w-sm w-full bg-white text-gray-800 rounded-lg shadow-xl ring-1 ring-gray-200 p-5 flex flex-col gap-4 transition transform duration-300 hover:scale-105 font-oswald">
+      <div className="flex items-center gap-2">
+        <svg
+          className="w-5 h-5 text-yellow-500"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v2m0 4h.01M19 11c0 3.866-3.134 7-7 7S5 14.866 5 11 8.134 4 12 4s7 3.134 7 7z"
+          />
+        </svg>
+        <h3 className="text-lg font-semibold">Session en cours d'expiration</h3>
+      </div>
+      <p className="text-sm">
+        Votre session expirera dans <span className="font-bold">{formattedTime}</span>. Voulez-vous prolonger maintenant ?
       </p>
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+      <div className="flex justify-end gap-2">
         <button
           onClick={onLogout}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            backgroundColor: '#f3f4f6',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
+          className="px-4 py-2 rounded bg-red-50 text-red-600 hover:bg-red-100"
         >
-          Logout
+          Déconnexion
         </button>
         <button
           onClick={onExtend}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
+          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
         >
-          Extend Session
+          Prolonger
         </button>
       </div>
     </div>
