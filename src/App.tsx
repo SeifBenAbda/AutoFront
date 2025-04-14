@@ -8,7 +8,7 @@ import CarTrackingLayout from './templates/CarTrackingLayout';
 import Loading from './components/atoms/Loading';
 import ProfileUserPage from './pages/ProfileUserPage';
 import DashboardLayout from './templates/DashboardLayout';
-import SessionNotification from './components/organisms/SessionNotification/sessionNotification';
+import SessionNotification from './components/organisms/SessionNotification/SessionNotification';
 import useSession from './hooks/sessions/useSession';
 
 

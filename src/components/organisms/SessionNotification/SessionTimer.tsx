@@ -9,12 +9,11 @@ interface SessionTimerProps {
 const SessionTimer: React.FC<SessionTimerProps> = ({ onSessionExpiring, onExtended }) => {
   const [timeRemaining, setTimeRemaining] = useState<string>('--:--');
   const [isExpiring, setIsExpiring] = useState(false);
-  const lastExpiresAtRef = useRef<number | null>(null); // ✅ ref instead of state
+  const lastExpiresAtRef = useRef<number | null>(null);
 
   useEffect(() => {
     const updateTimeRemaining = () => {
       const expiresAt = getExpiresAt();
-
       if (!expiresAt) {
         setTimeRemaining('--:--');
         return;

@@ -9,9 +9,7 @@ export const saveToken = (token: string, expiresAt?: number) => {
   localStorage.setItem('authToken', token);
   
   // If expiresAt is provided, save it
-  if (expiresAt) {
-    localStorage.setItem('expiresAt', expiresAt.toString());
-  } else {
+  
     // If not provided, calculate it from the token
     try {
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
@@ -20,7 +18,7 @@ export const saveToken = (token: string, expiresAt?: number) => {
     } catch (error) {
       console.error('Failed to decode token for expiration:', error);
     }
-  }
+  
 };
 
 export const getToken = (): string | null => {

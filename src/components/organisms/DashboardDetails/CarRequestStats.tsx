@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { BarChart, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Bar, YAxis, XAxis } from 'recharts';
 import { useCarStats } from '../../../hooks/useDashboard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
+import CustomMultiSelect from '../../../components/atoms/CustomMultiSelect';
+import useCarModels from '../../../hooks/useCars';
 
-interface CarRequestStatsProps {
-    selectedCars: string[];
-}
 
-const CarRequestStats: React.FC<CarRequestStatsProps> = ({ selectedCars }) => {
+const CarRequestStats: React.FC = () => {
     const [timeframe, setTimeframe] = useState<'TODAY' | 'THIS_MONTH'>('TODAY');
+    const [selectedCars, setSelectedCars] = useState<string[]>([]);
     const { data, isLoading, error } = useCarStats(selectedCars);
-
-    // Collect all seller names from the data (skip if there is a "message")
+    const { data: carModels } = useCarModels();
+    // Collect only seller names with values > 0 for the current timeframe
     const getSellers = () => {
         const sellerSet = new Set<string>();
         Object.values(data || {}).forEach(carData => {
             if ('message' in carData) return;
-            Object.keys(carData).forEach(seller => {
-                if (seller !== 'message') {
+            Object.entries(carData).forEach(([seller, stats]) => {
+                if (seller !== 'message' && stats[timeframe] > 0) {
                     sellerSet.add(seller);
                 }
             });
@@ -58,15 +59,31 @@ const CarRequestStats: React.FC<CarRequestStatsProps> = ({ selectedCars }) => {
                     Vente par jour/ mois (facturé)
                 </div>
                 <div className="flex items-center space-x-4">
-                    <div className="w-64">{/* Car selection component */}</div>
-                    <select
-                        className="border rounded p-2 font-oswald text-gray-700"
-                        value={timeframe}
-                        onChange={(e) => setTimeframe(e.target.value as 'TODAY' | 'THIS_MONTH')}
-                    >
-                        <option value="TODAY">Quotidien</option>
-                        <option value="THIS_MONTH">Mensuel</option>
-                    </select>
+                    <div className="w-64">
+                        <CustomMultiSelect
+                            options={carModels?.map(car => car.carName) || []}
+                            defaultValue={selectedCars}
+                            maxItemsToShow={2}
+                            onChange={(selectedItems) => {
+                                setSelectedCars(selectedItems as string[]);
+                            }}
+                            optionListStyle='absolute mt-1 max-h-60 overflow-auto z-10 bg-normalGrey border border-normalGrey rounded-md shadow-lg'
+                            optionClassName='px-3 py-2 cursor-pointer hover:bg-gray-100 text-highBlue font-oswald'
+                            className="w-full border border-normalGrey bg-normalGrey text-highBlue font-oswald"
+                            placeholder="Sélectionner les voitures"
+                            containerClassName="w-full p-0"
+
+                        />
+                    </div>
+                    <Select value={timeframe} onValueChange={(value) => setTimeframe(value as 'TODAY' | 'THIS_MONTH')}>
+                        <SelectTrigger className="w-32 border border-normalGrey bg-normalGrey text-highBlue font-oswald">
+                            <SelectValue placeholder="Période" />
+                        </SelectTrigger>
+                        <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
+                            <SelectItem value="TODAY" className="text-highBlue font-oswald">Quotidien</SelectItem>
+                            <SelectItem value="THIS_MONTH" className="text-highBlue font-oswald">Mensuel</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
@@ -75,7 +92,7 @@ const CarRequestStats: React.FC<CarRequestStatsProps> = ({ selectedCars }) => {
                     <div className="w-16 h-16 border-t-4 border-b-4 border-white rounded-full animate-spin" />
                 </div>
             ) : error ? (
-                <div className="text-red-500 p-4">Error loading car statistics</div>
+                <div className="text-red-500 p-4">Erreur de chargement des statistiques des voitures</div>
             ) : data && chartData.length > 0 ? (
                 <div className="h-80 mt-4 w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -122,7 +139,7 @@ const CarRequestStats: React.FC<CarRequestStatsProps> = ({ selectedCars }) => {
                 </div>
             ) : (
                 <div className="text-center p-8 bg-gray-100 rounded-lg">
-                    No sales data available for the selected cars
+                    Aucune donnée de vente disponible pour les voitures sélectionnées
                 </div>
             )}
 

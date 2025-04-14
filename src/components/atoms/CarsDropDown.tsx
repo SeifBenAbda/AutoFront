@@ -38,12 +38,12 @@ const CarsDropDown = forwardRef<HTMLButtonElement, CarsDropDownTypes>(
                 </SelectTrigger>
                 <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
                     {isFiltring && (
-                        <SelectItem className={optionStyle} key="Tous types de voitures" value="Tous types de voitures" className='text-highBlue focus:text-highBlue'>
+                        <SelectItem className={optionStyle} key="Tous types de voitures" value="Tous types de voitures" >
                             Tous types de voitures
                         </SelectItem>
                     )}
                     {carModels?.map((car) => (
-                        <SelectItem className={optionStyle} key={car.carId} value={car.carName} className='text-highBlue'>
+                        <SelectItem className={optionStyle} key={car.carId} value={car.carName}>
                             {car.carName}
                         </SelectItem>
                     ))}

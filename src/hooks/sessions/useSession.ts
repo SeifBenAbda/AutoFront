@@ -21,11 +21,10 @@ const useSession = (options: UseSessionOptions = {}) => {
     const [isTabActive, setIsTabActive] = useState(true);
     const [hasExtended, setHasExtended] = useState(false);
   
-    const lastActivityRef = useRef(Date.now()); // ✅ useRef instead of useState
+    const lastActivityRef = useRef(Date.now());
   
     const navigate = useNavigate();
   
-    // ✅ Passive activity tracking WITHOUT causing re-renders
     useEffect(() => {
       const updateActivity = () => {
         lastActivityRef.current = Date.now();

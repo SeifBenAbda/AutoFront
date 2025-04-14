@@ -34,7 +34,7 @@ const DocumentMissingStats: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-full bg-highBlue rounded-md shadow-none p-6">
+        <div className="w-full max-w-full bg-highGrey  rounded-md shadow-none p-6">
             <div className="flex items-center justify-between mb-4">
                 <div className="text-xl text-whiteSecond font-oswald">
                     Dossier(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]

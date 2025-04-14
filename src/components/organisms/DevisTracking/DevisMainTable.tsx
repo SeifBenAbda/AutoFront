@@ -37,7 +37,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
   // Fetch data from the API based on current filters and pagination
   const { data, isLoading, error } = useDevis(
-    page, searchValue, selectedStatus, 
+    page, searchValue, selectedStatus,
     selectedPriority, selectedCars, selectedClients,
     dateRappelFrom,
     dateRappelTo);
@@ -120,14 +120,14 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
             <div className="w-auto">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button 
+                  <Button
                     className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
                   >
                     <FilterIcon size={16} />
                     <span className='font-oswald'>Status & Priorité</span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent 
+                <PopoverContent
                   className="w-64 p-3 border border-gray-200 shadow-md bg-white rounded-md"
                   align="start"
                   sideOffset={5}
@@ -160,7 +160,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                 </PopoverContent>
               </Popover>
             </div>
-            
+
             <div className="w-auto">
               <CarsMultiSelect
                 selectedValues={selectedCars}
@@ -175,19 +175,19 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                 isFiltering={true}
               />
             </div>
-            
+
             {/* Date Range Filters in a popover */}
             <div className="w-auto">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button 
+                  <Button
                     className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
                   >
                     <CalendarIcon size={16} />
                     <span className='font-oswald'>Période (Rappels)</span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent 
+                <PopoverContent
                   className="w-96 p-4 border border-gray-200 shadow-md bg-white rounded-md"
                   align="start"
                   sideOffset={5}
@@ -207,7 +207,6 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                         onChange={handleDateRappelFromChange}
                         fromYear={new Date().getFullYear() - 1}
                         toYear={new Date().getFullYear() + 1}
-                        
                       />
                     </div>
                     <div className="w-1/2">
@@ -217,16 +216,27 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                         onChange={handleDateRappelToChange}
                         fromYear={new Date().getFullYear() - 1}
                         toYear={new Date().getFullYear() + 1}
-                        
                       />
                     </div>
+                  </div>
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      onClick={() => {
+                        setDateRappelFrom(undefined);
+                        setDateRappelTo(undefined);
+                        setPage(1);
+                      }}
+                      className="text-xs px-3 py-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
+                    >
+                      Réinitialiser les dates
+                    </Button>
                   </div>
                 </PopoverContent>
               </Popover>
             </div>
           </div>
         </div>
-        
+
         {/* Search Box */}
         <div className="w-full md:w-auto">
           <SearchBar onSearch={handleSearch} searchValue={searchValue} />
@@ -242,7 +252,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []}  />
+              <TableData data={data?.data || []} />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable
