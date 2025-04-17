@@ -107,7 +107,7 @@ export default function General() {
                     <CardContent className="w-full">
                         <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">Groupe</label>
                         <div className="bg-lightWhite text-center p-2 h-10 border rounded-md mt-1 font-oswald cursor-not-allowed">
-                            {user?.groupe}
+                            {user?.role}
                         </div>
                     </CardContent>
                 </div>

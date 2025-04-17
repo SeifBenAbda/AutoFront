@@ -124,7 +124,7 @@ export function DevisDetailsPage({
 
     // Determine if the user is an admin
     useEffect(() => {
-        if (user?.groupe === 'ADMIN') {
+        if (user?.role === 'ADMIN') {
             setIsAdmin(true);
         }
     }, [user]);

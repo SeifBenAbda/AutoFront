@@ -54,7 +54,7 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                                 <th className="text-left py-3 px-4 font-oswald text-sm text-gray-600 uppercase tracking-wider w-[5%]">N°</th>
                                 <th className="text-left py-3 px-4 font-oswald text-sm text-gray-600 uppercase tracking-wider w-[20%]">Date</th>
                                 <th className="text-left py-3 px-4 font-oswald text-sm text-gray-600 uppercase tracking-wider w-[55%]">Contenu</th>
-                                {user?.groupe === 'ADMIN' && (
+                                {user?.role === 'ADMIN' && (
                                     <th className="text-left py-3 px-4 font-oswald text-sm text-gray-600 uppercase tracking-wider w-[20%]">Statut</th>
                                 )}
                             </tr>
@@ -100,7 +100,7 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                                             />
                                         )}
                                     </td>
-                                    {user?.groupe === 'ADMIN' && (
+                                    {user?.role === 'ADMIN' && (
                                         <td className="py-3 px-4 align-middle">
                                             <button 
                                                 onClick={() => handleToggleClosed(rappel.RappelId!, rappel.isClosed)}
@@ -127,7 +127,7 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                             ))}
                             {rappels.length === 0 && (
                                 <tr>
-                                    <td colSpan={user?.groupe === 'ADMIN' ? 4 : 3} className="py-8 text-center text-gray-500">
+                                    <td colSpan={user?.role === 'ADMIN' ? 4 : 3} className="py-8 text-center text-gray-500">
                                         Aucun rappel trouvé
                                     </td>
                                 </tr>
