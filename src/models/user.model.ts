@@ -2,15 +2,15 @@
 
 export interface User {
   id?: number;
-  first_name: string;
-  last_name: string;
+  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone_number?: string;
+  phoneNumber?: string;
   position?: string;
-  profile_picture_url?: string;
-  is_active: boolean;
-  date_joined?: Date;
-  last_login?: Date | null;
-  password_hash: string;
+  profilePictureUrl?: string;
+  isActive: boolean;
+  dateJoined?: Date;
+  lastLogin?: Date | null;
   role: string;
 }

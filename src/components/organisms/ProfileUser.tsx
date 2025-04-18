@@ -56,7 +56,7 @@ export function ProfileUser() {
 
             <Card className="w-11/12 bg-transparent border-none shadow-none">
                 {/* Horizontal Steps */}
-                <div className="flex flex-row justify-start pt-2">
+                <div className="flex flex-row justify-start pt-1">
                     {steps.map((step, index) => (
                         <div
                             key={index}
@@ -72,7 +72,7 @@ export function ProfileUser() {
                 </div>
 
                 {/* Step content under the buttons */}
-                <div className="mt-4 pt-2">
+                <div className="mt-4 pt-0">
                     {renderStepContent()}
                 </div>
             </Card>
