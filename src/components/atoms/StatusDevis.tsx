@@ -17,7 +17,7 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
     const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     // Keep track of the initial value
     const initialValueRef = useRef<string | undefined>(value);
-    
+
     // Function to get available status options based on INITIAL value regardless of current value
     const getAvailableStatusOptions = () => {
         if (isFiltring) {
@@ -32,7 +32,7 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                 { key: "Annulé", value: "Annulé" },
             ];
         }
-        
+
         // Always base options on the initial value, not the current value
         switch (initialValueRef.current) {
             case "En Cours":
@@ -60,6 +60,11 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                     { key: "Livré", value: "Livré" },
                     { key: "Annulé", value: "Annulé" },
                 ];
+            case "Livré":
+                return [
+                    { key: "Livré", value: "Livré" },
+                    { key: "Annulé", value: "Annulé" },
+                ];
             case "Annulé":
                 // No options when initial status is cancelled
                 return [];
@@ -75,20 +80,20 @@ const StatusDevisDropDown = ({ value, onChange, isFiltring }: StatusDevisTypes) 
                 ];
         }
     };
-    
+
     const isDisabled = initialValueRef.current === "Annulé" && !isFiltring;
     const statusOptions = getAvailableStatusOptions();
-    
+
     return (
         <Select onValueChange={onChange} disabled={isDisabled}>
             <SelectTrigger className={`w-full border border-normalGrey bg-normalGrey font-oswald ${isDisabled ? 'opacity-60 cursor-not-allowed' : ''}`}>
-                <SelectValue placeholder={value ? value?.toString() : "Tous Status"} className={hoverItem}/>
+                <SelectValue placeholder={value ? value?.toString() : "Tous Status"} className={hoverItem} />
             </SelectTrigger>
             <SelectContent className="bg-normalGrey border-normalGrey">
                 {statusOptions.map(option => (
-                    <SelectItem 
-                        key={option.key} 
-                        value={option.value} 
+                    <SelectItem
+                        key={option.key}
+                        value={option.value}
                         className={hoverItem}
                     >
                         {option.key}

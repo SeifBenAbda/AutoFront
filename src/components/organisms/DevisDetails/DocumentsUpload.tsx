@@ -25,10 +25,9 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
 
-    // Initialize the uploadFiles function without invoking it
-    const { refetch: uploadFiles } = useUploadFiles({
+    // Use mutation instead of query
+    const uploadFilesMutation = useUploadFiles({
         devisId: devis.DevisId!,
-        files: selectedFiles.map(doc => ({ file: doc.file, typeDocument: doc.typeDocument })), // Use an object to pass both file and typeDocument
         navigate,
     });
 
@@ -38,18 +37,28 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
             return;
         }
 
-        setUploadMessage(null); // Clear any previous message
-        setLoading(true); // Set loading to true
+        if (loading) return;
+        setUploadMessage(null);
+        setLoading(true);
+
         try {
-            await uploadFiles(); // Trigger the upload
-            setUploadMessage('Upload successful!'); // Set success message
-            setSelectedFiles([]); // Clear selected files
-            onFileSelect([]); // Clear the file selection in parent component
+            // Pass files to the mutation
+            await uploadFilesMutation.mutateAsync(
+                selectedFiles.map(doc => ({ 
+                    file: doc.file, 
+                    typeDocument: doc.typeDocument 
+                }))
+            );
+            
+            setUploadMessage('Upload successful!');
+            setSelectedFiles([]);
+            onFileSelect([]);
             onUploadSuccess();
         } catch (error) {
-            setUploadMessage('Upload failed! Please try again.'); // Set failure message
+            console.error("Upload error:", error);
+            setUploadMessage('Upload failed! Please try again.');
         } finally {
-            setLoading(false); // Set loading to false after upload completes
+            setLoading(false);
         }
     };
 

@@ -99,7 +99,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             client: updatedClient,
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 
@@ -108,7 +108,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             ...updatedDevis, // Spread the existing devis and updatedDevis fields
             UpdatedAt: new Date(), // Update timestamp
-            UpdatedBy: user?.nomUser || "Unknown User" // Set user name or fallback
+            UpdatedBy: user?.username || "Unknown User" // Set user name or fallback
         }));
     };
 
@@ -119,7 +119,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             carRequests: updatedCarRequest ? [updatedCarRequest] : [],
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 
@@ -129,7 +129,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             rappels: updatedRappels,
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 

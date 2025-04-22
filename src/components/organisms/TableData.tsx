@@ -12,16 +12,16 @@ import { useNavigate } from "react-router-dom";
 import { DevisDetailsPage } from "./DevisDetails/DevisDetailsNewDialog";
 import { useDeletedDevis } from "../../hooks/useDevis";
 import { useUser } from "../../context/userContext";
-import { 
-  Edit, 
-  Hash, 
-  AlertTriangle, 
-  User, 
-  Phone, 
-  Car, 
-  Bell, 
-  Calendar, 
-  CheckCircle2 
+import {
+  Edit,
+  Hash,
+  AlertTriangle,
+  User,
+  Phone,
+  Car,
+  Bell,
+  Calendar,
+  CheckCircle2
 } from "lucide-react";
 
 interface DataTableProps {
@@ -46,90 +46,107 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
   // Status badge component
   const StatusBadge = ({ status }: { status: string }) => {
     const getStatusColor = () => {
-      switch(status?.toLowerCase()) {
-        case 'facture':
+      switch (status?.toLowerCase()) {
         case 'facturé':
           return 'bg-green-50 text-green-800 border border-green-300';
-        case 'completed':
-        case 'terminé':
-        case 'active':
-          return 'bg-emerald-100 text-emerald-700 border border-emerald-200';
-        case 'pending':
-        case 'en attente':
-        case 'near expire':
-          return 'bg-amber-100 text-amber-700 border border-amber-200';
-        case 'reserve':
         case 'réservé':
           return 'bg-yellow-50 text-yellow-800 border border-yellow-300';
-        case 'cancelled':
         case 'annulé':
-        case 'expired':
-          return 'bg-red-100 text-red-700 border border-red-200';
+          return 'bg-red-50 text-red-800 border border-red-300';
         case 'draft':
           return 'bg-blue-100 text-blue-700 border border-blue-200';
+        case 'livré':
+          return 'bg-purple-50 text-purple-700 border border-purple-200';
         default:
           return 'bg-gray-100 text-gray-700 border border-gray-200';
       }
     };
-    
-    const isBilled = status?.toLowerCase() === 'facture' || status?.toLowerCase() === 'facturé';
-    const isCancelled = status?.toLowerCase() === 'cancelled' || status?.toLowerCase() === 'annulé';
-    const isReserved = status?.toLowerCase() === 'reserve' || status?.toLowerCase() === 'réservé';
-    
-    return (
-      <span className={`px-3 py-1 text-xs font-medium rounded-md inline-flex items-center ${getStatusColor()}`}>
-      {isBilled ? (
-        <>
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             className="w-3.5 h-3.5 mr-1 animate-pulse" 
-             viewBox="0 0 24 24" 
-             fill="none" 
-             stroke="currentColor" 
-             strokeWidth="2">
-          <path d="M9 14l6-6" />
-          <rect width="18" height="18" x="3" y="3" rx="2" className="animate-[pulse_2s_ease-in-out_infinite]" />
-          <path d="M9 8h6M9 12h6M9 16h6" />
-        </svg>
-        <span className="animate-[fadeIn_1s_ease-in-out]">Facturé</span>
-        </>
-      ) : isCancelled ? (
-        <>
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             className="w-3.5 h-3.5 mr-1 animate-spin-slow" 
-             viewBox="0 0 24 24" 
-             fill="none" 
-             stroke="currentColor" 
-             strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M15 9l-6 6" />
-          <path d="M9 9l6 6" />
-        </svg>
-        <span className="animate-[fadeIn_1s_ease-in-out]">Annulé</span>
-        </>
-      ) : isReserved ? (
-        <>
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             className="w-3.5 h-3.5 mr-1 " 
-             viewBox="0 0 24 24" 
-             fill="none" 
-             stroke="currentColor" 
-             strokeWidth="2">
-          <path d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z" />
-          <circle cx="12" cy="14" r="2" />
-        </svg>
-        <span className="animate-[fadeIn_1s_ease-in-out]">Réservé</span>
-        </>
-      ) : status}
-      </span>
-    );  
-  };
- 
 
-  
+    const isBilled = status?.toLowerCase() === 'facturé';
+    const isCancelled = status?.toLowerCase() === 'annulé';
+    const isReserved = status?.toLowerCase() === 'réservé';
+    const isLivred = status?.toLowerCase() === 'livré';
+
+    return (
+      <span className={`px-3 w-[100px] justify-center py-1 text-xs font-medium rounded-md inline-flex items-center ${getStatusColor()}`}>
+        {isBilled ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 animate-pulse"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M9 14l6-6" />
+              <rect width="18" height="18" x="3" y="3" rx="2" className="animate-[pulse_2s_ease-in-out_infinite]" />
+              <path d="M9 8h6M9 12h6M9 16h6" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Facturé</span>
+          </>
+        ) : isCancelled ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 animate-spin-slow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M15 9l-6 6" />
+              <path d="M9 9l6 6" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Annulé</span>
+          </>
+        ) : isReserved ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 "
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z" />
+              <circle cx="12" cy="14" r="2" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Réservé</span>
+          </>
+        ) :
+
+          isLivred ?
+            (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 mr-1 animate-bounce"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2">
+                  {/* Car body */}
+                  <path d="M5 17h14v-6H5v6z" />
+                  {/* Car top */}
+                  <path d="M7 11V9c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2" />
+                  {/* Wheels */}
+                  <circle cx="7" cy="17" r="2" />
+                  <circle cx="17" cy="17" r="2" />
+                  {/* Motion lines */}
+                  <path d="M3 17h-2" className="animate-pulse" />
+                  <path d="M23 17h-2" className="animate-pulse" />
+                </svg>
+                <span className="transition-opacity duration-1000">Livré</span>
+              </>
+            ) :
+
+            status}
+      </span>
+    );
+  };
+
+
+
   // Priority badge component
   const PriorityBadge = ({ priority }: { priority: string }) => {
     const getPriorityColor = () => {
-      switch(priority?.toLowerCase()) {
+      switch (priority?.toLowerCase()) {
         case 'high':
         case 'haute':
           return 'bg-rose-50 text-rose-700 border border-rose-200';
@@ -143,9 +160,9 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
           return 'bg-slate-50 text-slate-700 border border-slate-200';
       }
     };
-    
+
     return (
-      <span className={`px-2.5 py-0.5 text-xs font-medium rounded-md inline-flex items-center ${getPriorityColor()}`}>
+      <span className={`px-2.5 w-[80px] justify-center py-1 text-xs font-medium rounded-md inline-flex items-center ${getPriorityColor()}`}>
         {priority}
       </span>
     );
@@ -154,18 +171,18 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
   // Helper function to get the closest upcoming reminder
   const getClosestReminder = (rappels: any[] | undefined) => {
     if (!rappels || rappels.length === 0) return null;
-    
+
     const now = new Date();
     // Filter future reminders
     const futureRappels = rappels
       .filter(rappel => new Date(rappel.RappelDate) >= now)
       .sort((a, b) => new Date(a.RappelDate).getTime() - new Date(b.RappelDate).getTime());
-    
+
     // If there are future reminders, return the closest one
     if (futureRappels.length > 0) return futureRappels[0];
-    
+
     // Otherwise return the most recent past reminder
-    return rappels.sort((a, b) => 
+    return rappels.sort((a, b) =>
       new Date(b.RappelDate).getTime() - new Date(a.RappelDate).getTime()
     )[0];
   };
@@ -246,8 +263,8 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
       accessorKey: "nextReminder",
       cell: ({ row }) => {
         const closestReminder = getClosestReminder(row.original.rappels);
-        return closestReminder 
-          ? new Date(closestReminder.RappelDate).toLocaleDateString('fr-FR') 
+        return closestReminder
+          ? new Date(closestReminder.RappelDate).toLocaleDateString('fr-FR')
           : "Aucun";
       },
     },
@@ -361,9 +378,17 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
           <tbody className="bg-white divide-y divide-gray-200 ">
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <tr 
-                  key={row.id} 
-                  className="hover:bg-gray-50 transition-colors"
+                <tr
+                  key={row.id}
+                  className={`hover:bg-gray-50 transition-colors ${
+                  row.original.rappels?.some(rappel => {
+                    const rappelDate = new Date(rappel.RappelDate!);
+                    const today = new Date();
+                    return rappelDate.getDate() === today.getDate() && 
+                       rappelDate.getMonth() === today.getMonth() &&
+                       rappelDate.getFullYear() === today.getFullYear();
+                  }) ? 'bg-red-100 border' : ''
+                  }`}
                 >
                   {row.getVisibleCells().map(cell => (
                     <td key={cell.id} className="px-4 py-3 text-sm text-black whitespace-nowrap text-center">
@@ -400,7 +425,7 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
                   {row.StatusDevis && <StatusBadge status={row.StatusDevis} />}
                 </div>
               </div>
-              
+
               <div className="mt-2.5 border-t border-gray-100 pt-2.5">
                 <div className="grid grid-cols-2 gap-3">
                   {row.client?.nomClient && (
@@ -410,7 +435,7 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
                       <p className="text-black text-xs">{row.client?.telClient}</p>
                     </div>
                   )}
-                  
+
                   {row.carRequests?.[0]?.CarModel && (
                     <div>
                       <div className="text-xs font-medium text-black">Véhicule</div>
@@ -419,7 +444,7 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
                   )}
                 </div>
               </div>
-              
+
               <div className="mt-2.5 flex justify-between items-center border-t border-gray-100 pt-2.5">
                 <div className="flex items-center">
                   {row.PriorityDevis && <PriorityBadge priority={row.PriorityDevis} />}
@@ -427,7 +452,7 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
                     {row.DateCreation ? new Date(row.DateCreation).toLocaleDateString('fr-FR') : ''}
                   </span>
                 </div>
-                
+
                 <button
                   onClick={() => handleOpenSheet(row)}
                   className="inline-flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-md transition-colors"
@@ -438,7 +463,7 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
               </div>
             </div>
           ))}
-          
+
           {tableData.length === 0 && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center text-black">
               Aucun résultat

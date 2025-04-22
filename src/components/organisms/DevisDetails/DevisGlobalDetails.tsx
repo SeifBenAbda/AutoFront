@@ -80,7 +80,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         //  setIsLoading(true);
         try {
             let updatedDevis: Devis = { ...devis, StatusDevis: newStatus };
-
             switch (newStatus) {
                 case "Réservé": {
                     //const counter = await fetchNumBonCommande(databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
@@ -89,7 +88,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         ...updatedDevis,
                         devisReserved: {
                             ...devis.devisReserved,
-                            ReservedBy: user?.nomUser,
+                            ReservedBy: user?.username,
                             DateReservation: new Date()
                         }
                     };
@@ -126,7 +125,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     ...updatedDevis,
                     devisReserved: {
                         ...updatedDevis.devisReserved,
-                        DateReservation: new Date()
+                        DateReservation: updatedDevis.devisReserved.DateReservation != new Date() && updatedDevis.devisReserved.DateReservation != null ?
+                            updatedDevis.devisReserved.DateReservation : new Date()
                     }
                 };
             }
@@ -136,7 +136,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     ...updatedDevis,
                     devisReserved: {
                         ...devis.devisReserved,
-                        CanceledBy: user?.nomUser
+                        CanceledBy: user?.username
                     }
                 };
             }
@@ -202,6 +202,23 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         });
     }
 
+    const handleChangeDevis = (field: keyof Devis, value: string | Date | undefined) => {
+        onUpdate({
+            ...devis,
+            [field]: value,
+        });
+    };
+
+    const handleDateLivraisonChange = (date: Date | undefined) => {
+        onUpdate({
+            ...devis,
+            devisFacture: {
+                ...devis.devisFacture,
+                DateLivraison: date || new Date()
+            }
+        });
+    }
+
     const handleChangedevisFacture = (field: keyof DevisFacture, value: string | boolean) => {
         const updatedDevis = {
             ...devis,
@@ -251,6 +268,46 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
         onUpdate(updatedDevis);
     };
+
+
+    const livraisonDetails = () => {
+        return (
+            <div className="col-span-2">
+                <CardTitle className="text-xl text-highBlue font-oswald text-left w-full pl-3 mb-2">Informations après-vente</CardTitle>
+                <div className="flex gap-4 w-full">
+                    <CardContent className="w-full">
+                        <Label className="relative text-sm font-medium text-highBlue ">Immatriculation</Label>
+                        <Input
+                            maxLength={30}
+                            value={devis.carRequests[0].Immatriculation || ""}
+                            onChange={(e) => {
+                                const updatedDevis = {
+                                    ...devis,
+                                    carRequests: devis.carRequests.map((req, index) =>
+                                        index === 0 ? { ...req, Immatriculation: e.target.value } : req
+                                    )
+                                };
+                                onUpdate(updatedDevis);
+                            }}
+                            placeholder="Numéro d'immatriculation"
+                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                        />
+                    </CardContent>
+
+                    <CardContent className="w-full">
+                        <Label className="relative text-sm font-medium text-highBlue ">Date de Livraison</Label>
+                        <DatePicker
+                            value={devis.devisFacture.DateLivraison}
+                            onChange={handleDateLivraisonChange}
+                            fromYear={new Date().getFullYear()}
+                            toYear={new Date().getFullYear() + 1}
+                        />
+                    </CardContent>
+                </div>
+            </div>
+        );
+    }
+
 
 
 
@@ -310,9 +367,11 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </CardContent>
                 )}
 
-                {devis.StatusDevis === "Réservé" && reservedSettings()}
+                {(devis.StatusDevis === "Réservé" || devis.StatusDevis === "Facturé" || devis.StatusDevis === "HDSI" || devis.StatusDevis === "Livré") && reservedSettings()}
 
-                {devis.StatusDevis === "Facturé" && facturationSettings()}
+                {(devis.StatusDevis === "Facturé" || devis.StatusDevis === "Livré") && facturationSettings()}
+
+                {devis.StatusDevis === "Livré" && livraisonDetails()}
             </>
         );
     };
@@ -330,10 +389,20 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex flex-row w-full gap-4 flex-wrap">
                     <CardContent className="flex-1 min-w-[200px]">
                         <Label className="relative text-sm font-medium text-highBlue">Type de paiement</Label>
-                        <PayementMethod
-                            value={devis.devisPayementDetails.PaymentMethod}
-                            onChange={(value) => handleChangedevisPayementDetails("PaymentMethod", value)}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+
+                            (
+                                <PayementMethod
+                                    value={devis.devisPayementDetails.PaymentMethod}
+                                    onChange={(value) => handleChangedevisPayementDetails("PaymentMethod", value)}
+                                />
+                            ) :
+                            (
+                                <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                    <span>{devis.devisPayementDetails.PaymentMethod}</span>
+                                </div>
+                            )
+                        }
                     </CardContent>
 
                     <CardContent className="flex-1 min-w-[200px]">
@@ -415,41 +484,48 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
     const reservedSettings = () => {
         return (
-            <div className="flex gap-4 w-full">
-                {devisBcNumber !== 0 && (
-                    <CardContent className="w-1/2 flex flex-col overflow-hidden">
-                        <Label
-                            className="text-sm font-medium text-highBlue mb-1 whitespace-nowrap overflow-hidden text-ellipsis"
-                            title="Numéro Bon de Commande"
-                        >
-                            Numéro Bon de Commande
-                        </Label>
-                        <div
-                            className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}
-                        >
-                            {devisBcNumber}
-                        </div>
-                    </CardContent>)}
+            <>
+                <CardTitle className="text-xl text-highBlue  text-left w-full pl-3 pr-3 mb-2 flex flex-row justify-between items-center">
+                    <span className="font-oswald">Réservation</span>
 
-                {isAdmin ? (
-                    <CardContent className={`${devisBcNumber === 0 ? 'w-full' : 'w-1/2'} `}>
-                        <Label className="relative text-sm font-medium text-highBlue">Date de Réservation</Label>
-                        <DatePicker
-                            value={devis.devisReserved?.DateReservation ?? new Date()}
-                            onChange={handleDateReservationChange}
-                            fromYear={new Date().getFullYear()}
-                            toYear={new Date().getFullYear() + 1}
-                        />
-                    </CardContent>
-                ) : (
-                    <CardContent className={`${devisBcNumber === 0 ? 'w-full' : 'w-1/2'} `}>
-                        <Label className="relative text-sm font-medium text-highBlue">Date de Réservation</Label>
-                        <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
-                            <span>{devis.devisReserved?.DateReservation ? new Date(devis.devisReserved.DateReservation).toLocaleDateString() : new Date().toLocaleDateString()}</span>
-                        </div>
-                    </CardContent>
-                )}
-            </div>
+                </CardTitle>
+
+                <div className="flex gap-4 w-full">
+                    {devisBcNumber !== 0 && (
+                        <CardContent className="w-1/2 flex flex-col overflow-hidden">
+                            <Label
+                                className="text-sm font-medium text-highBlue mb-1 whitespace-nowrap overflow-hidden text-ellipsis"
+                                title="Numéro Bon de Commande"
+                            >
+                                Numéro Bon de Commande
+                            </Label>
+                            <div
+                                className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}
+                            >
+                                {devisBcNumber}
+                            </div>
+                        </CardContent>)}
+
+                    {isAdmin ? (
+                        <CardContent className={`${devisBcNumber === 0 ? 'w-full' : 'w-1/2'} `}>
+                            <Label className="relative text-sm font-medium text-highBlue">Date de Réservation</Label>
+                            <DatePicker
+                                value={devis.devisReserved?.DateReservation ?? new Date()}
+                                onChange={handleDateReservationChange}
+                                fromYear={new Date().getFullYear()}
+                                toYear={new Date().getFullYear() + 1}
+                            />
+                        </CardContent>
+                    ) : (
+                        <CardContent className={`${devisBcNumber === 0 ? 'w-full' : 'w-1/2'} `}>
+                            <Label className="relative text-sm font-medium text-highBlue">Date de Réservation</Label>
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.devisReserved?.DateReservation ? new Date(devis.devisReserved.DateReservation).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+                            </div>
+                        </CardContent>
+                    )}
+                </div>
+            </>
         )
     };
 
@@ -467,20 +543,35 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             <Label className=" relative text-sm font-medium text-highBlue ">Numéro de Facture</Label>
                             {devis.devisFacture?.FactureNumero == null || devis.devisFacture?.FactureNumero.length < 5 && <span className="text-lightRed font-oswald">*</span>}
                         </div>
-                        <NumericInput
-                            value={devis.devisFacture?.FactureNumero || ""}
-                            onChange={(value) => handleChangedevisFacture("FactureNumero", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ? (
+                            <NumericInput
+                                value={devis.devisFacture?.FactureNumero || ""}
+                                onChange={(value) => handleChangedevisFacture("FactureNumero", value.toString())}
+                                className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                            />
+                        ) : (
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.devisFacture?.FactureNumero || ""}</span>
+                            </div>
+                        )}
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Date de Facture</Label>
-                        <DatePicker
-                            value={devis.devisFacture?.DateFacturation ?? new Date()}
-                            onChange={handleDateFacturationChange}
-                            fromYear={new Date().getFullYear()}
-                            toYear={new Date().getFullYear() + 1}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <DatePicker
+                                    value={devis.devisFacture?.DateFacturation ?? new Date()}
+                                    onChange={handleDateFacturationChange}
+                                    fromYear={new Date().getFullYear()}
+                                    toYear={new Date().getFullYear() + 1}
+                                />
+                            ) : (
+                                <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                    <span>{devis.devisFacture?.DateFacturation ? new Date(devis.devisFacture.DateFacturation).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+                                </div>
+
+                            )
+                        }
                     </CardContent>
                 </div>
                 {devis.devisFacture?.StatutBRD && bordoreauDetails()}
@@ -523,57 +614,103 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Demande Remise</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.DemandeRemise || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("DemandeRemise", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.DemandeRemise || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("DemandeRemise", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            ) : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.DemandeRemise || "0"}</span>
+                                </div>
+                            )}
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Remise acceptée (DT)</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.RemiseAccepte || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("RemiseAccepte", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.RemiseAccepte || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("RemiseAccepte", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            )
+                            : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.RemiseAccepte || "0"}</span>
+                                </div>
+                            )}
                     </CardContent>
                 </div>
 
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Demande de Franchise</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.DemandeDeFranchise || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("DemandeDeFranchise", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.DemandeDeFranchise || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("DemandeDeFranchise", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            ) : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.DemandeDeFranchise || "0"}</span>
+                                </div>
+                            )}
+
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Franchise acceptée (Jours)</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.FranchiseAccepte || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("FranchiseAccepte", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.FranchiseAccepte || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("FranchiseAccepte", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            )
+                            : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.FranchiseAccepte || "0"}</span>
+                                </div>
+                            )}
                     </CardContent>
                 </div>
 
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Voucher</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.Voucher || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("Voucher", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.Voucher || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("Voucher", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            ) : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.Voucher || ""}</span>
+                                </div>
+                            )}
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Voucher accepté</Label>
-                        <NumericInput
-                            value={devis.gesteCommer?.VoucherAccepte || ""}
-                            onChange={(value) => handleChangedevisGesteCommer("VoucherAccepte", value.toString())}
-                            className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                        />
+                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                            (
+                                <NumericInput
+                                    value={devis.gesteCommer?.VoucherAccepte || ""}
+                                    onChange={(value) => handleChangedevisGesteCommer("VoucherAccepte", value.toString())}
+                                    className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                                />
+                            )
+                            : (
+                                <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
+                                    <span>{devis.gesteCommer?.VoucherAccepte || ""}</span>
+                                </div>
+                            )}
                     </CardContent>
                 </div>
             </>
@@ -602,15 +739,18 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             className=" border border-highBlue rounded-md h-5 w-5"
                             id="statusBrd" />
                     </div>)}
-                
-                    {devis.StatusDevis != "Annulé" &&  (<div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
+
+                {
+                /*
+                devis.StatusDevis != "Annulé" && (<div className="flex flex-row items-center space-x-2 bg-blueCiel p-1 border border-blueCiel rounded-md">
                     <div className="text-sm font-normal ">Véhicule est livré</div>
                     <Checkbox
                         checked={devis.devisFacture?.isLivraison}
                         onCheckedChange={(e) => handleChangedevisFacture("isLivraison", e.valueOf())}
                         className=" border border-highBlue rounded-md h-5 w-5"
                         id="vehiculeDelievered" />
-                </div>)}
+                </div>)
+                */}
 
             </div>
         )
@@ -631,7 +771,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </div>
                 </div>
             )}
-            {devis.StatusDevis !== "Annulé" && devis.StatusDevis != "Réservé" && payementSettings()}
+            {devis.StatusDevis !== "Annulé" && payementSettings()}
             {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod == "Banque" || devis.devisPayementDetails.PaymentMethod == "Leasing") && responsableSettings()}
             {devis.StatusDevis !== "Annulé" && devis.isGesteCommerciale && gesteCommercialSettings()}
         </div>

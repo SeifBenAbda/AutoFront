@@ -21,19 +21,17 @@ interface UploadResponse {
 
 interface UseUploadFilesProps {
     devisId: number;
-    files: { file: File; typeDocument: string; }[];
     navigate: (path: string) => void;
 }
-export const useUploadFiles = ({ devisId, files, navigate }: UseUploadFilesProps) => {
-    return useQuery({
-      queryKey: ['devisFiles', devisId], // Unique key including files to trigger query on change
-      queryFn: () => uploadDocuments(databaseName, devisId, files, navigate), // Use files directly
-      enabled: false, // Only enable the query if there are files to upload
-      staleTime: 2000,
-      refetchOnWindowFocus: false,
-    });
-};
 
+export const useUploadFiles = ({ devisId, navigate }: UseUploadFilesProps) => {
+    const uploadFilesMutation = useMutation({
+        mutationFn: (files: { file: File; typeDocument: string }[]) => 
+            uploadDocuments(databaseName, devisId, files, navigate),
+    });
+    
+    return uploadFilesMutation;
+};
 
 
 
