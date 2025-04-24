@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   ColumnDef,
   ColumnSizingState,
@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Button } from "../../@/components/ui/button";
 import { Devis } from "@/types/devisTypes";
 import { useNavigate } from "react-router-dom";
 import { DevisDetailsPage } from "./DevisDetails/DevisDetailsNewDialog";
@@ -381,12 +380,13 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
                 <tr
                   key={row.id}
                   className={`hover:bg-gray-50 transition-colors ${
+                  row.original.StatusDevis?.toLowerCase() !== 'annulé' && 
                   row.original.rappels?.some(rappel => {
-                    const rappelDate = new Date(rappel.RappelDate!);
-                    const today = new Date();
-                    return rappelDate.getDate() === today.getDate() && 
-                       rappelDate.getMonth() === today.getMonth() &&
-                       rappelDate.getFullYear() === today.getFullYear();
+                  const rappelDate = new Date(rappel.RappelDate!);
+                  const today = new Date();
+                  return rappelDate.getDate() === today.getDate() && 
+                     rappelDate.getMonth() === today.getMonth() &&
+                     rappelDate.getFullYear() === today.getFullYear();
                   }) ? 'bg-red-100 border' : ''
                   }`}
                 >

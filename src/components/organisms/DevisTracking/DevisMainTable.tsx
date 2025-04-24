@@ -233,7 +233,26 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
                   </div>
                 </PopoverContent>
               </Popover>
-            </div>
+              </div>
+
+              {/*   Show only  Reminder of Today When I click a Button* */}
+              <div className="w-auto">
+                <Button
+                  onClick={() => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set to beginning of the day
+                    const tomorrow = new Date(today);
+                    today.setDate(today.getDate() + 1);
+                    setDateRappelFrom(tomorrow);
+                    setDateRappelTo(today);
+                    setPage(1);
+                  }}
+                  className="text-xs px-3 py-1 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-md font-oswald"
+                >
+                  Rappels d'aujourd'hui
+                </Button>
+                </div>
+          
           </div>
         </div>
 

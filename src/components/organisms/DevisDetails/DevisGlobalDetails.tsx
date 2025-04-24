@@ -29,7 +29,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const API_URL = import.meta.env.VITE_API_URL;
     const token = getToken();
     const { user } = useUser();
-
+    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
     useEffect(() => {
         if (devis.DevisId) {
             setIsLoading(true);
@@ -297,7 +297,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     <CardContent className="w-full">
                         <Label className="relative text-sm font-medium text-highBlue ">Date de Livraison</Label>
                         <DatePicker
-                            value={devis.devisFacture.DateLivraison}
+                            value={devis.devisFacture?.DateLivraison || new Date()}
                             onChange={handleDateLivraisonChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
@@ -389,11 +389,11 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex flex-row w-full gap-4 flex-wrap">
                     <CardContent className="flex-1 min-w-[200px]">
                         <Label className="relative text-sm font-medium text-highBlue">Type de paiement</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
 
                             (
                                 <PayementMethod
-                                    value={devis.devisPayementDetails.PaymentMethod}
+                                    value={devis.devisPayementDetails == null ? "" : devis.devisPayementDetails.PaymentMethod}
                                     onChange={(value) => handleChangedevisPayementDetails("PaymentMethod", value)}
                                 />
                             ) :
@@ -407,11 +407,19 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="flex-1 min-w-[200px]">
                         <Label className="relative text-sm font-medium text-highBlue">Total TTC</Label>
-                        <NumericInput
-                            value={devis.devisPayementDetails?.TotalTTC || ""}
-                            onChange={(value) => handleChangedevisPayementDetails("TotalTTC", value.toString())}
-                            className={params.inputBoxStyle}
-                        />
+                        {isEditingOpen ?
+                            (
+                                <NumericInput
+                                    value={devis.devisPayementDetails?.TotalTTC || ""}
+                                    onChange={(value) => handleChangedevisPayementDetails("TotalTTC", value.toString())}
+                                    className={params.inputBoxStyle}
+                                />
+                            ) :
+                            (
+                                <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                    <span>{devis.devisPayementDetails?.TotalTTC}</span>
+                                </div>
+                            )}
                     </CardContent>
 
                     {devis.isGesteCommerciale && (
@@ -425,12 +433,12 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 </div>
 
                 {/* Conditionally render additional payment details based on PayementMethod */}
-                {(devis.devisPayementDetails.PaymentMethod === "Banque" || devis.devisPayementDetails.PaymentMethod === "Leasing") && (
+                {(devis.devisPayementDetails?.PaymentMethod === "Banque" || devis.devisPayementDetails?.PaymentMethod === "Leasing") && (
                     <div className="flex md:gap-4 lg:gap-4  w-full sm:flex-col md:flex-row min-[400px]:flex-col">
                         <CardContent className="w-1/2 sm:w-full min-[400px]:w-full">
                             <Label className="relative text-sm font-medium text-highBlue">Banque et Leasing</Label>
                             <BanksLeasingDropDown
-                                value={devis.devisPayementDetails.BankAndLeasing}
+                                value={devis.devisPayementDetails?.BankAndLeasing}
                                 onChange={(value) => handleChangedevisPayementDetails("BankAndLeasing", value)}
                             />
                         </CardContent>
@@ -438,7 +446,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         <CardContent className="w-1/2 sm:w-full min-[400px]:w-full">
                             <Label className="relative text-sm font-medium text-highBlue">Region Banque ou Leasing</Label>
                             <RegionDropDown
-                                value={devis.devisPayementDetails.BankRegion || ""}
+                                value={devis.devisPayementDetails?.BankRegion || ""}
                                 onChange={(value) => handleChangedevisPayementDetails("BankRegion", value)}
                                 isFiltring={false}
                             />
@@ -543,7 +551,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             <Label className=" relative text-sm font-medium text-highBlue ">Numéro de Facture</Label>
                             {devis.devisFacture?.FactureNumero == null || devis.devisFacture?.FactureNumero.length < 5 && <span className="text-lightRed font-oswald">*</span>}
                         </div>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ? (
+                        {isEditingOpen ? (
                             <NumericInput
                                 value={devis.devisFacture?.FactureNumero || ""}
                                 onChange={(value) => handleChangedevisFacture("FactureNumero", value.toString())}
@@ -557,7 +565,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Date de Facture</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <DatePicker
                                     value={devis.devisFacture?.DateFacturation ?? new Date()}
@@ -614,7 +622,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Demande Remise</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.DemandeRemise || ""}
@@ -629,7 +637,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Remise acceptée (DT)</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.RemiseAccepte || ""}
@@ -648,7 +656,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Demande de Franchise</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.DemandeDeFranchise || ""}
@@ -664,7 +672,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Franchise acceptée (Jours)</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.FranchiseAccepte || ""}
@@ -683,7 +691,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Voucher</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.Voucher || ""}
@@ -698,7 +706,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                     </CardContent>
                     <CardContent className="w-full">
                         <Label className=" relative text-sm font-medium text-highBlue ">Voucher accepté</Label>
-                        {devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" ?
+                        {isEditingOpen ?
                             (
                                 <NumericInput
                                     value={devis.gesteCommer?.VoucherAccepte || ""}
@@ -772,7 +780,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 </div>
             )}
             {devis.StatusDevis !== "Annulé" && payementSettings()}
-            {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails.PaymentMethod == "Banque" || devis.devisPayementDetails.PaymentMethod == "Leasing") && responsableSettings()}
+            {devis.StatusDevis !== "Annulé" && (devis.devisPayementDetails?.PaymentMethod == "Banque" || devis.devisPayementDetails?.PaymentMethod == "Leasing") && responsableSettings()}
             {devis.StatusDevis !== "Annulé" && devis.isGesteCommerciale && gesteCommercialSettings()}
         </div>
     )

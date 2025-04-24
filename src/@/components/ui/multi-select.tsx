@@ -224,12 +224,12 @@ export const MultiSelect = React.forwardRef<
             {selectedValues.length > 0 ? (
               <div className={`flex justify-between items-center ${className}`}>
                 <div className={`flex flex-wrap items-center ${className}`}>
-                {selectedValues.slice(0, maxCount).map((value) => {
+                {selectedValues.slice(0, maxCount).map((value,index) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
                     return (
                       <Badge
-                        key={value}
+                        key={index}
                         className={cn(
                           isAnimating ? "animate-bounce" : "p-2 ml-2",
                           multiSelectVariants({ variant })
@@ -327,11 +327,11 @@ export const MultiSelect = React.forwardRef<
                   </div>
                   <span>(Tout sélectionner)</span>
                 </CommandItem>
-                {options.map((option) => {
+                {options.map((option,index) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={index}
                       onSelect={() => toggleOption(option.value)}
                       className="cursor-pointer"
                     >

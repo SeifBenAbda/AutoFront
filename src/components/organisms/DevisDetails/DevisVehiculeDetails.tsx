@@ -33,7 +33,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     {isAdmin ? (
                         <div className="mt-1 block">
                         <CarsDropDown
-                            value={carRequest.CarModel || ""}
+                            value={carRequest?.CarModel || ""}
                             onChange={(value) => handleChange("CarModel", value)}
                             isFiltring={false}
                         />
@@ -41,7 +41,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
 
                     ) : (
                         <div className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}>
-                            {carRequest.CarModel}
+                            {carRequest?.CarModel || ""}
                         </div>
                     )}
 
@@ -50,7 +50,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     <Label className="relative text-sm font-medium text-highBlue ">Couleur du véhicule</Label>
                     <Input
                         type="text"
-                        value={carRequest.CarColor || ""}
+                        value={carRequest?.CarColor || ""}
                         onChange={(e) => handleChange("CarColor", e.target.value)}
                         placeholder="Couleur du véhicule"
                         className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
@@ -61,7 +61,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     <Label className="relative text-sm font-medium text-highBlue ">Dernier véhicule possédé</Label>
                     <Input
                         type="text"
-                        value={carRequest.OldCar || ""}
+                        value={carRequest?.OldCar || ""}
                         onChange={(e) => handleChange("OldCar", e.target.value)}
                         placeholder="Dernier véhicule possédé"
                         className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
@@ -75,7 +75,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                 <CardContent className="w-full">
                     <Textarea
                         maxLength={200}
-                        value={carRequest.CarNotes || ""}
+                        value={carRequest?.CarNotes || ""}
                         onChange={(e) => handleChange("CarNotes", e.target.value)}
                         className={`rounded-md  focus:ring-0 sm:text-sm overflow-y-auto max-h-[100px] ${params.inputBoxStyle}`}
                     />

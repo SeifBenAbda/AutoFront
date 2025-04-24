@@ -26,7 +26,7 @@ const isModificationReservationCorrect = (devis: Devis): boolean => {
 }
 
 const isModificationLivrerCorrect = (devis: Devis): boolean => {
-    if(devis.devisFacture.DateLivraison===null){
+    if(devis.devisFacture===null || devis.devisFacture?.DateLivraison===null){
         return false;
     }
     if (devis.devisFacture.DateLivraison) {
@@ -44,26 +44,58 @@ const isModificationLivrerCorrect = (devis: Devis): boolean => {
 }
 
 
-export const getModificationErros = (devis : Devis): string => {
-    if(devis.StatusDevis === "Facturé"){
-        if(!isModificationFactureCorrect(devis)){
-            return "Erreur dans les modifications de la facture";
-        }
-        return "";
+const totalTTCMissing = (devis: Devis): boolean => {
+    if(devis.devisPayementDetails.TotalTTC === null || devis.devisPayementDetails.TotalTTC === undefined || (typeof devis.devisPayementDetails.TotalTTC === 'string' && devis.devisPayementDetails.TotalTTC === "0") || (typeof devis.devisPayementDetails.TotalTTC === 'string' && devis.devisPayementDetails.TotalTTC === "")){
+        return true;
     }
-    if(devis.StatusDevis === "Réservé"){
-        if(!isModificationReservationCorrect(devis)){
-            return "Erreur dans les modifications de la réservation";
-        }
-        return "";
-    }
-    
-    if(devis.StatusDevis === "Livré"){
+    return false;
+}
 
-        if(!isModificationLivrerCorrect(devis)){
-            return "Erreur dans les modifications de la livraison";
+
+const bankDetailsMissing = (devis: Devis): boolean => {
+    if((devis.devisPayementDetails.BankAndLeasing === "" || devis.devisPayementDetails.BankRegion==="" ) && devis.devisPayementDetails.PaymentMethod=== "Banque"){
+        return true;
+    }
+    return false;
+}
+
+const isCanceledDevisNotFinished = (devis: Devis): boolean => {
+    if(devis.StatusDevis==="Annulé" && devis.ReasonAnnulation===""){ 
+        return false;
+    }
+    return true;
+}
+
+export const getModificationErros = (devis : Devis): string => {
+    if(!isCanceledDevisNotFinished(devis)){
+        return "Erreur dans l'annulation du devis !";
+    }else if(devis.StatusDevis != "Annulé"){
+        if(totalTTCMissing(devis)){
+            return "Le montant total TTC est manquant !";
         }
-        return "";
+        if(bankDetailsMissing(devis)){
+            return "Les détails de la banque sont manquants !";
+        }
+        if(devis.StatusDevis === "Facturé"){
+            if(!isModificationFactureCorrect(devis)){
+                return "Erreur dans les modifications de la facture";
+            }
+            return "";
+        }
+        if(devis.StatusDevis === "Réservé"){
+            if(!isModificationReservationCorrect(devis)){
+                return "Erreur dans les modifications de la réservation";
+            }
+            return "";
+        }
+        
+        if(devis.StatusDevis === "Livré"){
+    
+            if(!isModificationLivrerCorrect(devis)){
+                return "Erreur dans les modifications de la livraison";
+            }
+            return "";
+        }
     }
     return "";
 }

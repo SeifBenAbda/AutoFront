@@ -85,7 +85,7 @@ export const useUpdateDevis = () => {
         devis: data.devis,
         carRequest: data.carRequest,
         itemRequest: data.itemRequest,
-        //rappelDevis: data.rappelDevis,
+        rappelDevis: data.rappels,
       });
     },
     onError: (error) => {
