@@ -5,50 +5,78 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../../@/components/ui/select";
+import useDocsCheck, { DocumentCondition } from "../../hooks/useDocsCheck"; // Add this import, adjust path if needed
 
 interface DocumentTypeDropDownProps {
     value?: string;
     onChange: (value: string) => void;
+    clientType: string;
+    paymentMethod: string;
+    useStaticList?: boolean; // Optional flag to fall back to static list
 }
 
-const DocumentTypeDropDown = ({ value, onChange }: DocumentTypeDropDownProps) => {
+const DocumentTypeDropDown = ({
+    value,
+    onChange,
+    clientType,
+    paymentMethod,
+    useStaticList = false
+}: DocumentTypeDropDownProps) => {
+    const {
+        data: devisCheckedDocs = [],
+        isLoading: isLoadingDocs,
+        error: docsError,
+    } = useStaticList ? { data: [], isLoading: false, error: null } : useDocsCheck(clientType, paymentMethod);
+
+    // Static document types list as fallback
+    const staticDocTypes = [
+        "BC Interne",
+        "Copie du passeport (30 pages)",
+        "Carte d'identité nationale (CIN) / CIN du conjoint",
+        "DUR 2023 (quittance d'impôt)",
+        "Extrait de naissance",
+        "Virement bancaire",
+        "Demande de retour définitif",
+        "CIN",
+        "Quittance",
+        "Acompte",
+        "Reste du Payement",
+        "Accord",
+        "BC",
+        "Contrat",
+        "PV",
+        "Bon de Sortie",
+        "CG",
+        "Avis de Paiement",
+        "RNE"
+    ];
+
+    const documentsToDisplay = useStaticList || docsError || !devisCheckedDocs.length ? staticDocTypes : devisCheckedDocs;
+
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-highBlue">
-                <SelectValue placeholder={value ? value.toString() : "Tous Types"} />
+            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey text-highBlue font-oswald">
+                <SelectValue placeholder={value ? value.toString() : "Tous types"} />
             </SelectTrigger>
-            <SelectContent>
-                <SelectItem key="BC Interne" value="BC Interne">BC Interne</SelectItem>
-                <SelectItem key="Copie du passeport (30 pages)" value="Copie du passeport (30 pages)">
-                    Copie du passeport (30 pages)
-                </SelectItem>
-                <SelectItem key="Carte d'identité nationale (CIN) / CIN du conjoint" value="Carte d'identité nationale (CIN) / CIN du conjoint">
-                    Carte d'identité nationale (CIN) / CIN du conjoint
-                </SelectItem>
-                <SelectItem key="DUR 2023 (quittance d’impôt)" value="DUR 2023 (quittance d’impôt)">
-                    DUR 2023 (quittance d’impôt)
-                </SelectItem>
-                <SelectItem key="Extrait de naissance" value="Extrait de naissance">Extrait de naissance</SelectItem>
-                <SelectItem key="Virement bancaire" value="Virement bancaire">Virement bancaire</SelectItem>
-                <SelectItem key="Demande de retour définitif" value="Demande de retour définitif">
-                    Demande de retour définitif
-                </SelectItem>
-                <SelectItem key="CIN" value="CIN">CIN</SelectItem>
-                <SelectItem key="Quittance" value="Quittance">Quittance</SelectItem>
-                <SelectItem key="Acompte" value="Acompte">Acompte</SelectItem>
-                <SelectItem key="Reste du Payement" value="Reste du Payement">Reste du Payement</SelectItem>
-                <SelectItem key="Accord" value="Accord">Accord</SelectItem>
-                <SelectItem key="BC" value="BC">BC</SelectItem>
-                <SelectItem key="Contrat" value="Contrat">Contrat</SelectItem>
-                <SelectItem key="PV" value="PV">PV</SelectItem>
-                <SelectItem key="Bon de Sortie" value="Bon de Sortie">Bon de Sortie</SelectItem>
-                <SelectItem key="CG" value="CG">CG</SelectItem>
-                <SelectItem key="Avis de Paiement" value="Avis de Paiement">Avis de Paiement</SelectItem>
-                <SelectItem key="RNE" value="RNE">RNE</SelectItem>
+            <SelectContent className="border-normalGrey bg-normalGrey cursor-pointer">
+
+
+                {isLoadingDocs ? (
+                    <SelectItem value="loading" disabled>Chargement...</SelectItem>
+                ) : (
+                    documentsToDisplay.map((doc: string | DocumentCondition) => {
+                        // Handle both string array and object array
+                        const docValue: string | undefined = typeof doc === 'string' ? doc : doc.DocumentType;
+                        return (
+                            <SelectItem key={docValue as string} value={docValue as string}>
+                                {docValue}
+                            </SelectItem>
+                        )
+                    })
+                )}
             </SelectContent>
         </Select>
     );
 };
-
 
 export default DocumentTypeDropDown;

@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { Devis } from "../../../types/devisTypes";
 import { useUploadFiles } from "../../../hooks/useUploadFiles";
 import DocumentTypeDropDown from "../../../components/atoms/DocumentTypeSelect";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 interface DocumentFile {
     file: File; // Keep using the native File type
@@ -33,7 +34,12 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
 
     const handleUpload = async () => {
         if (selectedFiles.length === 0) {
-            setError("Please select files to upload.");
+            setError("Veuillez sélectionner des fichiers à télécharger.");
+            return;
+        }
+        const invalidTypeFiles = selectedFiles.filter(doc => (doc.typeDocument === "" || doc.typeDocument === undefined));
+        if (invalidTypeFiles.length > 0) {
+            setError("Type de document requis pour tous les fichiers. Veuillez sélectionner un type spécifique pour chaque document.");
             return;
         }
 
@@ -50,13 +56,13 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                 }))
             );
             
-            setUploadMessage('Upload successful!');
+            setUploadMessage('Téléchargement réussi !');
             setSelectedFiles([]);
             onFileSelect([]);
             onUploadSuccess();
         } catch (error) {
             console.error("Upload error:", error);
-            setUploadMessage('Upload failed! Please try again.');
+            setUploadMessage('Échec du téléchargement ! Veuillez réessayer.');
         } finally {
             setLoading(false);
         }
@@ -69,7 +75,7 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
             const invalidFiles = newFilesArray.filter(file => !validTypes.includes(file.type));
 
             if (invalidFiles.length > 0) {
-                setError(`Invalid file types: ${invalidFiles.map(file => file.name).join(', ')}`);
+                setError(`Types de fichiers invalides : ${invalidFiles.map(file => file.name).join(', ')}`);
                 return;
             }
 
@@ -119,6 +125,26 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
         }
     };
 
+    // Alert component for displaying messages
+    const AlertMessage = ({ message, type }: { message: string, type: 'error' | 'success' }) => {
+        return (
+            <div 
+                className={`flex items-center p-3 mb-4 rounded-md animate-fadeIn ${
+                    type === 'error' 
+                        ? 'bg-red-50 text-red-700 border border-red-200' 
+                        : 'bg-green-50 text-green-700 border border-green-200'
+                }`}
+                role="alert"
+            >
+                {type === 'error' 
+                    ? <AlertCircle className="h-5 w-5 mr-2" /> 
+                    : <CheckCircle2 className="h-5 w-5 mr-2" />
+                }
+                <span className="font-medium">{message}</span>
+            </div>
+        );
+    };
+
     return (
         <div className="relative p-4">
             {loading && (
@@ -146,11 +172,11 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                     </Button>
                 )}
             </div>
-            {error && <p className="text-red-500">{error}</p>}
-            {uploadMessage && <p className="text-green-500">{uploadMessage}</p>}
+            {error && <AlertMessage message={error} type="error" />}
+            {uploadMessage && <AlertMessage message={uploadMessage} type="success" />}
             <div className="flex flex-wrap gap-4 mb-4">
                 {selectedFiles.map((doc, index) => (
-                    <div className="flex flex-col space-y-2 p-2 bg-blueCiel border rounded-md border-blueCiel" key={doc.file.name} >
+                    <div className="flex flex-col space-y-2 p-2 bg-whiteSecond border rounded-md border-whiteSecond" key={doc.file.name} >
                         <div className="flex items-center  p-1 ">
                             <img src={getFileIcon(doc.file)} alt={doc.file.name} className="w-10 h-10 object-cover" />
                             <span className="ml-2 text-highBlue font-oswald">{doc.file.name}</span>
@@ -165,6 +191,8 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
                         <DocumentTypeDropDown
                             onChange={(value) => handleTypeChange(index, value)}
                             value={doc.typeDocument} // Pass the current type to the dropdown
+                            clientType={devis.client!.clientType}
+                            paymentMethod={devis.devisPayementDetails.PaymentMethod}
                         />
                     </div>
                 ))}
