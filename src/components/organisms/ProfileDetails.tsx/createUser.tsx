@@ -35,12 +35,12 @@ export const CreateUser = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("account");
     const textInputStyle = "bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative";
-    
+
     // Hooks
     const { toast } = useToast();
     const { mutateAsync: createUser } = useCreateUser();
     const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite");
-    
+
     // Handle form field changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;
@@ -48,15 +48,15 @@ export const CreateUser = () => {
             ...formData,
             [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
         });
-        
+
         // Clear error when field is edited
         if (errors[name]) {
-            const newErrors = {...errors};
+            const newErrors = { ...errors };
             delete newErrors[name];
             setErrors(newErrors);
         }
     };
-    
+
     // Handle switch toggle for isActive
     const handleSwitchChange = (checked: boolean) => {
         setFormData({
@@ -64,22 +64,22 @@ export const CreateUser = () => {
             isActive: checked,
         });
     };
-    
+
     // Handle select change
     const handleSelectChange = (name: string, value: string) => {
         setFormData({
             ...formData,
             [name]: value,
         });
-        
+
         // Clear error when field is edited
         if (errors[name]) {
-            const newErrors = {...errors};
+            const newErrors = { ...errors };
             delete newErrors[name];
             setErrors(newErrors);
         }
     };
-    
+
     const handleTogglePassword = () => {
         setShowPassword(!showPassword);
     };
@@ -87,7 +87,7 @@ export const CreateUser = () => {
     // Validate the current step
     const validateStep = () => {
         const newErrors: Record<string, string> = {};
-        
+
         if (step === 1) {
             if (!formData.username?.trim()) newErrors.username = "Le nom d'utilisateur est requis";
             if (!formData.firstName?.trim()) newErrors.firstName = "Le prénom est requis";
@@ -98,7 +98,7 @@ export const CreateUser = () => {
             if (!formData.role?.trim()) newErrors.role = "Le rôle est requis";
             if (!formData.password?.trim()) newErrors.password = "Le mot de passe est requis";
         }
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -109,7 +109,7 @@ export const CreateUser = () => {
             setStep(step + 1);
         }
     };
-    
+
     const prevStep = () => {
         setStep(step - 1);
     };
@@ -139,11 +139,11 @@ export const CreateUser = () => {
                 password: formData.password as string,
             };
 
-            await createUser({ user: newUser });
-            
+            await createUser({ password: formData.password as string, user: newUser });
+
             setMyToastCloseStyle("text-lightWhite hover:text-lightWhite");
             const myToast = toast({
-                className: "bg-emerald-600 border border-emerald-600 rounded-md text-white",
+                className: "bg-greenOne border border-greenOne rounded-md text-whiteSecond",
                 title: "Utilisateur créé avec succès!",
                 description: `${formData.firstName} ${formData.lastName} a été ajouté(e).`
             });
@@ -195,12 +195,11 @@ export const CreateUser = () => {
                         </CardTitle>
                         <div className="flex items-center space-x-2">
                             {[1, 2].map((s) => (
-                                <div 
+                                <div
                                     key={s}
-                                    className={`h-2 w-2 rounded-full ${
-                                        s === step ? 'bg-emerald-500' : 
+                                    className={`h-2 w-2 rounded-full ${s === step ? 'bg-emerald-500' :
                                         s < step ? 'bg-emerald-500' : 'bg-slate-600'
-                                    }`}
+                                        }`}
                                 />
                             ))}
                         </div>
@@ -226,7 +225,7 @@ export const CreateUser = () => {
                                             Profil personnel
                                         </TabsTrigger>
                                     </TabsList>
-                                    
+
                                     <TabsContent value="account" className="mt-4 space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
@@ -245,7 +244,7 @@ export const CreateUser = () => {
                                                     <p className="text-red-500 text-xs">{errors.username}</p>
                                                 )}
                                             </div>
-                                            
+
                                             <div className="space-y-2">
                                                 <Label htmlFor="email" className="text-highBlue">
                                                     Email <span className="text-red-500">*</span>
@@ -265,7 +264,7 @@ export const CreateUser = () => {
                                             </div>
                                         </div>
                                     </TabsContent>
-                                    
+
                                     <TabsContent value="profile" className="mt-4 space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="space-y-2">
@@ -284,7 +283,7 @@ export const CreateUser = () => {
                                                     <p className="text-red-500 text-xs">{errors.firstName}</p>
                                                 )}
                                             </div>
-                                            
+
                                             <div className="space-y-2">
                                                 <Label htmlFor="lastName" className="text-highBlue">
                                                     Nom <span className="text-red-500">*</span>
@@ -301,7 +300,7 @@ export const CreateUser = () => {
                                                     <p className="text-red-500 text-xs">{errors.lastName}</p>
                                                 )}
                                             </div>
-                                            
+
                                             <div className="space-y-2">
                                                 <Label htmlFor="phoneNumber" className="text-highBlue">
                                                     Téléphone
@@ -315,7 +314,7 @@ export const CreateUser = () => {
                                                     className={`${textInputStyle}`}
                                                 />
                                             </div>
-                                            
+
                                             <div className="space-y-2">
                                                 <Label htmlFor="position" className="text-highBlue">
                                                     Poste
@@ -330,12 +329,12 @@ export const CreateUser = () => {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                     </TabsContent>
                                 </Tabs>
 
                                 <div className="flex justify-end mt-6">
-                                    <Button 
+                                    <Button
                                         onClick={nextStep}
                                         className="bg-greenOne font-oswald hover:bg-greenOne text-white"
                                     >
@@ -389,8 +388,8 @@ export const CreateUser = () => {
                                     </div>
 
                                     <div className="flex items-center space-x-2">
-                                        <Switch 
-                                            id="isActive" 
+                                        <Switch
+                                            id="isActive"
                                             checked={formData.isActive}
                                             onCheckedChange={handleSwitchChange}
                                         />
@@ -399,7 +398,7 @@ export const CreateUser = () => {
                                         </Label>
                                     </div>
 
-                                    <motion.div 
+                                    <motion.div
                                         className="bg-normalGrey rounded-lg p-4 border border-normalGrey"
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -411,7 +410,7 @@ export const CreateUser = () => {
                                         </h3>
                                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                                             <div>
-                                                <span className="text-slate-600">Utilisateur:</span> 
+                                                <span className="text-slate-600">Utilisateur:</span>
                                                 <span className="text-highBlue ml-1">{formData.username}</span>
                                             </div>
                                             <div>
@@ -431,7 +430,7 @@ export const CreateUser = () => {
                                 </div>
 
                                 <div className="flex justify-between mt-6">
-                                    <Button 
+                                    <Button
                                         onClick={prevStep}
                                         variant="outline"
                                         className="border-slate-700 text-highBlue hover:bg-transparent hover:text-highBlue"
@@ -439,7 +438,7 @@ export const CreateUser = () => {
                                         <ChevronLeft className="mr-1 h-4 w-4" />
                                         Retour
                                     </Button>
-                                    <Button 
+                                    <Button
                                         onClick={handleCreate}
                                         className="bg-greenOne hover:bg-greenOne text-white"
                                     >

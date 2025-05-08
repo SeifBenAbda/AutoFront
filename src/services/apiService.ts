@@ -50,7 +50,8 @@ export const updateUser = async (
 
 
 export const createUser = async (
-  createdUser?: Partial<User>,
+  password: string,
+  createdUser?: Partial<User>
 ): Promise<{ user: User }> => {
   const token = getToken();
 
@@ -65,6 +66,7 @@ export const createUser = async (
     // Directly sending the updatedUser object
     body: JSON.stringify({
       "user":createdUser,
+      "password":password
     }),
   });
 
