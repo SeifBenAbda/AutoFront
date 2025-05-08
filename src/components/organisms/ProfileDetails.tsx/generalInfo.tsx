@@ -25,6 +25,8 @@ import {
     Camera,
     Signpost
 } from "lucide-react";
+import { PhoneInput } from "../../../components/atoms/PhoneInput";
+import UserTypeDropDown from "../../../components/atoms/UserTypeDropDown";
 
 export default function General() {
     const { user, setUser } = useUser();
@@ -57,35 +59,46 @@ export default function General() {
     };
 
     const UserInfosMiniCard = () => (
-        <div className="mt-4 w-full bg-white p-4 rounded-lg border border-white">
-            <div className="text-center">
-                <h3 className="text-xl  text-highBlue font-oswald">{user?.firstName}</h3>
+        <div className="mt-4 w-full bg-white p-6 rounded-xl border border-normalGrey/20 shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="text-center mb-4">
+                <h3 className="text-xl font-semibold text-highBlue font-oswald">{user?.firstName || "User"}</h3>
+                <p className="text-sm text-highGrey/70 mt-1">{user?.username || ""}</p>
             </div>
-            <div className="mt-4 space-y-2 font-oswald">
-                <div className="flex items-center text-highGrey text-sm">
-                    <Users className="w-4 h-4 mr-2 text-highBlue" />
-                    <span>{user?.role}</span>
+
+            <div className="space-y-3 font-oswald">
+                <div className="flex items-center text-highGrey text-sm p-2 rounded-lg hover:bg-normalGrey/10 transition-colors">
+                    <div className="bg-lightBlue/10 p-1.5 rounded-full mr-3">
+                        <Users className="w-4 h-4 text-highBlue" />
+                    </div>
+                    <span className="flex-1">{user?.role || "Role non défini"}</span>
                 </div>
-                <div className="flex items-center text-highGrey text-sm">
-                    <Mail className="w-4 h-4 mr-2 text-highBlue" />
-                    <span>{user?.email}</span>
+
+                <div className="flex items-center text-highGrey text-sm p-2 rounded-lg hover:bg-normalGrey/10 transition-colors">
+                    <div className="bg-lightBlue/10 p-1.5 rounded-full mr-3">
+                        <Mail className="w-4 h-4 text-highBlue" />
+                    </div>
+                    <span className="flex-1 truncate">{user?.email || "Email non défini"}</span>
                 </div>
+
                 {user?.phoneNumber && (
-                    <div className="flex items-center text-highGrey text-sm">
-                        <Phone className="w-4 h-4 mr-2 text-highBlue" />
-                        <span>{user?.phoneNumber}</span>
+                    <div className="flex items-center text-highGrey text-sm p-2 rounded-lg hover:bg-normalGrey/10 transition-colors">
+                        <div className="bg-lightBlue/10 p-1.5 rounded-full mr-3">
+                            <Phone className="w-4 h-4 text-highBlue" />
+                        </div>
+                        <span className="flex-1">{user.phoneNumber}</span>
                     </div>
                 )}
             </div>
-            <div className="mt-4 pt-3 border-t border-normalGrey">
+
+            <div className="mt-5 pt-4 border-t border-normalGrey/30">
                 {user?.isActive ? (
-                    <div className="flex items-center justify-center bg-lightGreen text-highGreen px-3 py-1 rounded-md text-sm font-medium">
-                        <span className="w-2 h-2 rounded-full bg-greenOne mr-1"></span>
+                    <div className="flex items-center justify-center bg-lightGreen/20 text-highGreen px-4 py-2 rounded-full text-sm font-medium">
+                        <span className="w-2.5 h-2.5 rounded-full bg-greenOne animate-pulse mr-2"></span>
                         Compte actif
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center bg-lightRed text-white px-3 py-1 rounded-md text-sm font-oswald">
-                        <span className="w-2 h-2 rounded-full bg-white mr-1 font-oswald"></span>
+                    <div className="flex items-center justify-center bg-lightRed/20 text-red-600 px-4 py-2 rounded-full text-sm font-medium">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></span>
                         Compte inactif
                     </div>
                 )}
@@ -161,7 +174,7 @@ export default function General() {
                         ) : (
                             <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
                                 <User className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
-                                {firstName=="null"? "Non spécifié": firstName}
+                                {firstName == "null" ? "Non spécifié" : firstName}
                             </div>
                         )}
                     </div>
@@ -180,7 +193,7 @@ export default function General() {
                         ) : (
                             <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
                                 <User className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
-                                {lastName=="null"? "Non spécifié":lastName}
+                                {lastName == "null" ? "Non spécifié" : lastName}
                             </div>
                         )}
                     </div>
@@ -217,7 +230,7 @@ export default function General() {
                         ) : (
                             <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
                                 <Mail className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
-                                {email=="null"? "Non spécifié": email}
+                                {email == "null" ? "Non spécifié" : email}
                             </div>
                         )}
                     </div>
@@ -233,23 +246,22 @@ export default function General() {
                     <div>
                         <Label className={labelStyle}>Téléphone</Label>
                         {editMode ? (
-                            <Input
-                                type="text"
+                            <PhoneInput
                                 value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                onChange={(value) => setPhoneNumber(value)}
                                 placeholder="Téléphone"
                                 className={textInputStyle}
                             />
                         ) : (
                             <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
                                 <Phone className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
-                                {phoneNumber=="null"? "Non spécifié": phoneNumber}
+                                {phoneNumber == "null" ? "Non spécifié" : phoneNumber}
                             </div>
                         )}
                     </div>
                     <div>
                         <Label className={labelStyle}>Position</Label>
-                        {editMode ? (
+                        {editMode && user?.position!=="NORMAL" ? (
                             <Input
                                 type="text"
                                 value={position}
@@ -260,7 +272,7 @@ export default function General() {
                         ) : (
                             <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
                                 <Signpost className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
-                                {position == "null"? "Non spécifié": position}
+                                {position == "null" ? "Non spécifié" : position}
                             </div>
                         )}
                     </div>
@@ -296,56 +308,262 @@ export default function General() {
     return (
         <div className="relative">
             {(isLoading || isPending) && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highBlue bg-opacity-50 border rounded-md">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highBlue bg-opacity-50 rounded-xl">
                     <Loading />
                 </div>
             )}
 
             <Toaster tostCloseStyle={myToastCloseStyle} />
 
-            <Card className="bg-whiteSecond border border-normalGrey w-full shadow-md rounded-lg overflow-hidden">
-                <div className="bg-gradient-to-r from-highBlue to-normalBlue p-6 relative">
-                    <div className="flex justify-end">
-                        {editMode ? (
-                            <div className="flex gap-2">
-                                <Button className="bg-greenOne hover:bg-lightGreen text-white font-medium shadow-md transition-all" onClick={handleSave}>
-                                    <Check className="w-5 h-5 mr-1" /> Sauvegarder
-                                </Button>
-                                <Button className="bg-white hover:bg-lightGrey text-highBlue font-medium shadow-md transition-all" onClick={() => { setEditMode(false); }}>
-                                    <X className="w-5 h-5 mr-1" /> Annuler
-                                </Button>
+            <Card className="bg-whiteSecond border border-normalGrey/10 w-full shadow-md rounded-xl overflow-hidden">
+                {/* Compact header with profile info */}
+                <div className="bg-gradient-to-r from-highBlue to-normalBlue p-4 md:p-5 relative">
+                    <div className="flex items-center gap-4">
+                        {/* Smaller profile photo */}
+                        <div className="relative group">
+                            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white shadow-md bg-veryGrey flex items-center justify-center">
+                                {user?.profilePictureUrl ? (
+                                    <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <UserCircle className="w-12 h-12 md:w-16 md:h-16 text-lightGrey" />
+                                )}
                             </div>
-                        ) : (
-                            <Button className="bg-white hover:bg-greenOne text-highBlue hover:text-white font-medium shadow-md transition-all" onClick={() => { setEditMode(true); }}>
-                                <Edit className="w-5 h-5 mr-1" /> Modifier
-                            </Button>
-                        )}
-                    </div>
-                </div>
-
-                <div className="p-6">
-                    <div className="flex flex-col md:flex-row gap-8">
-                        <div className="flex flex-col items-center">
-                            <div className="relative group">
-                                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-veryGrey flex items-center justify-center">
-                                    {user?.profilePictureUrl ? (
-                                        <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <UserCircle className="w-32 h-32 text-lightGrey" />
-                                    )}
+                            {editMode && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-highBlue bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                                    <div className="bg-white p-1 rounded-full shadow-md">
+                                        <Camera className="w-4 h-4 text-greenOne" />
+                                    </div>
                                 </div>
-                                {editMode && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-highBlue bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
-                                        <div className="bg-white p-2 rounded-full">
-                                            <Camera className="w-6 h-6 text-greenOne" />
-                                        </div>
+                            )}
+                        </div>
+
+                        {/* Compact user details */}
+                        <div className="text-white flex-1">
+                            <h1 className="text-xl font-bold font-oswald">{user?.firstName} {user?.lastName}</h1>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-white/80 text-sm font-oswald">{user?.username}</p>
+                                <span className="hidden md:inline text-white/50">•</span>
+                                <div className="text-xs bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full font-medium inline-flex items-center">
+                                    <Users className="w-3 h-3 mr-1" /> {user?.role}
+                                </div>
+                                {user?.isActive ? (
+                                    <div className="text-xs bg-lightGreen/30 backdrop-blur-sm text-white px-2 py-0.5 rounded-full font-medium inline-flex items-center">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-greenOne animate-pulse mr-1"></span>
+                                        Actif
+                                    </div>
+                                ) : (
+                                    <div className="text-xs bg-lightRed/30 backdrop-blur-sm text-white px-2 py-0.5 rounded-full font-medium inline-flex items-center">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 mr-1"></span>
+                                        Inactif
                                     </div>
                                 )}
                             </div>
-                            <UserInfosMiniCard />
                         </div>
 
-                        {userDetails()}
+                        {/* Edit buttons */}
+                        <div>
+                            {editMode ? (
+                                <div className="flex flex-col md:flex-row gap-2">
+                                    <Button size="sm" className="bg-greenOne hover:bg-lightGreen text-white font-medium shadow-md transition-all" onClick={handleSave}>
+                                        <Check className="w-4 h-4 md:mr-1" /> <span className="hidden md:inline">Sauvegarder</span>
+                                    </Button>
+                                    <Button size="sm" className="bg-white hover:bg-lightGrey text-highBlue font-medium shadow-md transition-all" onClick={() => setEditMode(false)}>
+                                        <X className="w-4 h-4 md:mr-1" /> <span className="hidden md:inline">Annuler</span>
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button size="sm" className="bg-white/20 hover:bg-white text-white hover:text-highBlue font-medium shadow-md backdrop-blur-sm transition-all" onClick={() => setEditMode(true)}>
+                                    <Edit className="w-4 h-4 md:mr-1" /> <span className="hidden md:inline">Modifier</span>
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Content with collapsible sections */}
+                <div className="p-4">
+                    {/* Quick info strip */}
+                    <div className="flex flex-wrap gap-3 mb-4 text-sm">
+                        <div className="flex items-center text-highGrey bg-normalGrey/20 px-3 py-1 rounded-md">
+                            <Mail className="w-4 h-4 mr-2 text-highBlue" />
+                            <span>{user?.email || "Email non défini"}</span>
+                        </div>
+                        {user?.phoneNumber && (
+                            <div className="flex items-center text-highGrey bg-normalGrey/20 px-3 py-1 rounded-md">
+                                <Phone className="w-4 h-4 mr-2 text-highBlue" />
+                                <span>{user.phoneNumber}</span>
+                            </div>
+                        )}
+                        <div className="flex items-center text-highGrey bg-normalGrey/20 px-3 py-1 rounded-md">
+                            <Calendar className="w-4 h-4 mr-2 text-highBlue" />
+                            <span>Inscrit: {formatDate(dateJoined)}</span>
+                        </div>
+                    </div>
+
+                    {/* User details in accordion style */}
+                    <div className="space-y-3">
+                        {/* Personal Information */}
+                        <div className="border border-normalGrey/20 rounded-lg overflow-hidden">
+                            <div className="bg-white p-3 cursor-pointer hover:bg-normalGrey/5">
+                                <h2 className="text-md font-oswald text-highBlue flex items-center">
+                                    <User className="mr-2 text-highBlue w-5 h-5" />
+                                    Informations personnelles
+                                </h2>
+                            </div>
+                            <div className="p-3 bg-white border-t border-normalGrey/20">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* First Name & Last Name in more compact format */}
+                                    <div>
+                                        <Label className={labelStyle}>Prénom</Label>
+                                        {editMode ? (
+                                            <Input
+                                                type="text"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                                placeholder="Prénom"
+                                                className={textInputStyle}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-10 p-2 h-9 text-sm border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <User className="absolute left-2 top-2 h-4 w-4 text-highBlue" />
+                                                {firstName == "null" ? "Non spécifié" : firstName}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Last Name */}
+                                    <div>
+                                        <Label className={labelStyle}>Nom</Label>
+                                        {editMode ? (
+                                            <Input
+                                                type="text"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                                placeholder="Nom"
+                                                className={textInputStyle}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-10 p-2 h-9 text-sm border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <User className="absolute left-2 top-2 h-4 w-4 text-highBlue" />
+                                                {lastName == "null" ? "Non spécifié" : lastName}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Username */}
+                                    <div>
+                                        <Label className={labelStyle}>Nom d'utilisateur</Label>
+                                        {editMode ? (
+                                            <Input
+                                                type="text"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                placeholder="Nom d'utilisateur"
+                                                className={textInputStyle}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-10 p-2 h-9 text-sm border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <User className="absolute left-2 top-2 h-4 w-4 text-highBlue" />
+                                                {username || "Non spécifié"}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Email */}
+                                    <div>
+                                        <Label className={labelStyle}>Email</Label>
+                                        {editMode ? (
+                                            <Input
+                                                type="text"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                placeholder="Email"
+                                                className={textInputStyle}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-10 p-2 h-9 text-sm border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <Mail className="absolute left-2 top-2 h-4 w-4 text-highBlue" />
+                                                {email == "null" ? "Non spécifié" : email}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Professional Information (collapsed by default) */}
+                        <div className="border border-normalGrey/20 rounded-lg overflow-hidden">
+                            <div className="bg-white p-3 cursor-pointer hover:bg-normalGrey/5">
+                                <h2 className="text-md font-oswald text-highBlue flex items-center">
+                                    <Briefcase className="mr-2 text-highBlue w-5 h-5" />
+                                    Informations professionnelles
+                                </h2>
+                            </div>
+                            <div className="p-3 bg-white border-t border-normalGrey/20">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Rest of professional details */}
+                                    <div>
+                                        <Label className={labelStyle}>Téléphone</Label>
+                                        {editMode ? (
+                                            <PhoneInput
+                                                value={phoneNumber}
+                                                onChange={(value) => setPhoneNumber(value)}
+                                                placeholder="Téléphone"
+                                                className={textInputStyle}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <Phone className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
+                                                {phoneNumber == "null" ? "Non spécifié" : phoneNumber}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label className={labelStyle}>Position</Label>
+                                        {editMode ? (
+                                            <UserTypeDropDown
+                                                value={position}
+                                                onChange={(value) => setPosition(value)}
+                                            />
+                                        ) : (
+                                            <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                                <Signpost className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
+                                                {position == "null" ? "Non spécifié" : position}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Account Information (collapsed by default) */}
+                        <div className="border border-normalGrey/20 rounded-lg overflow-hidden">
+                            <div className="bg-white p-3 cursor-pointer hover:bg-normalGrey/5">
+                                <h2 className="text-md font-oswald text-highBlue flex items-center">
+                                    <Calendar className="mr-2 text-highBlue w-5 h-5" />
+                                    Informations du compte
+                                </h2>
+                            </div>
+                            <div className="p-3 bg-white border-t border-normalGrey/20">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Rest of account details */}
+                                    <div>
+                                        <Label className={labelStyle}>Dernière connexion</Label>
+                                        <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                            <Calendar className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
+                                            {formatDate(lastLogin)}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Label className={labelStyle}>Date d'inscription</Label>
+                                        <div className="bg-normalGrey text-highGrey pl-14 p-2 h-10 border border-normalGrey rounded-md font-oswald flex items-center relative">
+                                            <Calendar className="absolute left-3 top-2.5 h-5 w-5 text-highBlue" />
+                                            {formatDate(dateJoined)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </Card>

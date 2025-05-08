@@ -24,7 +24,7 @@ export function ProfileUser() {
     const userSteps = ["Générale", "Sécurité"];
     
     // Use appropriate steps array based on user group
-    const steps = user?.role === "ADMIN" ? adminSteps : userSteps;
+    const steps = user?.position === "ADMIN" ? adminSteps : userSteps;
 
     const renderStepContent = () => {
         switch (activeStep) {
@@ -33,11 +33,11 @@ export function ProfileUser() {
             case 1:
                 return <Securite />;
             case 2:
-                return user?.role === "ADMIN" ? <CreateUser /> : null;
+                return user?.position === "ADMIN" ? <CreateUser /> : null;
             case 3:
-                return user?.role === "ADMIN" ? <Support /> : null;
+                return user?.position === "ADMIN" ? <Support /> : null;
             case 4:
-                return user?.role === "ADMIN" ? <Historique /> : null;
+                return user?.position === "ADMIN" ? <Historique /> : null;
             default:
                 return null;
         }
@@ -48,7 +48,7 @@ export function ProfileUser() {
         if (user?.role !== "ADMIN" && activeStep >= userSteps.length) {
             setActiveStep(0);
         }
-    }, [user?.role, activeStep]);
+    }, [user?.position, activeStep]);
 
     return (
         <div className="flex flex-col pl-24 w-full relative">

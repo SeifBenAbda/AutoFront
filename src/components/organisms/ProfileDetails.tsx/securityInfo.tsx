@@ -2,147 +2,229 @@ import { useUpdatePassword, useUser } from "../../../context/userContext";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useToast } from "../../../hooks/use-toast";
-import { Card, CardContent } from "../../../@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../@/components/ui/card";
 import Loading from "../../../components/atoms/Loading";
 import { Toaster } from "../../../@/components/ui/toaster";
 import { Button } from "../../../@/components/ui/button";
 import { PasswordInputNew } from "../../../components/molecules/Login/PasswordInput";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { LockClosedIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
+// Types
+interface PasswordState {
+  old: string;
+  new: string;
+  repeatNew: string;
+}
+
+interface PasswordVisibility {
+  old: boolean;
+  new: boolean;
+  repeatNew: boolean;
+}
 
 export function Securite() {
-    const { user, setUser } = useUser(); // Use setUser to update user state
-    const [oldPassword, setOldPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [repeatNewPassword, setRepeatNewPassword] = useState("");
-    const { mutateAsync: updatePassword, isPending, isError, isSuccess } = useUpdatePassword();
-    const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const { handleLogout } = useAuth();
+  const { toast } = useToast();
+  const { mutateAsync: updatePassword, isPending } = useUpdatePassword();
+  
+  // State management
+  const [passwords, setPasswords] = useState<PasswordState>({
+    old: "",
+    new: "",
+    repeatNew: ""
+  });
+  const [visibility, setVisibility] = useState<PasswordVisibility>({
+    old: false,
+    new: false,
+    repeatNew: false
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [toastCloseStyle, setToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite");
 
-    const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite")
+  // Password visibility toggle handler
+  const handleTogglePassword = useCallback((field: keyof PasswordVisibility) => {
+    setVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  }, []);
 
+  // Input change handler
+  const handlePasswordChange = useCallback((field: keyof PasswordState, value: string) => {
+    setPasswords(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  }, []);
 
-    const navigate = useNavigate();
-    const { handleLogout } = useAuth();
+  // Show toast message with auto-dismiss
+  const showToast = useCallback(async (options: { 
+    className: string, 
+    title: string, 
+    duration?: number,
+    style?: string 
+  }) => {
+    const { className, title, duration = 2000, style } = options;
+    
+    if (style) setToastCloseStyle(style);
+    
+    const toastRef = toast({
+      className,
+      title,
+    });
 
-    const { toast } = useToast();
+    await new Promise(resolve => setTimeout(() => {
+      toastRef.dismiss();
+      resolve(null);
+    }, duration));
+    
+    return toastRef;
+  }, [toast]);
 
+  // Handle password update
+  const handleSave = useCallback(async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    
+    try {
+      if (passwords.new === passwords.repeatNew) {
+        await updatePassword({ newPassword: passwords.new });
+        
+        // Success toast
+        await showToast({
+          className: "bg-greenOne border border-greenOne rounded-md text-highBlue hover:text-highBlue",
+          title: "Profil mis à jour avec succès.",
+          style: "text-highBlue hover:text-highBlue"
+        });
+        
+        // Logout warning toast
+        await showToast({
+          className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
+          title: "Vous serez déconnecté dans quelques secondes.",
+          duration: 5000,
+          style: "text-highBlue hover:text-highBlue"
+        });
+        
+        // Handle logout
+        handleLogout(navigate);
+      } else {
+        // Error toast
+        await showToast({
+          className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
+          title: "Erreur dans les mots de passe",
+          style: "text-highBlue hover:text-highBlue"
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, passwords, updatePassword, showToast, handleLogout, navigate]);
 
-    const [showPasswordOld, setShowPasswordOld] = useState(false);
-    const [showPasswordNew, setShowPasswordNew] = useState(false);
-    const [showPasswordRepeatNew, setShowPasswordRepeatNew] = useState(false);
-    const handleTogglePassword = (id: number) => {
-        switch (id) {
-            case 1:
-                setShowPasswordOld(!showPasswordOld);
-                break;
-            case 2:
-                setShowPasswordNew(!showPasswordNew);
-                break;
-            case 3:
-                setShowPasswordRepeatNew(!showPasswordRepeatNew);
-                break;
-            default:
-                setShowPasswordOld(!showPasswordOld);
-        }
-    };
-    const handleSave = async () => {
-        if (user) {
-            setIsLoading(true);
-            if (oldPassword === user.password && newPassword === repeatNewPassword) {
+  return (
+    <motion.div 
+      className="relative"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Overlay loading spinner */}
+      {(isLoading || isPending) && (
+        <motion.div 
+          className="absolute inset-0 z-50 flex items-center justify-center bg-bgColorLight/70 backdrop-blur-sm rounded-lg"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="bg-bgColorLight p-6 rounded-lg shadow-xl flex flex-col items-center">
+            <Loading />
+            <p className="mt-4 text-lightWhite">Mise à jour en cours...</p>
+          </div>
+        </motion.div>
+      )}
 
+      <Toaster tostCloseStyle={toastCloseStyle} />
+      
+      <Card className="bg-whiteSecond p-0 rounded-lg shadow-md border border-whiteSecond">
+        <CardHeader className="bg-gradient-to-r from-highBlue to-normalBlue p-4 md:p-5 relative border-b border-gray-700/30 rounded-t-lg">
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="w-5 h-5 text-greenOne" />
+            <CardTitle className="text-whiteSecond text-xl">Sécurité</CardTitle>
+          </div>
+          <CardDescription className="text-whiteSecond">
+            Mettez à jour votre mot de passe pour sécuriser votre compte
+          </CardDescription>
+        </CardHeader>
+        
+        <div className="p-4 space-y-4">
+          <div className="space-y-4">
+    
+            <div className="group transition-all duration-200 bg-normalGrey hover:bg-normalGrey/70 rounded-md p-3">
+              <label className="text-sm font-medium text-highBlue mb-2 flex items-center gap-2">
+                <LockClosedIcon className="w-4 h-4 text-highBlue" />
+                Nouveau mot de passe
+              </label>
+              <PasswordInputNew
+                value={passwords.new}
+                onChange={(e) => handlePasswordChange('new', e.target.value)}
+                placeholder="Nouveau mot de passe"
+                onTogglePassword={() => handleTogglePassword('new')}
+                showPassword={visibility.new}
+                id={2}
+                className="bg-normalGrey border-highBlue focus-within:ring-1 focus-within:ring-transparent"
+              />
+            </div>
 
-                await updatePassword({ newPassword }).then(async (e) => {
-                    setIsLoading(false);
-                    setMyToastCloseStyle("text-highBlue hover:text-highBlue")
-                    const firstToast = toast({
-                        className: "bg-greenOne border border-greenOne rounded-md text-highBlue hover:text-highBlue",
-                        title: "Profil mis à jour avec succès.",
-                    });
-
-                    await new Promise(resolve => setTimeout(() => {
-                        firstToast.dismiss();
-                        resolve(null);
-                    }, 2000));
-
-                    // Second toast
-                    setMyToastCloseStyle("text-highBlue hover:text-highBlue")
-                    const secondToast = toast({
-                        className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
-                        title: "Vous serez déconnecté dans quelques secondes.",
-                    });
-
-                    await new Promise(resolve => setTimeout(() => {
-                        secondToast.dismiss();
-                        resolve(null);
-                    }, 5000));
-
-                    // Handle logout
-                    handleLogout(navigate);
-                });
-            } else {
-                setIsLoading(false);
-                setMyToastCloseStyle("text-highBlue hover:text-highBlue")
-                const secondToast = toast({
-                    className: "bg-red-800 border border-red-800 rounded-md text-lightWhite hover:text-lightWhite",
-                    title: "Erreur dans les mots de passe",
-                });
-                await new Promise(resolve => setTimeout(() => {
-                    secondToast.dismiss();
-                    resolve(null);
-                }, 2000));
-            }
-
-        }
-    };
-
-    return (
-        <div className="relative">
-            {/* Overlay loading spinner */}
-            {(isLoading || isPending) && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-highBlue bg-opacity-50 border rounded-md">
-                    <Loading />
-                </div>
-            )}
-
-            <Toaster tostCloseStyle={myToastCloseStyle} />
-            <Card className="bg-highBlue w-full">
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">Ancien mot de passe</label>
-                    <PasswordInputNew
-                        value={oldPassword}
-                        onChange={(e) => setOldPassword(e.target.value)}
-                        placeholder="Ancien mot de passe"
-                        onTogglePassword={() => handleTogglePassword(1)}
-                        showPassword={showPasswordOld}
-                        id={1}
-                    />
-                </CardContent>
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">Nouveau mot de passe</label>
-                    <PasswordInputNew
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Nouveau mot de passe"
-                        onTogglePassword={() => handleTogglePassword(2)}
-                        showPassword={showPasswordNew}
-                        id={2}
-                    />
-                </CardContent>
-                <CardContent className="w-full">
-                    <label className="block text-sm font-medium text-lightWhite mt-2 ml-1">Répéter le nouveau mot de passe</label>
-                    <PasswordInputNew
-                        value={repeatNewPassword}
-                        onChange={(e) => setRepeatNewPassword(e.target.value)}
-                        placeholder="Répéter le nouveau mot de passe"
-                        onTogglePassword={() => handleTogglePassword(3)}
-                        showPassword={showPasswordRepeatNew}
-                        id={3}
-                    />
-                </CardContent>
-                <Button className="m-2 ml-4 bg-greenOne hover:bg-greenOne" onClick={handleSave}>
-                    Changer le mot de passe
-                </Button>
-            </Card>
+            <div className="group transition-all duration-200 bg-normalGrey hover:bg-normalGrey/70 rounded-md p-3">
+              <label className="text-sm font-medium text-highBlue mb-2 flex items-center gap-2">
+                <LockClosedIcon className="w-4 h-4 text-highBlue" />
+                Répéter le nouveau mot de passe
+              </label>
+              <PasswordInputNew
+                value={passwords.repeatNew}
+                onChange={(e) => handlePasswordChange('repeatNew', e.target.value)}
+                placeholder="Répéter le nouveau mot de passe"
+                onTogglePassword={() => handleTogglePassword('repeatNew')}
+                showPassword={visibility.repeatNew}
+                id={3}
+                className="bg-normalGrey border-highBlue focus-within:ring-1 focus-within:ring-transparent"
+              />
+              
+              {passwords.new && passwords.repeatNew && passwords.new !== passwords.repeatNew && (
+                <motion.p 
+                  className="text-red-400 text-sm mt-2"
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  Les mots de passe ne correspondent pas
+                </motion.p>
+              )}
+            </div>
+          </div>
+          
+          <div className="pt-4 flex justify-end">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button 
+                className="bg-greenOne hover:bg-greenOne/90 text-highBlue font-medium px-6 py-5 h-auto 
+                           shadow-lg shadow-greenOne/20 flex items-center gap-2 rounded-md transition-all"
+                onClick={handleSave}
+                disabled={isLoading || isPending || passwords.new !== passwords.repeatNew || !passwords.new}
+              >
+                <ShieldCheckIcon className="w-5 h-5" />
+                Changer le mot de passe
+              </Button>
+            </motion.div>
+          </div>
         </div>
-    );
+      </Card>
+    </motion.div>
+  );
 }

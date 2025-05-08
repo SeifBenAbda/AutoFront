@@ -9,9 +9,18 @@ interface PasswordInputProps {
   showPassword: boolean;
   placeholder?:string;
   id?:number;
+  className?: string; // Added className prop
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, onTogglePassword, showPassword }) => {
+export const PasswordInput: React.FC<PasswordInputProps> = ({ 
+  value, 
+  onChange, 
+  onTogglePassword, 
+  showPassword, 
+  className 
+}) => {
+  const defaultClassName = "w-full p-2 border border-veryGrey focus:border-highBlue focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10";
+  
   return (
     <div className="relative">
       <Input
@@ -20,7 +29,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, o
         name="password"
         value={value}
         onChange={onChange}
-        className="w-full p-2 border border-veryGrey focus:border-highBlue focus:outline-none rounded-md mt-1 font-oswald text-gray-600 pr-10"
+        className={className || defaultClassName}
         placeholder="Mot de passe"
       />
       <button
@@ -39,7 +48,17 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, o
 };
 
 
-export const PasswordInputNew: React.FC<PasswordInputProps> = ({ value, onChange, onTogglePassword, showPassword , placeholder , id }) => {
+export const PasswordInputNew: React.FC<PasswordInputProps> = ({ 
+  value, 
+  onChange, 
+  onTogglePassword, 
+  showPassword, 
+  placeholder, 
+  id, 
+  className 
+}) => {
+  const defaultClassName = "w-full mt-1 p-2 mr-2 block border border-highBlue text-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald";
+  
   return (
     <div className="relative">
       <Input
@@ -48,7 +67,7 @@ export const PasswordInputNew: React.FC<PasswordInputProps> = ({ value, onChange
         name="password"
         value={value}
         onChange={onChange}
-        className="w-full mt-1 p-2 mr-2 block border border-highBlue text-highBlue rounded-md shadow-sm focus:ring-0 sm:text-sm font-oswald"
+        className={className || defaultClassName}
         placeholder={placeholder?placeholder:"Mot de passe"}
       />
       <button

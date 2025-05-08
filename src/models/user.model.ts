@@ -13,4 +13,5 @@ export interface User {
   dateJoined?: Date;
   lastLogin?: Date | null;
   role: string;
+  password?: string;
 }
