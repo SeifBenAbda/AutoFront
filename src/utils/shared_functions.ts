@@ -19,7 +19,8 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
-    if (devis.devisReserved.DateReservation && devis.devisReserved.DateReservation < new Date()) {
+    if (devis.devisReserved.DateReservation) {
+        console.log("ISSUE LIVRAISON");
         return false;
     }
     return true;
@@ -28,17 +29,6 @@ const isModificationReservationCorrect = (devis: Devis): boolean => {
 const isModificationLivrerCorrect = (devis: Devis): boolean => {
     if(devis.devisFacture===null || devis.devisFacture?.DateLivraison===null){
         return false;
-    }
-    if (devis.devisFacture.DateLivraison) {
-        const deliveryDate = new Date(devis.devisFacture.DateLivraison);
-        deliveryDate.setHours(0, 0, 0, 0);
-        
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (deliveryDate < today) {
-            return false;
-        }
     }
     return true;
 }

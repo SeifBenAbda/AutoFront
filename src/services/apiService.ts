@@ -2,6 +2,7 @@ import { Article } from "@/types/otherTypes";
 import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
+import { generateBcInterneResponse } from "../hooks/useUploadFiles";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -835,3 +836,41 @@ export const fetchDocCheck = async (databasename: string,clientType: string,paye
 };
 
 
+
+export const generateBcInterne = async (databasename: string,devisId: number, navigate: (path: string) => void): Promise<generateBcInterneResponse> => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database: databasename ,devisId:devisId};
+
+  try {
+    const response = await fetch(`${API_URL}/devis-documents/generate-bc-interne`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch car models');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+  

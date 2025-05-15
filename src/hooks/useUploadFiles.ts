@@ -1,5 +1,5 @@
 import { useMutation ,UseMutateAsyncFunction, useQuery  } from '@tanstack/react-query';
-import { getDevisFiles, getUrlFiles, streamFile, uploadDocuments } from '../services/apiService'; // Adjust the import path as needed
+import { generateBcInterne, getDevisFiles, getUrlFiles, streamFile, uploadDocuments } from '../services/apiService'; // Adjust the import path as needed
 import { useNavigate } from 'react-router-dom';
 import { databaseName } from '../utils/shared_functions';
 
@@ -106,3 +106,17 @@ export const useDevisFiles = (
 
 
 
+export interface generateBcInterneResponse {
+    status: number;
+    result: string;
+}
+
+
+export const useGenerateBcInterne = (devisId: number,navigate: (path: string) => void) => {
+    return useQuery<generateBcInterneResponse>({
+        queryKey: ['generateBcInterne', devisId], // Include all dependencies in the key
+        queryFn: () => generateBcInterne(databaseName, devisId,navigate),
+        staleTime: 0, // Data is always considered stale
+        refetchOnWindowFocus: false, // Optional: Disable refetching on window focus if not needed
+    });
+};

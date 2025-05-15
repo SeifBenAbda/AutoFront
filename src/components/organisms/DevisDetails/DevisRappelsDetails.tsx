@@ -1,6 +1,5 @@
-import { Rappel } from "../../../types/devisTypes";
+import { Devis, Rappel } from "../../../types/devisTypes";
 import AudioRecorder from "./DevisAudioSystem";
-import { Card, CardContent } from "../../../@/components/ui/card";
 import { Textarea } from "../../../@/components/ui/textarea";
 import { DatePicker } from "../../atoms/DateSelector";
 import { useUser } from "../../../context/userContext";
@@ -8,10 +7,12 @@ import { useUser } from "../../../context/userContext";
 interface DevisRappelsDetailsProps {
     devisId: number,
     rappels: Rappel[];
+    devis:Devis;
+    onUpdateDevis: (updatedDevis: Devis) => void;
     onUpdate: (updatedRappels: Rappel[]) => void;
 }
 
-export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappelsDetailsProps) {
+export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUpdate }: DevisRappelsDetailsProps) {
     const { user } = useUser();
     
     const handleChange = (rappelId: number, field: keyof Rappel, value: string | Date | boolean | undefined) => {
@@ -28,6 +29,12 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
         };
 
         onUpdate(updatedRappels);
+    };
+
+
+    const handleCommentsChange = (comments: string): void => {
+        const updateDevis = { ...devis, Comments: comments };
+        onUpdateDevis(updateDevis);
     };
 
     const handleDateChange = (rappelId: number, date: Date | undefined) => {
@@ -137,8 +144,27 @@ export function DevisRappelsDetails({ devisId, rappels, onUpdate }: DevisRappels
                 </div>
             </div>
 
-            <hr className="bg-highBlue mt-4 mb-4 mr-2 ml-2" />    
+            <hr className="bg-highBlue mt-4 mb-1 mr-2 ml-2" />    
 
+           
+
+            <div className="mt-2 mb-2 bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-highBlue to-blue-800 text-white py-4 px-6">
+                    <h3 className="text-lg font-oswald">Commentaires Additionnels</h3>
+                </div>
+                
+                {/* Content */}
+                <div className="p-4">
+                    <Textarea
+                        className="w-full text-sm resize-none border-gray-200 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 rounded-md"
+                        placeholder="Saisir des commentaires supplémentaires..."
+                        rows={4}
+                        onChange={(e) => handleCommentsChange(e.target.value)} // Update devis comments
+                        value={devis.Comments || ""}
+                    />
+                </div>
+            </div>
             <div className="pl-2">
                 <AudioRecorder devisId={devisId} />
             </div>

@@ -105,8 +105,6 @@ export const fetchUserData = async () => {
     if (!response.ok) {
       return null;
     }
-
-    console.log("User data response:", response);
   
     return response.json();
   } catch(e) {

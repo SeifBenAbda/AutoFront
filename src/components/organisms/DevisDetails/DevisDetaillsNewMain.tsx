@@ -176,7 +176,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
         { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} /> },
         { label: 'Vehicule', component: <DevisVehiculeDetails carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} isAdmin={isAdmin} /> },
         { label: 'Devis', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
-        { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} /> },
+        { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Documents', component: <DevisDoucmentDetails devis={myDevis} /> },
     ] : [];
 
@@ -206,9 +206,9 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     <CardTitle className="text-highBlue text-center font-oswald text-lg">Notes</CardTitle>
                     <CardContent className="p-2">
                         <div className="text-highBlue font-oswald text-sm">
-                            {isErrorBanqueSelection(myDevis!.devisPayementDetails.BankAndLeasing) && 
+                            {isErrorBanqueSelection(myDevis!.devisPayementDetails.BankAndLeasing) &&
                                 <div className="text-lightRed">
-                                    {getErrorBanqueSelection()}        
+                                    {getErrorBanqueSelection()}
                                 </div>
                             }
                         </div>
@@ -230,7 +230,10 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             <div className="flex flex-col w-1/4">
                 <Toaster toastExtraStlye="mr-2" tostCloseStyle={myToastCloseStyle} />
                 <StepIndicator />
-                <div className="sticky bottom-0 bg-transprent p-2 pr-4 pl-5 mt-4">
+                <div className="sticky bottom-0 bg-transprent p-2 pr-4 pl-5 mt-4 space-y-2">
+                    <Button onClick={handleSave} className="w-full py-2 text-white bg-greenOne rounded-md">
+                        Générer BC Interne
+                    </Button>
                     <Button onClick={handleSave} className="w-full py-2 text-white bg-highBlue rounded-md">
                         Enregistrer
                     </Button>
