@@ -1,7 +1,8 @@
 import { databaseName } from "../utils/shared_functions";
-import { fetchCarRequestStats, fetchDocumentMissingStats, fetchDossierStats } from "../services/statsService";
+import { fetchCarRequestStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { string } from "zod";
 
 export interface DossierStat {
     devisId: number;
@@ -67,6 +68,53 @@ export const useCarStats = (carModels: string[]) => {
         refetchOnWindowFocus: false,
     });
 }
+export interface PlanningRappelResult {
+    clientName:string; 
+    carType:string; 
+    rappelDate: Date;
+}
+
+export interface RappelsByCreator {
+    [creator: string]: PlanningRappelResult[];
+}
+
+export interface PlanningRappelData {
+    creators: string[];
+    rappelsByCreator: RappelsByCreator;
+    allCreators:string[];
+}
+
+export interface PlanningRappel {
+    result: PlanningRappelData;
+    meta: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+    };
+}
+
+
+export const usePlanningRappels = (page:number, startingDate:Date, endingDate:Date,selectedCreator:string) => {
+    const navigate = useNavigate(); // Move the useNavigate call here inside the hook
+    return useQuery<PlanningRappel>({
+        queryKey: ['planningRappels', page, startingDate, endingDate,selectedCreator],
+        queryFn: () => fetchPlanningRappels(databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
+        staleTime: 0,   
+        refetchOnWindowFocus: false,
+    });
+};
+
+
+export const useOverDueRappels = (page:number, startingDate:Date, endingDate:Date,selectedCreator:string) => {
+    const navigate = useNavigate(); // Move the useNavigate call here inside the hook
+    return useQuery<PlanningRappel>({
+        queryKey: ['overDueRappels', page, startingDate, endingDate,selectedCreator],
+        queryFn: () => fetchOverdueRappels(databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+    });
+}
+
 
 
 const useDossierStats = (status:string) => {

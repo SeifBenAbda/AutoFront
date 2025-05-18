@@ -1,4 +1,4 @@
-import { CarRequestStats, DocumentMissingData, DocumentMissingStats, DossierStat } from "../hooks/useDashboard";
+import { CarRequestStats, DocumentMissingData, DocumentMissingStats, DossierStat, PlanningRappel } from "../hooks/useDashboard";
 import { getToken, removeToken } from "./authService";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -98,5 +98,76 @@ export const fetchDocumentMissingStats = async (
   }
 
   if (!response.ok) throw new Error("Failed to fetch document stats");
+  return response.json();
+}
+
+
+export const fetchPlanningRappels = async (
+  databaseName: string,
+  page: number,
+  startingDate: Date,
+  endingDate: Date,
+  selectedCreator: string,
+  navigate: (path: string) => void
+): Promise<PlanningRappel> => {
+  const token = getToken();
+  if (!token) throw new Error("No token found fetch planning rappels data");
+  const response = await fetch(`${API_URL}/dashboard/planning-rappels`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database": databaseName,
+      "page": page,
+      "startingDate": startingDate,
+      "endingDate": endingDate,
+      "selectedCreator": selectedCreator,
+    }),
+  });
+
+  if (response.status === 401) {
+    removeToken();
+    navigate("/login");
+    throw new Error("Unauthorized: Token is invalid or expired");
+  }
+
+  if (!response.ok) throw new Error("Failed to fetch planning rappels");
+  return response.json();
+}
+
+export const fetchOverdueRappels = async (
+  databaseName: string,
+  page: number,
+  startingDate: Date,
+  endingDate: Date,
+  selectedCreator: string,
+  navigate: (path: string) => void
+): Promise<PlanningRappel> => {
+  const token = getToken();
+  if (!token) throw new Error("No token found fetch planning rappels data");
+  const response = await fetch(`${API_URL}/dashboard/overdue-rappels`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database": databaseName,
+      "page": page,
+      "startingDate": startingDate,
+      "endingDate": endingDate,
+      "selectedCreator": selectedCreator,
+    }),
+  });
+
+  if (response.status === 401) {
+    removeToken();
+    navigate("/login");
+    throw new Error("Unauthorized: Token is invalid or expired");
+  }
+
+  if (!response.ok) throw new Error("Failed to fetch planning rappels");
   return response.json();
 }

@@ -29,7 +29,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const API_URL = import.meta.env.VITE_API_URL;
     const token = getToken();
     const { user } = useUser();
-    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const isEditingOpen = true; //devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
     useEffect(() => {
         if (devis.DevisId) {
             setIsLoading(true);
