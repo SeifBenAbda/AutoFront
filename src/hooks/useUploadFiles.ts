@@ -112,11 +112,8 @@ export interface generateBcInterneResponse {
 }
 
 
-export const useGenerateBcInterne = (devisId: number,navigate: (path: string) => void) => {
-    return useQuery<generateBcInterneResponse>({
-        queryKey: ['generateBcInterne', devisId], // Include all dependencies in the key
-        queryFn: () => generateBcInterne(databaseName, devisId,navigate),
-        staleTime: 0, // Data is always considered stale
-        refetchOnWindowFocus: false, // Optional: Disable refetching on window focus if not needed
+export const useGenerateBcInterne = (devisId: number, navigate: (path: string) => void) => {
+    return useMutation<generateBcInterneResponse, Error, { database: string, devisId: number, navigate: (path: string) => void }>({
+        mutationFn: ({ database, devisId, navigate }) => generateBcInterne(database, devisId, navigate),
     });
 };

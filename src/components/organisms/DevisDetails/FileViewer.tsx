@@ -314,7 +314,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
                                 </div>
                                 <div className="flex-1 min-w-0 pointer-events-none">
                                     <div className="font-oswald text-base text-gray-800 truncate font-medium">
-                                        {`${file.file_name.split("_")[0]}.${file.file_name.split(".").pop()}`}
+                                        {`${file.file_name}`}
                                     </div>
                                     <div
                                         className={`w-full mt-3 h-9 font-oswald text-sm text-center rounded-lg flex items-center justify-center transition-colors

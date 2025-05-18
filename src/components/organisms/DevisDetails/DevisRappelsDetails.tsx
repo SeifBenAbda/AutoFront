@@ -45,12 +45,32 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
         handleChange(rappelId, "isClosed", !currentStatus);
     };
 
+    const handleAddRappel = () => {
+        const newRappel: Rappel = {
+            RappelId: Date.now(), // Temporary unique ID
+            RappelDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow's date
+            RappelContent: "",
+            isClosed: false,
+            CreatedBy: "Current User",
+            CreatedAt: new Date(),
+            UpdatedBy: "Current User",
+            UpdatedAt: new Date(),
+        };
+        onUpdate([...rappels, newRappel]);
+    };
+
     return (
         <div className="flex flex-col pl-2 pr-2 pt-2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 {/* Modern Custom Table Header */}
-                <div className="bg-gradient-to-r from-highBlue to-blue-800 text-white py-4 px-6">
+                <div className="bg-gradient-to-r from-highBlue to-blue-800 text-white py-4 px-6 flex justify-between items-center">
                     <h3 className="text-lg font-oswald">Liste des Rappels</h3>
+                    <button
+                        onClick={handleAddRappel}
+                        className="bg-white text-highBlue px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-transparent"
+                    >
+                        Nouvel Rappel
+                    </button>
                 </div>
                 
                 {/* Custom Table */}

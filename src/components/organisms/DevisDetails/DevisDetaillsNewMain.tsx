@@ -8,12 +8,14 @@ import { DevisClientDetails } from "./DevisClientDetails";
 import { DevisVehiculeDetails } from "./DevisVehiculeDetails";
 import { DevisRappelsDetails } from "./DevisRappelsDetails";
 import { DevisDoucmentDetails } from "./DevisDoucmentDetails";
-import { Button } from "../../../@/components/ui/button";
-import Loading from "../../../components/atoms/Loading";
 import { databaseName, getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
-import { Toaster } from "../../../@/components/ui/toaster";
 import { useToast } from "../../../hooks/use-toast";
 import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
+import { useGenerateBcInterne } from "../../../hooks/useUploadFiles";
+import { useNavigate } from "react-router-dom";
+import Loading from "../../../components/atoms/Loading";
+import { Button } from "../../../@/components/ui/button";
+import { Toaster } from "../../../@/components/ui/toaster";
 
 interface DevisDetailsNewMainProps {
     devis: Devis;
@@ -72,8 +74,8 @@ const StepCircle = ({ isActive, onClick, stepIcon: Icon, stepLabel }: StepCircle
         </span>
     </div>
 );
-
 const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen, onClose, isAdmin, onSave }) => {
+    const generationBcInterneAvailable = devis.StatusDevis !== "En attente" && devis.StatusDevis!=="En Cours" && devis.StatusDevis !== "Annulé" ;
     const [activeStep, setActiveStep] = useState<number>(0);
     const { user } = useUser();
     const [myDevis, setDevis] = useState<Devis | null>(devis);
@@ -84,6 +86,8 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite");
     const { toast } = useToast();
     const { mutateAsync: updateDevis } = useUpdateDevis();
+    const navigate = useNavigate();
+    const { mutateAsync: generateBcInterne } = useGenerateBcInterne(devis.DevisId!, navigate);
     const totalSteps = [
 
         { icon: UserRoundCog, label: "Client" },
@@ -150,7 +154,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
         } else {
             setLoading(true);
             try {
-                updateDevis({
+                await updateDevis({
                     database: databaseName,
                     devisId: devis!.DevisId!,
                     clientId: myDevis!.client?.id!,
@@ -163,11 +167,38 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     updatedDevisReserved: myDevis!.devisReserved || undefined,
                     updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined,
                     updatedDevisGesteCommerciale: myDevis!.gesteCommer || undefined
-                }).then(() => { onSave(myDevis!); setLoading(false); onClose(); });
+                });
+                onSave(myDevis!);
+                onClose();
             } catch (error) {
                 console.error('Failed to save updates:', error);
-
+            } finally {
+                setLoading(false);
             }
+        }
+    };
+
+    const handleGenerateBcInterne = async () => {
+        setLoading(true);
+        try {
+            await generateBcInterne({
+                database: databaseName,
+                devisId: devis.DevisId!,
+                navigate: navigate,
+            });
+            
+            toast({
+                className: "bg-lightGreen border border-lightGreen rounded-md text-lightWhite hover:text-lightWhite ",
+                title: "BC Interne généré avec succès"
+            });
+        } catch (error) {
+            console.error('Error generating BC Interne:', error);
+            toast({
+                className: "bg-lightRed border border-lightRed rounded-md text-lightWhite hover:text-lightWhite ",
+                title: "Erreur lors de la génération du BC Interne"
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -231,9 +262,10 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                 <Toaster toastExtraStlye="mr-2" tostCloseStyle={myToastCloseStyle} />
                 <StepIndicator />
                 <div className="sticky bottom-0 bg-transprent p-2 pr-4 pl-5 mt-4 space-y-2">
-                    <Button onClick={handleSave} className="w-full py-2 text-white bg-greenOne rounded-md">
+                    { generationBcInterneAvailable && (
+                        <Button onClick={handleGenerateBcInterne} className="w-full py-2 text-white bg-greenOne hover:bg-greenOne rounded-md">
                         Générer BC Interne
-                    </Button>
+                    </Button>)}
                     <Button onClick={handleSave} className="w-full py-2 text-white bg-highBlue rounded-md">
                         Enregistrer
                     </Button>

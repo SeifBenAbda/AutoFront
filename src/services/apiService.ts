@@ -847,7 +847,7 @@ export const generateBcInterne = async (databasename: string,devisId: number, na
   const body = { database: databasename ,devisId:devisId};
 
   try {
-    const response = await fetch(`${API_URL}/devis-documents/generate-bc-interne`, {
+    const response = await fetch(`${API_URL}/devis-documents/generateBcInterne`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -864,7 +864,7 @@ export const generateBcInterne = async (databasename: string,devisId: number, na
     }
 
     if (!response.ok) {
-      throw new Error('Failed to fetch car models');
+      throw new Error('Failed to generate BC Interne');
     }
 
     return response.json();
