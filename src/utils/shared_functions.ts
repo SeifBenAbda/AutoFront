@@ -19,7 +19,7 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
-    if (devis.devisReserved.DateReservation) {
+    if (!devis.devisReserved.DateReservation) {
         console.log("ISSUE LIVRAISON");
         return false;
     }
@@ -50,14 +50,14 @@ const bankDetailsMissing = (devis: Devis): boolean => {
 }
 
 const isCanceledDevisNotFinished = (devis: Devis): boolean => {
-    if(devis.StatusDevis==="Annulé" && devis.ReasonAnnulation===""){ 
-        return false;
+    if(devis.StatusDevis==="Annulé" && (devis.ReasonAnnulation==="" || devis.ReasonAnnulation===undefined)){ 
+        return true;
     }
-    return true;
+    return false;
 }
 
 export const getModificationErros = (devis : Devis): string => {
-    if(!isCanceledDevisNotFinished(devis)){
+    if(isCanceledDevisNotFinished(devis)){
         return "Erreur dans l'annulation du devis !";
     }else if(devis.StatusDevis != "Annulé"){
         if(totalTTCMissing(devis)){

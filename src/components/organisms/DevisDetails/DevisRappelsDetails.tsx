@@ -24,7 +24,7 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
         updatedRappels[index] = {
             ...updatedRappels[index],
             [field]: value,
-            UpdatedBy: "Current User",
+            UpdatedBy: user?.username || "Unknown",
             UpdatedAt: new Date()
         };
 
@@ -51,9 +51,9 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
             RappelDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow's date
             RappelContent: "",
             isClosed: false,
-            CreatedBy: "Current User",
+            CreatedBy: user?.username!,
             CreatedAt: new Date(),
-            UpdatedBy: "Current User",
+            UpdatedBy: user?.username,
             UpdatedAt: new Date(),
         };
         onUpdate([...rappels, newRappel]);

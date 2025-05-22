@@ -35,10 +35,10 @@ const PlanningRappelComponent: React.FC = () => {
     // Get all rappels flattened for easier rendering
     const allRappels = useMemo(() => {
         if (!data?.result?.rappelsByCreator || !data?.result?.allCreators) return [];
-        
+
         return data.result.allCreators
             .filter(creator => selectedCreator === 'all' || creator === selectedCreator)
-            .flatMap(creator => 
+            .flatMap(creator =>
                 (data.result.rappelsByCreator[creator] || []).map(rappel => ({
                     ...rappel,
                     creator
@@ -50,7 +50,7 @@ const PlanningRappelComponent: React.FC = () => {
     // Generate dates for calendar with rappel counts
     const calendarDates = useMemo(() => {
         const dateMap = new Map();
-        
+
         allRappels.forEach(rappel => {
             const dateStr = format(new Date(rappel.rappelDate), 'yyyy-MM-dd');
             if (dateMap.has(dateStr)) {
@@ -59,7 +59,7 @@ const PlanningRappelComponent: React.FC = () => {
                 dateMap.set(dateStr, 1);
             }
         });
-        
+
         return dateMap;
     }, [allRappels]);
 
@@ -87,12 +87,12 @@ const PlanningRappelComponent: React.FC = () => {
                 <div className="text-2xl text-whiteSecond font-oswald">
                     Planning des appels
                 </div>
-                
+
                 {/* Creator filter - this stays in the header for all views */}
                 <div className="flex items-center gap-2 ml-auto">
                     <label className="text-whiteSecond whitespace-nowrap">Créateur:</label>
-                    <Select 
-                        onValueChange={(value) => setSelectedCreator(value)} 
+                    <Select
+                        onValueChange={(value) => setSelectedCreator(value)}
                         defaultValue={selectedCreator}
                     >
                         <SelectTrigger className="w-40 border border-normalGrey bg-normalGrey font-oswald">
@@ -100,9 +100,9 @@ const PlanningRappelComponent: React.FC = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-normalGrey border-normalGrey">
                             {creators.map(creator => (
-                                <SelectItem 
-                                    key={creator} 
-                                    value={creator} 
+                                <SelectItem
+                                    key={creator}
+                                    value={creator}
                                     className="hover:bg-highGrey hover:text-whiteSecond transition-colors"
                                 >
                                     {creator === 'all' ? 'Tous les Créateurs' : creator}
@@ -114,14 +114,14 @@ const PlanningRappelComponent: React.FC = () => {
             </div>
 
             <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as ViewMode)} className="mb-6">
-                <TabsList className="grid grid-cols-3 mb-4 bg-normalGrey">
-                    <TabsTrigger value="calendar" className="text-whiteSecond data-[state=active]:bg-whiteSecond data-[state=active]:text-highBlue">
+                <TabsList className="grid grid-cols-3 border rounded-md bg-normalGrey font-oswald">
+                    <TabsTrigger value="calendar" className="text-highBlue border rounded-md data-[state=active]:bg-greenOne data-[state=active]:text-highBlue">
                         Calendrier
                     </TabsTrigger>
-                    <TabsTrigger value="cards" className="text-whiteSecond data-[state=active]:bg-whiteSecond data-[state=active]:text-highBlue">
+                    <TabsTrigger value="cards" className="text-highBlue border rounded-md data-[state=active]:bg-greenOne data-[state=active]:text-highBlue">
                         Cartes
                     </TabsTrigger>
-                    <TabsTrigger value="table" className="text-whiteSecond data-[state=active]:bg-whiteSecond data-[state=active]:text-highBlue">
+                    <TabsTrigger value="table" className="text-highBlue border rounded-md data-[state=active]:bg-greenOne data-[state=active]:text-highBlue">
                         Tableau
                     </TabsTrigger>
                 </TabsList>
@@ -141,7 +141,7 @@ const PlanningRappelComponent: React.FC = () => {
                             <div className="flex flex-col md:flex-row gap-4 justify-between">
                                 {/* Date picker section */}
                                 <div className="md:w-1/2">
-                                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Date sélectionnée</h3>
+                                    <h3 className="text-lg font-semibold mb-3 text-gray-800 font-oswald">Date sélectionnée</h3>
                                     <div className="p-4 border rounded-md bg-gray-50">
                                         <DatePicker
                                             fromYear={new Date().getFullYear() - 1}
@@ -150,10 +150,10 @@ const PlanningRappelComponent: React.FC = () => {
                                             onChange={(date: any) => setStartingDate(date || today)}
                                         />
                                     </div>
-                                    
+
                                     {/* Event count summary */}
                                     <div className="mt-4 p-3 border rounded-md">
-                                        <h4 className="font-medium mb-2 text-gray-700">Récapitulatif des rendez-vous</h4>
+                                        <h4 className="font-medium mb-2 text-gray-700">Récapitulatif des Appels</h4>
                                         <div className="space-y-1">
                                             {Array.from(calendarDates.entries())
                                                 .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime())
@@ -162,14 +162,14 @@ const PlanningRappelComponent: React.FC = () => {
                                                     const date = new Date(dateStr);
                                                     const urgencyClass = getUrgencyClass(date);
                                                     return (
-                                                        <div 
+                                                        <div
                                                             key={dateStr}
                                                             className="flex justify-between p-2 rounded-md cursor-pointer hover:bg-gray-50"
                                                             onClick={() => setStartingDate(date)}
                                                         >
                                                             <span className="font-medium">{format(date, 'dd/MM/yyyy')}</span>
-                                                            <Badge 
-                                                                variant="outline" 
+                                                            <Badge
+                                                                variant="outline"
                                                                 className={`${urgencyClass} px-2 py-1 rounded-md`}
                                                             >
                                                                 {count} rappel{count > 1 ? 's' : ''}
@@ -189,15 +189,15 @@ const PlanningRappelComponent: React.FC = () => {
 
                                 {/* Daily appointments panel */}
                                 <div className="md:w-1/2">
-                                    <h3 className="text-lg font-semibold mb-3 text-gray-800">
-                                        Rendez-vous du {format(startingDate, 'dd/MM/yyyy')}
+                                    <h3 className="text-lg font-semibold mb-3 text-gray-800 font-oswald">
+                                        Appels du {format(startingDate, 'dd/MM/yyyy')}
                                     </h3>
                                     <div className="space-y-2 max-h-[400px] overflow-y-auto p-1">
                                         {allRappels
                                             .filter(rappel => isSameDay(new Date(rappel.rappelDate), startingDate))
                                             .map((rappel, idx) => (
-                                                <div 
-                                                    key={idx} 
+                                                <div
+                                                    key={idx}
                                                     className="p-3 rounded-md border shadow-sm hover:shadow-md transition-shadow bg-white"
                                                     style={{ borderLeftColor: getCreatorColor(rappel.creator), borderLeftWidth: '4px' }}
                                                 >
@@ -212,7 +212,7 @@ const PlanningRappelComponent: React.FC = () => {
                                             ))}
                                         {allRappels.filter(rappel => isSameDay(new Date(rappel.rappelDate), startingDate)).length === 0 && (
                                             <div className="text-gray-500 italic text-center p-6 border border-dashed rounded-md">
-                                                Aucun rendez-vous prévu pour cette date
+                                                Aucun Appel prévu pour cette date
                                             </div>
                                         )}
                                     </div>
@@ -241,9 +241,9 @@ const PlanningRappelComponent: React.FC = () => {
                                     const rappelDate = new Date(rappel.rappelDate);
                                     const urgencyClass = getUrgencyClass(rappel.rappelDate);
                                     const creatorColor = getCreatorColor(rappel.creator);
-                                    
+
                                     return (
-                                        <Card key={idx} className="overflow-hidden border border-gray-200 bg-white hover:shadow-md transition-shadow">
+                                        <Card key={idx} className="overflow-hidden border border-gray-200 bg-white hover:shadow-md transition-shadow font-normal">
                                             <div className="h-2" style={{ backgroundColor: creatorColor }}></div>
                                             <CardContent className="p-4">
                                                 <div className="flex justify-between items-start">
@@ -260,13 +260,13 @@ const PlanningRappelComponent: React.FC = () => {
                                                         Créateur: <span className="text-gray-600">{rappel.creator}</span>
                                                     </div>
                                                     <div className="text-xs text-gray-500">
-                                                        {differenceInDays(rappelDate, today) === 0 
-                                                            ? "Aujourd'hui" 
-                                                            : differenceInDays(rappelDate, today) === 1 
-                                                                ? "Demain" 
-                                                                : differenceInDays(rappelDate, today) === -1 
+                                                        {differenceInDays(rappelDate, today) === 0
+                                                            ? "Aujourd'hui"
+                                                            : differenceInDays(rappelDate, today) === 1
+                                                                ? "Demain"
+                                                                : differenceInDays(rappelDate, today) === -1
                                                                     ? "Hier"
-                                                                    : differenceInDays(rappelDate, today) < 0 
+                                                                    : differenceInDays(rappelDate, today) < 0
                                                                         ? `Il y a ${Math.abs(differenceInDays(rappelDate, today))} jours`
                                                                         : `Dans ${differenceInDays(rappelDate, today)} jours`
                                                         }
@@ -277,11 +277,11 @@ const PlanningRappelComponent: React.FC = () => {
                                     );
                                 }) : (
                                     <div className="col-span-3 text-center py-8 text-gray-500">
-                                        Aucun rendez-vous trouvé pour cette période
+                                        Aucun appel trouvé pour cette période
                                     </div>
                                 )}
                             </div>
-                            
+
                             {/* Pagination for Cards View */}
                             <div className="mt-6">
                                 <CustomPagination
@@ -289,11 +289,11 @@ const PlanningRappelComponent: React.FC = () => {
                                     totalPages={data?.meta.totalPages || 0}
                                     onPageChange={(newPage) => setPage(newPage)}
                                     containerClassName="flex items-center justify-center mt-4 space-x-2"
-                                    previousButtonClassName="px-3 py-1 bg-transparent text-gray-600 rounded disabled:opacity-50"
-                                    nextButtonClassName="px-3 py-1 bg-transparent text-gray-600 rounded disabled:opacity-50"
-                                    activePageClassName="bg-highBlue text-white"
-                                    inactivePageClassName="bg-transparent text-gray-600"
-                                    dotClassName="px-3 py-1 text-gray-600"
+                                    previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
+                                    nextButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
+                                    activePageClassName="bg-whiteSecond text-highBlue"
+                                    inactivePageClassName="bg-transparent text-gray-200"
+                                    dotClassName="px-3 py-1 text-whiteSecond"
                                 />
                             </div>
                         </>
@@ -361,7 +361,7 @@ const PlanningRappelComponent: React.FC = () => {
                                         const days = differenceInDays(rappelDate, today);
                                         let statusText = "";
                                         let statusClass = "";
-                                        
+
                                         if (days < 0) {
                                             statusText = "En retard";
                                             statusClass = "text-red-600 bg-red-50";
@@ -378,9 +378,9 @@ const PlanningRappelComponent: React.FC = () => {
                                             statusText = `Dans ${days} jours`;
                                             statusClass = "text-green-600 bg-green-50";
                                         }
-                                        
+
                                         return (
-                                            <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                                            <tr key={idx} className="hover:bg-gray-50 transition-colors ">
                                                 <td className="px-6 py-4">
                                                     <span
                                                         className="inline-block w-3 h-3 rounded-full mr-2"
@@ -402,7 +402,7 @@ const PlanningRappelComponent: React.FC = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan={5} className="text-center py-6 text-gray-500">
-                                            Aucun rendez-vous trouvé pour cette période
+                                            Aucun appel trouvé pour cette période
                                         </td>
                                     </tr>
                                 )}
@@ -417,11 +417,11 @@ const PlanningRappelComponent: React.FC = () => {
                             totalPages={data?.meta.totalPages || 0}
                             onPageChange={(newPage) => setPage(newPage)}
                             containerClassName="flex items-center justify-center mt-4 space-x-2"
-                            previousButtonClassName="px-3 py-1 bg-transparent text-gray-600 rounded disabled:opacity-50"
-                            nextButtonClassName="px-3 py-1 bg-transparent text-gray-600 rounded disabled:opacity-50"
-                            activePageClassName="bg-white text-highBlue"
-                            inactivePageClassName="bg-transparent text-gray-600"
-                            dotClassName="px-3 py-1 text-gray-600"
+                            previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
+                            nextButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
+                            activePageClassName="bg-whiteSecond text-highBlue"
+                            inactivePageClassName="bg-transparent text-gray-200"
+                            dotClassName="px-3 py-1 text-whiteSecond"
                         />
                     </div>
                 </TabsContent>

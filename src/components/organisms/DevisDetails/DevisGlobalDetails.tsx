@@ -259,9 +259,9 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             };
 
             const remise = parseNumber(updatedDevis.gesteCommer.RemiseAccepte || "0");
-            const voucher = parseNumber(updatedDevis.gesteCommer.VoucherAccepte || "0");
+            //const voucher = parseNumber(updatedDevis.gesteCommer.VoucherAccepte || "0");
             const totalTTC = parseNumber(updatedDevis.devisPayementDetails.TotalTTC?.toString() || "0");
-            const totalAPRem = totalTTC - (remise + voucher);
+            const totalAPRem = totalTTC - remise
 
             updatedDevis.devisPayementDetails.TotalAPRem = totalAPRem >= 0 ? totalAPRem : totalTTC;
         }
