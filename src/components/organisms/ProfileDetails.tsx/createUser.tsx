@@ -13,7 +13,7 @@ import { Switch } from "../../../@/components/ui/switch";
 import { Label } from "../../../@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../@/components/ui/tabs";
 import { CheckCircle2, ChevronLeft, ChevronRight, UserPlus } from "lucide-react";
-import UserTypeDropDown from "../../../components/atoms/UserTypeDropDown";
+import UserTypeDropDown from "../../atoms/UserTypeDropDown";
 
 export const CreateUser = () => {
     // Form state management

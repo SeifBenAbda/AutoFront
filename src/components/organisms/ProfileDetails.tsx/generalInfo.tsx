@@ -9,7 +9,7 @@ import { Input } from "../../../@/components/ui/input";
 import { Button } from "../../../@/components/ui/button";
 import { Label } from "../../../@/components/ui/label";
 import { Toaster } from "../../../@/components/ui/toaster";
-import Loading from "../../../components/atoms/Loading";
+import Loading from "../../atoms/Loading";
 
 import {
     User,
@@ -25,8 +25,8 @@ import {
     Camera,
     Signpost
 } from "lucide-react";
-import { PhoneInput } from "../../../components/atoms/PhoneInput";
-import UserTypeDropDown from "../../../components/atoms/UserTypeDropDown";
+import { PhoneInput } from "../../atoms/PhoneInput";
+import UserTypeDropDown from "../../atoms/UserTypeDropDown";
 
 export default function General() {
     const { user, setUser } = useUser();

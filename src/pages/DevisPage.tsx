@@ -48,13 +48,13 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
                 ...defaultRappelForm,
                 ...rappel,
                 RappelDate: rappel.RappelDate ?? defaultRappelForm.RappelDate,
-                CreatedBy: user!.nomUser,
+                CreatedBy: user!.username,
             }));
 
             const mergedValues = {
                 database: databaseName,
                 client: { ...defaultFormClient, ...values.clientForm },
-                devis: { ...defaultFormDevisGeneral, ...values.devisGeneralForm, TypeDevis: "OC", CreatedBy: user!.nomUser },
+                devis: { ...defaultFormDevisGeneral, ...values.devisGeneralForm, TypeDevis: "OC", CreatedBy: user!.username },
                 carRequestData: { ...defaultFormCarDevis, ...values.devisCarForm },
                 devisPayementDetails: { ...defaultFormPayementDetails, ...values.devisPayementForm },
                 itemRequestData: undefined,

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Card } from "../../@/components/ui/card";
-import General from "./ProfileDetails.tsx/generalInfo";
-import { Securite } from "./ProfileDetails.tsx/securityInfo";
-import { CreateUser } from "./ProfileDetails.tsx/createUser";
+import General from "./ProfileDetails.tsx/GeneralInfo";
+import { Securite } from "./ProfileDetails.tsx/SecurityInfo";
+import { CreateUser } from "./ProfileDetails.tsx/CreateUser";
 import { useUser } from "../../context/userContext";
+import AgentsHistoryTable from "./ProfileDetails.tsx/AgentsHistory";
+import CarsManipulation from "./ProfileDetails.tsx/CarsManipulation";
 
 
 
@@ -12,17 +14,16 @@ function Support() {
 }
 
 function Historique() {
-    return <div></div>;
+    return <AgentsHistoryTable/>;
 }
 
 export function ProfileUser() {
     const [activeStep, setActiveStep] = useState(0);
     const { user } = useUser();
-    
     // Define steps based on user group
-    const adminSteps = ["Générale", "Sécurité", "Nouveau Utilisateur", "Support", "Historique"];
+    const adminSteps = ["Générale", "Sécurité", "Nouveau Utilisateur", "Historique", "Gestion des Voitures", "Support"];
     const userSteps = ["Générale", "Sécurité"];
-    
+
     // Use appropriate steps array based on user group
     const steps = user?.position === "ADMIN" ? adminSteps : userSteps;
 
@@ -34,10 +35,13 @@ export function ProfileUser() {
                 return <Securite />;
             case 2:
                 return user?.position === "ADMIN" ? <CreateUser /> : null;
+           
             case 3:
-                return user?.position === "ADMIN" ? <Support /> : null;
-            case 4:
                 return user?.position === "ADMIN" ? <Historique /> : null;
+            case 4:
+                return user?.position === "ADMIN" ? <CarsManipulation /> : null;    
+             case 5:
+                return user?.position === "ADMIN" ? <Support /> : null;    
             default:
                 return null;
         }

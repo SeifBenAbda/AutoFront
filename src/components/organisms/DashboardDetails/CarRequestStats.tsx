@@ -3,14 +3,15 @@ import { BarChart, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Bar, YAx
 import { useCarStats } from '../../../hooks/useDashboard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
 import CustomMultiSelect from '../../../components/atoms/CustomMultiSelect';
-import useCarModels from '../../../hooks/useCars';
+import useCarModels, { useCarModelsFacture } from '../../../hooks/useCars';
+import { ca } from 'date-fns/locale';
 
 
 const CarRequestStats: React.FC = () => {
     const [timeframe, setTimeframe] = useState<'TODAY' | 'THIS_MONTH'>('TODAY');
     const [selectedCars, setSelectedCars] = useState<string[]>([]);
     const { data, isLoading, error } = useCarStats(selectedCars);
-    const { data: carModels } = useCarModels();
+    const { data: carModels } = useCarModelsFacture();
     // Collect only seller names with values > 0 for the current timeframe
     const getSellers = () => {
         const sellerSet = new Set<string>();
@@ -61,7 +62,7 @@ const CarRequestStats: React.FC = () => {
                 <div className="flex items-center space-x-4">
                     <div className="w-64">
                         <CustomMultiSelect
-                            options={carModels?.map(car => car.carName) || []}
+                            options={carModels?.CarModelsFacture.map(car => car) || []}
                             defaultValue={selectedCars}
                             maxItemsToShow={2}
                             onChange={(selectedItems) => {
