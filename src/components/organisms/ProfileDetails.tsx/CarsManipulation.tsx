@@ -1,5 +1,5 @@
 import { CarModel, useCarsPaginated } from '../../../hooks/useCars';
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
     Table, 
@@ -35,66 +35,143 @@ import {
     DialogHeader,
     DialogTitle,
 } from "../../../@/components/ui/dialog";
+import CustomPagination from '../../../components/atoms/CustomPagination';
+import { useEditCar, useCreateCar } from '../../../hooks/useCars';
+import { useUser } from '../../../context/userContext';
 
 // Edit Car Dialog Component
-const EditCarDialog = ({ 
-  car, 
-  isOpen, 
-  onClose, 
-  onSave 
-}: { 
-  car: CarModel | null; 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onSave: (updatedCar: CarModel) => void; 
+const EditCarDialog = ({
+  car,
+  isOpen,
+  onClose,
+  onSave
+}: {
+  car: CarModel | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (updatedCar: CarModel) => void;
 }) => {
   const [formData, setFormData] = useState<Partial<CarModel>>({});
-  
-  // Initialize form data when the dialog opens with a car
+  const [showPriceWarning, setShowPriceWarning] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Store the initial price to compare (as string with comma)
+  const initialPrice = car?.price !== undefined && car?.price !== null
+    ? String(car.price).replace(/\./g, ',')
+    : '';
+
+  // Use the updated mutation hook (no params at call, pass updatedCar in mutate)
+  const editCarMutation = useEditCar();
+
   React.useEffect(() => {
     if (car) {
+      let priceStr = '';
+      if (car.price !== undefined && car.price !== null && car.price !== '') {
+        priceStr = String(car.price).replace(/\./g, ',');
+      }
       setFormData({
         carId: car.carId,
         carModel: car.carModel,
         carName: car.carName,
         modelYear: car.modelYear,
-        price: car.price
+        price: priceStr
       });
+      setShowPriceWarning(false);
+      setSuccessMsg('');
+      setErrorMsg('');
     }
   }, [car]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    if (name === 'price') {
+      let formatted = value.replace(/\./g, ',').replace(/[^0-9,]/g, '');
+      const parts = formatted.split(',');
+      if (parts.length > 2) {
+        formatted = parts[0] + ',' + parts.slice(1).join('');
+      }
+      if (parts[1]?.length > 3) {
+        formatted = parts[0] + ',' + parts[1].slice(0, 3);
+      }
+      setFormData(prev => ({
+        ...prev,
+        price: formatted
+      }));
+      if (formatted !== initialPrice) {
+        setShowPriceWarning(true);
+      } else {
+        setShowPriceWarning(false);
+      }
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'modelYear' || name === 'price' ? Number(value) : value
+      [name]: name === 'modelYear' ? Number(value) : value
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccessMsg('');
+    setErrorMsg('');
     if (car && formData) {
-      onSave({
-        ...car,
-        ...formData
-      });
+      // Prepare the payload: convert price to number with dot for backend if needed
+      let payload = { ...formData };
+      if (typeof payload.price === 'string' && payload.price !== '') {
+        payload.price = Number(payload.price.replace(',', '.'));
+      }
+      editCarMutation.mutate(
+        { updatedCar: payload },
+        {
+          onSuccess: (data) => {
+            if (data.success) {
+              setSuccessMsg('Voiture modifiée avec succès.');
+              setTimeout(() => {
+                setSuccessMsg('');
+                onClose();
+              }, 1200);
+              onSave({ ...car, ...formData, price: payload.price ?? 0 });
+            } else {
+              setErrorMsg(data.message || "Une erreur est survenue lors de la modification.");
+            }
+          },
+          onError: () => {
+            setErrorMsg("Une erreur est survenue lors de la modification.");
+          }
+        }
+      );
     }
+  };
+
+  const handleDiscard = () => {
+    if (car) {
+      setFormData(prev => ({
+        ...prev,
+        price: initialPrice
+      }));
+    }
+    setShowPriceWarning(false);
+    setSuccessMsg('');
+    setErrorMsg('');
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl w-full">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-highBlue">Edit Car Details</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-highBlue">Modifier la voiture</DialogTitle>
           <DialogDescription>
-            Make changes to your car information here. Click save when you're done.
+            Modifiez les informations de votre voiture ici. Cliquez sur enregistrer quand vous avez terminé.
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="carModel" className="text-sm font-medium">Model</Label>
+              <Label htmlFor="carModel" className="text-sm font-medium">Modèle</Label>
               <Input
                 id="carModel"
                 name="carModel"
@@ -104,9 +181,8 @@ const EditCarDialog = ({
                 required
               />
             </div>
-            
             <div className="space-y-2">
-              <Label htmlFor="carName" className="text-sm font-medium">Name</Label>
+              <Label htmlFor="carName" className="text-sm font-medium">Nom</Label>
               <Input
                 id="carName"
                 name="carName"
@@ -115,9 +191,8 @@ const EditCarDialog = ({
                 className="w-full"
               />
             </div>
-            
             <div className="space-y-2">
-              <Label htmlFor="modelYear" className="text-sm font-medium">Year</Label>
+              <Label htmlFor="modelYear" className="text-sm font-medium">Année</Label>
               <Input
                 id="modelYear"
                 name="modelYear"
@@ -128,36 +203,168 @@ const EditCarDialog = ({
                 required
               />
             </div>
-            
             <div className="space-y-2">
-              <Label htmlFor="price" className="text-sm font-medium">Price</Label>
+              <Label htmlFor="price" className="text-sm font-medium">Prix</Label>
               <Input
                 id="price"
                 name="price"
-                type="number"
-                value={formData.price || ''}
+                type="text"
+                inputMode="decimal"
+                pattern="^\d+(,\d{0,3})?$"
+                min={0}
+                value={formData.price !== undefined && formData.price !== null ? formData.price : ''}
                 onChange={handleChange}
                 className="w-full"
-                placeholder="Enter price"
+                placeholder="Entrer le prix (ex: 12345,999)"
+                required
               />
             </div>
           </div>
-          
+
+          {showPriceWarning && (
+            <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-md p-3 text-sm flex items-center space-x-2 mt-2">
+              <span>⚠️</span>
+              <span>
+                Le prix a changé et cela affectera tous les devis qui ont demandé la voiture <b>{formData.carName || formData.carModel}</b>.
+              </span>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="bg-green-50 border border-green-300 text-green-800 rounded-md p-3 text-sm mt-2">
+              {successMsg}
+            </div>
+          )}
+          {errorMsg && (
+            <div className="bg-red-50 border border-red-300 text-red-800 rounded-md p-3 text-sm mt-2">
+              {errorMsg}
+            </div>
+          )}
+
           <DialogFooter className="flex justify-end space-x-2 pt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={onClose}
               className="border-gray-300"
+              disabled={editCarMutation.isPending}
             >
-              Cancel
+              Annuler
             </Button>
-            <Button 
+            {showPriceWarning && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDiscard}
+                className="border-yellow-400 text-yellow-700"
+                disabled={editCarMutation.isPending}
+              >
+                Annuler la modification du prix
+              </Button>
+            )}
+            <Button
               type="submit"
               className="bg-highBlue hover:bg-blue-700 text-white"
+              disabled={editCarMutation.isPending}
             >
               <Save className="h-4 w-4 mr-2" />
-              Save Changes
+              {editCarMutation.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Create Car Dialog Component
+const CreateCarDialog = ({
+  isOpen,
+  onClose,
+  onSave
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: () => void;
+}) => {
+  const [formData, setFormData] = useState<Partial<CarModel>>({});
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const {user} = useUser();
+  const createCarMutation = useCreateCar(user?.username || '');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'modelYear' ? Number(value) : value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMsg('');
+    setErrorMsg('');
+    createCarMutation.mutate(formData, {
+      onSuccess: (data: any) => {
+        setSuccessMsg('Voiture ajoutée avec succès.');
+        setTimeout(() => {
+          setSuccessMsg('');
+          onClose();
+          onSave();
+        }, 1200);
+      },
+      onError: () => {
+        setErrorMsg("Une erreur est survenue lors de l'ajout.");
+      }
+    });
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-2xl w-full">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold text-highBlue">Ajouter une voiture</DialogTitle>
+          <DialogDescription>
+            Remplissez les informations de la nouvelle voiture.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="carModel">Modèle</Label>
+              <Input id="carModel" name="carModel" value={formData.carModel || ''} onChange={handleChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="carName">Nom</Label>
+              <Input id="carName" name="carName" value={formData.carName || ''} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="modelYear">Année</Label>
+              <Input id="modelYear" name="modelYear" type="number" value={formData.modelYear || ''} onChange={handleChange} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="price">Prix</Label>
+              <Input id="price" name="price" type="text" value={formData.price || ''} onChange={handleChange} required />
+            </div>
+          </div>
+          {successMsg && (
+            <div className="bg-green-50 border border-green-300 text-green-800 rounded-md p-3 text-sm mt-2">
+              {successMsg}
+            </div>
+          )}
+          {errorMsg && (
+            <div className="bg-red-50 border border-red-300 text-red-800 rounded-md p-3 text-sm mt-2">
+              {errorMsg}
+            </div>
+          )}
+          <DialogFooter className="flex justify-end space-x-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} disabled={createCarMutation.isPending}>
+              Annuler
+            </Button>
+            <Button type="submit" className="bg-highBlue text-white" disabled={createCarMutation.isPending}>
+              <Save className="h-4 w-4 mr-2" />
+              {createCarMutation.isPending ? "Ajout..." : "Ajouter"}
             </Button>
           </DialogFooter>
         </form>
@@ -172,27 +379,14 @@ const CarManipulation: React.FC = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(true);
   const pageSize = 7;
   const navigate = useNavigate();
-  
+
   // Dialog state
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
 
-  // Fetch cars using the provided hook
-  const { data, isLoading, error, refetch } = useCarsPaginated(currentPage, pageSize);
-
-  // Filter cars client-side
-  const filteredCars = useMemo(() => {
-    if (!data?.cars) return [];
-    
-    if (!filter.trim()) return data.cars;
-    
-    const searchTerm = filter.toLowerCase().trim();
-    return data.cars.filter((car: CarModel) => 
-      car.carModel.toLowerCase().includes(searchTerm) ||
-      car.carName?.toLowerCase().includes(searchTerm) ||
-      car.modelYear?.toString().includes(searchTerm)
-    );
-  }, [data?.cars, filter]);
+  // Pass filter as searchTerm to the hook, remove useMemo and local filtering
+  const { data, isLoading, isFetching, error, refetch } = useCarsPaginated(currentPage, pageSize, filter);
 
   // Navigation handlers
   const handleNextPage = () => {
@@ -214,15 +408,9 @@ const CarManipulation: React.FC = () => {
   };
 
   const handleSaveCar = (updatedCar: CarModel) => {
-    // Here you would make an API call to update the car
-    console.log('Saving updated car:', updatedCar);
-    
-    // Close the dialog and refresh the data
     setIsEditDialogOpen(false);
     setSelectedCar(null);
-    refetch();
-    
-    // Show success notification (you can implement this part)
+    refetch(); // Refresh the car list after editing
   };
 
   const handleCloseEditDialog = () => {
@@ -233,13 +421,17 @@ const CarManipulation: React.FC = () => {
   const handleDeleteCar = (carId: string | number) => {
     if (window.confirm('Are you sure you want to delete this car?')) {
       // Implement deletion API call here
-      console.log(`Deleting car with ID: ${carId}`);
-      refetch();
+      // Optionally trigger a refetch if your hook doesn't do it automatically
+      // refetch();
     }
   };
 
   const handleAddCar = () => {
-    navigate('/cars/add');
+    setIsCreateDialogOpen(true);
+  };
+
+  const handleCloseCreateDialog = () => {
+    setIsCreateDialogOpen(false);
   };
 
   return (
@@ -278,11 +470,14 @@ const CarManipulation: React.FC = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <Input
-                    id="filter"
-                    placeholder="Search by model, name, or year..."
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                    className="pl-9 "
+                  id="filter"
+                  placeholder="Rechercher par modèle, nom ou année..."
+                  value={filter}
+                  onChange={(e) => {
+                    setFilter(e.target.value);
+                    setCurrentPage(1); // Optionally reset to first page on search
+                  }}
+                  className="pl-9 "
                   />
                 </div>
               </div>
@@ -290,19 +485,19 @@ const CarManipulation: React.FC = () => {
           </div>
         )}
         
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div className="flex justify-center items-center my-10">
             <Loader className="h-8 w-8 animate-spin text-highBlue" />
           </div>
         ) : error ? (
           <Alert variant="destructive" className="my-4">
             <AlertDescription>
-              Error loading cars. Please try again.
+              Erreur lors du chargement des voitures. Veuillez réessayer.
             </AlertDescription>
           </Alert>
         ) : (
           <>
-            {filteredCars.length > 0 ? (
+            {data?.cars && data.cars.length > 0 ? (
               <div className="overflow-x-auto rounded-lg shadow-sm border border-gray-100">
                 <Table>
                   <TableHeader className="bg-gradient-to-r from-highBlue to-normalBlue">
@@ -315,7 +510,7 @@ const CarManipulation: React.FC = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredCars.map((car: CarModel) => (
+                    {data.cars.map((car: CarModel) => (
                       <TableRow 
                         key={car.carId} 
                         className="hover:bg-gray-50/80 transition-colors border-b border-gray-100/80"
@@ -327,7 +522,7 @@ const CarManipulation: React.FC = () => {
                             {car.modelYear}
                           </Badge>
                         </TableCell>
-                        <TableCell>{car.price ? `$${car.price}` : '-'}</TableCell>
+                        <TableCell>{car.price ? `${car.price} DT` : '-'}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end space-x-2">
                             <Button
@@ -359,10 +554,10 @@ const CarManipulation: React.FC = () => {
               <div className="flex flex-col items-center justify-center p-10 bg-gray-50 rounded-lg border border-dashed border-gray-200">
                 <Car className="h-12 w-12 text-gray-300 mb-3" />
                 {filter ? (
-                  <p className="text-gray-500 text-center">No cars match your search criteria.</p>
+                  <p className="text-gray-500 text-center">Aucune voiture ne correspond à vos critères de recherche.</p>
                 ) : (
                   <>
-                    <p className="text-gray-500 text-center">You don't have any cars yet.</p>
+                    <p className="text-gray-500 text-center">Vous n'avez pas encore de voitures.</p>
                     <Button 
                       variant="outline" 
                       className="mt-4 border-blue-500 text-blue-600 hover:bg-blue-50"
@@ -376,38 +571,22 @@ const CarManipulation: React.FC = () => {
             )}
 
             {data && data.totalPages > 1 && (
-              <div className="flex items-center justify-center mt-6 space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === 1}
-                  onClick={handlePrevPage}
-                  className="h-8 px-3 py-1 bg-gray-100 text-blue-600 rounded-md disabled:opacity-50 font-medium border-gray-200"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" /> Previous
-                </Button>
-                
-                <div className="flex items-center text-sm">
-                  <span className="font-semibold text-blue-600">{currentPage}</span>
-                  <span className="mx-1 text-gray-400">/</span>
-                  <span className="text-gray-600">{data.totalPages}</span>
-                </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === data.totalPages}
-                  onClick={handleNextPage}
-                  className="h-8 px-3 py-1 bg-gray-100 text-blue-600 rounded-md disabled:opacity-50 font-medium border-gray-200"
-                >
-                  Next <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
+              <CustomPagination
+                currentPage={currentPage}
+                totalPages={data.totalPages || 0}
+                onPageChange={(newPage) => setCurrentPage(newPage)}
+                containerClassName="flex items-center justify-center mt-6 space-x-2"
+                previousButtonClassName="px-3 py-1 bg-normalGrey text-highBlue rounded-md disabled:opacity-50 font-medium"
+                nextButtonClassName="px-3 py-1 bg-normalGrey text-highBlue rounded-md disabled:opacity-50 font-medium"
+                activePageClassName="bg-highBlue text-whiteSecond"
+                inactivePageClassName="bg-normalGrey text-highBlue"
+                dotClassName="px-3 py-1 text-highBlue"
+              />
             )}
             
             {data && (
               <div className="text-center mt-2 text-sm text-gray-500">
-                {data.total || filteredCars.length} cars total
+                {data.total || data.cars.length} voitures au total
               </div>
             )}
           </>
@@ -420,6 +599,15 @@ const CarManipulation: React.FC = () => {
         isOpen={isEditDialogOpen}
         onClose={handleCloseEditDialog}
         onSave={handleSaveCar}
+      />
+      {/* Create Car Dialog */}
+      <CreateCarDialog
+        isOpen={isCreateDialogOpen}
+        onClose={handleCloseCreateDialog}
+        onSave={() => {
+          setIsCreateDialogOpen(false);
+          refetch();
+        }}
       />
     </Card>
   );

@@ -150,7 +150,6 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
 
     const fetchFileWithAuth = async (fileUrl: string) => {
         try {
-            console.log('Fetching file from URL:', fileUrl); // Debugging line to check the URL
             const response = await fetch(fileUrl, {
                 method: 'GET',
                 headers: {

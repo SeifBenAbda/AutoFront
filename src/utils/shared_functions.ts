@@ -20,7 +20,6 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
     if (!devis.devisReserved.DateReservation) {
-        console.log("ISSUE LIVRAISON");
         return false;
     }
     return true;

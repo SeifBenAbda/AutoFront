@@ -1,4 +1,4 @@
-import { CarRequestStats, DocumentMissingData, DocumentMissingStats, DossierStat, PlanningRappel } from "../hooks/useDashboard";
+import { CarRequestStats, ConversionStats, DocumentMissingData, DocumentMissingStats, DossierStat, PlanningRappel } from "../hooks/useDashboard";
 import { getToken, removeToken } from "./authService";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -169,5 +169,41 @@ export const fetchOverdueRappels = async (
   }
 
   if (!response.ok) throw new Error("Failed to fetch planning rappels");
+  return response.json();
+}
+
+
+export const fetchConversionStats = async (
+  databaseName: string,
+  page: number = 1,
+  startingDate: Date,
+  endingDate: Date,
+  navigate: (path: string) => void)
+: Promise<ConversionStats> => {
+  const token = getToken();
+  if (!token) throw new Error("No token found fetch conversion stats data");
+
+  const response = await fetch(`${API_URL}/dashboard/taux-conversion-agents`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database": databaseName,
+      "startingDate": startingDate,
+      "endingDate": endingDate,
+      "page": page,
+    }),
+  });
+
+  if (response.status === 401) {
+    removeToken();
+    navigate("/login");
+    throw new Error("Unauthorized: Token is invalid or expired");
+  }
+
+  if (!response.ok) throw new Error("Failed to fetch conversion stats");
+  
   return response.json();
 }

@@ -5,7 +5,6 @@ import io from 'socket.io-client'; // Import socket.io-client
 
 // Define the URL of your Socket.io server
 const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
-
 export const useWebSocketForDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
   const queryClient = useQueryClient();
   const queryKey = ['data', page, searchValue, status, priority, cars];
@@ -33,10 +32,10 @@ export const useWebSocketForDevis = (page: number, searchValue?: string, status?
     });
 
     // Clean up the socket connection when the component unmounts
-    return () => {
+    /*return () => {
       socket.off('devisUpdate');
       socket.close();
-    };
+    };*/
   }, [page, searchValue, status, priority, cars, queryClient]);
 
   return null;

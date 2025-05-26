@@ -3,6 +3,7 @@ import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayemen
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 import { generateBcInterneResponse } from "../hooks/useUploadFiles";
+import { CarModel } from "@/hooks/useCars";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -226,7 +227,8 @@ export const fetchCarsPaginated = async (
   databasename: string,
   page: number = 1,
   pageSize: number = 7,
-  navigate: (path: string) => void
+  navigate: (path: string) => void,
+  searchTerm: string = ''
 ) => {
   const token = getToken();
   if (!token) {
@@ -237,7 +239,8 @@ export const fetchCarsPaginated = async (
   const body = { 
     database: databasename,
     page,
-    pageSize
+    pageSize,
+    searchTerm
   };
 
   try {
@@ -267,6 +270,93 @@ export const fetchCarsPaginated = async (
     throw error;
   }
 };
+
+
+
+export const createCar = async (
+  database: string,
+  newCar: Partial<CarModel>,
+  createdBy: string,
+  navigate: (path: string) => void
+) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database, newCar,createdBy };
+
+  try {
+    const response = await fetch(`${API_URL}/cars/create`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to create car');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export const updateCar = async (
+  database: string,
+  navigate: (path: string) => void,
+  updatedCar: Partial<CarModel>,
+) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database, updatedCar };
+
+  try {
+    const response = await fetch(`${API_URL}/cars/update`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to update car');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 
 
 export const fetchCarModelsFacture = async (databasename: string, navigate: (path: string) => void) => {

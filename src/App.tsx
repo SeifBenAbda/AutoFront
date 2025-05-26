@@ -10,6 +10,7 @@ import ProfileUserPage from './pages/ProfileUserPage';
 import DashboardLayout from './templates/DashboardLayout';
 import SessionNotification from './components/organisms/SessionNotification/SessionNotification';
 import useSession from './hooks/sessions/useSession';
+import { getToken } from './services/authService';
 
 
 const AppContent: React.FC<{ user: any }> = ({ user }) => {
@@ -24,7 +25,13 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     enabled: true,
   });
 
-  const isLoggedIn = Boolean(user);
+  const token = getToken();
+  const isLoggedIn = Boolean(user) && Boolean(token);
+
+  // Guard: If user and token are out of sync, render nothing (prevents flicker/white screen)
+  if ((user && !token) || (!user && token)) {
+    return <LoginPage />;
+  }
 
   return (
     <>
@@ -37,13 +44,18 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
         />
       )}
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />
+          }
+        />
         <Route path="/dashboard" element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />} />
         <Route path="/car-request" element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />} />
         <Route path="/carTracking" element={isLoggedIn ? <CarTrackingLayout /> : <Navigate to="/login" />} />
         <Route path="/itemTracking" element={isLoggedIn ? <ItemChangeTrackingPage /> : <Navigate to="/login" />} />
         <Route path="/profile" element={isLoggedIn ? <ProfileUserPage /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={isLoggedIn ? "/car-request" : "/login"} />} />
+        <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />} />
       </Routes>
     </>
   );

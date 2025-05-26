@@ -9,7 +9,7 @@ interface UseSessionOptions {
   enabled?: boolean;
 }
 
-const useSession = (options: UseSessionOptions = {}) => {
+const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<void>) => {
     const {
       warningTime = 60000,
       autoRefresh = false,
@@ -94,8 +94,9 @@ const useSession = (options: UseSessionOptions = {}) => {
     const logout = useCallback(() => {
       removeToken();
       setSessionExpiring(false);
+      if (checkAuth) checkAuth(); // Update user state in useAuth
       navigate('/login');
-    }, [navigate]);
+    }, [navigate, checkAuth]);
   
     useEffect(() => {
       if (!enabled) {
@@ -111,30 +112,34 @@ const useSession = (options: UseSessionOptions = {}) => {
         const now = Date.now();
         const isUserActive = now - lastActivityRef.current < 60000;
   
-        if (remaining !== null) {
-          if (remaining <= warningTime && remaining > 0) {
-            setSessionExpiring(true);
-  
-            if (
-              isTabActive &&
-              isUserActive &&
-              remaining <= 60000 &&
-              !hasExtended
-            ) {
-              extendSession();
-              setHasExtended(true);
-            }
-          } else if (remaining <= 0) {
+        if (remaining === null) {
+          // Token is missing or invalid, force logout
             logout();
-          } else if (autoRefresh && remaining <= warningTime * 2 && remaining > warningTime) {
-            extendSession();
-          } else {
-            setSessionExpiring(false);
-          }
+          return;
+        }
   
-          if (remaining > 60000 && hasExtended) {
-            setHasExtended(false);
+        if (remaining <= warningTime && remaining > 0) {
+          setSessionExpiring(true);
+  
+          if (
+            isTabActive &&
+            isUserActive &&
+            remaining <= 60000 &&
+            !hasExtended
+          ) {
+            extendSession();
+            setHasExtended(true);
           }
+        } else if (remaining <= 0) {
+            logout();
+        } else if (autoRefresh && remaining <= warningTime * 2 && remaining > warningTime) {
+          extendSession();
+        } else {
+          setSessionExpiring(false);
+        }
+  
+        if (remaining > 60000 && hasExtended) {
+          setHasExtended(false);
         }
       };
   
@@ -151,6 +156,18 @@ const useSession = (options: UseSessionOptions = {}) => {
       isTabActive,
       hasExtended
     ]);
+  
+    useEffect(() => {
+      const handleStorage = (event: StorageEvent) => {
+        if (event.key === 'token' && event.newValue === null) {
+          // Token was removed in another tab
+          setSessionExpiring(false);
+         logout();
+        }
+      };
+      window.addEventListener('storage', handleStorage);
+      return () => window.removeEventListener('storage', handleStorage);
+    }, [navigate]);
   
     return {
       sessionExpiring,

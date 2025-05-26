@@ -1,5 +1,5 @@
 import { databaseName } from "../utils/shared_functions";
-import { fetchCarRequestStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
+import { fetchCarRequestStats, fetchConversionStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { string } from "zod";
@@ -129,3 +129,45 @@ const useDossierStats = (status:string) => {
 };
 
 export default useDossierStats;
+
+
+
+
+//-- Taux de conversion
+export interface CreatorStats {
+    creator: string;
+    totalDevis: number;
+    rappelsCount: number;
+    enCoursCount: number;
+    reserveCount: number;
+    hdsiCount: number;
+    factureCount: number;
+    livreCount: number;
+    annuleCount: number;
+    tauxConversion: string;
+}
+
+export interface ConversionStatsResult {
+    creators: CreatorStats[];
+    totalCreators: number;
+}
+
+export interface ConversionStats {
+    result: ConversionStatsResult;
+    meta: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+    };
+}
+
+export const useConversionStats = (page: number = 1, startingDate: Date, endingDate: Date) => {
+    const navigate = useNavigate();
+    
+    return useQuery<ConversionStats>({
+        queryKey: ['conversionStats', page, startingDate, endingDate],
+        queryFn: () => fetchConversionStats(databaseName, page, startingDate, endingDate, navigate),
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+    });
+};

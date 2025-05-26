@@ -10,7 +10,6 @@ interface UseAudioUploadProps {
   export const useAudioUpload = ({ devisId, navigate }: UseAudioUploadProps) => {
     return useMutation({
       mutationFn: async (formData: FormData) => {
-        const database = 'Commer_2024_AutoPro'; // Define your database or pass it if necessary
         return await uploadAudio(formData, navigate); // Pass FormData to uploadAudio
       },
       onSuccess: () => {

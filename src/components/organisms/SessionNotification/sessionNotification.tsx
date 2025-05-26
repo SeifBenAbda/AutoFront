@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 interface SessionNotificationProps {
   isExpiring: boolean;
@@ -14,33 +15,31 @@ const SessionNotification: React.FC<SessionNotificationProps> = ({
   onLogout,
 }) => {
   const [formattedTime, setFormattedTime] = useState<string>('');
-  const lastUpdateRef = useRef<number>(Date.now()); // Use useRef for tracking the last update time
+  const lastUpdateRef = useRef<number>(Date.now());
 
   useEffect(() => {
     const updateFormattedTime = () => {
       if (timeRemaining === null) return;
-      
-      // Calculate remaining time since the last update
       const remaining = Math.max(0, timeRemaining - (Date.now() - lastUpdateRef.current));
-      
       const minutes = Math.floor(remaining / 60000);
       const seconds = Math.floor((remaining % 60000) / 1000);
-      
       setFormattedTime(`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`);
     };
 
-    lastUpdateRef.current = Date.now(); // Update the last update time
-
-    updateFormattedTime(); // Immediate update
-    const interval = setInterval(updateFormattedTime, 1000); // Update every second
-
-    return () => clearInterval(interval); // Cleanup on unmount
+    lastUpdateRef.current = Date.now();
+    updateFormattedTime();
+    const interval = setInterval(updateFormattedTime, 1000);
+    return () => clearInterval(interval);
   }, [timeRemaining]);
 
   if (!isExpiring) return null;
 
-  return (
-    <div className="fixed bottom-5 right-5 max-w-sm w-full bg-white text-gray-800 rounded-lg shadow-xl ring-1 ring-gray-200 p-5 flex flex-col gap-4 transition transform duration-300 hover:scale-105 font-oswald">
+  // Notification content
+  const notification = (
+    <div
+      className="fixed bottom-5 right-5 max-w-sm w-full bg-white text-gray-800 rounded-lg shadow-xl ring-1 ring-gray-200 p-5 flex flex-col gap-4 transition transform duration-300 hover:scale-105 font-oswald"
+      style={{ zIndex: 9999 }} // Ensure it's above everything
+    >
       <div className="flex items-center gap-2">
         <svg
           className="w-5 h-5 text-yellow-500"
@@ -76,6 +75,9 @@ const SessionNotification: React.FC<SessionNotificationProps> = ({
       </div>
     </div>
   );
+
+  // Use portal to render at the end of <body>
+  return createPortal(notification, document.body);
 };
 
 export default SessionNotification;
