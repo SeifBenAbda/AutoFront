@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import StatusDevisDropDownUntracked from '../../../components/atoms/StatusDropDownUntracked';
 import { DocumentMissingData, useDocumentMissingStats } from '../../../hooks/useDashboard';
 import CustomPagination from '../../../components/atoms/CustomPagination';
+import { useNavigate } from 'react-router-dom';
 
 // Helper function to chunk an array into pieces of given size
 function chunkArray<T>(arr: T[], chunkSize: number): T[][] {
@@ -32,6 +33,8 @@ const DocumentMissingStats: React.FC = () => {
         setStatus(value);
         setPage(1); // Reset page number on status change
     };
+
+    const navigate = useNavigate();
 
     return (
         <div className="w-full max-w-full bg-highGrey  rounded-md shadow-none p-6">
@@ -76,7 +79,18 @@ const DocumentMissingStats: React.FC = () => {
                         ) : data.result.length > 0 ? (
                             data.result.map((row: DocumentMissingData) => (
                                 <tr key={row.devisId} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-4 py-2 text-sm text-center text-gray-900">{row.devisId}</td>
+                                    <td className="px-6 py-4 text-center align-middle">
+                                        <button
+                                            className="group flex items-center font-medium text-gray-700 hover:text-highBlue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-2 -mx-2"
+                                            onClick={() => navigate(`/carTracking?devis=${row.devisId}`)}
+                                            title="Voir/modifier ce devis"
+                                        >
+                                            {row.devisId}
+                                            <svg className="ml-1 w-4 h-4 text-gray-400 group-hover:text-highBlue transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                        </button>
+                                    </td>
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">{row.clientName}</td>
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">{row.carModel}</td>
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">

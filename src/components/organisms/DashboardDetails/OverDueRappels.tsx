@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { format, differenceInDays } from 'date-fns';
-import { PlanningRappelData, useOverDueRappels } from '../../../hooks/useDashboard';
+import {useOverDueRappels } from '../../../hooks/useDashboard';
 import CustomPagination from '../../../components/atoms/CustomPagination';
 import { DatePicker } from '../../../components/atoms/DateSelector';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
-import { Badge } from '../../../@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 
 const OverDueRappels: React.FC = () => {
+    const navigate = useNavigate();
+
     // Default date range
     const today = new Date();
     const nextWeek = new Date(today);
@@ -28,10 +30,10 @@ const OverDueRappels: React.FC = () => {
     // Get all rappels flattened for easier rendering (using same approach as PlanningRappel)
     const allRappels = useMemo(() => {
         if (!data?.result?.rappelsByCreator || !data?.result?.allCreators) return [];
-        
+
         return data.result.allCreators
             .filter(creator => selectedCreator === 'all' || creator === selectedCreator)
-            .flatMap(creator => 
+            .flatMap(creator =>
                 (data.result.rappelsByCreator[creator] || []).map(rappel => ({
                     ...rappel,
                     creator
@@ -52,7 +54,7 @@ const OverDueRappels: React.FC = () => {
     const getDelayStatus = (date: string | Date) => {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
         const days = differenceInDays(dateObj, today);
-        
+
         if (days < -7) return { text: `En retard de ${Math.abs(days)} jours`, class: "text-red-600 bg-red-50" };
         if (days < -3) return { text: `Retard important`, class: "text-red-600 bg-red-50" };
         if (days < 0) return { text: "En retard", class: "text-red-600 bg-red-50" };
@@ -66,12 +68,12 @@ const OverDueRappels: React.FC = () => {
                 <div className="text-2xl text-whiteSecond font-oswald">
                     Rappels en retard
                 </div>
-                
+
                 {/* Creator filter - matches PlanningRappel styling */}
                 <div className="flex items-center gap-2 ml-auto">
                     <label className="text-whiteSecond whitespace-nowrap">Créateur:</label>
-                    <Select 
-                        onValueChange={(value) => setSelectedCreator(value)} 
+                    <Select
+                        onValueChange={(value) => setSelectedCreator(value)}
                         defaultValue={selectedCreator}
                     >
                         <SelectTrigger className="w-40 border border-normalGrey bg-normalGrey font-oswald">
@@ -79,9 +81,9 @@ const OverDueRappels: React.FC = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-normalGrey border-normalGrey">
                             {creators.map(creator => (
-                                <SelectItem 
-                                    key={creator} 
-                                    value={creator} 
+                                <SelectItem
+                                    key={creator}
+                                    value={creator}
                                     className="hover:bg-highGrey hover:text-whiteSecond transition-colors"
                                 >
                                     {creator === 'all' ? 'Tous les Créateurs' : creator}
@@ -91,7 +93,7 @@ const OverDueRappels: React.FC = () => {
                     </Select>
                 </div>
             </div>
-            
+
             {/* Date range selection - styled like table view in PlanningRappel */}
             <div className="flex flex-wrap gap-4 items-center mb-4 bg-white p-4 rounded-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -152,7 +154,7 @@ const OverDueRappels: React.FC = () => {
                                 const rappelDate = new Date(rappel.rappelDate);
                                 const delayStatus = getDelayStatus(rappelDate);
                                 const creatorColor = getCreatorColor(rappel.creator);
-                                
+
                                 return (
                                     <tr key={idx} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
@@ -162,7 +164,18 @@ const OverDueRappels: React.FC = () => {
                                             ></span>
                                             {rappel.creator}
                                         </td>
-                                        <td className="px-6 py-4 font-medium">{rappel.clientName}</td>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                className="group flex items-center font-medium text-gray-700 hover:text-highBlue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-2 -mx-2"
+                                                onClick={() => navigate(`/carTracking?devis=${rappel.devisId}`)}
+                                                title="Voir/modifier ce devis"
+                                            >
+                                                {rappel.clientName}
+                                                <svg className="ml-1 w-4 h-4 text-gray-400 group-hover:text-highBlue transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                            </button>
+                                        </td>
                                         <td className="px-6 py-4">{rappel.carType}</td>
                                         <td className="px-6 py-4">{format(rappelDate, 'dd/MM/yyyy')}</td>
                                         <td className="px-6 py-4">

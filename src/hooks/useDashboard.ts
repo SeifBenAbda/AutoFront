@@ -72,6 +72,7 @@ export interface PlanningRappelResult {
     clientName:string; 
     carType:string; 
     rappelDate: Date;
+    devisId: number;
 }
 
 export interface RappelsByCreator {

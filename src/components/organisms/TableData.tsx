@@ -26,9 +26,10 @@ import {
 interface DataTableProps {
   columns?: ColumnDef<Devis, any>[];
   data: Devis[];
+  autoOpenDevisId?: number | string;
 }
 
-export const TableData = ({ data, columns: externalColumns }: DataTableProps) => {
+export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: DataTableProps) => {
   const [colSizing, setColSizing] = useState<ColumnSizingState>({});
   const [tableData, setTableData] = useState<Devis[]>(data);
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
@@ -41,6 +42,15 @@ export const TableData = ({ data, columns: externalColumns }: DataTableProps) =>
   useEffect(() => {
     setTableData(data);
   }, [data]);
+
+  useEffect(() => {
+        if (autoOpenDevisId) {
+            const devis = data.find(d => d.DevisId == autoOpenDevisId);
+            if (devis) {
+                handleOpenSheet(devis);
+            }
+        }
+    }, [autoOpenDevisId, data]);
 
   // Status badge component
   const StatusBadge = ({ status }: { status: string }) => {

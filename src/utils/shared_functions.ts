@@ -19,7 +19,7 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
-    if (!devis.devisReserved.DateReservation) {
+    if (!devis.devisReserved.DateReservation || !devis.carRequests[0].CarColor || devis.carRequests[0].CarColor === "" ) {
         return false;
     }
     return true;

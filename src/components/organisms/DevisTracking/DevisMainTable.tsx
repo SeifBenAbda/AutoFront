@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TableData } from '../TableData';
 import { PaginationTable } from '../../atoms/TablePagination';
 import { SheetProvider } from '../../../context/sheetContext';
@@ -22,9 +22,10 @@ import { PopoverClose } from '@radix-ui/react-popover';
 
 interface DataTableProps {
   typeDevis: string;
+  autoOpenDevisId?: number | string; // Optional prop for auto-opening a specific Devis
 }
 
-const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
+const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) => {
   const [page, setPage] = useState(1);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
@@ -47,6 +48,13 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
     'Créé par': 'CreatedBy',
     'Date Livraison prévue': 'scheduledLivrDate',
   };
+
+  useEffect(() => {
+    if (autoOpenDevisId) {
+      setSearchValue(String(autoOpenDevisId));
+      setPage(1); // Optionally reset to first page
+    }
+  }, [autoOpenDevisId]);
 
 
   const handleDateRappelFromChange = (date: Date | undefined) => {
@@ -271,7 +279,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} />
+              <TableData data={data?.data || []} autoOpenDevisId={autoOpenDevisId} />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable
