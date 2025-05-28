@@ -37,7 +37,7 @@ const DocumentMissingStats: React.FC = () => {
         <div className="w-full max-w-full bg-highGrey  rounded-md shadow-none p-6">
             <div className="flex items-center justify-between mb-4">
                 <div className="text-xl text-whiteSecond font-oswald">
-                    Dossier(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]
+                    Lead(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]
                 </div>
                 <div className="w-40">
                     <StatusDevisDropDownUntracked value={status} onChange={handleStatusChange} />
@@ -48,7 +48,7 @@ const DocumentMissingStats: React.FC = () => {
                 <table className="min-w-full text-sm bg-white rounded-lg overflow-hidden">
                     <thead className="bg-gray-100">
                         <tr>
-                            <th className="px-4 py-2 text-center font-oswald text-gray-600">Devis ID</th>
+                            <th className="px-4 py-2 text-center font-oswald text-gray-600">Lead ID</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Client</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Véhicule</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Date Facturation</th>

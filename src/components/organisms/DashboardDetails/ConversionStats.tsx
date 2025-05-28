@@ -54,9 +54,9 @@ const ConversionStats: React.FC = () => {
                     <thead className="bg-gray-50 border-b">
                         <tr>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Créateur</th>
-                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Devis</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Leads</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Rappels</th>
-                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Devis en Cours</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Leads en Cours</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Réservations</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">HDSI</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Factures</th>
@@ -107,7 +107,7 @@ const ConversionStats: React.FC = () => {
                                         <td className="px-6 py-4 text-center">{creator.factureCount}</td>
                                         <td className="px-6 py-4 text-center">{creator.livreCount}</td>
                                         <td className="px-6 py-4 text-center">{creator.annuleCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.tauxConversion}%</td>
+                                        <td className="px-6 py-4 text-center">{creator.tauxConversion}</td>
                                     </tr>
                                 );
                             })

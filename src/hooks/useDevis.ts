@@ -2,14 +2,11 @@
 import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useWebSocketForDevis } from './useWebSocket';
+import { getSocket, useWebSocketForDevis } from './useWebSocket';
 import { io } from 'socket.io-client';
 import { databaseName } from '../utils/shared_functions';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
-
-// Initialize WebSocket connection outside the hook to prevent creating multiple instances
-const socket = io(SOCKET_URL);
 
 interface ApiResponse {
   data: Devis[];
@@ -80,7 +77,7 @@ export const useUpdateDevis = () => {
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
       // Handle success (e.g., show a notification, invalidate queries)
-      socket.emit('devisUpdate', {
+      getSocket().emit('devisUpdate', {
         client: data.client,
         devis: data.devis,
         carRequest: data.carRequest,
@@ -145,7 +142,7 @@ export const useDeletedDevis = () => {
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
       // Handle success (e.g., show a notification, invalidate queries)
-      socket.emit('devisUpdate', {
+      getSocket().emit('devisUpdate', {
         client: data.devis!.client,
         devis: data.devis,
         //rappelDevis: data.rappelDevis,
@@ -158,5 +155,3 @@ export const useDeletedDevis = () => {
 };
 
 export default useDevis;
-
-

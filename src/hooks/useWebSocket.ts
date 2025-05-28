@@ -1,17 +1,29 @@
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from '@/types/devisTypes';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import io from 'socket.io-client'; // Import socket.io-client
+import io, { Socket } from 'socket.io-client'; // Import Socket type as well
 
 // Define the URL of your Socket.io server
-const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
+const SOCKET_URL = import.meta.env.VITE_API_URL;
+
+// Create a singleton socket instance
+let socket: Socket | null = null;
+
+// Function to get or create the socket
+export const getSocket = (): Socket => {
+  if (!socket) {
+    socket = io(SOCKET_URL);
+  }
+  return socket;
+};
+
 export const useWebSocketForDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
   const queryClient = useQueryClient();
   const queryKey = ['data', page, searchValue, status, priority, cars];
 
   useEffect(() => {
-    // Initialize socket connection
-    const socket = io(SOCKET_URL);
+    // Use the shared socket connection
+    const socket = getSocket();
 
     // Listen for 'devisUpdate' events
     socket.on('devisUpdate', (data: {
