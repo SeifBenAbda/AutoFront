@@ -79,7 +79,7 @@ const DocumentMissingStats: React.FC = () => {
                         ) : data.result.length > 0 ? (
                             data.result.map((row: DocumentMissingData) => (
                                 <tr key={row.devisId} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-center align-middle">
+                                    <td className="px-6 py-4 flex justify-center items-center ">
                                         <button
                                             className="group flex items-center font-medium text-gray-700 hover:text-highBlue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-2 -mx-2"
                                             onClick={() => navigate(`/carTracking?devis=${row.devisId}`)}
