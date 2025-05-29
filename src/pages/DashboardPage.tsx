@@ -3,7 +3,6 @@ import CarRequestStats from '../components/organisms/DashboardDetails/CarRequest
 import DocumentMissingStats from '../components/organisms/DashboardDetails/documentMissing';
 import DossierStats from '../components/organisms/DashboardDetails/globalStats';
 import React from 'react';
-import OverDueRappels from '../components/organisms/DashboardDetails/OverDueRappels';
 import ConversionStats from '../components/organisms/DashboardDetails/ConversionStats';
 
 
@@ -11,12 +10,11 @@ const DashboardPage: React.FC = () => {
     return (
         <div className="flex flex-col space-y-2">
             <DocumentMissingStats />
-            <ConversionStats />
-            <div className='flex flex-row space-x-2'>
+            <div className='flex flex-col min-[1500px]:flex-row min-[1500px]:space-x-2 min-[1500px]:space-y-0 space-y-2'>
+                <ConversionStats />
                 <PlanningRappelComponent />
-                <OverDueRappels />
             </div>
-            <div className='flex flex-row space-x-2'>
+            <div className='flex flex-col min-[1500px]:flex-row min-[1500px]:space-x-2 min-[1500px]:space-y-0 space-y-2'>
                 <DossierStats />
                 <CarRequestStats />
             </div>

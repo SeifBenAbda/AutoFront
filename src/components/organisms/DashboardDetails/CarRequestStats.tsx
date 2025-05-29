@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import CustomMultiSelect from '../../../components/atoms/CustomMultiSelect';
 import useCarModels, { useCarModelsFacture } from '../../../hooks/useCars';
 import { ca } from 'date-fns/locale';
+import { Loader } from 'lucide-react';
 
 
 const CarRequestStats: React.FC = () => {
@@ -54,10 +55,10 @@ const CarRequestStats: React.FC = () => {
     const colors = ['#4DD0E1', '#FF5252', '#FFD54F', '#81C784', '#7986CB', '#F06292'];
 
     return (
-        <div className="bg-highBlue rounded-lg shadow-md p-4 w-full">
+        <div className="bg-white border-bgColorLight rounded-2xl shadow-md p-4 w-full">
             <div className="flex justify-between items-center mb-4">
-                <div className="text-xl font-oswald text-whiteSecond">
-                    Vente par jour/ mois (facturé)
+                <div className="text-xl font-oswald text-highBlue">
+                    Vente par jour/ mois (Facturé)
                 </div>
                 <div className="flex items-center space-x-4">
                     <div className="w-64">
@@ -89,9 +90,9 @@ const CarRequestStats: React.FC = () => {
             </div>
 
             {isLoading ? (
-                <div className="flex justify-center items-center h-80">
-                    <div className="w-16 h-16 border-t-4 border-b-4 border-white rounded-full animate-spin" />
-                </div>
+                <div className="flex justify-center items-center my-10">
+                        <Loader className="h-8 w-8 animate-spin text-highBlue" />
+                    </div>
             ) : error ? (
                 <div className="text-red-500 p-4">Erreur de chargement des statistiques des voitures</div>
             ) : data && chartData.length > 0 ? (
@@ -110,23 +111,23 @@ const CarRequestStats: React.FC = () => {
                             barGap={8}
                             barCategoryGap={30}
                         >
-                            <CartesianGrid strokeDasharray="3 3" stroke="#FFFFFF" />
-                            <XAxis type="number" stroke="#FFFFFF" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                            <XAxis type="number" stroke="#374151" tick={{ fill: '#374151' }} />
                             <YAxis
                                 dataKey="name"
                                 type="category"
-                                stroke="#FFFFFF"
-                                tick={{ fontSize: 12 }}
+                                stroke="#374151"
+                                tick={{ fontSize: 12, fill: '#374151' }}
                                 tickMargin={5}
                                 width={80}
                                 dx={-10}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#2A3F54', color: '#FFFFFF', border: 'none' }}
-                                labelStyle={{ color: '#FFFFFF' }}
-                                itemStyle={{ color: '#FFFFFF' }}
+                                contentStyle={{ backgroundColor: '#FFFFFF', color: '#374151', border: '1px solid #E5E7EB', borderRadius: '8px' }}
+                                labelStyle={{ color: '#374151', fontWeight: 'bold' }}
+                                itemStyle={{ color: '#374151' }}
                             />
-                            <Legend wrapperStyle={{ color: '#FFFFFF' }} />
+                            <Legend wrapperStyle={{ color: '#374151' }} />
                             {sellers.map((seller, index) => (
                                 <Bar
                                     key={seller}
@@ -149,7 +150,7 @@ const CarRequestStats: React.FC = () => {
                     {Object.entries(data).map(
                         ([carModel, carData]) =>
                             'message' in carData && (
-                                <div key={carModel} className="text-whiteSecond text-sm">
+                                <div key={carModel} className="text-gray-600 text-sm">
                                     {carModel}: {String(carData.message)}
                                 </div>
                             )

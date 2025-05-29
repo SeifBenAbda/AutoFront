@@ -49,15 +49,15 @@ const PlanningRappelComponent: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-full bg-highGrey rounded-md shadow-md p-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-                <div className="text-2xl text-whiteSecond font-oswald">
+        <div className="w-full bg-white border-bgColorLight rounded-2xl shadow-md p-6 flex-1">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-2 gap-4">
+                <div className="text-2xl text-highBlue font-oswald">
                     Planning des appels
                 </div>
                 
                 {/* Creator filter */}
                 <div className="flex items-center gap-2 ml-auto">
-                    <label className="text-whiteSecond whitespace-nowrap">Créateur:</label>
+                    <label className="text-highBlue whitespace-nowrap">Créateur:</label>
                     <Select 
                         onValueChange={(value) => setSelectedCreator(value)} 
                         defaultValue={selectedCreator}
@@ -106,7 +106,7 @@ const PlanningRappelComponent: React.FC = () => {
             </div>
 
             {/* Table View */}
-            <div className="overflow-x-auto bg-white rounded-lg">
+            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg">
                 <table className="min-w-full text-sm">
                     <thead className="bg-gray-50 border-b">
                         <tr>
@@ -127,11 +127,29 @@ const PlanningRappelComponent: React.FC = () => {
                         ) : isLoading ? (
                             Array.from({ length: 5 }).map((_, index) => (
                                 <tr key={index} className="animate-pulse">
-                                    {Array.from({ length: 5 }).map((__, cellIndex) => (
-                                        <td key={cellIndex} className="px-6 py-4">
-                                            <div className="bg-gray-200 rounded h-4 w-28"></div>
-                                        </td>
-                                    ))}
+                                    {/* Creator column with color dot */}
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center">
+                                            <div className="bg-gray-200 rounded-full h-3 w-3 mr-2"></div>
+                                            <div className="bg-gray-200 rounded h-4 w-20"></div>
+                                        </div>
+                                    </td>
+                                    {/* Client name - wider */}
+                                    <td className="px-6 py-4">
+                                        <div className="bg-gray-200 rounded h-4 w-28"></div>
+                                    </td>
+                                    {/* Car type - medium width */}
+                                    <td className="px-6 py-4">
+                                        <div className="bg-gray-200 rounded h-4 w-24"></div>
+                                    </td>
+                                    {/* Date - compact */}
+                                    <td className="px-6 py-4">
+                                        <div className="bg-gray-200 rounded h-4 w-16"></div>
+                                    </td>
+                                    {/* Status badge - rounded pill */}
+                                    <td className="px-6 py-4">
+                                        <div className="bg-gray-200 rounded-full h-5 w-20 mx-auto"></div>
+                                    </td>
                                 </tr>
                             ))
                         ) : allRappels.length > 0 ? (
@@ -192,16 +210,16 @@ const PlanningRappelComponent: React.FC = () => {
             {/* Pagination */}
             <div className="mt-4">
                 <CustomPagination
-                    currentPage={page}
-                    totalPages={data?.meta.totalPages || 0}
-                    onPageChange={(newPage) => setPage(newPage)}
-                    containerClassName="flex items-center justify-center mt-4 space-x-2"
-                    previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                    nextButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                    activePageClassName="bg-whiteSecond text-highBlue"
-                    inactivePageClassName="bg-transparent text-gray-200"
-                    dotClassName="px-3 py-1 text-whiteSecond"
-                />
+                currentPage={page}
+                totalPages={data?.meta.totalPages || 0}
+                onPageChange={(newPage) => setPage(newPage)}
+                containerClassName="flex items-center justify-center mt-4 space-x-2"
+                previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                activePageClassName="bg-highBlue text-white"
+                inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                dotClassName="px-3 py-1 text-highBlue"
+            />
             </div>
         </div>
     );

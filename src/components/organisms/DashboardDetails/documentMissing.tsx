@@ -5,14 +5,6 @@ import { DocumentMissingData, useDocumentMissingStats } from '../../../hooks/use
 import CustomPagination from '../../../components/atoms/CustomPagination';
 import { useNavigate } from 'react-router-dom';
 
-// Helper function to chunk an array into pieces of given size
-function chunkArray<T>(arr: T[], chunkSize: number): T[][] {
-    const result = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-        result.push(arr.slice(i, i + chunkSize));
-    }
-    return result;
-}
 
 // Helper function to format a date as dd/MM/yyyy
 function formatDate(date: string | Date): string {
@@ -37,10 +29,10 @@ const DocumentMissingStats: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="w-full max-w-full bg-highGrey  rounded-md shadow-none p-6">
+        <div className="w-full max-w-full bg-white border-bgColorLight rounded-2xl shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
-                <div className="text-xl text-whiteSecond font-oswald">
-                    Lead(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]
+                <div className="text-2xl text-highBlue font-oswald">
+                    Dossier(s) pas encore fermé(s) [ {data?.meta.totalItems || 0} ]
                 </div>
                 <div className="w-40">
                     <StatusDevisDropDownUntracked value={status} onChange={handleStatusChange} />
@@ -51,7 +43,7 @@ const DocumentMissingStats: React.FC = () => {
                 <table className="min-w-full text-sm bg-white rounded-lg overflow-hidden">
                     <thead className="bg-gray-100">
                         <tr>
-                            <th className="px-4 py-2 text-center font-oswald text-gray-600">Lead ID</th>
+                            <th className="px-4 py-2 text-center font-oswald text-gray-600">Dossier ID</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Client</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Véhicule</th>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Date Facturation</th>
@@ -83,7 +75,7 @@ const DocumentMissingStats: React.FC = () => {
                                         <button
                                             className="group flex items-center font-medium text-gray-700 hover:text-highBlue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-2 -mx-2"
                                             onClick={() => navigate(`/carTracking?devis=${row.devisId}`)}
-                                            title="Voir/modifier ce devis"
+                                            title="Voir/modifier ce Dossier"
                                         >
                                             {row.devisId}
                                             <svg className="ml-1 w-4 h-4 text-gray-400 group-hover:text-highBlue transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,7 +103,7 @@ const DocumentMissingStats: React.FC = () => {
                         ) : (
                             <tr>
                                 <td colSpan={5} className="text-center py-4">
-                                    No data available
+                                    Aucune donnée disponible
                                 </td>
                             </tr>
                         )}
@@ -124,11 +116,11 @@ const DocumentMissingStats: React.FC = () => {
                 totalPages={data?.meta.totalPages || 0}
                 onPageChange={(newPage) => setPage(newPage)}
                 containerClassName="flex items-center justify-center mt-4 space-x-2"
-                previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                nextButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                activePageClassName="bg-whiteSecond text-highBlue"
-                inactivePageClassName="bg-transparent text-gray-200"
-                dotClassName="px-3 py-1 text-whiteSecond"
+                previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                activePageClassName="bg-highBlue text-white"
+                inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                dotClassName="px-3 py-1 text-highBlue"
             />
         </div>
     );

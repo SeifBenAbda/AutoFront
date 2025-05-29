@@ -181,7 +181,7 @@ export function DevisDetailsPage({
                     <div className={`font-medium font-oswald text-sm rounded-md px-2 py-1 ${getPriorityClassName(allData.PriorityDevis)}`}>
                         Priorité {allData.PriorityDevis}
                     </div>
-                    <div className="font-oswald text-2xl flex-1 text-center pr-8">Devis N° {allData.DevisId}</div>
+                    <div className="font-oswald text-2xl flex-1 text-center pr-8">Lead N° {allData.DevisId}</div>
                     <CircleX className="h-7 w-7 cursor-pointer" onClick={onClose} />
                 </DialogTitle>
 

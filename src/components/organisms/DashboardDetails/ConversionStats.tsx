@@ -16,9 +16,9 @@ const ConversionStats: React.FC = () => {
     const { data, isLoading, isError } = useConversionStats(page, startingDate, endingDate);
 
     return (
-        <div className="w-full max-w-full bg-highGrey rounded-md shadow-md p-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-                <div className="text-2xl text-whiteSecond font-oswald">
+        <div className="w-full bg-white border-bgColorLight rounded-2xl shadow-md p-6 flex-1">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-2 gap-4">
+                <div className="text-2xl text-highBlue font-oswald">
                     Statistiques de Conversion
                 </div>
             </div>
@@ -50,8 +50,8 @@ const ConversionStats: React.FC = () => {
 
             {/* Enhanced table */}
             <div className="overflow-x-auto bg-white rounded-lg">
-                <table className="min-w-full text-sm">
-                    <thead className="bg-gray-50 border-b">
+                <table className="min-w-full text-sm border rounded-md border-gray-200">
+                    <thead className="bg-gray-50">
                         <tr>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Créateur</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Leads</th>
@@ -76,11 +76,23 @@ const ConversionStats: React.FC = () => {
                             // Skeleton loading state
                             Array.from({ length: 5 }).map((_, index) => (
                                 <tr key={index} className="animate-pulse">
-                                    {Array.from({ length: 10 }).map((__, cellIndex) => (
-                                        <td key={cellIndex} className="px-6 py-4">
-                                            <div className="bg-gray-200 rounded h-4 w-28"></div>
+                                    {/* Creator column - wider for names */}
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center">
+                                            <div className="bg-gray-200 rounded-full h-3 w-3 mr-2"></div>
+                                            <div className="bg-gray-200 rounded h-4 w-8"></div>
+                                        </div>
+                                    </td>
+                                    {/* Numeric columns - narrower width */}
+                                    {Array.from({ length: 8 }).map((__, cellIndex) => (
+                                        <td key={cellIndex} className="px-6 py-4 text-center">
+                                            <div className="bg-gray-200 rounded h-4 w-12 mx-auto"></div>
                                         </td>
                                     ))}
+                                    {/* Conversion rate column */}
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="bg-gray-200 rounded h-4 w-8 mx-auto"></div>
+                                    </td>
                                 </tr>
                             ))
                         ) : data?.result?.creators?.length ? (
@@ -125,16 +137,16 @@ const ConversionStats: React.FC = () => {
             {/* Pagination */}
             <div className="mt-4">
                 <CustomPagination
-                    currentPage={page}
-                    totalPages={data?.meta?.totalPages || 0}
-                    onPageChange={(newPage) => setPage(newPage)}
-                    containerClassName="flex items-center justify-center mt-4 space-x-2"
-                    previousButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                    nextButtonClassName="px-3 py-1 bg-transparent text-whiteSecond rounded disabled:opacity-50"
-                    activePageClassName="bg-whiteSecond text-highBlue"
-                    inactivePageClassName="bg-transparent text-gray-200"
-                    dotClassName="px-3 py-1 text-whiteSecond"
-                />
+                currentPage={page}
+                totalPages={data?.meta.totalPages || 0}
+                onPageChange={(newPage) => setPage(newPage)}
+                containerClassName="flex items-center justify-center mt-4 space-x-2"
+                previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                activePageClassName="bg-highBlue text-white"
+                inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                dotClassName="px-3 py-1 text-highBlue"
+            />
             </div>
         </div>
     );

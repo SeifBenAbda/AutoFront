@@ -21,7 +21,7 @@ const NavMenu: React.FC = () => {
         setActiveLink('Dossier Voiture');
         break;
       case location.pathname === '/carTracking':
-        setActiveLink('Suivi Devis Voiture');
+        setActiveLink('Suivi Leads');
         break;
         case location.pathname === '/dashboard':
           setActiveLink('Dashboard');
@@ -30,7 +30,7 @@ const NavMenu: React.FC = () => {
         setActiveLink('');
         break;
       case location.pathname === '/devis':
-        setActiveLink('Suivi Devis Voiture');
+        setActiveLink('Suivi Leads');
         break;
       default:
         setActiveLink('Dossier Voiture');
@@ -65,7 +65,7 @@ const NavMenu: React.FC = () => {
         >
           <option value="/dashboard">Dashboard</option>
           <option value="/car-request">Dossier Voiture</option>
-          <option value="/carTracking">Suivi Devis Voiture</option>
+          <option value="/carTracking">Suivi Leads</option>
         </select>
       </div>
     );
@@ -107,12 +107,12 @@ const NavMenu: React.FC = () => {
       </Button>
 
       <Button
-        onClick={() => handleNavClick('Suivi Devis Voiture', "/carTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Devis Voiture' ? activeOptionSytle : nonActiveOptionSytle}`}
+        onClick={() => handleNavClick('Suivi Leads', "/carTracking")}
+        className={`p-2 rounded-md ${activeLink === 'Suivi Leads' ? activeOptionSytle : nonActiveOptionSytle}`}
       >
         <div className="flex items-center space-x-2">
           <FilePenLine />
-          <span>Suivi Devis Voiture</span>
+          <span>Suivi Leads</span>
         </div>
 
       </Button>

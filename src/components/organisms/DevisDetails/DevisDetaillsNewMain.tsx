@@ -92,7 +92,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
 
         { icon: UserRoundCog, label: "Client" },
         { icon: Car, label: "Véhicule" },
-        { icon: FileText, label: "Devis" },
+        { icon: FileText, label: "Dossier" },
         { icon: BellRing, label: "Rappels" },
         { icon: Files, label: "Documents" },
     ];
@@ -206,7 +206,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
 
         { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} /> },
         { label: 'Vehicule', component: <DevisVehiculeDetails carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} isAdmin={isAdmin} /> },
-        { label: 'Devis', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
+        { label: 'Dossier', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
         { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Documents', component: <DevisDoucmentDetails devis={myDevis} /> },
     ] : [];

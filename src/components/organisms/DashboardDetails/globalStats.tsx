@@ -43,15 +43,15 @@ const DossierStats: React.FC<DossierStatsProps> = ({ initialStatus = 'Réservé'
     };
 
     return (
-        <div className="w-full max-w-full bg-highBlue rounded-md shadow-none p-6">
+        <div className="w-full max-w-full bg-white border-bgColorLight rounded-2xl shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
-                <div className="text-xl text-whiteSecond font-oswald">Dossier Statut</div>
+                <div className="text-xl text-highBlue font-oswald">Dossier Statut</div>
                 <div className="w-40">
                     <StatusDevisDropDownUntracked value={status} onChange={handleStatusChange} />
                 </div>
             </div>
-            <div className="overflow-x-auto">
-                <table className="min-w-full text-sm bg-white rounded-lg overflow-hidden">
+            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg ">
+                <table className="min-w-full text-sm overflow-hidden">
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Lead ID</th>
