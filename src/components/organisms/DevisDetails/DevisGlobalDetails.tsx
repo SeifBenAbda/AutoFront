@@ -29,7 +29,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const API_URL = import.meta.env.VITE_API_URL;
     const token = getToken();
     const { user } = useUser();
-    const isEditingOpen = true; //devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
     useEffect(() => {
         if (devis.DevisId) {
             setIsLoading(true);
@@ -355,15 +355,21 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 {devis.StatusDevis === "Annulé" && (
                     <CardContent className="w-full">
                         <Label className=" text-sm font-medium text-highBlue">Raison de l'annulation</Label>
-                        <Input
-                            type="text"
-                            value={devis.ReasonAnnulation || ""}
-                            onChange={(e) =>
-                                handleChange("ReasonAnnulation", e.target.value)
-                            }
-                            placeholder="Raison de l'annulation"
-                            className="mt-1 p-2 mr-2  border border-normalGrey bg-normalGrey rounded-md  sm:text-sm"
-                        />
+                        {isEditingOpen ? (
+                            <Input
+                                type="text"
+                                value={devis.ReasonAnnulation || ""}
+                                onChange={(e) =>
+                                    handleChange("ReasonAnnulation", e.target.value)
+                                }
+                                placeholder="Raison de l'annulation"
+                                className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                            />
+                        ) : (       
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.ReasonAnnulation || ""}</span>
+                            </div>
+                        )}
                     </CardContent>
                 )}
 

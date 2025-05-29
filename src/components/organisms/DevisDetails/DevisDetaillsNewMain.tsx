@@ -204,7 +204,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
 
     const steps: StepConfig[] = myDevis ? [
 
-        { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} /> },
+        { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} devis={myDevis} /> },
         { label: 'Vehicule', component: <DevisVehiculeDetails carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} isAdmin={isAdmin} /> },
         { label: 'Dossier', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
         { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },

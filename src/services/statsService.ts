@@ -3,13 +3,23 @@ import { getToken, removeToken } from "./authService";
 const API_URL = import.meta.env.VITE_API_URL;
 
 
+export interface DossierStatsResponse {
+  result: DossierStat[];
+  meta: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
 export const fetchDossierStats = async (
   databaseName: string,
   status: string,
+  page: number,
   navigate: (path: string) => void
-): Promise<DossierStat[]> => {
+): Promise<DossierStatsResponse> => {
   const token = getToken();
-  if (!token) throw new Error("No token found fethcu ser data");
+  if (!token) throw new Error("No token found fetch user data");
 
   const response = await fetch(`${API_URL}/dashboard/global-stats`, {
     method: 'POST',
@@ -20,9 +30,9 @@ export const fetchDossierStats = async (
     body: JSON.stringify({
       "database": databaseName,
       "status": status,
+      "page": page,
     }),
   });
-
 
   if (response.status === 401) {
     removeToken();
@@ -31,7 +41,7 @@ export const fetchDossierStats = async (
   }
 
   if (!response.ok) throw new Error("Failed to fetch global stats");
-  
+
   return response.json();
 };
 

@@ -118,12 +118,21 @@ export const useOverDueRappels = (page:number, startingDate:Date, endingDate:Dat
 
 
 
-const useDossierStats = (status:string) => {
-    const navigate = useNavigate(); // Move the useNavigate call here inside the hook
+export interface DossierStats {
+    result: DossierStat[];
+    meta: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+    };
+}
 
-    return useQuery<DossierStat[]>({
-        queryKey: [status],
-        queryFn: () => fetchDossierStats(databaseName,status,navigate), // Pass navigate to the fetchCarModels function
+const useDossierStats = (status: string, page: number = 1) => {
+    const navigate = useNavigate();
+
+    return useQuery<DossierStats>({
+        queryKey: ['dossierStats', status, page],
+        queryFn: () => fetchDossierStats(databaseName, status, page, navigate),
         staleTime: 0,
         refetchOnWindowFocus: false,
     });

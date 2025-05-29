@@ -16,11 +16,11 @@ type DevisDetailsPageProps = {
 };
 
 // Create custom components for each state
-const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; phone: string }) => (
+const ClientInfo = ({ geneder, name, phone,type }: { geneder: string; name: string; phone: string; type: string }) => (
     <div className="flex items-center space-x-8 px-3 py-1 justify-center">
         <div className="flex flex-row space-x-2">
             <img src={clientIcon} alt="Agent" className="w-5 h-5" />
-            <span className="text-highBlue font-oswald">{geneder} {name}</span>
+            <span className="text-highBlue font-oswald">{type==="Particulier" ? geneder : ""} {name}</span>
         </div>
         <div className="flex flex-row space-x-2">
             <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
@@ -196,6 +196,7 @@ export function DevisDetailsPage({
                                     geneder={allData.client?.clientGender ?? ""}
                                     name={allData.client?.nomClient ?? ""}
                                     phone={allData.client?.telClient ?? ""}
+                                    type={allData.client?.clientType ?? ""}
                                 />
                             ) : currentComponent === 'reminder' ? (
                                 <ReminderInfo rappels={allData.rappels} />

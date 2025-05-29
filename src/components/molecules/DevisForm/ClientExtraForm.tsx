@@ -68,6 +68,10 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Modèle préféré" name={`${formId}.CarModel`} className="flex-1 text-highBlue">
+                             <div className={`${form.formState.errors[formId]?.CarModel
+                                ? "border border-red-500 rounded-md"
+                                : ""
+                                }`}>
                             <Controller
                                 name={`${formId}.CarModel`}
                                 control={control}
@@ -79,6 +83,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                     />
                                 )}
                             />
+                            </div>
                         </FormCardContent>
                     </div>
                 </div>
@@ -101,6 +106,10 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`} className="flex-1 text-highBlue">
+                             <div className={`${form.formState.errors[generalFormId]?.Source
+                                ? "border border-red-500 rounded-md"
+                                : ""
+                                }`}>
                             <Controller
                                 name={`${generalFormId}.Source`}
                                 control={control}
@@ -111,6 +120,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                     />
                                 )}
                             />
+                            </div>
                         </FormCardContent>
                     </div>
                 </div>

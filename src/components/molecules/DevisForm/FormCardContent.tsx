@@ -10,11 +10,11 @@ import { CardContent } from "../../../@/components/ui/card";
 
 const FormCardContent: React.FC<any> = ({ form, name, label, children, className }) => {
     return (
-        <CardContent className="flex flex-1">
+        <CardContent className={`flex flex-1`}>
             <FormField
-                control={form.control}
-                name={name}
-                render={({ field, fieldState: { error } }) => (
+            control={form.control}
+            name={name}
+            render={({ field, fieldState: { error } }) => (
                     <FormItem className="w-full">
                         <div className="flex justify-between w-full p-1 flex-col">
                             <FormLabel

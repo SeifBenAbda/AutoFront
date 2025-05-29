@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import StatusDevisDropDownUntracked from '../../../components/atoms/StatusDropDownUntracked';
 import useDossierStats, { DossierStat } from '../../../hooks/useDashboard';
 import React, { useState, useEffect } from 'react';
+import CustomPagination from '../../../components/atoms/CustomPagination';
 
 interface DossierStatsProps {
     initialStatus?: string;
@@ -9,17 +10,24 @@ interface DossierStatsProps {
 
 const DossierStats: React.FC<DossierStatsProps> = ({ initialStatus = 'Réservé' }) => {
     const [status, setStatus] = useState(initialStatus);
-    const { data, isLoading } = useDossierStats(status);
+    const [page, setPage] = useState(1);
+    const { data, isLoading } = useDossierStats(status, page);
     const [rows, setRows] = useState<DossierStat[]>([]);
     const navigate = useNavigate();
+
     useEffect(() => {
-        if (data) {
-            setRows(data);
+        if (data?.result) {
+            setRows(data.result);
         }
     }, [data]);
 
     const handleStatusChange = (value: string) => {
         setStatus(value);
+        setPage(1); // Reset to first page when status changes
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
     };
 
     // Render a few skeleton rows when loading
@@ -50,7 +58,7 @@ const DossierStats: React.FC<DossierStatsProps> = ({ initialStatus = 'Réservé'
                     <StatusDevisDropDownUntracked value={status} onChange={handleStatusChange} />
                 </div>
             </div>
-            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg ">
+            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg">
                 <table className="min-w-full text-sm overflow-hidden">
                     <thead className="bg-gray-100">
                         <tr>
@@ -66,7 +74,7 @@ const DossierStats: React.FC<DossierStatsProps> = ({ initialStatus = 'Réservé'
                         ) : (
                             rows.map((item) => (
                                 <tr key={item.devisId} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 flex justify-center items-center ">
+                                    <td className="px-6 py-4 flex justify-center items-center">
                                         <button
                                             className="group flex items-center font-medium text-gray-700 hover:text-highBlue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded px-2 -mx-2"
                                             onClick={() => navigate(`/carTracking?devis=${item.devisId}`)}
@@ -91,6 +99,21 @@ const DossierStats: React.FC<DossierStatsProps> = ({ initialStatus = 'Réservé'
                     </tbody>
                 </table>
             </div>
+            
+            {/* Pagination Component */}
+            {data && data.meta.totalPages > 1 && (
+                <CustomPagination
+                    currentPage={page}
+                    totalPages={data.meta.totalPages}
+                    onPageChange={handlePageChange}
+                    containerClassName="flex items-center justify-center mt-4 space-x-2"
+                    previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    activePageClassName="bg-highBlue text-white"
+                    inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                    dotClassName="px-3 py-1 text-highBlue"
+                />
+            )}
         </div>
     );
 };

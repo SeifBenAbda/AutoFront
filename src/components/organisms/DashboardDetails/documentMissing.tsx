@@ -39,8 +39,8 @@ const DocumentMissingStats: React.FC = () => {
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full text-sm bg-white rounded-lg overflow-hidden">
+            <div className="overflow-x-auto bg-white rounded-lg border border-gray-200">
+                <table className="min-w-full text-sm overflow-hidden">
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="px-4 py-2 text-center font-oswald text-gray-600">Dossier ID</th>
@@ -89,14 +89,30 @@ const DocumentMissingStats: React.FC = () => {
                                         {formatDate(row.facturationDate)}
                                     </td>
                                     <td className="px-4 py-2 text-sm text-center text-gray-900">
-                                        {row.missingDocuments.map((doc, i) => (
-                                            <span
-                                                key={i}
-                                                className="px-3 py-1 mr-2 mb-2 inline-block border border-gray-300 rounded-md text-gray-700 bg-gray-50 shadow-sm hover:bg-gray-100 transition-colors"
-                                            >
-                                                {doc}
-                                            </span>
-                                        ))}
+                                        <div className="flex flex-wrap justify-center gap-2">
+                                            {row.missingDocuments.map((doc, i) => (
+                                                <span
+                                                    key={i}
+                                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 text-xs font-medium shadow-sm 
+                                                    hover:bg-gray-500 hover:text-white transition-colors cursor-pointer"
+                                                >
+                                                    <svg
+                                                        className="w-4 h-4 text-yellow-500"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                        />
+                                                    </svg>
+                                                    {doc}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </td>
                                 </tr>
                             ))

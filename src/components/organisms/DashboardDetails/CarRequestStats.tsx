@@ -3,8 +3,7 @@ import { BarChart, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Bar, YAx
 import { useCarStats } from '../../../hooks/useDashboard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
 import CustomMultiSelect from '../../../components/atoms/CustomMultiSelect';
-import useCarModels, { useCarModelsFacture } from '../../../hooks/useCars';
-import { ca } from 'date-fns/locale';
+import { useCarModelsFacture } from '../../../hooks/useCars';
 import { Loader } from 'lucide-react';
 
 

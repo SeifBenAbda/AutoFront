@@ -7,14 +7,14 @@ import { useUser } from "../../../context/userContext";
 interface DevisRappelsDetailsProps {
     devisId: number,
     rappels: Rappel[];
-    devis:Devis;
+    devis: Devis;
     onUpdateDevis: (updatedDevis: Devis) => void;
     onUpdate: (updatedRappels: Rappel[]) => void;
 }
 
-export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUpdate }: DevisRappelsDetailsProps) {
+export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, onUpdate }: DevisRappelsDetailsProps) {
     const { user } = useUser();
-    
+    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
     const handleChange = (rappelId: number, field: keyof Rappel, value: string | Date | boolean | undefined) => {
         const index = rappels.findIndex(rappel => rappel.RappelId === rappelId);
 
@@ -40,23 +40,25 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
     const handleDateChange = (rappelId: number, date: Date | undefined) => {
         handleChange(rappelId, "RappelDate", date);
     };
-    
+
     const handleToggleClosed = (rappelId: number, currentStatus: boolean | undefined) => {
         handleChange(rappelId, "isClosed", !currentStatus);
     };
 
     const handleAddRappel = () => {
-        const newRappel: Rappel = {
-            RappelId: Date.now(), // Temporary unique ID
-            RappelDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow's date
-            RappelContent: "",
-            isClosed: false,
-            CreatedBy: user?.username!,
-            CreatedAt: new Date(),
-            UpdatedBy: user?.username,
-            UpdatedAt: new Date(),
-        };
-        onUpdate([...rappels, newRappel]);
+        if (isEditingOpen) {
+            const newRappel: Rappel = {
+                RappelId: Date.now(), // Use a unique ID for the new rappel
+                RappelDate: new Date(),
+                RappelContent: "",
+                isClosed: false,
+                CreatedBy: user?.username || "Unknown",
+                CreatedAt: new Date(),
+                UpdatedBy: user?.username || "Unknown",
+                UpdatedAt: new Date()
+            };
+            onUpdate([...rappels, newRappel]);
+        }
     };
 
     return (
@@ -72,7 +74,7 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                         Nouvel Rappel
                     </button>
                 </div>
-                
+
                 {/* Custom Table */}
                 <div className="overflow-x-auto">
                     <table className="w-full">
@@ -88,11 +90,10 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                         </thead>
                         <tbody>
                             {rappels.map((rappel, index) => (
-                                <tr 
-                                    key={rappel.RappelId} 
-                                    className={`border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150 ease-in-out ${
-                                        rappel.isClosed ? "bg-gray-50 text-gray-500" : "bg-white"
-                                    }`}
+                                <tr
+                                    key={rappel.RappelId}
+                                    className={`border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150 ease-in-out ${rappel.isClosed ? "bg-gray-50 text-gray-500" : "bg-white"
+                                        }`}
                                 >
                                     <td className="py-3 px-4 align-middle">
                                         <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-blue-100 text-blue-800 font-medium text-sm">
@@ -100,7 +101,7 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                                         </span>
                                     </td>
                                     <td className="py-3 px-4 align-middle">
-                                        {rappel.isClosed ? (
+                                        {rappel.isClosed && isEditingOpen ? (
                                             <div className="text-sm">{new Date(rappel.RappelDate!).toLocaleDateString()}</div>
                                         ) : (
                                             <div className="w-40">
@@ -114,7 +115,7 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                                         )}
                                     </td>
                                     <td className="py-3 px-4 align-middle">
-                                        {rappel.isClosed ? (
+                                        {rappel.isClosed || !isEditingOpen ? (
                                             <div className="text-sm whitespace-pre-wrap max-h-20 overflow-y-auto">
                                                 {rappel.RappelContent || ""}
                                             </div>
@@ -129,13 +130,12 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                                     </td>
                                     {user?.role === 'ADMIN' && (
                                         <td className="py-3 px-4 align-middle">
-                                            <button 
+                                            <button
                                                 onClick={() => handleToggleClosed(rappel.RappelId!, rappel.isClosed)}
-                                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                                                    rappel.isClosed 
-                                                        ? "bg-white text-highBlue border border-highBlue hover:bg-blue-50 focus:ring-transparent" 
+                                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${rappel.isClosed
+                                                        ? "bg-white text-highBlue border border-highBlue hover:bg-blue-50 focus:ring-transparent"
                                                         : "bg-highBlue text-white hover:bg-blue-700 focus:ring-transparent"
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="flex items-center space-x-1">
                                                     <span>{rappel.isClosed ? "Réouvrir" : "Clôturer"}</span>
@@ -164,30 +164,38 @@ export function DevisRappelsDetails({ devisId, rappels, devis,onUpdateDevis,onUp
                 </div>
             </div>
 
-            <hr className="bg-highBlue mt-4 mb-1 mr-2 ml-2" />    
+            <hr className="bg-highBlue mt-4 mb-1 mr-2 ml-2" />
 
-           
+
 
             <div className="mt-2 mb-2 bg-white rounded-lg shadow-md overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-highBlue to-blue-800 text-white py-4 px-6">
                     <h3 className="text-lg font-oswald">Commentaires Additionnels</h3>
                 </div>
-                
+
                 {/* Content */}
                 <div className="p-4">
-                    <Textarea
-                        className="w-full text-sm resize-none border-gray-200 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 rounded-md"
-                        placeholder="Saisir des commentaires supplémentaires..."
-                        rows={4}
-                        onChange={(e) => handleCommentsChange(e.target.value)} // Update devis comments
-                        value={devis.Comments || ""}
-                    />
+                    {isEditingOpen ? (
+                        <Textarea
+                            className="w-full text-sm resize-none border-gray-200 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 rounded-md"
+                            placeholder="Saisir des commentaires supplémentaires..."
+                            rows={4}
+                            onChange={(e) => handleCommentsChange(e.target.value)} // Update devis comments
+                            value={devis.Comments || ""}
+                        />
+                    ) : (
+                        <div className="text-sm text-gray-600 whitespace-pre-wrap">
+                            {devis.Comments || "Aucun commentaire ajouté."}
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className="pl-2">
-                <AudioRecorder devisId={devisId} />
-            </div>
+            {isEditingOpen && (
+                <div className="pl-2">
+                    <AudioRecorder devisId={devisId} />
+                </div>
+            )}
         </div>
     );
 }

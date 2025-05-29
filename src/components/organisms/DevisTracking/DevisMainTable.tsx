@@ -49,12 +49,48 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
     'Date Livraison prévue': 'scheduledLivrDate',
   };
 
+  // State to track if we're actively searching for a specific devis
+  const [isSearchingDevis, setIsSearchingDevis] = useState(false);
+  const [processedDevisId, setProcessedDevisId] = useState<string | number | undefined>(undefined);
+
+  // Initialize search when autoOpenDevisId is provided
   useEffect(() => {
-    if (autoOpenDevisId) {
+    if (autoOpenDevisId && !isSearchingDevis && processedDevisId !== autoOpenDevisId) {
+      // First, try finding with search
       setSearchValue(String(autoOpenDevisId));
-      setPage(1); // Optionally reset to first page
+      setPage(1);
+      setIsSearchingDevis(true);
+      setProcessedDevisId(autoOpenDevisId);
     }
-  }, [autoOpenDevisId]);
+  }, [autoOpenDevisId, isSearchingDevis, processedDevisId]);
+
+  // Handle the pagination search process
+  useEffect(() => {
+    // Only proceed if we're in search mode and data is loaded
+    if (!isSearchingDevis || isLoading || !data) return;
+    
+    // Check if the devis exists in the current page data
+    const devisFound = data.data.some(devis => {
+      // Normalize ID types for comparison
+      const devisId = typeof devis.DevisId === 'number' ? devis.DevisId : Number(devis.DevisId);
+      const searchId = typeof autoOpenDevisId === 'number' ? autoOpenDevisId : Number(autoOpenDevisId);
+      return devisId === searchId;
+    });
+    
+    if (devisFound) {
+      // Devis found, stop searching
+      setIsSearchingDevis(false);
+    } else if (data.meta.currentPage < data.meta.totalPages) {
+      // Not found on this page, go to the next page
+      setPage(prevPage => prevPage + 1);
+    } else {
+      // We've checked all pages without finding the devis
+      setIsSearchingDevis(false);
+      // Clear the search filter since we didn't find anything with it
+      setSearchValue('');
+      console.log(`Devis with ID ${autoOpenDevisId} not found after checking all pages.`);
+    }
+  }, [data, isLoading, isSearchingDevis, autoOpenDevisId]);
 
 
   const handleDateRappelFromChange = (date: Date | undefined) => {
