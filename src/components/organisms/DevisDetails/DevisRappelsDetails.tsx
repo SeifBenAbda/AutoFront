@@ -14,7 +14,7 @@ interface DevisRappelsDetailsProps {
 
 export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, onUpdate }: DevisRappelsDetailsProps) {
     const { user } = useUser();
-    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture==null;
     const handleChange = (rappelId: number, field: keyof Rappel, value: string | Date | boolean | undefined) => {
         const index = rappels.findIndex(rappel => rappel.RappelId === rappelId);
 

@@ -1,12 +1,13 @@
 import { Client, Devis } from "../../../types/devisTypes";
-import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
+import { CardContent, CardTitle } from "../../../@/components/ui/card";
 import { Input } from "../../../@/components/ui/input";
 import { Label } from "../../../@/components/ui/label";
 
 import { Textarea } from "../../../@/components/ui/textarea";
 import { params } from "../../../utils/params";
 import PhoneInput from "../../../components/atoms/PhoneInput";
-import CinInput from "../../../components/atoms/CinInput";
+
+import ClientSectorsDropDown from "../../../components/atoms/ClientSectorsDropDown";
 interface DevisClientDetailsProps {
     devis: Devis;
     client: Client;
@@ -14,7 +15,7 @@ interface DevisClientDetailsProps {
 }
 
 export function DevisClientDetails({ client, onUpdate, devis }: DevisClientDetailsProps) {
-    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture == null;
 
 
     const handleDateChange = (date: Date | undefined) => {
@@ -40,12 +41,12 @@ export function DevisClientDetails({ client, onUpdate, devis }: DevisClientDetai
                 <CardContent className="flex flex-col ">
                     <Label className="relative text-sm font-medium text-highBlue ">Nom</Label>
                     {isEditingOpen ? (
-                    <Input
-                        type="text"
-                        value={client.nomClient || ""}
-                        onChange={(e) => handleChange("nomClient", e.target.value)}
-                        className={`mt-1 p-2 w-full rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
-                    />
+                        <Input
+                            type="text"
+                            value={client.nomClient || ""}
+                            onChange={(e) => handleChange("nomClient", e.target.value)}
+                            className={`mt-1 p-2 w-full rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
+                        />
 
                     ) : (
                         <div className={`mt-1 p-2 w-full rounded-md shadow-sm sm:text-sm ${params.inputBoxStyle}`}>
@@ -176,22 +177,38 @@ export function DevisClientDetails({ client, onUpdate, devis }: DevisClientDetai
                 </CardContent>
 
                     */}
+
+
+                <CardContent className="flex flex-col ">
+                    <Label className="relative text-sm font-medium text-highBlue ">Email</Label>
+                    {isEditingOpen ? (
+                        <Input
+                            value={client.email}
+                            type="email"
+                            onChange={(e) => handleChange("email", e.target.value)}
+                            className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
+                        />
+                    ) : (
+                        <div className={`mt-1 p-2 w-full  rounded-md shadow-sm sm:text-sm ${params.inputBoxStyle}`}>
+                            {client.email || "N/A"}
+                        </div>
+                    )}
+                </CardContent>
+                <CardContent className="flex flex-col ">
+                    <Label className="relative text-sm font-medium text-highBlue ">Profession</Label>
+                    {isEditingOpen ? (
+                        <ClientSectorsDropDown
+                            value={client.socialReason || ""}
+                            onChange={(value) => handleChange("socialReason", value)}
+                        />
+                    ) : (
+                        <div className={`mt-1 p-2 w-full  rounded-md shadow-sm sm:text-sm ${params.inputBoxStyle}`}>
+                            {client.socialReason || "N/A"}
+                        </div>
+                    )}
+                </CardContent>
             </div>
-            <CardContent className="flex flex-col pl-6 pr-8 w-full pt-2">
-                <Label className="relative text-sm font-medium text-highBlue ">Email</Label>
-                {isEditingOpen ? (
-                    <Input
-                        value={client.email}
-                        type="email"
-                        onChange={(e) => handleChange("email", e.target.value)}
-                        className={`mt-1 p-2 w-full  rounded-md shadow-sm focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}
-                    />
-                ) : (
-                    <div className={`mt-1 p-2 w-full  rounded-md shadow-sm sm:text-sm ${params.inputBoxStyle}`}>
-                        {client.email || "N/A"}
-                    </div>
-                )}
-            </CardContent>
+
             <CardContent className="flex flex-col pl-6 pr-8 w-full pt-2">
                 <Label className="relative text-sm font-medium text-highBlue ">Adresse</Label>
                 {isEditingOpen ? (

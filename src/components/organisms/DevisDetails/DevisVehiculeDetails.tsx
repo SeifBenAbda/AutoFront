@@ -15,15 +15,13 @@ interface DevisVehiculeDetailsProps {
 }
 
 export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevis, isAdmin }: DevisVehiculeDetailsProps) {
-    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture==null;
     const handleChange = (field: keyof CarRequest, value: string | Date | undefined) => {
         onUpdate({
             ...carRequest,
             [field]: value,
         });
     };
-
-    
 
     return (
         <>

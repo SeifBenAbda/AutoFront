@@ -29,8 +29,11 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const API_URL = import.meta.env.VITE_API_URL;
     const token = getToken();
     const { user } = useUser();
-    const isEditingOpen = devis.devisFacture?.FactureNumero === null || devis.devisFacture?.FactureNumero === "" || devis.StatusDevis == "En Cours"
+    const initialDevisFacture = devis.devisFacture;
+    const isEditingBrdOpen = devis.StatusDevis !== "Livré";
+    const [isEditingOpen, setIsEditingOpen] = useState(devis.StatusDevis == "En Cours" || initialDevisFacture === null);
     useEffect(() => {
+        setIsEditingOpen(devis.StatusDevis == "En Cours" || initialDevisFacture === null);
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
@@ -365,7 +368,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                                 placeholder="Raison de l'annulation"
                                 className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                             />
-                        ) : (       
+                        ) : (
                             <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
                                 <span>{devis.ReasonAnnulation || ""}</span>
                             </div>
@@ -598,24 +601,36 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             <div className="flex gap-4 w-full">
                 <CardContent className="w-full">
                     <Label className=" relative text-sm font-medium text-highBlue ">Numéro de BRD</Label>
-                    <Input
-                        type="text"
-                        inputMode="text"
-                        maxLength={20}      // Increased length limit for alphanumeric input
-                        autoComplete="off"  // Prevents unwanted autocomplete
-                        value={devis.devisFacture.BRDNumero || ""}
-                        onChange={(e) => handleChangedevisFacture("BRDNumero", e.target.value)}
-                        className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
-                    />
+                    {isEditingBrdOpen ? (
+                        <Input
+                            type="text"
+                            inputMode="text"
+                            maxLength={20}      // Increased length limit for alphanumeric input
+                            autoComplete="off"  // Prevents unwanted autocomplete
+                            value={devis.devisFacture.BRDNumero || ""}
+                            onChange={(e) => handleChangedevisFacture("BRDNumero", e.target.value)}
+                            className={`mt-1 p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
+                        />
+                    ) : (
+                        <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                            <span>{devis.devisFacture.BRDNumero || ""}</span>
+                        </div>
+                    )}
                 </CardContent>
                 <CardContent className="w-full">
                     <Label className=" relative text-sm font-medium text-highBlue ">Date de BRD</Label>
-                    <DatePicker
-                        value={devis.devisFacture?.DateBRD ?? new Date()}
-                        onChange={handleDateBorderauChange}
-                        fromYear={new Date().getFullYear()}
-                        toYear={new Date().getFullYear() + 1}
-                    />
+                    {isEditingBrdOpen ? (
+                        <DatePicker
+                            value={devis.devisFacture?.DateBRD ?? new Date()}
+                            onChange={handleDateBorderauChange}
+                            fromYear={new Date().getFullYear()}
+                            toYear={new Date().getFullYear() + 1}
+                        />
+                    ) : (
+                        <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                            <span>{devis.devisFacture?.DateBRD ? new Date(devis.devisFacture.DateBRD).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+                        </div>
+                    )}
                 </CardContent>
             </div>
         )

@@ -1,45 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { Toggle } from "../../@/components/ui/toggle";
+import { forwardRef } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../@/components/ui/select";
 
 interface ClientGenderProps {
-  option1: string;
-  option2: string;
-  defaultValue: string;
+  option1?: string;
+  option2?: string;
+  defaultValue?: string;
   onChange?: (selected: string) => void;
 }
 
-const ClientGender: React.FC<ClientGenderProps> = ({ option1, option2, onChange ,defaultValue}) => {
-  const [selected, setSelected] = useState<string>(option1);
+const ClientGender = forwardRef<HTMLButtonElement, ClientGenderProps>(
+  ({ option1 = "Monsieur", option2 = "Madame", defaultValue, onChange }, ref) => {
+    const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
+    
+    const handleChange = (value: string) => {
+      if (onChange) {
+        onChange(value);
+      }
+    };
 
+    return (
+      <Select onValueChange={handleChange} defaultValue={defaultValue || option1}>
+        <SelectTrigger ref={ref} className="w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue">
+          <SelectValue placeholder={defaultValue || option1} />
+        </SelectTrigger>
+        <SelectContent className="bg-normalGrey border-normalGrey">
+          <SelectItem value={option1} className={hoverItem}>
+            {option1}
+          </SelectItem>
+          <SelectItem value={option2} className={hoverItem}>
+            {option2}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  }
+);
 
-  useEffect(() => {
-    if (defaultValue) {
-      setSelected(defaultValue === "Madame" ? option2 : option1);
-    }
-  }, [defaultValue, option1, option2,selected]);
-
-  const handleToggle = () => {
-    const newSelected = selected === option1 ? option2 : option1;
-    setSelected(newSelected);
-    if (onChange) {
-      onChange(newSelected);
-    }
-  };
-
-  return (
-    <Toggle
-      aria-label="Toggle gender"
-      data-state={selected === "Madame" ? "on" : "off"}  // Dynamically set data-state
-      onClick={handleToggle}
-      className={`relative w-full font-oswald bg-whiteSecond text-highBlue hover:bg-highBlue hover:text-lightWhite border 
-      data-[state=on]:border-lightRed data-[state=on]:bg-lightRed data-[state=on]:text-whiteSecond  
-      ${selected === "Madame" ? "border-lightRed bg-lightRed text-whiteSecond" : "border-highBlue bg-highBlue text-lightWhite"}`}
-    >
-      {selected}
-    </Toggle>
-  );
-};
+ClientGender.displayName = 'ClientGender';
 
 export default ClientGender;
-
-

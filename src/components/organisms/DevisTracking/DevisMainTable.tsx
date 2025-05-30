@@ -88,7 +88,6 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
       setIsSearchingDevis(false);
       // Clear the search filter since we didn't find anything with it
       setSearchValue('');
-      console.log(`Devis with ID ${autoOpenDevisId} not found after checking all pages.`);
     }
   }, [data, isLoading, isSearchingDevis, autoOpenDevisId]);
 

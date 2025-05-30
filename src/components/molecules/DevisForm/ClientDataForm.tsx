@@ -62,7 +62,7 @@ const ClientDataForm: React.FC<any> = ({ form, formId }) => {
                 <div className="flex space-x-4 text-whiteSecond">
                     <FormCardContent form={form} label="Nom et prénom" name={`${formId}.nomClient`} className="flex-1 text-highBlue">
                         <Input
-                            className={`border font-oswald bg-normalGrey text-highBlue ${form.formState.errors[formId]?.telClient
+                            className={`border font-oswald bg-normalGrey text-highBlue ${form.formState.errors[formId]?.nomClient
                                     ? "border-red-500"
                                     : "border-normalGrey"
                                 }`}

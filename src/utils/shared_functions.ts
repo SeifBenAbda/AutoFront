@@ -19,7 +19,8 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
-    if (!devis.devisReserved.DateReservation || !devis.carRequests[0].CarColor || devis.carRequests[0].CarColor === "" ) {
+    console.log("Client Social Reason: ", devis.client?.socialReason);
+    if (!devis.devisReserved.DateReservation || !devis.carRequests[0].CarColor || devis.carRequests[0].CarColor === "" || devis.client!.socialReason=="Non déterminé" || devis.client!.socialReason==="") {
         return false;
     }
     return true;
@@ -49,7 +50,17 @@ const bankDetailsMissing = (devis: Devis): boolean => {
 }
 
 const isCanceledDevisNotFinished = (devis: Devis): boolean => {
-    if(devis.StatusDevis==="Annulé" && (devis.ReasonAnnulation==="" || devis.ReasonAnnulation===undefined)){ 
+    if(devis.StatusDevis==="Annulé" && (devis.ReasonAnnulation==="" || devis.ReasonAnnulation===undefined || devis.ReasonAnnulation===null)){ 
+        return true;
+    }
+    return false;
+}
+
+const bordoreauxMissing = (devis: Devis): boolean => {
+    if(devis.devisFacture === null || devis.devisFacture === undefined) {
+        return false;
+    }
+    if(devis.devisFacture.StatutBRD!==null && (devis.devisFacture.DateBRD===null || devis.devisFacture.DateBRD===undefined || devis.devisFacture.BRDNumero===null || devis.devisFacture.BRDNumero===undefined || devis.devisFacture.BRDNumero==="") ){
         return true;
     }
     return false;
@@ -61,6 +72,9 @@ export const getModificationErros = (devis : Devis): string => {
     }else if(devis.StatusDevis != "Annulé"){
         if(totalTTCMissing(devis)){
             return "Le montant total TTC est manquant !";
+        }
+        if(bordoreauxMissing(devis)){
+            return "Le bordereau est manquant !";
         }
         if(bankDetailsMissing(devis)){
             return "Les détails de la banque sont manquants !";

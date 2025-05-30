@@ -44,11 +44,7 @@ export const devisSchema = z.object({
                 message: "Numéro de téléphone invalide",
             }),
         email: z.string().trim().optional(),
-        socialReason: z.string().trim()
-            .min(1, { message: "Raison sociale est requise." })
-            .refine(val => val !== "Non déterminé", { 
-                message: "La valeur 'Non déterminé' n'est pas acceptée." 
-            }),
+        socialReason: z.string().trim().optional(),
         dateOfBirth: z.date().optional(),
         adresse: z.string().trim().optional(),
         ville: z.string().trim().optional(),

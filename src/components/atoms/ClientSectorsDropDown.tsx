@@ -34,6 +34,9 @@ const ClientSectorsDropDown = forwardRef<HTMLButtonElement, ClientSectorsDropDow
                     <SelectValue placeholder={value ? value.toString() : "Non déterminé"} className={hoverItem}/>
                 </SelectTrigger>
                 <SelectContent className="bg-normalGrey border-normalGrey">
+                    <SelectItem key="None" value="Non déterminé" className={hoverItem}>
+                            Non déterminé
+                        </SelectItem>
                     {clientSectors?.map((clientSector) => (
                         <SelectItem key={clientSector.SectorID} value={clientSector.SectorName} className={hoverItem}>
                             {clientSector.SectorName}
