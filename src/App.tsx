@@ -9,8 +9,9 @@ import ProfileUserPage from './pages/ProfileUserPage';
 import DashboardLayout from './templates/DashboardLayout';
 import SessionNotification from './components/organisms/SessionNotification/SessionNotification';
 import useSession from './hooks/sessions/useSession';
-import { getToken } from './services/authService';
 
+import { getToken } from './services/authService';
+import useWebSocketAgents from './hooks/useWebSocketAgents';
 
 const AppContent: React.FC<{ user: any }> = ({ user }) => {
   const {
@@ -24,12 +25,49 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     enabled: true,
   });
 
+  // Fixed: Destructure the hook return value
+  const { addEventListener } = useWebSocketAgents({
+    onForceDisconnect: () => {
+
+      logout(); // Ensure the session is cleared
+    }
+  });
+
+  // Set up agent-specific event listeners
+  useEffect(() => {
+    if (!user) return;
+
+    const cleanupFunctions: (() => void)[] = [];
+
+    // Listen for agent-related events
+    cleanupFunctions.push(
+      addEventListener('agentStatusUpdate', (data) => {
+      
+      })
+    );
+
+    cleanupFunctions.push(
+      addEventListener('newAgentAssignment', (data) => {
+      })
+    );
+
+    cleanupFunctions.push(
+      addEventListener('agentNotification', (data) => {
+      })
+    );
+
+    // Cleanup all listeners when component unmounts or user changes
+    return () => {
+      cleanupFunctions.forEach(cleanup => cleanup());
+    };
+  }, [addEventListener, user]);
+
   const token = getToken();
   const isLoggedIn = Boolean(user) && Boolean(token);
 
   // Guard: If user and token are out of sync, render nothing (prevents flicker/white screen)
   if ((user && !token) || (!user && token)) {
-    return <LoginPage />;
+    return <Loading />;
   }
 
   return (
@@ -37,28 +75,22 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
       {isLoggedIn && (
         <SessionNotification
           isExpiring={sessionExpiring}
-          timeRemaining={timeRemaining ?? 0}
+          timeRemaining={timeRemaining}
           onExtend={extendSession}
           onLogout={logout}
         />
       )}
       <Routes>
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />
-          }
-        />
+        <Route path="/login" element={!isLoggedIn ? <LoginPage /> : <Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={isLoggedIn ? <ProfileUserPage /> : <Navigate to="/login" />} />
         <Route path="/car-request" element={isLoggedIn ? <CarRequestPage /> : <Navigate to="/login" />} />
         <Route path="/carTracking" element={isLoggedIn ? <CarTrackingLayout /> : <Navigate to="/login" />} />
-        <Route path="/profile" element={isLoggedIn ? <ProfileUserPage /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>
   );
 };
-
 
 const App: React.FC = () => {
   const { user, checkAuth } = useAuth();
@@ -82,7 +114,7 @@ const App: React.FC = () => {
   }, []);
 
   if (loading) return <Loading />;
-  if (isMobile) return <div style={{ textAlign: 'center', marginTop: '50%' }}>Mobile Version Coming Soon</div>;
+  if (isMobile) return <div>Mobile Version Coming Soon</div>;
 
   return (
     <Router>

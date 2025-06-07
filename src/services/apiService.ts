@@ -40,7 +40,6 @@ export const getDatabasesAccess = async (username: string): Promise<string[]> =>
   if (!response.ok) throw new Error('Network response was not ok');
 
   const data = await response.json();
-  console.log('Databases Access:', data);
   if (!data || data.length === 0) throw new Error('No databases access found');
 
   return data;

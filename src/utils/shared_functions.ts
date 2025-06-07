@@ -22,7 +22,6 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 
 
 const isModificationReservationCorrect = (devis: Devis): boolean => {
-    console.log("Client Social Reason: ", devis.client?.socialReason);
     if (!devis.devisReserved.DateReservation || !devis.carRequests[0].CarColor || devis.carRequests[0].CarColor === "") {
         return false;
     }
@@ -63,11 +62,9 @@ const isCanceledDevisNotFinished = (devis: Devis): boolean => {
 
 const bordoreauxMissing = (devis: Devis): boolean => {
     if(devis.devisFacture === null || devis.devisFacture === undefined) {
-        console.log("Devis Facture is null or undefined");
         return false;
     }
     if(devis.devisFacture.StatutBRD!==undefined && (devis.devisFacture.DateBRD===null || devis.devisFacture.DateBRD===undefined || devis.devisFacture.BRDNumero===null || devis.devisFacture.BRDNumero===undefined || devis.devisFacture.BRDNumero==="") ){
-       console.log("Statut BRD: ", devis.devisFacture.StatutBRD);
         return true;
     }
     return false;

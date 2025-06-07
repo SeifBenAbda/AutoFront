@@ -22,15 +22,14 @@ export const getSocket = (): Socket => {
     });
 
     socket.on('connect', () => {
-      console.log('✅ WebSocket connected:', socket?.id);
+     
     });
 
     socket.on('disconnect', (reason) => {
-      console.log('❌ WebSocket disconnected:', reason);
+    
     });
 
     socket.on('connect_error', (error) => {
-      console.error('🔥 WebSocket connection error:', error);
     });
   }
   return socket;
@@ -44,23 +43,12 @@ const createGlobalDevisUpdateHandler = (queryClient: any) => {
     carRequest?: CarRequest;
     itemRequest?: ItemRequest;
     rappelDevis?: Rappel;
-  }) => {
-    console.log('🔄 Received devis update:', data);
-    
-    if (data.devis) {
-      console.log('📋 Devis data received:', {
-        DevisId: data.devis.DevisId,
-        Status: data.devis.StatusDevis,
-      });
-    }
-
+  }) => { 
     // Invalidate all data queries - this will refetch all active devis queries
     queryClient.invalidateQueries({ 
       queryKey: ['data'],
       exact: false // This will match all queries that start with ['data']
     });
-    
-    console.log('🔄 All devis queries invalidated');
   };
 };
 
@@ -83,28 +71,21 @@ export const useWebSocketForDevis = (
   useEffect(() => {
     const socketInstance = getSocket();
     activeHookCount++;
-    
-    console.log(`📈 Active hooks: ${activeHookCount}`);
-
     // Only attach the global listener once
     if (!globalListenerAttached) {
       const globalHandler = createGlobalDevisUpdateHandler(queryClient);
       socketInstance.on('devisUpdate', globalHandler);
       globalListenerAttached = true;
-      console.log('👂 Global WebSocket listener attached');
     }
 
     // Cleanup function
     return () => {
       if (mountedRef.current) {
         activeHookCount--;
-        console.log(`📉 Active hooks: ${activeHookCount}`);
-        
         // Only remove listener when no hooks are active
         if (activeHookCount === 0 && socket && globalListenerAttached) {
           socket.off('devisUpdate');
           globalListenerAttached = false;
-          console.log('🔇 Global WebSocket listener removed');
         }
       }
     };

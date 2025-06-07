@@ -53,8 +53,6 @@ const useAuth = () => {
        const databases = await getDatabasesAccess(userData.username); 
       state.databasesAccess = databases;
       state.databaseName = databases[0] || ''; 
-      console.log('Databases Access:', databases);
-      console.log('Database Name:', state.databaseName);
       setUser(userData);
     } catch (err) {
       if (err instanceof Error) {

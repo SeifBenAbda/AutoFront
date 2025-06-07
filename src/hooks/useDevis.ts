@@ -44,8 +44,6 @@ const useDevis = (
   const query = useQuery<ApiResponse>({
     queryKey,
     queryFn: async () => {
-      console.log('🔄 Fetching devis data...');
-      
       const result = await fetchDevisAllData(
         state.databaseName, 
         searchValue, 
@@ -58,7 +56,7 @@ const useDevis = (
         dateRappelTo
       );
       
-      console.log('✅ Devis data fetched:', result);
+     
       return result;
     },
     staleTime: 30000, // 30 seconds
@@ -93,9 +91,7 @@ export const useUpdateDevis = () => {
       updatedDevisReserved?: Partial<DevisReserved>;
       updatedDevisPayementDetails?: Partial<DevisPayementDetails>;
       updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>;
-    }) => {
-      console.log('🔄 Updating devis:', params.devisId);
-      
+    }) => {  
       return updateDevis(
         params.database,
         params.devisId,
@@ -112,10 +108,6 @@ export const useUpdateDevis = () => {
       );
     },
     onSuccess: (data) => {
-      console.log('✅ Devis update successful:', data);
-      
-      // The WebSocket event will be handled by the backend
-      // Just ensure we have a fallback invalidation
       setTimeout(() => {
         queryClient.invalidateQueries({ 
           queryKey: ['data'],
@@ -124,7 +116,6 @@ export const useUpdateDevis = () => {
       }, 100); // Small delay to ensure backend has processed
     },
     onError: (error) => {
-      console.error('❌ Devis update error:', error);
     },
   });
 };
@@ -141,9 +132,7 @@ export const useCreateDevis = () => {
       itemRequestData?: ItemRequest[];
       rappelData?: Rappel[];
       devisPayementDetails: DevisPayementDetails;
-    }) => {
-      console.log('🆕 Creating new devis');
-      
+    }) => {  
       return createDevis(
         params.database, 
         params.client, 
@@ -155,8 +144,6 @@ export const useCreateDevis = () => {
       );
     },
     onSuccess: (data) => {
-      console.log('✅ Devis creation successful:', data);
-      
       // Invalidate all data queries
       queryClient.invalidateQueries({ 
         queryKey: ['data'],
@@ -164,7 +151,6 @@ export const useCreateDevis = () => {
       });
     },
     onError: (error) => {
-      console.error('❌ Devis creation error:', error);
     },
   });
 };
@@ -178,13 +164,9 @@ export const useDeletedDevis = () => {
       devisId: number;
       deletedBy: string;
     }) => {
-      console.log('🗑️ Deleting devis:', params.devisId);
-      
       return deletedDevis(params.database, params.devisId, params.deletedBy);
     },
     onSuccess: (data) => {
-      console.log('✅ Devis deletion successful:', data);
-      
       // Invalidate all data queries
       queryClient.invalidateQueries({ 
         queryKey: ['data'],
@@ -192,7 +174,6 @@ export const useDeletedDevis = () => {
       });
     },
     onError: (error) => {
-      console.error('❌ Devis deletion error:', error);
     },
   });
 };
