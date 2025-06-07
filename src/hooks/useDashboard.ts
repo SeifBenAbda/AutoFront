@@ -1,4 +1,4 @@
-import { databaseName } from "../utils/shared_functions";
+import { state } from "../utils/shared_functions";
 import { fetchCarRequestStats, fetchConversionStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ export const useDocumentMissingStats = (page: number, status: string) => {
     const navigate = useNavigate(); // Move the useNavigate call here inside the hook
     return useQuery<DocumentMissingStats>({
         queryKey: ['documentMissingStats', page, status], // Include all dependencies in the key
-        queryFn: () => fetchDocumentMissingStats(databaseName, page, status, navigate),
+        queryFn: () => fetchDocumentMissingStats(state.databaseName, page, status, navigate),
         staleTime: Infinity,
         refetchOnWindowFocus: false,
     });
@@ -63,7 +63,7 @@ export const useCarStats = (carModels: string[]) => {
 
     return useQuery<CarRequestStats>({
         queryKey: ['carModels', carModels],
-        queryFn: () => fetchCarRequestStats(databaseName, carModels, navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchCarRequestStats(state.databaseName, carModels, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -99,7 +99,7 @@ export const usePlanningRappels = (page:number, startingDate:Date, endingDate:Da
     const navigate = useNavigate(); // Move the useNavigate call here inside the hook
     return useQuery<PlanningRappel>({
         queryKey: ['planningRappels', page, startingDate, endingDate,selectedCreator],
-        queryFn: () => fetchPlanningRappels(databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchPlanningRappels(state.databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,   
         refetchOnWindowFocus: false,
     });
@@ -110,7 +110,7 @@ export const useOverDueRappels = (page:number, startingDate:Date, endingDate:Dat
     const navigate = useNavigate(); // Move the useNavigate call here inside the hook
     return useQuery<PlanningRappel>({
         queryKey: ['overDueRappels', page, startingDate, endingDate,selectedCreator],
-        queryFn: () => fetchOverdueRappels(databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchOverdueRappels(state.databaseName, page, startingDate, endingDate,selectedCreator, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -132,7 +132,7 @@ const useDossierStats = (status: string, page: number = 1) => {
 
     return useQuery<DossierStats>({
         queryKey: ['dossierStats', status, page],
-        queryFn: () => fetchDossierStats(databaseName, status, page, navigate),
+        queryFn: () => fetchDossierStats(state.databaseName, status, page, navigate),
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -176,7 +176,7 @@ export const useConversionStats = (page: number = 1, startingDate: Date, endingD
     
     return useQuery<ConversionStats>({
         queryKey: ['conversionStats', page, startingDate, endingDate],
-        queryFn: () => fetchConversionStats(databaseName, page, startingDate, endingDate, navigate),
+        queryFn: () => fetchConversionStats(state.databaseName, page, startingDate, endingDate, navigate),
         staleTime: 0,
         refetchOnWindowFocus: false,
     });

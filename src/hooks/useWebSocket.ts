@@ -1,78 +1,121 @@
+// src/hooks/useWebSocket.ts (Stable version)
 import { CarRequest, Client, Devis, ItemRequest, Rappel } from '@/types/devisTypes';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import io, { Socket } from 'socket.io-client'; // Import Socket type as well
+import { useEffect, useRef, useCallback, useMemo } from 'react';
+import io, { Socket } from 'socket.io-client';
 
-// Define the URL of your Socket.io server
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
-// Create a singleton socket instance
+// Global socket instance and listener management
 let socket: Socket | null = null;
+let globalListenerAttached = false;
+let activeHookCount = 0;
 
-// Function to get or create the socket
 export const getSocket = (): Socket => {
   if (!socket) {
-    socket = io(SOCKET_URL);
+    socket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      timeout: 5000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
+
+    socket.on('connect', () => {
+      console.log('✅ WebSocket connected:', socket?.id);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('❌ WebSocket disconnected:', reason);
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('🔥 WebSocket connection error:', error);
+    });
   }
   return socket;
 };
 
-export const useWebSocketForDevis = (page: number, searchValue?: string, status?: string, priority?: string, cars?: string[]) => {
-  const queryClient = useQueryClient();
-  const queryKey = ['data', page, searchValue, status, priority, cars];
-
-  useEffect(() => {
-    // Use the shared socket connection
-    const socket = getSocket();
-
-    // Listen for 'devisUpdate' events
-    socket.on('devisUpdate', (data: {
-      client?: Client;
-      devis?: Devis;
-      carRequest?: CarRequest;
-      itemRequest?: ItemRequest;
-      rappelDevis?: Rappel;
-    }) => {
-      // Invalidate the query cache when a change is detected
-      queryClient.invalidateQueries({ queryKey });
-
-      // Update the cache with the new data
-      queryClient.setQueryData(queryKey, (oldData: any) => {
-        if (!oldData) return data; // Return new data if old data is not present
-        return updateData(oldData, data);
+// Global handler function that won't change reference
+const createGlobalDevisUpdateHandler = (queryClient: any) => {
+  return (data: {
+    client?: Client;
+    devis?: Devis;
+    carRequest?: CarRequest;
+    itemRequest?: ItemRequest;
+    rappelDevis?: Rappel;
+  }) => {
+    console.log('🔄 Received devis update:', data);
+    
+    if (data.devis) {
+      console.log('📋 Devis data received:', {
+        DevisId: data.devis.DevisId,
+        Status: data.devis.StatusDevis,
       });
+    }
+
+    // Invalidate all data queries - this will refetch all active devis queries
+    queryClient.invalidateQueries({ 
+      queryKey: ['data'],
+      exact: false // This will match all queries that start with ['data']
     });
-
-    // Clean up the socket connection when the component unmounts
-    /*return () => {
-      socket.off('devisUpdate');
-      socket.close();
-    };*/
-  }, [page, searchValue, status, priority, cars, queryClient]);
-
-  return null;
+    
+    console.log('🔄 All devis queries invalidated');
+  };
 };
 
-// Function to merge new data with old data
-const updateData = (oldData: any, newData: any) => {
-  // Merge new data with old data as needed
-  const updatedData = { ...oldData };
+export const useWebSocketForDevis = (
+  page: number, 
+  searchValue?: string, 
+  status?: string, 
+  priority?: string, 
+  cars?: string[]
+) => {
+  const queryClient = useQueryClient();
+  const mountedRef = useRef(true);
 
-  if (newData.client) {
-    updatedData.client = newData.client;
-  }
-  if (newData.devis) {
-    updatedData.devis = newData.devis;
-  }
-  if (newData.carRequest) {
-    updatedData.carRequest = newData.carRequest;
-  }
-  if (newData.itemRequest) {
-    updatedData.itemRequest = newData.itemRequest;
-  }
-  if (newData.rappelDevis) {
-    updatedData.rappelDevis = newData.rappelDevis;
-  }
+  // Stable query key using useMemo
+  const queryKey = useMemo(() => 
+    ['data', page, searchValue, status, priority, cars], 
+    [page, searchValue, status, priority, cars]
+  );
 
-  return updatedData;
+  useEffect(() => {
+    const socketInstance = getSocket();
+    activeHookCount++;
+    
+    console.log(`📈 Active hooks: ${activeHookCount}`);
+
+    // Only attach the global listener once
+    if (!globalListenerAttached) {
+      const globalHandler = createGlobalDevisUpdateHandler(queryClient);
+      socketInstance.on('devisUpdate', globalHandler);
+      globalListenerAttached = true;
+      console.log('👂 Global WebSocket listener attached');
+    }
+
+    // Cleanup function
+    return () => {
+      if (mountedRef.current) {
+        activeHookCount--;
+        console.log(`📉 Active hooks: ${activeHookCount}`);
+        
+        // Only remove listener when no hooks are active
+        if (activeHookCount === 0 && socket && globalListenerAttached) {
+          socket.off('devisUpdate');
+          globalListenerAttached = false;
+          console.log('🔇 Global WebSocket listener removed');
+        }
+      }
+    };
+  }, []); // Empty dependency array - only run once per component mount
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  return socket?.connected || false;
 };

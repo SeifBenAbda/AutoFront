@@ -64,15 +64,18 @@ const DocumentTypeDropDown = ({
                 {isLoadingDocs ? (
                     <SelectItem value="loading" disabled>Chargement...</SelectItem>
                 ) : (
-                    documentsToDisplay.map((doc: string | DocumentCondition) => {
-                        // Handle both string array and object array
-                        const docValue: string | undefined = typeof doc === 'string' ? doc : doc.DocumentType;
-                        return (
-                            <SelectItem key={docValue as string} value={docValue as string}>
-                                {docValue}
-                            </SelectItem>
-                        )
-                    })
+                    <>
+                        {documentsToDisplay.map((doc: string | DocumentCondition) => {
+                            // Handle both string array and object array
+                            const docValue: string | undefined = typeof doc === 'string' ? doc : doc.DocumentType;
+                            return (
+                                <SelectItem key={docValue as string} value={docValue as string}>
+                                    {docValue}
+                                </SelectItem>
+                            )
+                        })}
+                        <SelectItem value="Autre Document">Autre Document</SelectItem>
+                    </>
                 )}
             </SelectContent>
         </Select>

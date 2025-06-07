@@ -1,12 +1,10 @@
-// src/hooks/useDevis.ts
+// src/hooks/useDevis.ts (Stable version)
 import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSocket, useWebSocketForDevis } from './useWebSocket';
-import { io } from 'socket.io-client';
-import { databaseName } from '../utils/shared_functions';
-
-const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
+import { state } from '../utils/shared_functions';
+import { useMemo } from 'react';
 
 interface ApiResponse {
   data: Devis[];
@@ -17,35 +15,72 @@ interface ApiResponse {
   };
 }
 
-const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, 
-  cars?: string[], clients?:string[],dateRappelFrom?: Date | undefined , dateRappelTo? : Date | undefined) => {
-  useWebSocketForDevis(page, searchValue, status, priority, cars);
+const useDevis = (
+  page: number, 
+  searchValue?: string, 
+  status?: string, 
+  priority?: string, 
+  cars?: string[], 
+  clients?: string[],
+  dateRappelFrom?: Date | undefined, 
+  dateRappelTo?: Date | undefined
+) => {
+  // Stable query key using useMemo to prevent unnecessary re-renders
+  const queryKey = useMemo(() => [
+    'data', 
+    page, 
+    searchValue, 
+    status, 
+    priority, 
+    cars, 
+    clients, 
+    dateRappelFrom?.toISOString(), // Convert dates to strings for stable comparison
+    dateRappelTo?.toISOString()
+  ], [page, searchValue, status, priority, cars, clients, dateRappelFrom, dateRappelTo]);
 
-  return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue, status, priority, cars,clients,dateRappelFrom,dateRappelTo], // Include all dependencies in the key
-    queryFn: () => fetchDevisAllData(databaseName, searchValue, page, status, priority, cars,clients,dateRappelFrom,dateRappelTo),
-    staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
-    refetchOnWindowFocus: false, // Disable refetching on window focus
+  // Initialize WebSocket - this should only run once per component
+  const isConnected = useWebSocketForDevis(page, searchValue, status, priority, cars);
+  
+  const query = useQuery<ApiResponse>({
+    queryKey,
+    queryFn: async () => {
+      console.log('🔄 Fetching devis data...');
+      
+      const result = await fetchDevisAllData(
+        state.databaseName, 
+        searchValue, 
+        page, 
+        status, 
+        priority, 
+        cars, 
+        clients, 
+        dateRappelFrom, 
+        dateRappelTo
+      );
+      
+      console.log('✅ Devis data fetched:', result);
+      return result;
+    },
+    staleTime: 30000, // 30 seconds
+    gcTime: 300000, // 5 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    // Add retry logic
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
+
+  return {
+    ...query,
+    isWebSocketConnected: isConnected
+  };
 };
 
-
 export const useUpdateDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      devisId,
-      clientId,
-      updatedDevis,
-      updatedClient,
-      updatedItemRequestData,
-      updatedCarRequestData,
-      updatedRappels,
-      updatedDevisFacture,
-      updatedDevisReserved,
-      updatedDevisPayementDetails,
-      updatedDevisGesteCommerciale
-    }: {
+    mutationFn: async (params: {
       database: string;
       devisId: number;
       clientId: number;
@@ -59,97 +94,105 @@ export const useUpdateDevis = () => {
       updatedDevisPayementDetails?: Partial<DevisPayementDetails>;
       updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>;
     }) => {
+      console.log('🔄 Updating devis:', params.devisId);
+      
       return updateDevis(
-        database,
-        devisId,
-        clientId,
-        updatedDevis,
-        updatedClient,
-        updatedItemRequestData,
-        updatedCarRequestData,
-        updatedRappels,
-        updatedDevisFacture,
-        updatedDevisReserved,
-        updatedDevisPayementDetails,
-        updatedDevisGesteCommerciale
+        params.database,
+        params.devisId,
+        params.clientId,
+        params.updatedDevis,
+        params.updatedClient,
+        params.updatedItemRequestData,
+        params.updatedCarRequestData,
+        params.updatedRappels,
+        params.updatedDevisFacture,
+        params.updatedDevisReserved,
+        params.updatedDevisPayementDetails,
+        params.updatedDevisGesteCommerciale
       );
     },
-    // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
-      // Handle success (e.g., show a notification, invalidate queries)
-      getSocket().emit('devisUpdate', {
-        client: data.client,
-        devis: data.devis,
-        carRequest: data.carRequest,
-        itemRequest: data.itemRequest,
-        rappelDevis: data.rappels,
-      });
+      console.log('✅ Devis update successful:', data);
+      
+      // The WebSocket event will be handled by the backend
+      // Just ensure we have a fallback invalidation
+      setTimeout(() => {
+        queryClient.invalidateQueries({ 
+          queryKey: ['data'],
+          exact: false 
+        });
+      }, 100); // Small delay to ensure backend has processed
     },
     onError: (error) => {
-      // Handle error (e.g., show an error message)
+      console.error('❌ Devis update error:', error);
     },
   });
 };
 
-
-
 export const useCreateDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      client,
-      devis,
-      carRequestData,
-      itemRequestData,
-      rappelData,
-      devisPayementDetails
-    }: {
+    mutationFn: async (params: {
       database: string;
       client: Client;
       devis: Devis;
       carRequestData?: CarRequest;
       itemRequestData?: ItemRequest[];
-      rappelData?: Rappel[],
-      devisPayementDetails : DevisPayementDetails
+      rappelData?: Rappel[];
+      devisPayementDetails: DevisPayementDetails;
     }) => {
-      return createDevis(database, client, devis, itemRequestData, carRequestData, rappelData,devisPayementDetails);
+      console.log('🆕 Creating new devis');
+      
+      return createDevis(
+        params.database, 
+        params.client, 
+        params.devis, 
+        params.itemRequestData, 
+        params.carRequestData, 
+        params.rappelData, 
+        params.devisPayementDetails
+      );
     },
     onSuccess: (data) => {
+      console.log('✅ Devis creation successful:', data);
+      
+      // Invalidate all data queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['data'],
+        exact: false 
+      });
     },
     onError: (error) => {
+      console.error('❌ Devis creation error:', error);
     },
   });
 };
 
-
 export const useDeletedDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      devisId,
-      deletedBy
-    }: {
+    mutationFn: async (params: {
       database: string;
       devisId: number;
       deletedBy: string;
     }) => {
-      return deletedDevis(
-        database,
-        devisId,
-        deletedBy
-      );
+      console.log('🗑️ Deleting devis:', params.devisId);
+      
+      return deletedDevis(params.database, params.devisId, params.deletedBy);
     },
-    // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
-      // Handle success (e.g., show a notification, invalidate queries)
-      getSocket().emit('devisUpdate', {
-        client: data.devis!.client,
-        devis: data.devis,
-        //rappelDevis: data.rappelDevis,
+      console.log('✅ Devis deletion successful:', data);
+      
+      // Invalidate all data queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['data'],
+        exact: false 
       });
     },
     onError: (error) => {
-      // Handle error (e.g., show an error message)
+      console.error('❌ Devis deletion error:', error);
     },
   });
 };

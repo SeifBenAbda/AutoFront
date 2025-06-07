@@ -1,7 +1,6 @@
 import { useMutation ,UseMutateAsyncFunction, useQuery  } from '@tanstack/react-query';
 import { generateBcInterne, getDevisFiles, getUrlFiles, streamFile, uploadDocuments } from '../services/apiService'; // Adjust the import path as needed
-import { useNavigate } from 'react-router-dom';
-import { databaseName } from '../utils/shared_functions';
+import { state } from '../utils/shared_functions';
 
 interface UploadResponse {
     status: number;
@@ -27,7 +26,7 @@ interface UseUploadFilesProps {
 export const useUploadFiles = ({ devisId, navigate }: UseUploadFilesProps) => {
     const uploadFilesMutation = useMutation({
         mutationFn: (files: { file: File; typeDocument: string }[]) => 
-            uploadDocuments(databaseName, devisId, files, navigate),
+            uploadDocuments(state.databaseName, devisId, files, navigate),
     });
     
     return uploadFilesMutation;
@@ -75,7 +74,7 @@ export const useUrlFiles = (
 ): { mutateAsync: UseMutateAsyncFunction<FileData, Error, string, unknown> } => {
     return useMutation<FileData, Error, string>({
         mutationFn: async (filename: string) => {
-            const response = await getUrlFiles(databaseName, devisId.toString(), filename, navigate);
+            const response = await getUrlFiles(state.databaseName, devisId.toString(), filename, navigate);
 
             if (!response) {
                 throw new Error('Failed to fetch file');
@@ -98,7 +97,7 @@ export const useDevisFiles = (
 ) => {
     return useQuery<FileData[], Error>({
         queryKey: ['devisFiles', devisId], // Unique key based on devisId
-        queryFn: () => getDevisFiles(databaseName, devisId.toString(), navigate),
+        queryFn: () => getDevisFiles(state.databaseName, devisId.toString(), navigate),
         staleTime: 0, // Keep data fresh indefinitely, as it may be updated via WebSocket
         refetchOnWindowFocus: true, // Disable refetching on window focus
     });

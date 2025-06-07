@@ -8,7 +8,7 @@ import { DevisClientDetails } from "./DevisClientDetails";
 import { DevisVehiculeDetails } from "./DevisVehiculeDetails";
 import { DevisRappelsDetails } from "./DevisRappelsDetails";
 import { DevisDoucmentDetails } from "./DevisDoucmentDetails";
-import { databaseName, getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
+import { state, getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
 import { useToast } from "../../../hooks/use-toast";
 import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
 import { useGenerateBcInterne } from "../../../hooks/useUploadFiles";
@@ -155,7 +155,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             setLoading(true);
             try {
                 await updateDevis({
-                    database: databaseName,
+                    database: state.databaseName,
                     devisId: devis!.DevisId!,
                     clientId: myDevis!.client?.id!,
                     updatedDevis: myDevis!,
@@ -182,7 +182,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
         setLoading(true);
         try {
             await generateBcInterne({
-                database: databaseName,
+                database: state.databaseName,
                 devisId: devis.DevisId!,
                 navigate: navigate,
             });

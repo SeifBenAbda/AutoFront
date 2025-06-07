@@ -70,6 +70,19 @@ export const devisColumns: ColumnDef<Devis, any>[] = [
     },
   },
   {
+    id: "createdBy",
+    header: () => (
+      <div className="flex items-center space-x-1">
+        <FileText size={14} className="text-slate-500" />
+        <span>Créé par</span>
+      </div>
+    ),
+    accessorKey: "createdBy",
+    cell: ({ row }) => {
+      return <div className="font-medium">{row.getValue("createdBy")}</div>;
+    },
+  },
+  {
     id: "PriorityDevis",
     header: () => (
       <div className="flex items-center space-x-1">

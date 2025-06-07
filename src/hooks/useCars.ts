@@ -2,10 +2,9 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { createCar, fetchCarModels, fetchCarModelsFacture, fetchCarsPaginated, updateCar } from '../services/apiService';
 import { useNavigate } from 'react-router-dom';
-import { databaseName } from '../utils/shared_functions';
+import { state } from '../utils/shared_functions';
 import { io } from 'socket.io-client';
 import { CarRequest, Devis } from '../types/devisTypes';
-import { da } from 'date-fns/locale';
 
 
 const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
@@ -29,7 +28,7 @@ const useCarModels = () => {
 
     return useQuery<CarModel[]>({
         queryKey: ['carModels'],
-        queryFn: () => fetchCarModels(databaseName, navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchCarModels(state.databaseName, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -49,7 +48,7 @@ export const useCarModelsFacture = () => {
 
     return useQuery<CarModelFacture>({
         queryKey: ['carModelsFacture'],
-        queryFn: () => fetchCarModelsFacture(databaseName, navigate), // Pass navigate to the fetchCarModels function
+        queryFn: () => fetchCarModelsFacture(state.databaseName, navigate), // Pass navigate to the fetchCarModels function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -70,7 +69,7 @@ export const useCarsPaginated = (page: number = 1, pageSize: number = 7,filter:s
 
     return useQuery<PaginatedCarsResponse>({
         queryKey: ['carsPaginated', page, pageSize, filter],
-        queryFn: () => fetchCarsPaginated(databaseName, page, pageSize, navigate, filter),
+        queryFn: () => fetchCarsPaginated(state.databaseName, page, pageSize, navigate, filter),
         staleTime: 0,
         refetchOnWindowFocus: false,
     });
@@ -80,7 +79,7 @@ export const useCarsPaginated = (page: number = 1, pageSize: number = 7,filter:s
 export const useCreateCar = (createdBy: string) => {
     const navigate = useNavigate();
     return useMutation({
-        mutationFn: (createdCar: Partial<CarModel>) => createCar(databaseName, createdCar, createdBy, navigate),
+        mutationFn: (createdCar: Partial<CarModel>) => createCar(state.databaseName, createdCar, createdBy, navigate),
     });
 };
 
@@ -105,7 +104,7 @@ export const useEditCar = () => {
         }: {
             updatedCar: Partial<CarModel>;
         }) => {
-            return updateCar(databaseName, navigate, updatedCar);
+            return updateCar(state.databaseName, navigate, updatedCar);
         },
         onSuccess: (data) => {
             // Check if the data contains affected devis records
@@ -114,14 +113,14 @@ export const useEditCar = () => {
                 data.affectedDevis.forEach(devis => {
                     socket.emit('devisUpdate', {
                         devisId: devis.DevisId,
-                        devisData: devis,
+                        devis: devis,
                         paymentDetails: devis.devisPayementDetails,
                         carRequest: data.updatedCarRequests.find(request => request.DevisId === devis.DevisId)
                     });
                 });
             } else {
                 // Fallback if the response structure is different
-                socket.emit('carUpdate', {
+                socket.emit('devisUpdate', {
                     carId: data.data?.carId,
                     updatedCar: data.data
                 });

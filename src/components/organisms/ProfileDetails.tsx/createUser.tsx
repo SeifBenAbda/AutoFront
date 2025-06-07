@@ -218,10 +218,10 @@ export const CreateUser = () => {
                             <CardContent className="pt-6">
                                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                                     <TabsList className="grid w-full grid-cols-2 space-x-2 bg-white border border-transparent">
-                                        <TabsTrigger value="account" className="data-[state=active]:bg-greenOne border h-10 rounded-md font-oswald">
+                                        <TabsTrigger value="account" className="data-[state=active]:bg-greenOne border data-[state=inactive]:border-highBlue h-10 rounded-md font-oswald">
                                             Informations du compte
                                         </TabsTrigger>
-                                        <TabsTrigger value="profile" className="data-[state=active]:bg-greenOne border h-10 rounded-md font-oswald">
+                                        <TabsTrigger value="profile" className="data-[state=active]:bg-greenOne border data-[state=inactive]:border-highBlue h-10 rounded-md font-oswald">
                                             Profil personnel
                                         </TabsTrigger>
                                     </TabsList>

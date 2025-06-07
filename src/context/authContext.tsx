@@ -1,7 +1,8 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { saveToken, getToken, removeToken, loginUser } from '../services/authService'; // Import loginUser
-import { fetchUserData } from '../services/apiService';
+import { fetchUserData, getDatabasesAccess } from '../services/apiService';
 import { User } from '../models/user.model';
+import {state}  from '../utils/shared_functions';
 
 interface AuthContextProps {
   user: User | null;

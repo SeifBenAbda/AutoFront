@@ -24,6 +24,28 @@ export const fetchUserData = async () => {
   return response.json();
 };
 
+
+export const getDatabasesAccess = async (username: string): Promise<string[]> => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/agent-database-access/get-accessed-databases`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  const data = await response.json();
+  console.log('Databases Access:', data);
+  if (!data || data.length === 0) throw new Error('No databases access found');
+
+  return data;
+};
+
 export const updateUser = async (
   updatedUser?: Partial<User>,
   newUserName? : string | null

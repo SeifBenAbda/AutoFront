@@ -1,7 +1,7 @@
 // src/hooks/useCarModels.ts
 import { useQuery } from '@tanstack/react-query';
 import {fetchClientSectors } from '../services/apiService';
-import { databaseName } from '../utils/shared_functions';
+import { state } from '../utils/shared_functions';
 
 interface ClientSector {
     SectorID: number;
@@ -11,7 +11,7 @@ interface ClientSector {
 const useClientSectors = () => {
     return useQuery<ClientSector[]>({
         queryKey: ['clientSectors'],
-        queryFn: () => fetchClientSectors(databaseName),
+        queryFn: () => fetchClientSectors(state.databaseName),
         staleTime: Infinity,
         refetchOnWindowFocus: false,
         refetchOnMount: false,

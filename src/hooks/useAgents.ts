@@ -1,5 +1,5 @@
 import { fetchAgentsHistory } from '../services/profileService';
-import { databaseName } from '../utils/shared_functions';
+import { state } from '../utils/shared_functions';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,7 +34,7 @@ const useAgentsHistory = (username?:string,entityType?:string,fromDate?:Date,toD
 
     return useQuery<AgentsHistoryResponse>({
         queryKey: ['agentsHistory', username, entityType, fromDate, toDate, page],
-        queryFn: () => fetchAgentsHistory(databaseName,navigate, { username, entityType, fromDate, toDate, page }), // Pass navigate to the fetchAgentsHistory function
+        queryFn: () => fetchAgentsHistory(state.databaseName,navigate, { username, entityType, fromDate, toDate, page }), // Pass navigate to the fetchAgentsHistory function
         staleTime: 0,
         refetchOnWindowFocus: false,
     });

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
 import { useUser } from '../context/userContext';
 import { User } from '../models/user.model';
+import { getDatabasesAccess } from '../services/apiService';
+import { state } from '../utils/shared_functions';
 
 interface DecodedToken {
   exp: number;
@@ -24,6 +26,9 @@ const useAuth = () => {
       try {
         const userData: User = await fetchUserData();
         if (userData) {
+            const databases = await getDatabasesAccess(userData.username); 
+            state.databasesAccess = databases;
+            state.databaseName = databases[0] || ''; 
           setUser(userData);
         } else {
           removeToken();
@@ -45,8 +50,12 @@ const useAuth = () => {
       const { accessToken, expiresAt } = await loginUser(username, password);
       saveToken(accessToken, expiresAt);
       const userData: User = await fetchUserData();
+       const databases = await getDatabasesAccess(userData.username); 
+      state.databasesAccess = databases;
+      state.databaseName = databases[0] || ''; 
+      console.log('Databases Access:', databases);
+      console.log('Database Name:', state.databaseName);
       setUser(userData);
-      navigate('/car-request');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

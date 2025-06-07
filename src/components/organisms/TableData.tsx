@@ -20,7 +20,8 @@ import {
   Car,
   Bell,
   Calendar,
-  CheckCircle2
+  CheckCircle2,
+  FileText
 } from "lucide-react";
 
 interface DataTableProps {
@@ -210,6 +211,19 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
       size: 80, // Set fixed width
       cell: ({ row }) => {
         return <div className="font-medium text-black">#{row.getValue("DevisId")}</div>;
+      },
+    },
+    {
+      id: "CreatedBy",
+      header: () => (
+        <div className="flex items-center justify-center space-x-1">
+          <FileText className="w-3.5 h-3.5" />
+          <span>Créé par</span>
+        </div>
+      ),
+      accessorKey: "CreatedBy",
+      cell: ({ row }) => {
+        return <div className="font-medium text-black">{row.getValue("CreatedBy")}</div>;
       },
     },
     {

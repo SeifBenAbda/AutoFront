@@ -15,7 +15,7 @@ import { NumericInput } from "../../../components/atoms/NumericInput";
 import { useUser } from "../../../context/userContext";
 import { params } from "../../../utils/params";
 import PhoneInput from "../../../components/atoms/PhoneInput";
-import { databaseName } from "../../../utils/shared_functions";
+import { state } from "../../../utils/shared_functions";
 
 interface DevisGlobalDetailsProps {
     devis: Devis;
@@ -31,13 +31,13 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const { user } = useUser();
     const initialDevisFacture = devis.devisFacture;
     const isEditingBrdOpen = devis.StatusDevis !== "Livré";
-    const [isEditingOpen, setIsEditingOpen] = useState(devis.StatusDevis == "En Cours" || initialDevisFacture === null);
+    const [isEditingOpen, setIsEditingOpen] = useState(devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null);
     useEffect(() => {
-        setIsEditingOpen(devis.StatusDevis == "En Cours" || initialDevisFacture === null);
+        setIsEditingOpen(devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null);
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
-                const bc_num = await fetchNumBonCommande(databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
+                const bc_num = await fetchNumBonCommande(state.databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
                 setDevisBcNumber(bc_num);
             };
             fetchData().then(() => setIsLoading(false));
@@ -50,7 +50,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
             ...devis,
             [field]: value,
         };
-
         onUpdate(updatedDevis);
     };
 
@@ -142,6 +141,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         CanceledBy: user?.username
                     }
                 };
+                setIsEditingOpen(true);
             }
 
             onUpdate(updatedDevis);

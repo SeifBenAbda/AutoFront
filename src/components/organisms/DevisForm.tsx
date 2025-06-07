@@ -6,8 +6,7 @@ import ClientDataForm from "../molecules/DevisForm/ClientDataForm";
 import ClientExtraForm from "../molecules/DevisForm/ClientExtraForm";
 import ClientAdresseForm from "../molecules/DevisForm/ClientAdresseForm";
 import ClientRappelForm from "../molecules/DevisForm/ClientRappelForm";
-import { Card, CardContent, CardHeader, CardTitle } from "../../@/components/ui/card";
-import { Button } from "../../@/components/ui/button";
+import { Card, CardContent } from "../../@/components/ui/card";
 
 interface DevisFormProps {
     form: UseFormReturn<z.infer<typeof devisSchemaForCar>>;
@@ -95,7 +94,7 @@ const DevisForm: React.FC<DevisFormProps> = ({ form }) => {
             </Card>
 
             <Card className="w-3/4  flex flex-col bg-bgColorLight border-transparent p-0">
-                <CardContent className="flex-1 flex justify-center items-center pt-2 p-0">
+                <CardContent className="flex-1 flex justify-center items-center pt-2 bg-whiteSecond p-2 border border-whiteSecond shadow-sm rounded-md">
                     {steps[currentStep].component}
                 </CardContent>
             </Card>
