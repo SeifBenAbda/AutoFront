@@ -45,16 +45,81 @@ export const loginUser = async (username: string, password: string) => {
   });
 
   if (!response.ok) {
-    throw new Error('Login failed');
+    throw new Error('Échec de la connexion. Vos identifiants sont incorrects ou votre compte est inactif.');
   }
 
   const data = await response.json();
   
-  // If backend doesn't provide expiresAt, we'll calculate it from the token
   return { 
     accessToken: data.accessToken,
     expiresAt: data.expiresAt || undefined
   };
+};
+
+export const logoutUser = async (username: string) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error('No token found');
+  }
+  const response = await fetch(`${API_URL}/auth/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ username }) // Assuming the backend expects the token in the body
+  });
+
+  if (!response.ok) {
+    throw new Error('Logout failed');
+  }
+
+};
+
+
+export const forceDisconnectUser = async (username: string) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error('No token found');
+  }
+  const response = await fetch(`${API_URL}/users/disconnect-remote-user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ username })
+  });
+
+  if (!response.ok) {
+    throw new Error('Force disconnect failed');
+  }
+
+  return response.json();
+};
+
+
+export const activateRemoteUser = async (username: string) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error('No token found');
+  }
+  const response = await fetch(`${API_URL}/users/activate-remote-user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ username })
+  });
+
+  if (!response.ok) {
+    throw new Error('Activation failed');
+  }
+
+  console.log("Response from server  : ", response);
+
+  return response.json();
 };
 
 export const refreshToken = async () => {

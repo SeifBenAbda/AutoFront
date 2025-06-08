@@ -6,6 +6,7 @@ import { CreateUser } from "./ProfileDetails.tsx/CreateUser";
 import { useUser } from "../../context/userContext";
 import AgentsHistoryTable from "./ProfileDetails.tsx/AgentsHistory";
 import CarsManipulation from "./ProfileDetails.tsx/CarsManipulation";
+import AgentsManipulation from "./ProfileDetails.tsx/AgentsManipulation";
 
 
 
@@ -21,7 +22,7 @@ export function ProfileUser() {
     const [activeStep, setActiveStep] = useState(0);
     const { user } = useUser();
     // Define steps based on user group
-    const adminSteps = ["Générale", "Sécurité", "Nouveau Utilisateur", "Historique", "Gestion des Voitures", "Support"];
+    const adminSteps = ["Générale", "Sécurité", "Nouveau Utilisateur", "Historique", "Gestion des Voitures","Gestion des Commerciaux","Support"];
     const userSteps = ["Générale", "Sécurité"];
 
     // Use appropriate steps array based on user group
@@ -39,8 +40,10 @@ export function ProfileUser() {
             case 3:
                 return user?.position === "ADMIN" ? <Historique /> : null;
             case 4:
-                return user?.position === "ADMIN" ? <CarsManipulation /> : null;    
-             case 5:
+                return user?.position === "ADMIN" ? <CarsManipulation /> : null;   
+            case 5:
+                return user?.position === "ADMIN" ? <AgentsManipulation /> : null;        
+            case 6:
                 return user?.position === "ADMIN" ? <Support /> : null;    
             default:
                 return null;

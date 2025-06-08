@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import CarRequestPage from './templates/CarRequestLayout';
 import LoginPage from './pages/LoginPage';
@@ -14,6 +14,11 @@ import { getToken } from './services/authService';
 import useWebSocketAgents from './hooks/useWebSocketAgents';
 
 const AppContent: React.FC<{ user: any }> = ({ user }) => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/login';
+  const token = getToken();
+  const isLoggedIn = Boolean(user) && Boolean(token);
+
   const {
     sessionExpiring,
     timeRemaining,
@@ -22,13 +27,12 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
   } = useSession({
     warningTime: 60000,
     autoRefresh: false,
-    enabled: true,
+    enabled: isLoggedIn && !isLoginPage,
   });
 
   // Fixed: Destructure the hook return value
   const { addEventListener } = useWebSocketAgents({
     onForceDisconnect: () => {
-
       logout(); // Ensure the session is cleared
     }
   });
@@ -62,17 +66,14 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     };
   }, [addEventListener, user]);
 
-  const token = getToken();
-  const isLoggedIn = Boolean(user) && Boolean(token);
-
   // Guard: If user and token are out of sync, render nothing (prevents flicker/white screen)
   if ((user && !token) || (!user && token)) {
-    return <Loading />;
+    return <LoginPage />;
   }
 
   return (
     <>
-      {isLoggedIn && (
+      {isLoggedIn && !isLoginPage && (
         <SessionNotification
           isExpiring={sessionExpiring}
           timeRemaining={timeRemaining}

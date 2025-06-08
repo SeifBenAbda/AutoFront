@@ -35,3 +35,23 @@ export const fetchAgentsHistory = async (
 
     return response.json();
 };
+
+
+export const fetchAgentsConnections = async (
+    navigate: (path: string) => void,
+    ) => {
+        const token = getToken();
+        if (!token) navigate('/login');
+
+        const response = await fetch(`${API_URL}/users/all-users-status`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch connected users');
+
+        return response.json();
+    };

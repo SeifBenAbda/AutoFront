@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
-import { saveToken, getToken, removeToken, loginUser, fetchUserData } from '../services/authService';
+import { saveToken, getToken, removeToken, loginUser, fetchUserData, logoutUser } from '../services/authService';
 import { useUser } from '../context/userContext';
 import { User } from '../models/user.model';
 import { getDatabasesAccess } from '../services/apiService';
@@ -32,16 +32,16 @@ const useAuth = () => {
           setUser(userData);
         } else {
           removeToken();
-          setUser(null);
+          //setUser(null);
         }
       } catch (err) {
         console.error('Failed to fetch user data:', err);
         removeToken();
-        setUser(null);
+        //setUser(null);
       }
     } else {
       removeToken();
-      setUser(null);
+      //setUser(null);
     }
   };
 
@@ -63,7 +63,8 @@ const useAuth = () => {
     }
   };
 
-  const handleLogout = (navigate: (path: string) => void) => {
+  const handleLogout = async (username:string, navigate: (path: string) => void) => {
+    await logoutUser(username);
     removeToken();
     setUser(null);
     navigate('/login');

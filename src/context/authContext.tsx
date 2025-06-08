@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { saveToken, getToken, removeToken, loginUser } from '../services/authService'; // Import loginUser
 import { fetchUserData, getDatabasesAccess } from '../services/apiService';
 import { User } from '../models/user.model';
-import {state}  from '../utils/shared_functions';
+
 
 interface AuthContextProps {
   user: User | null;
@@ -23,7 +23,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       fetchUserData()
         .then(data => setUser(data))
         .catch(err => {
-          console.error(err);
           removeToken(); // Clear token on error
         });
     }
@@ -37,8 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(userData);
       setError(null); // Clear any previous errors
     } catch (err) {
-      console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials.');
+      setError('Échec de la connexion. Vos identifiants sont incorrects ou votre compte est inactif.');
       throw err; // Rethrow the error to be handled in the component
     }
   };

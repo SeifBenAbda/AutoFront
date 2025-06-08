@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken, getExpiresAt, refreshToken, removeToken } from '../../services/authService';
+import { getToken, getExpiresAt, refreshToken, removeToken, logoutUser } from '../../services/authService';
 import { jwtDecode } from 'jwt-decode';
+import { useUser } from '../../context/userContext';
 
 interface UseSessionOptions {
   warningTime?: number;
@@ -20,7 +21,7 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
     const [isTabActive, setIsTabActive] = useState(true);
     const [hasExtended, setHasExtended] = useState(false);
-  
+    const {user} = useUser();
     const lastActivityRef = useRef(Date.now());
   
     const navigate = useNavigate();
@@ -91,12 +92,23 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
       }
     }, [enabled]);
   
-    const logout = useCallback(() => {
-      removeToken();
-      setSessionExpiring(false);
-      if (checkAuth) checkAuth(); // Update user state in useAuth
-      navigate('/login');
-    }, [navigate, checkAuth]);
+    const logout = useCallback(async () => {
+     console.log('Logging out user:', user?.username);
+      if(user){
+        await logoutUser(user!.username).then(() => {
+        removeToken();
+        setSessionExpiring(false);
+        if (checkAuth) checkAuth(); // Update user state in useAuth
+     
+        navigate('/login');
+      });
+      }else{
+        removeToken();
+        setSessionExpiring(false);
+        if (checkAuth) checkAuth(); // Update user state in useAuth
+        navigate('/login');
+      }
+    }, [navigate, checkAuth, user]);
   
     useEffect(() => {
       if (!enabled) {
