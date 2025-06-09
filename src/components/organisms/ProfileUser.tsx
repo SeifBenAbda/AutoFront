@@ -26,7 +26,7 @@ export function ProfileUser() {
     const userSteps = ["Générale", "Sécurité"];
 
     // Use appropriate steps array based on user group
-    const steps = user?.position === "ADMIN" ? adminSteps : userSteps;
+    const steps = user?.role === "ADMIN" ? adminSteps : userSteps;
 
     const renderStepContent = () => {
         switch (activeStep) {
@@ -35,16 +35,16 @@ export function ProfileUser() {
             case 1:
                 return <Securite />;
             case 2:
-                return user?.position === "ADMIN" ? <CreateUser /> : null;
+                return user?.role === "ADMIN" ? <CreateUser /> : null;
            
             case 3:
-                return user?.position === "ADMIN" ? <Historique /> : null;
+                return user?.role === "ADMIN" ? <Historique /> : null;
             case 4:
-                return user?.position === "ADMIN" ? <CarsManipulation /> : null;   
+                return user?.role === "ADMIN" ? <CarsManipulation /> : null;   
             case 5:
-                return user?.position === "ADMIN" ? <AgentsManipulation /> : null;        
+                return user?.role === "ADMIN" ? <AgentsManipulation /> : null;        
             case 6:
-                return user?.position === "ADMIN" ? <Support /> : null;    
+                return user?.role === "ADMIN" ? <Support /> : null;    
             default:
                 return null;
         }

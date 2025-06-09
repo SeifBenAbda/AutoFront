@@ -54,4 +54,71 @@ export const fetchAgentsConnections = async (
         if (!response.ok) throw new Error('Failed to fetch connected users');
 
         return response.json();
-    };
+};
+
+export const fetchAgentDatabaseAccess = async (
+    navigate: (path: string) => void,
+    username:string
+) => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/agent-database-access/get-all-accesses`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch agent database access');
+
+    return response.json();
+};
+
+
+export const grantAgentDatabaseAccess = async (
+    navigate: (path: string) => void,
+    username: string,
+    databaseName: string
+) => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/agent-database-access/grant-access`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, databaseName }),
+    });
+
+    if (!response.ok) throw new Error('Failed to grant database access');
+
+    return response.json();
+};
+
+
+export const revokeAgentDatabaseAccess = async (
+    navigate: (path: string) => void,
+    username: string,
+    databaseName: string
+) => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/agent-database-access/revoke-access`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, databaseName }),
+    });
+
+    if (!response.ok) throw new Error('Failed to revoke database access');
+
+    return response.json();
+};

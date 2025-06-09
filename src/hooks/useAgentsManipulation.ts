@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchAgentsConnections } from "../services/profileService";
+import { fetchAgentDatabaseAccess, fetchAgentsConnections } from "../services/profileService";
 import { useNavigate } from "react-router-dom";
-import { activateRemoteUser, forceDisconnectUser } from "../services/authService";
 
 interface UserConnection {
     id: number;
@@ -34,4 +33,18 @@ const useAgentsConnections = () => {
 export default useAgentsConnections;
 
 
+interface AgentDatabaseAccess {
+    database_name: string;
+    is_accessed: boolean;
+}
 
+export const useAgentDatabaseAccess = (username:string) => {
+    const navigate = useNavigate();
+
+    return useQuery<AgentDatabaseAccess[]>({
+        queryKey: ['agentDatabaseAccess'],
+        queryFn: () => fetchAgentDatabaseAccess(navigate, username),
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+    });
+};

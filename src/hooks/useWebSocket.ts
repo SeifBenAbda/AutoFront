@@ -1,5 +1,5 @@
 // src/hooks/useWebSocket.ts (Stable version)
-import { CarRequest, Client, Devis, ItemRequest, Rappel } from '@/types/devisTypes';
+import { CarRequest, Client, Devis, Rappel } from '@/types/devisTypes';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import io, { Socket } from 'socket.io-client';
@@ -41,7 +41,6 @@ const createGlobalDevisUpdateHandler = (queryClient: any) => {
     client?: Client;
     devis?: Devis;
     carRequest?: CarRequest;
-    itemRequest?: ItemRequest;
     rappelDevis?: Rappel;
   }) => { 
     // Invalidate all data queries - this will refetch all active devis queries

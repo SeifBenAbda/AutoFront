@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { saveToken, getToken, removeToken, loginUser } from '../services/authService'; // Import loginUser
-import { fetchUserData, getDatabasesAccess } from '../services/apiService';
+import { fetchUserData } from '../services/apiService';
 import { User } from '../models/user.model';
 
 

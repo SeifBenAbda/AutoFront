@@ -1,5 +1,5 @@
 // src/hooks/useDevis.ts (Stable version)
-import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSocket, useWebSocketForDevis } from './useWebSocket';
@@ -59,13 +59,9 @@ const useDevis = (
      
       return result;
     },
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000, // 5 minutes (formerly cacheTime)
+    staleTime: 0, 
+    gcTime: 0,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    // Add retry logic
-    retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   return {
@@ -84,7 +80,6 @@ export const useUpdateDevis = () => {
       clientId: number;
       updatedDevis: Partial<Devis>;
       updatedClient?: Partial<Client>;
-      updatedItemRequestData?: Partial<ItemRequest>;
       updatedCarRequestData?: Partial<CarRequest>;
       updatedRappels?: Partial<Rappel[]>;
       updatedDevisFacture?: Partial<DevisFacture>;
@@ -98,7 +93,6 @@ export const useUpdateDevis = () => {
         params.clientId,
         params.updatedDevis,
         params.updatedClient,
-        params.updatedItemRequestData,
         params.updatedCarRequestData,
         params.updatedRappels,
         params.updatedDevisFacture,
@@ -129,7 +123,6 @@ export const useCreateDevis = () => {
       client: Client;
       devis: Devis;
       carRequestData?: CarRequest;
-      itemRequestData?: ItemRequest[];
       rappelData?: Rappel[];
       devisPayementDetails: DevisPayementDetails;
     }) => {  
@@ -137,7 +130,6 @@ export const useCreateDevis = () => {
         params.database, 
         params.client, 
         params.devis, 
-        params.itemRequestData, 
         params.carRequestData, 
         params.rappelData, 
         params.devisPayementDetails

@@ -163,6 +163,7 @@ export const fetchUserData = async () => {
     const response = await fetch(`${API_URL}/users/me`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });

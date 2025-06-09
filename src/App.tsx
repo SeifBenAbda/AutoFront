@@ -29,7 +29,7 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     autoRefresh: false,
     enabled: isLoggedIn && !isLoginPage,
   });
-
+  
   // Fixed: Destructure the hook return value
   const { addEventListener } = useWebSocketAgents({
     onForceDisconnect: () => {
@@ -65,6 +65,7 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
       cleanupFunctions.forEach(cleanup => cleanup());
     };
   }, [addEventListener, user]);
+  
 
   // Guard: If user and token are out of sync, render nothing (prevents flicker/white screen)
   if ((user && !token) || (!user && token)) {

@@ -37,7 +37,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
-                const bc_num = await fetchNumBonCommande(state.databaseName, "BCW", devis.DevisId ? devis.DevisId : 0);
+                const bc_num = await fetchNumBonCommande(state.databaseName, "BC", devis.DevisId ? devis.DevisId : 0);
                 setDevisBcNumber(bc_num);
             };
             fetchData().then(() => setIsLoading(false));

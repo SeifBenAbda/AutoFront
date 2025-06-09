@@ -28,7 +28,10 @@ const useAuth = () => {
         if (userData) {
             const databases = await getDatabasesAccess(userData.username); 
             state.databasesAccess = databases;
-            state.databaseName = databases[0] || ''; 
+            console.log('Databases Name current:', state.databaseName);
+            if(state.databaseName=== '') {
+               state.databaseName = databases[0] || ''; 
+            }
           setUser(userData);
         } else {
           removeToken();
@@ -50,10 +53,20 @@ const useAuth = () => {
       const { accessToken, expiresAt } = await loginUser(username, password);
       saveToken(accessToken, expiresAt);
       const userData: User = await fetchUserData();
-       const databases = await getDatabasesAccess(userData.username); 
-      state.databasesAccess = databases;
-      state.databaseName = databases[0] || ''; 
-      setUser(userData);
+      if (userData) {
+        const databases = await getDatabasesAccess(userData.username);
+        state.databasesAccess = databases;
+        if(state.databaseName === '') {
+          state.databaseName = databases[0] || '';
+        }
+        setUser(userData);
+        navigate('/dashboard');
+      }
+      else {
+        removeToken();
+        setUser(null);
+        setError('Échec de la récupération des données utilisateur après la connexion');
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

@@ -1,5 +1,5 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 import { generateBcInterneResponse } from "../hooks/useUploadFiles";
@@ -488,14 +488,13 @@ export const updateDevis = async (
   clientId: number,
   updatedDevis: Partial<Devis>,
   updatedClient?: Partial<Client>,
-  updatedItemRequestData?: Partial<ItemRequest>,
   updatedCarRequestData?: Partial<CarRequest>,
   updatedRappels?: Partial<Rappel[]>,
   updatedDevisFacture?: Partial<DevisFacture>,
   updatedDevisReserved?: Partial<DevisReserved>,
   updatedDevisPayementDetails?: Partial<DevisPayementDetails>,
   updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>
-): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[];
+): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest ;rappels?: Rappel[];
   devisFacture?: DevisFacture; devisReserved?: DevisReserved; devisPayementDetails?: DevisPayementDetails
 }> => {
   const token = getToken();
@@ -513,7 +512,6 @@ export const updateDevis = async (
       "clientId": clientId,
       "updatedDevis":updatedDevis,
       "updatedClient": updatedClient,
-      "updatedItemRequest": updatedItemRequestData,
       "updatedCarRequest" : updatedCarRequestData,
       "updatedRappels":updatedRappels,
       "updatedDevisFacture": updatedDevisFacture,
@@ -568,7 +566,6 @@ export const createDevis = async (
   database: string,
   client: Client,
   devis: Devis,
-  itemRequestData?: ItemRequest[],
   carRequestData?: CarRequest,
   rappelData? : Rappel[],
   devisPayementDetails? : DevisPayementDetails
@@ -586,7 +583,6 @@ export const createDevis = async (
       "database":database,
       "client":client,
       "devis":devis,
-      "itemRequest":itemRequestData,
       "carRequest":carRequestData,
       "rappelsDevis":rappelData,
       "devisPayementDetails":devisPayementDetails
