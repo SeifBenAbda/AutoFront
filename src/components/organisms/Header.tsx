@@ -16,7 +16,6 @@ const Header: React.FC = () => {
   const RefreshDatabasesButton = () => {
     const handleRefreshDatabases = async () => {
       if (!user) {
-        console.error('User is not authenticated');
         return;
       }  
       try {
@@ -26,7 +25,6 @@ const Header: React.FC = () => {
         window.location.href = '/dashboard';
 
       } catch (error) {
-        console.error('Failed to refresh databases:', error);
       }
     };
 
@@ -59,7 +57,7 @@ const Header: React.FC = () => {
       {/* Agent Info */}
       <div className="flex items-center justify-end pr-4 space-x-4">
         <DatabasesDropDown />
-        <RefreshDatabasesButton />
+        {/* <RefreshDatabasesButton /> */}
         <AgentInfo />
       </div>
     </header>

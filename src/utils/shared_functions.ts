@@ -61,10 +61,11 @@ const isCanceledDevisNotFinished = (devis: Devis): boolean => {
 }
 
 const bordoreauxMissing = (devis: Devis): boolean => {
+    console.log("Borderaux : ",devis.devisFacture.StatutBRD);
     if(devis.devisFacture === null || devis.devisFacture === undefined) {
         return false;
     }
-    if(devis.devisFacture.StatutBRD!==undefined && (devis.devisFacture.DateBRD===null || devis.devisFacture.DateBRD===undefined || devis.devisFacture.BRDNumero===null || devis.devisFacture.BRDNumero===undefined || devis.devisFacture.BRDNumero==="") ){
+    if(devis.devisFacture.StatutBRD!==undefined && devis.devisFacture.StatutBRD!=null && (devis.devisFacture.DateBRD===null || devis.devisFacture.DateBRD===undefined || devis.devisFacture.BRDNumero===null || devis.devisFacture.BRDNumero===undefined || devis.devisFacture.BRDNumero==="") ){
         return true;
     }
     return false;

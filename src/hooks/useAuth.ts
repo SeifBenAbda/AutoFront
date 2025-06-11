@@ -28,7 +28,6 @@ const useAuth = () => {
         if (userData) {
             const databases = await getDatabasesAccess(userData.username); 
             state.databasesAccess = databases;
-            console.log('Databases Name current:', state.databaseName);
             if(state.databaseName=== '') {
                state.databaseName = databases[0] || ''; 
             }

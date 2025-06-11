@@ -3,14 +3,13 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { createCar, fetchCarModels, fetchCarModelsFacture, fetchCarsPaginated, updateCar } from '../services/apiService';
 import { useNavigate } from 'react-router-dom';
 import { state } from '../utils/shared_functions';
-import { io } from 'socket.io-client';
+
 import { CarRequest, Devis } from '../types/devisTypes';
+import { getSocket } from './useWebSocket';
 
 
-const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
 
-// Initialize WebSocket connection outside the hook to prevent creating multiple instances
-const socket = io(SOCKET_URL);
+
 
 export interface CarModel {
     carId: number;
@@ -111,7 +110,7 @@ export const useEditCar = () => {
             if (data.affectedDevis && Array.isArray(data.affectedDevis)) {
                 // Emit updates for each affected devis with their payment details
                 data.affectedDevis.forEach(devis => {
-                    socket.emit('devisUpdate', {
+                    getSocket().emit('devisUpdate', {
                         devisId: devis.DevisId,
                         devis: devis,
                         paymentDetails: devis.devisPayementDetails,
@@ -120,7 +119,7 @@ export const useEditCar = () => {
                 });
             } else {
                 // Fallback if the response structure is different
-                socket.emit('devisUpdate', {
+                getSocket().emit('devisUpdate', {
                     carId: data.data?.carId,
                     updatedCar: data.data
                 });

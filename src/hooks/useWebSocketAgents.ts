@@ -5,21 +5,24 @@ import { removeToken } from '../services/authService';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL;
 
-// Optimized socket manager that only connects when needed
+// Improved socket manager with better connection control
 class SocketManager {
   private static instance: SocketManager;
   private socket: Socket | null = null;
   private activeHooks = new Set<string>();
-  private activeListeners = new Set<string>(); // Track actual listeners
+  private activeListeners = new Set<string>();
   private currentUser: string | null = null;
   private isAuthenticating = false;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private idleTimer: ReturnType<typeof setTimeout> | null = null;
   private lastActivity = 0;
+  private connectionAttempts = 0;
   
-  // Configuration
-  private readonly IDLE_TIMEOUT = 30000; // 30 seconds of inactivity before disconnect
-  private readonly RECONNECT_DELAY = 2000;
+  // More conservative configuration
+  private readonly IDLE_TIMEOUT = 60000; // Increased to 60 seconds
+  private readonly RECONNECT_DELAY = 5000; // Increased delay
+  private readonly MAX_RECONNECT_ATTEMPTS = 3; // Max attempts before giving up
+  private readonly RECONNECT_BACKOFF = 1.5; // Exponential backoff multiplier
 
   static getInstance(): SocketManager {
     if (!SocketManager.instance) {
@@ -29,75 +32,89 @@ class SocketManager {
   }
 
   private constructor() {
-    // Generate unique tab ID
     if (!window.name) {
       window.name = `tab_${Date.now()}_${Math.random()}`;
     }
   }
 
   private createSocket(): Socket {
+    // Clear any existing socket first
+    if (this.socket) {
+      this.socket.removeAllListeners();
+      this.socket.disconnect();
+    }
+
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
-      timeout: 10000, // Increased timeout
-      reconnection: true,
-      reconnectionAttempts: 3, // Reduced attempts
-      reconnectionDelay: this.RECONNECT_DELAY,
+      timeout: 15000, // Increased timeout
+      reconnection: false, // We'll handle reconnection manually
       forceNew: true,
-      // Optimize polling interval
       upgrade: true,
       rememberUpgrade: true,
+      // Connection state recovery is handled manually
     });
 
     newSocket.on('connect', () => {
+      //console.log('🔗 WebSocket connected');
+      this.connectionAttempts = 0; // Reset on successful connection
       this.updateActivity();
       
-      // Re-authenticate if we have a current user
       if (this.currentUser && !this.isAuthenticating) {
         this.authenticate(this.currentUser);
       }
     });
 
     newSocket.on('disconnect', (reason) => {
+      //console.log('🔌 WebSocket disconnected:', reason);
       this.isAuthenticating = false;
       
-      // Only auto-reconnect if we have active listeners and it's not a manual disconnect
-      if (this.activeListeners.size > 0 && 
-          (reason === 'io server disconnect' || reason === 'transport close' || reason === 'ping timeout')) {
+      // Only auto-reconnect for specific reasons and if we have active listeners
+      const shouldReconnect = this.activeListeners.size > 0 && 
+        this.connectionAttempts < this.MAX_RECONNECT_ATTEMPTS &&
+        (reason === 'io server disconnect' || 
+         reason === 'transport close' || 
+         reason === 'ping timeout');
+      
+      if (shouldReconnect) {
         this.scheduleReconnect();
+      } else if (this.connectionAttempts >= this.MAX_RECONNECT_ATTEMPTS) {
+        //console.warn('🚫 Max reconnection attempts reached, stopping reconnection');
       }
     });
 
     newSocket.on('connect_error', (error) => {
-      console.error('🔥 WebSocket connection error:', error);
+      //console.error('🔥 WebSocket connection error:', error);
       this.isAuthenticating = false;
+      this.connectionAttempts++;
       
-      // Only reconnect if we have active listeners
-      if (this.activeListeners.size > 0) {
+      if (this.activeListeners.size > 0 && this.connectionAttempts < this.MAX_RECONNECT_ATTEMPTS) {
         this.scheduleReconnect();
       }
     });
 
     newSocket.on('authenticate_response', (data) => {
+      //console.log('✅ Authentication response:', data);
       this.isAuthenticating = false;
       this.updateActivity();
     });
 
-    // Force disconnect handler
     newSocket.on('forceDisconnect', (data: any) => {
-      // Clear user data and token
+      //console.log('🚫 Force disconnect received');
       removeToken();
       this.currentUser = null;
-      
-      // Disconnect socket immediately
       this.disconnect();
-      
-      // Trigger logout in this tab
       window.dispatchEvent(new CustomEvent('forceLogout', { detail: data }));
     });
 
-    // Track any incoming messages as activity
+    // Throttle activity updates
+    let activityThrottle: ReturnType<typeof setTimeout> | null = null;
     newSocket.onAny(() => {
-      this.updateActivity();
+      if (!activityThrottle) {
+        activityThrottle = setTimeout(() => {
+          this.updateActivity();
+          activityThrottle = null;
+        }, 1000); // Throttle to once per second
+      }
     });
 
     return newSocket;
@@ -113,9 +130,9 @@ class SocketManager {
       clearTimeout(this.idleTimer);
     }
 
-    // Only set idle timer if we have a connection but no active listeners
     if (this.socket?.connected && this.activeListeners.size === 0) {
       this.idleTimer = setTimeout(() => {
+        //console.log('💤 Disconnecting due to inactivity');
         this.disconnect();
       }, this.IDLE_TIMEOUT);
     }
@@ -126,11 +143,16 @@ class SocketManager {
       clearTimeout(this.reconnectTimer);
     }
     
+    // Exponential backoff
+    const delay = this.RECONNECT_DELAY * Math.pow(this.RECONNECT_BACKOFF, this.connectionAttempts);
+    //console.log(`⏰ Scheduling reconnect in ${delay}ms (attempt ${this.connectionAttempts + 1})`);
+
     this.reconnectTimer = setTimeout(() => {
       if (this.activeListeners.size > 0 && (!this.socket || !this.socket.connected)) {
+        //console.log('🔄 Attempting to reconnect...');
         this.socket = this.createSocket();
       }
-    }, this.RECONNECT_DELAY);
+    }, delay);
   }
 
   private authenticate(username: string) {
@@ -138,20 +160,25 @@ class SocketManager {
       return;
     }
 
+    //console.log('🔐 Authenticating user:', username);
     this.isAuthenticating = true;
     this.socket.emit('authenticate', { username });
-    // Reset flag after timeout
+    
+    // Clear authentication flag after timeout
     setTimeout(() => {
-      this.isAuthenticating = false;
-    }, 5000);
+      if (this.isAuthenticating) {
+        //console.warn('⚠️ Authentication timeout');
+        this.isAuthenticating = false;
+      }
+    }, 10000); // Increased timeout
   }
 
-  // Only create socket when actually needed
   private ensureSocket(): Socket | null {
     if (!this.socket || this.socket.disconnected) {
-      // Only create if we have active listeners or hooks
       if (this.activeListeners.size > 0 || this.activeHooks.size > 0) {
-        this.socket = this.createSocket();
+        if (this.connectionAttempts < this.MAX_RECONNECT_ATTEMPTS) {
+          this.socket = this.createSocket();
+        }
       }
     }
     return this.socket;
@@ -162,28 +189,31 @@ class SocketManager {
   }
 
   registerHook(hookId: string): Socket | null {
+    //console.log('📌 Registering hook:', hookId);
     this.activeHooks.add(hookId);
-    // Don't create socket immediately, wait for actual listeners
     return this.socket;
   }
 
   unregisterHook(hookId: string) {
+    //console.log('📌 Unregistering hook:', hookId);
     this.activeHooks.delete(hookId);
-    // If no more hooks are active in this tab, disconnect after a delay
+    
+    // Increased delay for cleanup
     if (this.activeHooks.size === 0) {
       setTimeout(() => {
         if (this.activeHooks.size === 0 && this.activeListeners.size === 0) {
+          //console.log('🧹 No active hooks or listeners, disconnecting');
           this.disconnect();
         }
-      }, 1000); // Give time for quick re-registrations
+      }, 5000); // Increased cleanup delay
     }
   }
 
-  // New method to register actual event listeners
   addListener(eventName: string, listenerId: string): Socket | null {
     const listenerKey = `${eventName}_${listenerId}`;
+    //console.log('👂 Adding listener:', listenerKey);
     this.activeListeners.add(listenerKey);
-    // Clear idle timer since we have active listeners
+    
     if (this.idleTimer) {
       clearTimeout(this.idleTimer);
       this.idleTimer = null;
@@ -194,8 +224,9 @@ class SocketManager {
 
   removeListener(eventName: string, listenerId: string) {
     const listenerKey = `${eventName}_${listenerId}`;
+    //console.log('👂 Removing listener:', listenerKey);
     this.activeListeners.delete(listenerKey);
-    // If no more listeners, start idle timer
+    
     if (this.activeListeners.size === 0) {
       this.resetIdleTimer();
     }
@@ -203,6 +234,7 @@ class SocketManager {
 
   setCurrentUser(username: string | null) {
     if (username !== this.currentUser) {
+      //console.log('👤 Setting current user:', username);
       this.currentUser = username;
       
       if (username && this.socket?.connected) {
@@ -212,6 +244,8 @@ class SocketManager {
   }
 
   disconnect() {
+    //console.log('🔌 Disconnecting socket manager');
+    
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -230,6 +264,12 @@ class SocketManager {
     
     this.currentUser = null;
     this.isAuthenticating = false;
+    this.connectionAttempts = 0;
+  }
+
+  // Reset connection attempts (useful after successful reconnection)
+  resetConnectionAttempts() {
+    this.connectionAttempts = 0;
   }
 
   isConnected(): boolean {
@@ -243,11 +283,14 @@ class SocketManager {
   getActiveListenersCount(): number {
     return this.activeListeners.size;
   }
+
+  getConnectionAttempts(): number {
+    return this.connectionAttempts;
+  }
 }
 
 interface UseWebSocketAgentsProps {
   onForceDisconnect?: () => void;
-  // New prop to control when to actually connect
   connectOnMount?: boolean;
 }
 
@@ -258,15 +301,21 @@ const useWebSocketAgents = ({
   const { user, setUser } = useUser();
   const hookIdRef = useRef(`hook_${Date.now()}_${Math.random()}`);
   const socketManager = SocketManager.getInstance();
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple initializations
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
     const hookId = hookIdRef.current;
     socketManager.registerHook(hookId);
 
-    // Set current user
-    socketManager.setCurrentUser(user?.username || null);
+    // Only set user if we have one and should connect
+    if (user?.username && connectOnMount) {
+      socketManager.setCurrentUser(user.username);
+    }
 
-    // Handle force logout event
     const handleForceLogout = (_: CustomEvent) => {
       setUser(null);
       if (onForceDisconnect) {
@@ -276,22 +325,29 @@ const useWebSocketAgents = ({
 
     window.addEventListener('forceLogout', handleForceLogout as EventListener);
 
-    // Cleanup function
     return () => {
       window.removeEventListener('forceLogout', handleForceLogout as EventListener);
       socketManager.unregisterHook(hookId);
+      isInitializedRef.current = false;
     };
-  }, [user?.username, setUser, onForceDisconnect]);
+  }, []); // Empty dependency array to prevent re-runs
 
-  // Helper function to add event listeners efficiently
+  // Separate effect for user changes
+  useEffect(() => {
+    if (connectOnMount && user?.username) {
+      socketManager.setCurrentUser(user.username);
+    } else if (!user) {
+      socketManager.setCurrentUser(null);
+    }
+  }, [user?.username, connectOnMount]);
+
   const addEventListener = useCallback((eventName: string, callback: (data: any) => void) => {
-    const listenerId = `${hookIdRef.current}_${eventName}`;
+    const listenerId = `${hookIdRef.current}_${eventName}_${Date.now()}`;
     const socket = socketManager.addListener(eventName, listenerId);
     
     if (socket) {
       socket.on(eventName, callback);
       
-      // Return cleanup function
       return () => {
         socket.off(eventName, callback);
         socketManager.removeListener(eventName, listenerId);
@@ -306,10 +362,11 @@ const useWebSocketAgents = ({
     isConnected: socketManager.isConnected(),
     activeConnections: socketManager.getActiveHooksCount(),
     activeListeners: socketManager.getActiveListenersCount(),
-    addEventListener, // New helper for efficient event listening
-    // Manual connection control
+    connectionAttempts: socketManager.getConnectionAttempts(),
+    addEventListener,
     connect: () => socketManager.getSocket(),
     disconnect: () => socketManager.disconnect(),
+    resetConnectionAttempts: () => socketManager.resetConnectionAttempts(),
   };
 };
 

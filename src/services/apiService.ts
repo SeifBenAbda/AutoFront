@@ -3,7 +3,7 @@ import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayemen
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 import { generateBcInterneResponse } from "../hooks/useUploadFiles";
-import { CarModel } from "@/hooks/useCars";
+import { CarModel } from "../hooks/useCars";
 
 
 const API_URL = import.meta.env.VITE_API_URL;

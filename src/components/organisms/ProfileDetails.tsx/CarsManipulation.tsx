@@ -332,11 +332,11 @@ const CreateCarDialog = ({
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="carModel">Modèle</Label>
+              <Label htmlFor="carModel">Nom</Label>
               <Input id="carModel" name="carModel" value={formData.carModel || ''} onChange={handleChange} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="carName">Nom</Label>
+              <Label htmlFor="carName">Modèle</Label>
               <Input id="carName" name="carName" value={formData.carName || ''} onChange={handleChange} />
             </div>
             <div className="space-y-2">
@@ -502,8 +502,8 @@ const CarManipulation: React.FC = () => {
                 <Table>
                   <TableHeader className="bg-gradient-to-r from-highBlue to-normalBlue">
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="text-whiteSecond font-bold">Modèle</TableHead>
                       <TableHead className="text-whiteSecond font-bold">Nom</TableHead>
+                      <TableHead className="text-whiteSecond font-bold">Modèle</TableHead>
                       <TableHead className="text-whiteSecond font-bold">Année</TableHead>
                       <TableHead className="text-whiteSecond font-bold">Prix</TableHead>
                       <TableHead className="text-whiteSecond font-bold text-right">Actions</TableHead>

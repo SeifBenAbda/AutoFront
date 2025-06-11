@@ -129,7 +129,7 @@ export default function General() {
                     // Wait for 3 seconds before logging out
                     setTimeout(() => {
                         myToast.dismiss();
-                        handleLogout(navigate);
+                        handleLogout(user.username,navigate);
                     }, 3000); // 3000 milliseconds = 3 seconds
 
                 } else {
@@ -453,20 +453,10 @@ export default function General() {
                                     {/* Username */}
                                     <div>
                                         <Label className={labelStyle}>Nom d'utilisateur</Label>
-                                        {editMode ? (
-                                            <Input
-                                                type="text"
-                                                value={username}
-                                                onChange={(e) => setUsername(e.target.value)}
-                                                placeholder="Nom d'utilisateur"
-                                                className={textInputStyle}
-                                            />
-                                        ) : (
                                             <div className="bg-normalGrey text-highGrey pl-10 p-2 h-9 text-sm border border-normalGrey rounded-md font-oswald flex items-center relative">
                                                 <User className="absolute left-2 top-2 h-4 w-4 text-highBlue" />
                                                 {username || "Non spécifié"}
                                             </div>
-                                        )}
                                     </div>
 
                                     {/* Email */}

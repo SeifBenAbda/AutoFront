@@ -117,8 +117,6 @@ export const activateRemoteUser = async (username: string) => {
     throw new Error('Activation failed');
   }
 
-  console.log("Response from server  : ", response);
-
   return response.json();
 };
 

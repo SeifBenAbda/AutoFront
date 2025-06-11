@@ -192,7 +192,6 @@ const AgentsManipulation: React.FC<AgentsManipulationProps> = ({
     const handleUserConnection = async (username: string, isActive: boolean) => {
         setProcessingUsername(username);
         setIsCardLoading(true); // Start card loading
-        console.log(`Traitement de l'utilisateur: ${username}, Actif: ${isActive}`);
         try {
             if (isActive) {
                 // Deactivate user

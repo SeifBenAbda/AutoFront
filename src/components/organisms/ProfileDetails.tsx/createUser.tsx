@@ -14,6 +14,7 @@ import { Label } from "../../../@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../@/components/ui/tabs";
 import { CheckCircle2, ChevronLeft, ChevronRight, UserPlus } from "lucide-react";
 import UserTypeDropDown from "../../atoms/UserTypeDropDown";
+import PhoneInput from "../../../components/atoms/PhoneInput";
 
 export const CreateUser = () => {
     // Form state management
@@ -56,6 +57,21 @@ export const CreateUser = () => {
             setErrors(newErrors);
         }
     };
+    
+    // Handle phone input changes
+    const handlePhoneChange = (value: string) => {
+        setFormData({
+            ...formData,
+            phoneNumber: value,
+        });
+        
+        // Clear error when field is edited
+        if (errors.phoneNumber) {
+            const newErrors = { ...errors };
+            delete newErrors.phoneNumber;
+            setErrors(newErrors);
+        }
+    };
 
     // Handle switch toggle for isActive
     const handleSwitchChange = (checked: boolean) => {
@@ -92,8 +108,6 @@ export const CreateUser = () => {
             if (!formData.username?.trim()) newErrors.username = "Le nom d'utilisateur est requis";
             if (!formData.firstName?.trim()) newErrors.firstName = "Le prénom est requis";
             if (!formData.lastName?.trim()) newErrors.lastName = "Le nom est requis";
-            if (!formData.email?.trim()) newErrors.email = "L'email est requis";
-            else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Format d'email invalide";
         } else if (step === 2) {
             if (!formData.role?.trim()) newErrors.role = "Le rôle est requis";
             if (!formData.password?.trim()) newErrors.password = "Le mot de passe est requis";
@@ -128,7 +142,7 @@ export const CreateUser = () => {
                 username: formData.username!,
                 firstName: formData.firstName!,
                 lastName: formData.lastName!,
-                email: formData.email!,
+                email: formData.email ?? "",
                 phoneNumber: formData.phoneNumber,
                 position: formData.position,
                 profilePictureUrl: formData.profilePictureUrl,
@@ -247,7 +261,7 @@ export const CreateUser = () => {
 
                                             <div className="space-y-2">
                                                 <Label htmlFor="email" className="text-highBlue">
-                                                    Email <span className="text-red-500">*</span>
+                                                    Email
                                                 </Label>
                                                 <Input
                                                     id="email"
@@ -305,12 +319,10 @@ export const CreateUser = () => {
                                                 <Label htmlFor="phoneNumber" className="text-highBlue">
                                                     Téléphone
                                                 </Label>
-                                                <Input
-                                                    id="phoneNumber"
-                                                    name="phoneNumber"
-                                                    value={formData.phoneNumber}
-                                                    onChange={handleChange}
-                                                    placeholder="21345678"
+                                                <PhoneInput
+                                                    value={formData.phoneNumber!}
+                                                    onChange={handlePhoneChange}
+                                                    placeholder=""
                                                     className={`${textInputStyle}`}
                                                 />
                                             </div>
@@ -324,7 +336,7 @@ export const CreateUser = () => {
                                                     name="position"
                                                     value={formData.position}
                                                     onChange={handleChange}
-                                                    placeholder="ex: Développeur, Commercial..."
+                                                    placeholder="ex: Administrateur,Commercial..."
                                                     className={`${textInputStyle}`}
                                                 />
                                             </div>

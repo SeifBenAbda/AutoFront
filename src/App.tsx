@@ -1,3 +1,4 @@
+// Fixed App.tsx component
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
@@ -29,43 +30,60 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     autoRefresh: false,
     enabled: isLoggedIn && !isLoginPage,
   });
-  
-  // Fixed: Destructure the hook return value
+
+  // Fixed: Only initialize WebSocket when user is logged in and stable
   const { addEventListener } = useWebSocketAgents({
     onForceDisconnect: () => {
-      logout(); // Ensure the session is cleared
-    }
+      logout();
+    },
+    // Only connect when user is actually logged in
+    connectOnMount: isLoggedIn && !isLoginPage
   });
 
-  // Set up agent-specific event listeners
+  // Fixed: Stable event listeners with proper cleanup
   useEffect(() => {
-    if (!user) return;
+    // Don't set up listeners if user is not logged in
+    if (!isLoggedIn || isLoginPage) return;
 
     const cleanupFunctions: (() => void)[] = [];
 
-    // Listen for agent-related events
-    cleanupFunctions.push(
-      addEventListener('agentStatusUpdate', (data) => {
-      
-      })
-    );
+    // Add a small delay to ensure socket is ready
+    const timeoutId = setTimeout(() => {
+      // Listen for agent-related events with proper cleanup
+      cleanupFunctions.push(
+        addEventListener('agentStatusUpdate', (data) => {
+          //console.log('Agent status update:', data);
+          // Handle agent status update
+        })
+      );
 
-    cleanupFunctions.push(
-      addEventListener('newAgentAssignment', (data) => {
-      })
-    );
+      cleanupFunctions.push(
+        addEventListener('newAgentAssignment', (data) => {
+          //console.log('New agent assignment:', data);
+          // Handle new agent assignment
+        })
+      );
 
-    cleanupFunctions.push(
-      addEventListener('agentNotification', (data) => {
-      })
-    );
+      cleanupFunctions.push(
+        addEventListener('agentNotification', (data) => {
+          //console.log('Agent notification:', data);
+          // Handle agent notification
+        })
+      );
+    }, 100); // Small delay to ensure socket is established
 
-    // Cleanup all listeners when component unmounts or user changes
+    // Cleanup function
     return () => {
-      cleanupFunctions.forEach(cleanup => cleanup());
+      clearTimeout(timeoutId);
+      cleanupFunctions.forEach(cleanup => {
+        try {
+          cleanup();
+        } catch (error) {
+          //console.warn('Error during cleanup:', error);
+        }
+      });
     };
-  }, [addEventListener, user]);
-  
+  }, [addEventListener, isLoggedIn, isLoginPage]); // Removed 'user' dependency to prevent re-runs
 
   // Guard: If user and token are out of sync, render nothing (prevents flicker/white screen)
   if ((user && !token) || (!user && token)) {
@@ -113,7 +131,7 @@ const App: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, []); // Empty dependency array - only run once
 
   if (loading) return <Loading />;
   if (isMobile) return <div>Mobile Version Coming Soon</div>;

@@ -17,7 +17,6 @@ const DatabasesDropDown = forwardRef<HTMLButtonElement>(
     const databases = state.databasesAccess;
     const currentDatabase = state.databaseName;
     const handleChange = (selectedValue: string) => {
-        console.log("Selected database:", selectedValue);
         state.databaseName = selectedValue;
         window.location.href = '/dashboard';
     };
