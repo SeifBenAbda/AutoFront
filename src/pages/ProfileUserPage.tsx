@@ -16,7 +16,7 @@ const ProfileUserPage: React.FC = () => {
             <Header />
 
             {/* Main Content */}
-            <main className="flex-1 pt-16"> {/* pt-16 adds padding-top equal to 4rem, adjust if needed */}
+            <main className="flex-1 pt-8"> {/* pt-16 adds padding-top equal to 4rem, adjust if needed */}
                 <ProfileUser />
             </main>
         </div>

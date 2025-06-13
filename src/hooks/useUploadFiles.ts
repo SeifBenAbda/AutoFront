@@ -1,6 +1,6 @@
 import { useMutation ,UseMutateAsyncFunction, useQuery  } from '@tanstack/react-query';
-import { getDevisFiles, getUrlFiles, streamFile, uploadDocuments } from '../services/apiService'; // Adjust the import path as needed
-import { useNavigate } from 'react-router-dom';
+import { generateBcInterne, getDevisFiles, getUrlFiles, streamFile, uploadDocuments } from '../services/apiService'; // Adjust the import path as needed
+import { state } from '../utils/shared_functions';
 
 interface UploadResponse {
     status: number;
@@ -20,19 +20,17 @@ interface UploadResponse {
 
 interface UseUploadFilesProps {
     devisId: number;
-    files: { file: File; typeDocument: string; }[];
     navigate: (path: string) => void;
 }
-export const useUploadFiles = ({ devisId, files, navigate }: UseUploadFilesProps) => {
-    return useQuery({
-      queryKey: ['devisFiles', devisId], // Unique key including files to trigger query on change
-      queryFn: () => uploadDocuments("Commer_2024_AutoPro", devisId, files, navigate), // Use files directly
-      enabled: false, // Only enable the query if there are files to upload
-      staleTime: 2000,
-      refetchOnWindowFocus: false,
-    });
-};
 
+export const useUploadFiles = ({ devisId, navigate }: UseUploadFilesProps) => {
+    const uploadFilesMutation = useMutation({
+        mutationFn: (files: { file: File; typeDocument: string }[]) => 
+            uploadDocuments(state.databaseName, devisId, files, navigate),
+    });
+    
+    return uploadFilesMutation;
+};
 
 
 
@@ -76,7 +74,7 @@ export const useUrlFiles = (
 ): { mutateAsync: UseMutateAsyncFunction<FileData, Error, string, unknown> } => {
     return useMutation<FileData, Error, string>({
         mutationFn: async (filename: string) => {
-            const response = await getUrlFiles("Commer_2024_AutoPro", devisId.toString(), filename, navigate);
+            const response = await getUrlFiles(state.databaseName, devisId.toString(), filename, navigate);
 
             if (!response) {
                 throw new Error('Failed to fetch file');
@@ -99,7 +97,7 @@ export const useDevisFiles = (
 ) => {
     return useQuery<FileData[], Error>({
         queryKey: ['devisFiles', devisId], // Unique key based on devisId
-        queryFn: () => getDevisFiles("Commer_2024_AutoPro", devisId.toString(), navigate),
+        queryFn: () => getDevisFiles(state.databaseName, devisId.toString(), navigate),
         staleTime: 0, // Keep data fresh indefinitely, as it may be updated via WebSocket
         refetchOnWindowFocus: true, // Disable refetching on window focus
     });
@@ -107,3 +105,14 @@ export const useDevisFiles = (
 
 
 
+export interface generateBcInterneResponse {
+    status: number;
+    result: string;
+}
+
+
+export const useGenerateBcInterne = (devisId: number, navigate: (path: string) => void) => {
+    return useMutation<generateBcInterneResponse, Error, { database: string, devisId: number, navigate: (path: string) => void }>({
+        mutationFn: ({ database, devisId, navigate }) => generateBcInterne(database, devisId, navigate),
+    });
+};

@@ -1,14 +1,10 @@
-// src/hooks/useDevis.ts
-import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, ItemRequest, Rappel } from '../types/devisTypes';
+// src/hooks/useDevis.ts (Stable version)
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, Rappel } from '../types/devisTypes';
 import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useWebSocketForDevis } from './useWebSocket';
-import { io } from 'socket.io-client';
-
-const SOCKET_URL = import.meta.env.VITE_API_URL; // Replace with your server URL
-
-// Initialize WebSocket connection outside the hook to prevent creating multiple instances
-const socket = io(SOCKET_URL);
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getSocket, useWebSocketForDevis } from './useWebSocket';
+import { state } from '../utils/shared_functions';
+import { useMemo } from 'react';
 
 interface ApiResponse {
   data: Devis[];
@@ -19,143 +15,159 @@ interface ApiResponse {
   };
 }
 
-const useDevis = (page: number, searchValue?: string, status?: string, priority?: string, 
-  cars?: string[], clients?:string[],dateRappelFrom?: Date | undefined , dateRappelTo? : Date | undefined) => {
-  useWebSocketForDevis(page, searchValue, status, priority, cars);
+const useDevis = (
+  page: number, 
+  searchValue?: string, 
+  status?: string, 
+  priority?: string, 
+  cars?: string[], 
+  clients?: string[],
+  dateRappelFrom?: Date | undefined, 
+  dateRappelTo?: Date | undefined
+) => {
+  // Stable query key using useMemo to prevent unnecessary re-renders
+  const queryKey = useMemo(() => [
+    'data', 
+    page, 
+    searchValue, 
+    status, 
+    priority, 
+    cars, 
+    clients, 
+    dateRappelFrom?.toISOString(), // Convert dates to strings for stable comparison
+    dateRappelTo?.toISOString()
+  ], [page, searchValue, status, priority, cars, clients, dateRappelFrom, dateRappelTo]);
 
-  return useQuery<ApiResponse>({
-    queryKey: ['data', page, searchValue, status, priority, cars,clients,dateRappelFrom,dateRappelTo], // Include all dependencies in the key
-    queryFn: () => fetchDevisAllData("Commer_2024_AutoPro", searchValue, page, status, priority, cars,clients,dateRappelFrom,dateRappelTo),
-    staleTime: Infinity, // Keep data fresh indefinitely, as it's updated via WebSocket
-    refetchOnWindowFocus: false, // Disable refetching on window focus
+  // Initialize WebSocket - this should only run once per component
+  const isConnected = useWebSocketForDevis(page, searchValue, status, priority, cars);
+  
+  const query = useQuery<ApiResponse>({
+    queryKey,
+    queryFn: async () => {
+      const result = await fetchDevisAllData(
+        state.databaseName, 
+        searchValue, 
+        page, 
+        status, 
+        priority, 
+        cars, 
+        clients, 
+        dateRappelFrom, 
+        dateRappelTo
+      );
+      
+     
+      return result;
+    },
+    staleTime: 0, 
+    gcTime: 0,
+    refetchOnWindowFocus: false,
   });
+
+  return {
+    ...query,
+    isWebSocketConnected: isConnected
+  };
 };
 
-
 export const useUpdateDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      devisId,
-      clientId,
-      updatedDevis,
-      updatedClient,
-      updatedItemRequestData,
-      updatedCarRequestData,
-      updatedRappels,
-      updatedDevisFacture,
-      updatedDevisReserved,
-      updatedDevisPayementDetails,
-      updatedDevisGesteCommerciale
-    }: {
+    mutationFn: async (params: {
       database: string;
       devisId: number;
       clientId: number;
       updatedDevis: Partial<Devis>;
       updatedClient?: Partial<Client>;
-      updatedItemRequestData?: Partial<ItemRequest>;
       updatedCarRequestData?: Partial<CarRequest>;
       updatedRappels?: Partial<Rappel[]>;
       updatedDevisFacture?: Partial<DevisFacture>;
       updatedDevisReserved?: Partial<DevisReserved>;
       updatedDevisPayementDetails?: Partial<DevisPayementDetails>;
       updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>;
-    }) => {
+    }) => {  
       return updateDevis(
-        database,
-        devisId,
-        clientId,
-        updatedDevis,
-        updatedClient,
-        updatedItemRequestData,
-        updatedCarRequestData,
-        updatedRappels,
-        updatedDevisFacture,
-        updatedDevisReserved,
-        updatedDevisPayementDetails,
-        updatedDevisGesteCommerciale
+        params.database,
+        params.devisId,
+        params.clientId,
+        params.updatedDevis,
+        params.updatedClient,
+        params.updatedCarRequestData,
+        params.updatedRappels,
+        params.updatedDevisFacture,
+        params.updatedDevisReserved,
+        params.updatedDevisPayementDetails,
+        params.updatedDevisGesteCommerciale
       );
     },
-    // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
-      // Handle success (e.g., show a notification, invalidate queries)
-      socket.emit('devisUpdate', {
-        client: data.client,
-        devis: data.devis,
-        carRequest: data.carRequest,
-        itemRequest: data.itemRequest,
-        //rappelDevis: data.rappelDevis,
-      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ 
+          queryKey: ['data'],
+          exact: false 
+        });
+      }, 100); // Small delay to ensure backend has processed
     },
     onError: (error) => {
-      // Handle error (e.g., show an error message)
     },
   });
 };
 
-
-
 export const useCreateDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      client,
-      devis,
-      carRequestData,
-      itemRequestData,
-      rappelData,
-      devisPayementDetails
-    }: {
+    mutationFn: async (params: {
       database: string;
       client: Client;
       devis: Devis;
       carRequestData?: CarRequest;
-      itemRequestData?: ItemRequest[];
-      rappelData?: Rappel[],
-      devisPayementDetails : DevisPayementDetails
-    }) => {
-      return createDevis(database, client, devis, itemRequestData, carRequestData, rappelData,devisPayementDetails);
+      rappelData?: Rappel[];
+      devisPayementDetails: DevisPayementDetails;
+    }) => {  
+      return createDevis(
+        params.database, 
+        params.client, 
+        params.devis, 
+        params.carRequestData, 
+        params.rappelData, 
+        params.devisPayementDetails
+      );
     },
     onSuccess: (data) => {
+      // Invalidate all data queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['data'],
+        exact: false 
+      });
     },
     onError: (error) => {
     },
   });
 };
 
-
 export const useDeletedDevis = () => {
+  const queryClient = useQueryClient();
+  
   return useMutation({
-    mutationFn: async ({
-      database,
-      devisId,
-      deletedBy
-    }: {
+    mutationFn: async (params: {
       database: string;
       devisId: number;
       deletedBy: string;
     }) => {
-      return deletedDevis(
-        database,
-        devisId,
-        deletedBy
-      );
+      return deletedDevis(params.database, params.devisId, params.deletedBy);
     },
-    // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {
-      // Handle success (e.g., show a notification, invalidate queries)
-      socket.emit('devisUpdate', {
-        client: data.devis!.client,
-        devis: data.devis,
-        //rappelDevis: data.rappelDevis,
+      // Invalidate all data queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['data'],
+        exact: false 
       });
     },
     onError: (error) => {
-      // Handle error (e.g., show an error message)
     },
   });
 };
 
 export default useDevis;
-
-

@@ -27,7 +27,6 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
                                     <DatePicker
                                         value={field.value}
                                         onChange={(value)=> {
-                                            console.log(value);
                                             field.onChange(value)
                                         }}
                                         fromYear={new Date().getFullYear()}
@@ -39,7 +38,7 @@ const ClientRappelForm: React.FC<{ form: any; formId: string }> = ({ form, formI
 
                         <FormCardContent form={form} label="Contenu de rappel" name={`${formId}[${index}].RappelContent`} className="flex-1 text-highBlue">
                             <Textarea
-                                className="border border-highBlue bg-bgColorLight min-h-[70px] text-highBlue"
+                                className="border border-normalGrey font-oswald bg-normalGrey min-h-[70px] text-highBlue"
                                 placeholder="Contenu de rappel.."
                                 name={`${formId}[${index}].RappelContent`}
                                 {...register(`${formId}[${index}].RappelContent`)}

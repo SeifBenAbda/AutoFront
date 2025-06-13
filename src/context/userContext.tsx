@@ -54,11 +54,13 @@ export const useUpdateUser = () => {
 export const useCreateUser = () => {
   return useMutation({
     mutationFn: async ({
-      user
+      password,
+      user,
     }: {
+      password:string;
       user: User;
     }) => {
-      return await createUser(user);
+      return await createUser(password,user);
     },
     // Optional: Define onSuccess, onError, etc.
     onSuccess: (data) => {

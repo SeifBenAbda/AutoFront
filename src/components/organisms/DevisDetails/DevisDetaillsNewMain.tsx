@@ -8,12 +8,14 @@ import { DevisClientDetails } from "./DevisClientDetails";
 import { DevisVehiculeDetails } from "./DevisVehiculeDetails";
 import { DevisRappelsDetails } from "./DevisRappelsDetails";
 import { DevisDoucmentDetails } from "./DevisDoucmentDetails";
-import { Button } from "../../../@/components/ui/button";
-import Loading from "../../../components/atoms/Loading";
-import { getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
-import { Toaster } from "../../../@/components/ui/toaster";
+import { state, getErrorBanqueSelection, getModificationErros, isErrorBanqueSelection } from "../../../utils/shared_functions";
 import { useToast } from "../../../hooks/use-toast";
 import { Card, CardContent, CardTitle } from "../../../@/components/ui/card";
+import { useGenerateBcInterne } from "../../../hooks/useUploadFiles";
+import { useNavigate } from "react-router-dom";
+import Loading from "../../../components/atoms/Loading";
+import { Button } from "../../../@/components/ui/button";
+import { Toaster } from "../../../@/components/ui/toaster";
 
 interface DevisDetailsNewMainProps {
     devis: Devis;
@@ -72,8 +74,8 @@ const StepCircle = ({ isActive, onClick, stepIcon: Icon, stepLabel }: StepCircle
         </span>
     </div>
 );
-
 const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen, onClose, isAdmin, onSave }) => {
+    const generationBcInterneAvailable = devis.StatusDevis !== "En attente" && devis.StatusDevis!=="En Cours" && devis.StatusDevis !== "Annulé"  && devis.StatusDevis !=="HDSI";
     const [activeStep, setActiveStep] = useState<number>(0);
     const { user } = useUser();
     const [myDevis, setDevis] = useState<Devis | null>(devis);
@@ -84,11 +86,13 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     const [myToastCloseStyle, setMyToastCloseStyle] = useState("text-lightWhite hover:text-lightWhite");
     const { toast } = useToast();
     const { mutateAsync: updateDevis } = useUpdateDevis();
+    const navigate = useNavigate();
+    const { mutateAsync: generateBcInterne } = useGenerateBcInterne(devis.DevisId!, navigate);
     const totalSteps = [
 
         { icon: UserRoundCog, label: "Client" },
         { icon: Car, label: "Véhicule" },
-        { icon: FileText, label: "Devis" },
+        { icon: FileText, label: "Dossier" },
         { icon: BellRing, label: "Rappels" },
         { icon: Files, label: "Documents" },
     ];
@@ -99,7 +103,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             client: updatedClient,
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 
@@ -108,7 +112,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             ...updatedDevis, // Spread the existing devis and updatedDevis fields
             UpdatedAt: new Date(), // Update timestamp
-            UpdatedBy: user?.nomUser || "Unknown User" // Set user name or fallback
+            UpdatedBy: user?.username || "Unknown User" // Set user name or fallback
         }));
     };
 
@@ -119,7 +123,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             carRequests: updatedCarRequest ? [updatedCarRequest] : [],
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 
@@ -129,7 +133,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             ...prevDevis,
             rappels: updatedRappels,
             UpdatedAt: new Date(),
-            UpdatedBy: user?.nomUser || "Unknown User"
+            UpdatedBy: user?.username || "Unknown User"
         }) : null);
     };
 
@@ -150,8 +154,8 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
         } else {
             setLoading(true);
             try {
-                updateDevis({
-                    database: "Commer_2024_AutoPro",
+                await updateDevis({
+                    database: state.databaseName,
                     devisId: devis!.DevisId!,
                     clientId: myDevis!.client?.id!,
                     updatedDevis: myDevis!,
@@ -163,20 +167,47 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     updatedDevisReserved: myDevis!.devisReserved || undefined,
                     updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined,
                     updatedDevisGesteCommerciale: myDevis!.gesteCommer || undefined
-                }).then(() => { onSave(myDevis!); setLoading(false); onClose(); });
+                });
+                onSave(myDevis!);
+                onClose();
             } catch (error) {
                 console.error('Failed to save updates:', error);
-
+            } finally {
+                setLoading(false);
             }
+        }
+    };
+
+    const handleGenerateBcInterne = async () => {
+        setLoading(true);
+        try {
+            await generateBcInterne({
+                database: state.databaseName,
+                devisId: devis.DevisId!,
+                navigate: navigate,
+            });
+            
+            toast({
+                className: "bg-lightGreen border border-lightGreen rounded-md text-lightWhite hover:text-lightWhite ",
+                title: "BC Interne généré avec succès"
+            });
+        } catch (error) {
+            console.error('Error generating BC Interne:', error);
+            toast({
+                className: "bg-lightRed border border-lightRed rounded-md text-lightWhite hover:text-lightWhite ",
+                title: "Erreur lors de la génération du BC Interne"
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
     const steps: StepConfig[] = myDevis ? [
 
-        { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} /> },
+        { label: 'Client', component: <DevisClientDetails client={myDevis.client!} onUpdate={handleClientUpdate} devis={myDevis} /> },
         { label: 'Vehicule', component: <DevisVehiculeDetails carRequest={myDevis.carRequests?.[0] || null} onUpdate={handleCarRequestUpdate} devis={myDevis} onUpdateDevis={handleDevisUpdate} isAdmin={isAdmin} /> },
-        { label: 'Devis', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
-        { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} /> },
+        { label: 'Dossier', component: <DevisGlobalDetails devis={myDevis} onUpdate={handleDevisUpdate} isAdmin={isAdmin} /> },
+        { label: 'Rappels', component: <DevisRappelsDetails rappels={myDevis.rappels} onUpdate={handleRappelUpdate} devisId={devis?.DevisId || 0} devis={myDevis} onUpdateDevis={handleDevisUpdate} /> },
         { label: 'Documents', component: <DevisDoucmentDetails devis={myDevis} /> },
     ] : [];
 
@@ -206,9 +237,9 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     <CardTitle className="text-highBlue text-center font-oswald text-lg">Notes</CardTitle>
                     <CardContent className="p-2">
                         <div className="text-highBlue font-oswald text-sm">
-                            {isErrorBanqueSelection(myDevis!.devisPayementDetails.BankAndLeasing) && 
+                            {isErrorBanqueSelection(myDevis!.devisPayementDetails.BankAndLeasing) &&
                                 <div className="text-lightRed">
-                                    {getErrorBanqueSelection()}        
+                                    {getErrorBanqueSelection()}
                                 </div>
                             }
                         </div>
@@ -230,12 +261,16 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
             <div className="flex flex-col w-1/4">
                 <Toaster toastExtraStlye="mr-2" tostCloseStyle={myToastCloseStyle} />
                 <StepIndicator />
-                <div className="sticky bottom-0 bg-transprent p-2 pr-4 pl-5 mt-4">
+                <div className="sticky bottom-0 bg-transprent p-2 pr-4 pl-5 mt-4 space-y-2">
+                    { generationBcInterneAvailable && (
+                        <Button onClick={handleGenerateBcInterne} className="w-full py-2 text-white bg-greenOne hover:bg-greenOne rounded-md">
+                        Générer BC Interne
+                    </Button>)}
                     <Button onClick={handleSave} className="w-full py-2 text-white bg-highBlue rounded-md">
                         Enregistrer
                     </Button>
                 </div>
-                {devisNotes()}
+                {/*devisNotes()*/}
             </div>
 
             <div className="flex flex-col w-3/4 overflow-y-auto h-auto">

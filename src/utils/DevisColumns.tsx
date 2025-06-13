@@ -1,271 +1,196 @@
-import { Badge } from "../@/components/ui/badge";
-import { Devis, Rappel } from "../types/devisTypes";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { Devis } from "@/types/devisTypes";
+import { CalendarClock, Car, FileText, Hash, Phone, Star, User } from "lucide-react";
 
-
-
-const capitalizeFirstLetter = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
-const getClosestUpcomingReminder = (rappels: Rappel[] | undefined): Rappel | null => {
-  // Filter out reminders with undefined dates or content
-  const validReminders = rappels?.filter(
-    reminder => reminder.RappelDate && reminder.RappelContent
-  ) || [];
-
-  if (validReminders.length === 0) return null;
-
-  const now = new Date().getTime();
-
-  // Find the closest upcoming reminder
-  return validReminders.reduce((closest, current) => {
-    const currentDate = new Date(current.RappelDate!).getTime();
-    const closestDate = closest ? new Date(closest.RappelDate!).getTime() : 0;
-
-    if (currentDate >= now && (!closest || currentDate < closestDate)) {
-      return current;
+// Status badge component for DevisColumns
+const StatusBadge = ({ status }: { status: string }) => {
+  const getStatusColor = () => {
+    switch(status?.toLowerCase()) {
+      case 'facture':
+      case 'facturé':
+        return 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+      case 'completed':
+      case 'terminé':
+        return 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+      case 'pending':
+      case 'en attente':
+        return 'bg-amber-50 text-amber-800 border border-amber-300';
+      case 'cancelled':
+      case 'annulé':
+        return 'bg-rose-50 text-rose-800 border border-rose-300';
+      default:
+        return 'bg-slate-100 text-slate-800 border border-slate-300';
     }
-    return closest;
-  }, null as Rappel | null);
+  };
+  
+  return (
+    <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full inline-flex items-center ${getStatusColor()}`}>
+      {status}
+    </span>
+  );
 };
 
-// Helper function to format reminder display data
-const formatReminderDisplay = (reminder: Rappel | null) => {
-  if (!reminder) return {
-    display: 'Aucun rappel proche',
-    date: null,
-    content: null
+// Priority badge component for DevisColumns
+const PriorityBadge = ({ priority }: { priority: string }) => {
+  const getPriorityColor = () => {
+    switch(priority?.toLowerCase()) {
+      case 'high':
+      case 'haute':
+        return 'bg-rose-50 text-rose-700 border border-rose-300';
+      case 'medium':
+      case 'moyenne':
+        return 'bg-amber-50 text-amber-700 border border-amber-300';
+      case 'low':
+      case 'basse':
+        return 'bg-sky-50 text-sky-700 border border-sky-300';
+      default:
+        return 'bg-slate-100 text-slate-700 border border-slate-300';
+    }
   };
-
-  return {
-    display: `${new Date(reminder.RappelDate!).toLocaleDateString()}`, //: ${reminder.RappelContent}
-    date: reminder.RappelDate,
-    content: reminder.RappelContent
-  };
+  
+  return (
+    <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full inline-flex items-center ${getPriorityColor()}`}>
+      {priority}
+    </span>
+  );
 };
 
-
-const getVariantStatus = (status: string) => {
-  switch (status) {
-    case "En Attente":
-      return "default"
-    case "En Cours":
-      return "medium"
-    case "Annulé":
-      return "destructive"
-      case "Réservé":
-        return "reserved" ;
-    case "Facturé":
-      return "running"
-
-    default:
-      return "outline";
-  }
-}
-
-const getVariantPriority = (status: string) => {
-  switch (status) {
-    case "Moyenne":
-      return "medium"
-    case "Haute":
-      return "destructive"
-
-    case "Normale":
-      return "running"
-    default:
-      return "normal";
-  }
-}
-
-export const columns: ColumnDef<Devis>[] = [
+export const devisColumns: ColumnDef<Devis, any>[] = [
   {
-    header: 'Numéro Devis',
-    accessorFn: (row) => row.DevisId,
-    id: 'DevisId', // add a unique id to each column for identification
-  },
-  {
+    id: "DevisId",
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Priorité</span>
-        <img
-          src='/images/prioritize.png'
-          alt="PriorityDevis"
-          className="w-6 h-6"
-        />
+      <div className="flex items-center space-x-1">
+        <Hash size={14} className="text-slate-500" />
+        <span>Devis</span>
       </div>
     ),
-    accessorKey: 'PriorityDevis',
-    cell: (row) => (
-      <Badge className="p-2 w-[80%] text-center justify-center" variant={getVariantPriority(row.getValue<string>())}>{row.getValue<string>()}</Badge>
-    ),
-    id: 'PriorityDevis',
-  },
-
-  
-  {
-    header: 'Date Création',
-    accessorFn: (row) => {
-      const formattedDate = format(new Date(row.DateCreation!), "EEEE d MMMM yyyy", {
-        locale: fr,
-      });
-
-      return capitalizeFirstLetter(formattedDate);
+    accessorKey: "DevisId",
+    cell: ({ row }) => {
+      return <div className="font-medium">{row.getValue("DevisId")}</div>;
     },
-    id: 'DateCreation',
-  },
-  
-  {
-    header: 'Nom Client',
-    accessorFn: (row) => row.client!.nomClient,
-    id: 'client.nomClient',
   },
   {
+    id: "createdBy",
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Tél. Client</span>
-        <img
-          src='/images/phone.png'
-          alt="Phone"
-          className="w-6 h-6"
-        />
+      <div className="flex items-center space-x-1">
+        <FileText size={14} className="text-slate-500" />
+        <span>Créé par</span>
       </div>
     ),
-    accessorFn: (row) => row.client!.telClient,
-    id: 'client.telClient',
+    accessorKey: "createdBy",
+    cell: ({ row }) => {
+      return <div className="font-medium">{row.getValue("createdBy")}</div>;
+    },
   },
-
   {
+    id: "PriorityDevis",
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Modèle de voiture</span>
-        <img
-          src='/images/car.png'
-          alt="car"
-          className="w-10 h-10"
-        />
+      <div className="flex items-center space-x-1">
+        <Star size={14} className="text-slate-500" />
+        <span>Priorité</span>
       </div>
     ),
-    accessorFn: (row) => row.carRequests!.map(cr => cr.CarModel).join(', '),
+    accessorKey: "PriorityDevis",
+    cell: ({ row }) => {
+      const priority = row.getValue("PriorityDevis") as string;
+      return <PriorityBadge priority={priority} />;
+    },
+  },
+  {
+    id: "client.nomClient",
+    header: () => (
+      <div className="flex items-center space-x-1">
+        <User size={14} className="text-slate-500" />
+        <span>Client</span>
+      </div>
+    ),
+    accessorKey: "client.nomClient",
+  },
+  {
+    id: "client.telClient",
+    header: () => (
+      <div className="flex items-center space-x-1">
+        <Phone size={14} className="text-slate-500" />
+        <span>Téléphone</span>
+      </div>
+    ),
+    accessorKey: "client.telClient",
+  },
+  {
     id: "carModels",
-  },
-  /*
-  {
-    header: 'Motif',
-    accessorFn: (row) => row.Motivation,
-    id: 'Motif',
-  },
-  */
-
-  {
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Rappel Prochain</span>
-        <img
-          src='/images/reminder_new.png'
-          alt="Reminder"
-          className="w-8 h-8"
-        />
+      <div className="flex items-center space-x-1">
+        <Car size={14} className="text-slate-500" />
+        <span>Modèle</span>
       </div>
     ),
-    accessorFn: (row: Devis) => {
-      const closestReminder = getClosestUpcomingReminder(row.rappels);
-      return formatReminderDisplay(closestReminder).display;
+    accessorKey: "carRequests[0].CarModel",
+    cell: ({ row }) => {
+      const model = row.original.carRequests?.[0]?.CarModel || "N/A";
+      return <div>{model}</div>;
     },
+  },
+  {
     id: "nextReminder",
-  },
-
-
-  /*
-  {
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Date Livraison prévue</span>
-        <img
-          src={delieveryScheduleIcon}
-          alt="Delivery Schedule"
-          className="w-10 h-10"
-        />
+      <div className="flex items-center space-x-1">
+        <CalendarClock size={14} className="text-slate-500" />
+        <span>Rappel</span>
       </div>
     ),
-    accessorFn: (row) => {
-      if (row.ScheduledLivDate == null) {
-        return "Non indiqué"
-      }
-      const formattedDate = format(new Date(row.ScheduledLivDate), "EEEE d MMMM yyyy", {
-        locale: fr,
-      });
-
-      return capitalizeFirstLetter(formattedDate);
+    accessorKey: "nextReminder",
+    cell: ({ row }) => {
+      const date = (() => {
+        // If there are no reminders, return null
+        if (!row.original.rappels || row.original.rappels.length === 0) {
+          return null;
+        }
+        
+        const now = new Date();
+        // Filter future reminders and sort them by date (closest first)
+        const futureReminders = row.original.rappels
+          .filter(reminder => reminder.RappelDate && new Date(reminder.RappelDate) >= now)
+          .sort((a, b) => {
+            const dateA = a.RappelDate ? new Date(a.RappelDate).getTime() : 0;
+            const dateB = b.RappelDate ? new Date(b.RappelDate).getTime() : 0;
+            return dateA - dateB;
+          });
+          
+        // Return the closest future reminder or null if none exist
+        return futureReminders.length > 0 ? futureReminders[0].RappelDate : null;
+      })();
+      return date ? new Date(date).toLocaleDateString('fr-FR') : "Aucun";
     },
-    id: 'scheduledLivrDate',
   },
-  */
-
-  /*
   {
-    header: 'Dernière visite',
-    accessorFn: (row) => {
-      const formattedDate = format(new Date(row.client!.lastVisitDate!), "EEEE d MMMM yyyy", {
-        locale: fr,
-      });
-
-      return capitalizeFirstLetter(formattedDate);
+    id: "DateCreation",
+    header: () => (
+      <div className="flex items-center space-x-1">
+        <CalendarClock size={14} className="text-slate-500" />
+        <span>Date</span>
+      </div>
+    ),
+    accessorKey: "DateCreation",
+    cell: ({ row }) => {
+      const date = row.getValue("DateCreation") as string;
+      return date ? new Date(date).toLocaleDateString('fr-FR') : "";
     },
-    id: 'row.client.lastVisitDate',
   },
   {
-    header: 'Créé par',
-    accessorFn: (row) => row.CreatedBy,
-    id: 'CreatedBy',
-  },
-  */
-  {
+    id: "statusDevis",
     header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Status</span>
-        <img
-          src='/images/status.png'
-          alt="Status"
-          className="w-6 h-6"
-        />
+      <div className="flex items-center space-x-1">
+        <FileText size={14} className="text-slate-500" />
+        <span>Statut</span>
       </div>
     ),
-    accessorKey: 'StatusDevis',
-    cell: (row) => (
-      <Badge className="p-2 w-[80%] text-center justify-center" variant={getVariantStatus(row.getValue<string>())}>{row.getValue<string>()}</Badge>
-    ),
-    id: 'statusDevis',
+    accessorKey: "StatusDevis",
+    cell: ({ row }) => {
+      const status = row.getValue("StatusDevis") as string;
+      return <StatusBadge status={status} />;
+    },
   },
-
-  {
-    header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Modification</span>
-        <img
-          src='/images/editDevis.png'
-          alt="Edit"
-          className="w-6 h-6"
-        />
-      </div>
-    ),
-    id: 'actions',
-  },
-  /*
-  {
-    header: () => (
-      <div className="flex flex-col md:flex-row items-center justify-center p-2">
-        <span className="mb-2 md:mb-0 md:mr-2">Supprimer</span>
-        <img
-          src={deleteIcon}
-          alt="Delete"
-          className="w-6 h-6"
-        />
-      </div>
-    ),
-    id: 'delete',
-  },
-  */
+  // Do not include the "Modification" column here as it's added separately in TableData component
 ];
+
+export default devisColumns;

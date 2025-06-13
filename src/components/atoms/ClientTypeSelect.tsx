@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Toggle } from "../../@/components/ui/toggle";
+import { forwardRef } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../@/components/ui/select";
 
 interface TypeClientProps {
   option1: string;
@@ -8,35 +14,34 @@ interface TypeClientProps {
   onChange?: (selected: string) => void;
 }
 
-const TypeClient: React.FC<TypeClientProps> = ({ option1, option2, onChange, defaultValue }) => {
-  const [selected, setSelected] = useState<string>(defaultValue === "Entreprise" ? option2 : option1);
+const TypeClient = forwardRef<HTMLButtonElement, TypeClientProps>(
+  ({ option1, option2, defaultValue, onChange }, ref) => {
+    const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
+    
+    const handleChange = (value: string) => {
+      if (onChange) {
+        onChange(value);
+      }
+    };
 
-  useEffect(() => {
-    if (defaultValue) {
-      setSelected(defaultValue === "Entreprise" ? option2 : option1);
-    }
-  }, [defaultValue, option1, option2,selected]);
+    return (
+      <Select onValueChange={handleChange} defaultValue={defaultValue || option1}>
+        <SelectTrigger ref={ref} className="w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue">
+          <SelectValue placeholder={defaultValue || "Particulier"} />
+        </SelectTrigger>
+        <SelectContent className="bg-normalGrey border-normalGrey">
+          <SelectItem value={option1} className={hoverItem}>
+            {option1}
+          </SelectItem>
+          <SelectItem value={option2} className={hoverItem}>
+            {option2}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    );
+  }
+);
 
-  const handleToggle = () => {
-    const newSelected = selected === option1 ? option2 : option1;
-    setSelected(newSelected);
-    if (onChange) {
-      onChange(newSelected);
-    }
-  };
-
-  return (
-    <Toggle
-      aria-label="Type Client"
-      onClick={handleToggle}
-      data-state={selected === "Entreprise" ? "on" : "off"}  // Dynamically set data-state
-      className={`relative w-full font-oswald bg-highBlue text-lightWhite hover:bg-highBlue hover:text-lightWhite border 
-      ${selected === "Entreprise" ? "border-greenOne bg-greenOne text-whiteSecond" : "border-highBlue bg-highBlue text-lightWhite"}
-      data-[state=on]:border-greenOne data-[state=on]:bg-greenOne data-[state=on]:text-whiteSecond`}
-    >
-      {selected}
-    </Toggle>
-  );
-};
+TypeClient.displayName = 'TypeClient';
 
 export default TypeClient;

@@ -1,8 +1,12 @@
 import CarDevisTrackingPage from "../pages/CarDevisTrackingPage";
 import Header from "../components/organisms/Header";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 const CarTrackingLayout: React.FC = () => {
     const queryClient = new QueryClient();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const devisToModify = params.get('devis');
     return (
         <QueryClientProvider client={queryClient}>
             <div className="min-h-screen flex flex-col">
@@ -11,7 +15,7 @@ const CarTrackingLayout: React.FC = () => {
 
                 {/* Main Content */}
                 <main className="flex-1 p-4 bg-bgColorLight flex">
-                    <CarDevisTrackingPage />
+                    <CarDevisTrackingPage autoOpenDevisId={devisToModify ? Number(devisToModify) : undefined} />
                 </main>
             </div>
         </QueryClientProvider>

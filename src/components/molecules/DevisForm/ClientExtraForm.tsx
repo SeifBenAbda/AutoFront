@@ -18,6 +18,7 @@ import PriorityDevisDropDown from "../../atoms/PriorityDropDown";
 import RegionDropDown from "../../atoms/RegionDropDown";
 import BanksLeasingDropDown from "../../atoms/BanksLeasingDropDown";
 import { Textarea } from "../../../@/components/ui/textarea";
+import NumberCarsDropDown from "../../../components/atoms/NumberCarsDopDown";
 
 interface ClientExtraFormProps {
     form: any; // Keep the any type since that's what you're using
@@ -59,7 +60,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ancien Vehicule" name={`${formId}.OldCar`}>
                             <Input
-                                className="border border-highBlue bg-bgColorLight text-highBlue"
+                                className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                                 placeholder="Ancien Vehicule"
                                 {...register(`${formId}.OldCar`)}
                             />
@@ -67,6 +68,10 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Modèle préféré" name={`${formId}.CarModel`} className="flex-1 text-highBlue">
+                             <div className={`${form.formState.errors[formId]?.CarModel
+                                ? "border border-red-500 rounded-md"
+                                : ""
+                                }`}>
                             <Controller
                                 name={`${formId}.CarModel`}
                                 control={control}
@@ -78,6 +83,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                     />
                                 )}
                             />
+                            </div>
                         </FormCardContent>
                     </div>
                 </div>
@@ -100,6 +106,10 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                     </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Source" name={`${generalFormId}.Source`} className="flex-1 text-highBlue">
+                             <div className={`${form.formState.errors[generalFormId]?.Source
+                                ? "border border-red-500 rounded-md"
+                                : ""
+                                }`}>
                             <Controller
                                 name={`${generalFormId}.Source`}
                                 control={control}
@@ -110,29 +120,48 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                                     />
                                 )}
                             />
+                            </div>
                         </FormCardContent>
                     </div>
                 </div>
 
                 {/* Priority */}
-                <FormCardContent form={form} label="Priorité" name={`${generalFormId}.PriorityDevis`}>
-                    <Controller
-                        name={`${generalFormId}.PriorityDevis`}
-                        control={control}
-                        render={({ field }) => (
-                            <PriorityDevisDropDown
-                                value={field.value}
-                                onChange={(value) => field.onChange(value)}
-                                isFiltring={false}
+                <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Priorité" name={`${generalFormId}.PriorityDevis`} className="flex-1 text-highBlue">
+                            <Controller
+                                name={`${generalFormId}.PriorityDevis`}
+                                control={control}
+                                render={({ field }) => (
+                                    <PriorityDevisDropDown
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                        isFiltring={false}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                </FormCardContent>
+                        </FormCardContent>
+                    </div>
+                    <div className="flex-1">
+                        <FormCardContent form={form} label="Nombre de véhicules" name={`${generalFormId}.numberCars`} className="flex-1 text-highBlue">
+                            <Controller
+                                name={`${generalFormId}.numberCars`}
+                                control={control}
+                                render={({ field }) => (
+                                    <NumberCarsDropDown
+                                        value={field.value}
+                                        onChange={(value) => field.onChange(value)}
+                                    />
+                                )}
+                            />
+                        </FormCardContent>
+                    </div>
+                </div>
 
                 {/* More Infos */}
                 <FormCardContent form={form} label="Plus d'informations véhicule" name={`${formId}.CarNotes`}>
                     <Textarea
-                        className="border border-highBlue bg-bgColorLight text-highBlue"
+                        className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                         placeholder="Plus d'informations véhicule"
                         {...register(`${formId}.CarNotes`)}
                     />
@@ -164,7 +193,7 @@ const ClientExtraForm: React.FC<ClientExtraFormProps> = ({
                 </div>
                 {/* Bank and Region fields */}
                 {showBankFields && (
-                    <div className="flex flex-col md:flex-row gap-4 text-whiteSecond">
+                    <div className="flex flex-col md:flex-row gap-4 text-highBlue">
                         <FormCardContent form={form} label="Banque et Leasing" name={`${payementFormId}.BankAndLeasing`} className="flex-1">
                             <Controller
                                 name={`${payementFormId}.BankAndLeasing`}

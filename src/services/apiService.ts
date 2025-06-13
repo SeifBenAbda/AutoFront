@@ -1,7 +1,9 @@
 import { Article } from "@/types/otherTypes";
-import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, ItemRequest, Rappel } from "../types/devisTypes";
+import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, HttpStatus, Rappel } from "../types/devisTypes";
 import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
+import { generateBcInterneResponse } from "../hooks/useUploadFiles";
+import { CarModel } from "../hooks/useCars";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -20,6 +22,27 @@ export const fetchUserData = async () => {
   if (!response.ok) throw new Error('Failed to fetch user data');
 
   return response.json();
+};
+
+
+export const getDatabasesAccess = async (username: string): Promise<string[]> => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/agent-database-access/get-accessed-databases`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  const data = await response.json();
+  if (!data || data.length === 0) throw new Error('No databases access found');
+
+  return data;
 };
 
 export const updateUser = async (
@@ -50,7 +73,8 @@ export const updateUser = async (
 
 
 export const createUser = async (
-  createdUser?: Partial<User>,
+  password: string,
+  createdUser?: Partial<User>
 ): Promise<{ user: User }> => {
   const token = getToken();
 
@@ -65,6 +89,7 @@ export const createUser = async (
     // Directly sending the updatedUser object
     body: JSON.stringify({
       "user":createdUser,
+      "password":password
     }),
   });
 
@@ -219,6 +244,178 @@ export const fetchCarModels = async (databasename: string, navigate: (path: stri
 };
 
 
+export const fetchCarsPaginated = async (
+  databasename: string,
+  page: number = 1,
+  pageSize: number = 7,
+  navigate: (path: string) => void,
+  searchTerm: string = ''
+) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { 
+    database: databasename,
+    page,
+    pageSize,
+    searchTerm
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/cars/paginated`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch paginated cars data');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+
+export const createCar = async (
+  database: string,
+  newCar: Partial<CarModel>,
+  createdBy: string,
+  navigate: (path: string) => void
+) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database, newCar,createdBy };
+
+  try {
+    const response = await fetch(`${API_URL}/cars/create`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to create car');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export const updateCar = async (
+  database: string,
+  navigate: (path: string) => void,
+  updatedCar: Partial<CarModel>,
+) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database, updatedCar };
+
+  try {
+    const response = await fetch(`${API_URL}/cars/update`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to update car');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+
+export const fetchCarModelsFacture = async (databasename: string, navigate: (path: string) => void) => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+  const body = { database: databasename };
+  try {
+    const response = await fetch(`${API_URL}/cars/cars-facture`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch car models');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
 //fetching Regions 
 export const fetchRegions = async (databasename:string) => {
   const token = getToken();
@@ -235,6 +432,28 @@ export const fetchRegions = async (databasename:string) => {
 
   if (!response.ok) {
       throw new Error('Failed to fetch regions');
+  }
+
+  return response.json();
+};
+
+
+//fetching Client Sectors 
+export const fetchClientSectors = async (databasename:string) => {
+  const token = getToken();
+  if (!token) throw new Error('No token found');
+  const body = {"database":databasename}
+  const response = await fetch(`${API_URL}/client-sectors`, {
+    method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+      throw new Error('Failed to fetch client Sectors');
   }
 
   return response.json();
@@ -269,14 +488,13 @@ export const updateDevis = async (
   clientId: number,
   updatedDevis: Partial<Devis>,
   updatedClient?: Partial<Client>,
-  updatedItemRequestData?: Partial<ItemRequest>,
   updatedCarRequestData?: Partial<CarRequest>,
   updatedRappels?: Partial<Rappel[]>,
   updatedDevisFacture?: Partial<DevisFacture>,
   updatedDevisReserved?: Partial<DevisReserved>,
   updatedDevisPayementDetails?: Partial<DevisPayementDetails>,
   updatedDevisGesteCommerciale?: Partial<DevisGesteCommer>
-): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest; itemRequest?: ItemRequest ;rappels?: Rappel[];
+): Promise<{ client?: Client; devis: Devis; carRequest?: CarRequest ;rappels?: Rappel[];
   devisFacture?: DevisFacture; devisReserved?: DevisReserved; devisPayementDetails?: DevisPayementDetails
 }> => {
   const token = getToken();
@@ -294,7 +512,6 @@ export const updateDevis = async (
       "clientId": clientId,
       "updatedDevis":updatedDevis,
       "updatedClient": updatedClient,
-      "updatedItemRequest": updatedItemRequestData,
       "updatedCarRequest" : updatedCarRequestData,
       "updatedRappels":updatedRappels,
       "updatedDevisFacture": updatedDevisFacture,
@@ -349,7 +566,6 @@ export const createDevis = async (
   database: string,
   client: Client,
   devis: Devis,
-  itemRequestData?: ItemRequest[],
   carRequestData?: CarRequest,
   rappelData? : Rappel[],
   devisPayementDetails? : DevisPayementDetails
@@ -367,7 +583,6 @@ export const createDevis = async (
       "database":database,
       "client":client,
       "devis":devis,
-      "itemRequest":itemRequestData,
       "carRequest":carRequestData,
       "rappelsDevis":rappelData,
       "devisPayementDetails":devisPayementDetails
@@ -811,3 +1026,41 @@ export const fetchDocCheck = async (databasename: string,clientType: string,paye
 };
 
 
+
+export const generateBcInterne = async (databasename: string,devisId: number, navigate: (path: string) => void): Promise<generateBcInterneResponse> => {
+  const token = getToken();
+  if (!token) {
+    navigate('/login');
+    throw new Error('No token found');
+  }
+
+  const body = { database: databasename ,devisId:devisId};
+
+  try {
+    const response = await fetch(`${API_URL}/devis-documents/generateBcInterne`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      navigate('/login');
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to generate BC Interne');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+  

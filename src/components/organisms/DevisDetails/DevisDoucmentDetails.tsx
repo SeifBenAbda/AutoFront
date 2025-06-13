@@ -36,16 +36,26 @@ export function DevisDoucmentDetails({ devis }: DevisDoucmentDetailsProps) {
 
     return (
         <div>
-            <div className="w-full flex flex-row space-x-2 items-end justify-end">
-                {icons.map((icon) => (
-                    <div
-                        key={icon.id}
-                        className="bg-whiteSecond border border-whiteSecond rounded-md p-1 cursor-pointer"
-                        onClick={() => handleChangeComponent(icon.id as 'checkFiles' | 'uploadFile')}
-                    >
-                        <img src={icon.src} alt={icon.alt} height={30} width={30} />
-                    </div>
-                ))}
+            <div className="w-full flex flex-row space-x-3 items-end justify-end mb-4">
+                {icons.map((icon) => {
+                    const isActive = activeComponent === icon.id;
+                    const buttonText = icon.id === 'checkFiles' ? 'Voir les fichiers' : 'Envoyer des fichiers';
+                    
+                    return (
+                        <button
+                            key={icon.id}
+                            className={`flex items-center font-oswald gap-2 px-3 py-2 rounded-md transition-colors ${
+                                isActive 
+                                    ? 'bg-highBlue text-white' 
+                                    : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                            onClick={() => handleChangeComponent(icon.id as 'checkFiles' | 'uploadFile')}
+                        >
+                            <img src={icon.src} alt={icon.alt} className="w-5 h-5" />
+                            <span>{buttonText}</span>
+                        </button>
+                    );
+                })}
             </div>
 
             <div>

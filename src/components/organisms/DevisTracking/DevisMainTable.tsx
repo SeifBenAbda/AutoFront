@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TableData } from '../TableData';
-import { columns as initialColumns } from '../../../utils/DevisColumns';
 import { PaginationTable } from '../../atoms/TablePagination';
 import { SheetProvider } from '../../../context/sheetContext';
 import useDevis from '../../../hooks/useDevis';
@@ -12,11 +11,21 @@ import CarsMultiSelect from '../../atoms/CarsMultiSelect';
 import ClientsMultiSelect from '../../../components/atoms/ClientsMultiSelect';
 import { DatePicker } from '../../../components/atoms/DateSelector';
 
+import { X as XIcon, Filter as FilterIcon, Calendar as CalendarIcon } from "lucide-react";
+import { Button } from '../../../@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../@/components/ui/popover";
+import { PopoverClose } from '@radix-ui/react-popover';
+
 interface DataTableProps {
   typeDevis: string;
+  autoOpenDevisId?: number | string; // Optional prop for auto-opening a specific Devis
 }
 
-const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
+const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) => {
   const [page, setPage] = useState(1);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
@@ -29,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
   // Fetch data from the API based on current filters and pagination
   const { data, isLoading, error } = useDevis(
-    page, searchValue, selectedStatus, 
+    page, searchValue, selectedStatus,
     selectedPriority, selectedCars, selectedClients,
     dateRappelFrom,
     dateRappelTo);
@@ -39,6 +48,48 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
     'Créé par': 'CreatedBy',
     'Date Livraison prévue': 'scheduledLivrDate',
   };
+
+  // State to track if we're actively searching for a specific devis
+  const [isSearchingDevis, setIsSearchingDevis] = useState(false);
+  const [processedDevisId, setProcessedDevisId] = useState<string | number | undefined>(undefined);
+
+  // Initialize search when autoOpenDevisId is provided
+  useEffect(() => {
+    if (autoOpenDevisId && !isSearchingDevis && processedDevisId !== autoOpenDevisId) {
+      // First, try finding with search
+      setSearchValue(String(autoOpenDevisId));
+      setPage(1);
+      setIsSearchingDevis(true);
+      setProcessedDevisId(autoOpenDevisId);
+    }
+  }, [autoOpenDevisId, isSearchingDevis, processedDevisId]);
+
+  // Handle the pagination search process
+  useEffect(() => {
+    // Only proceed if we're in search mode and data is loaded
+    if (!isSearchingDevis || isLoading || !data) return;
+    
+    // Check if the devis exists in the current page data
+    const devisFound = data.data.some(devis => {
+      // Normalize ID types for comparison
+      const devisId = typeof devis.DevisId === 'number' ? devis.DevisId : Number(devis.DevisId);
+      const searchId = typeof autoOpenDevisId === 'number' ? autoOpenDevisId : Number(autoOpenDevisId);
+      return devisId === searchId;
+    });
+    
+    if (devisFound) {
+      // Devis found, stop searching
+      setIsSearchingDevis(false);
+    } else if (data.meta.currentPage < data.meta.totalPages) {
+      // Not found on this page, go to the next page
+      setPage(prevPage => prevPage + 1);
+    } else {
+      // We've checked all pages without finding the devis
+      setIsSearchingDevis(false);
+      // Clear the search filter since we didn't find anything with it
+      setSearchValue('');
+    }
+  }, [data, isLoading, isSearchingDevis, autoOpenDevisId]);
 
 
   const handleDateRappelFromChange = (date: Date | undefined) => {
@@ -78,9 +129,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
     setHiddenColumns(columnsToHide);
   }, []);
 
-  const displayedColumns = initialColumns.filter(
-    (col) => !hiddenColumns.includes(col.id as string)
-  );
+
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -96,7 +145,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
       {/* Header with Devis Title and Filter */}
       <div className='flex-none flex flex-row justify-between mb-4'>
         <div className="flex items-center justify-center font-oswald text-2xl text-highBlue">
-          {typeDevis === "TC" ? "Devis Voiture" : "Devis Changement des Pieces"}
+          {typeDevis === "TC" ? "Leads" : "Devis Changement des Pieces"}
         </div>
 
         {/*<div className="flex-1">
@@ -105,61 +154,153 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
 
       </div>
 
-      {/* Search Box and Status Dropdown */}
-      <div className="flex justify-between mb-4">
-        <div className="flex gap-4">
-          <div className="w-auto">
-            <StatusDevisDropDown
-              value={selectedStatus}
-              onChange={handleStatusChange}
-              isFiltring={true}
-            />
-          </div>
-          <div className="w-auto">
-            <PriorityDevisDropDown
-              value={selectedPriority}
-              onChange={handlePriorityChange}
-              isFiltring={true}
-            />
-          </div>
-          <div className="w-auto">
-            <CarsMultiSelect
-              selectedValues={selectedCars} // Changed to selectedValues
-              onChange={handleCarChange} // Updated to handle array of selected values
-              isFiltering={true}
-            />
-          </div>
-          <div className="w-auto">
-            <ClientsMultiSelect
-              selectedValues={selectedClients} // Changed to selectedValues
-              onChange={handleClientChange} // Updated to handle array of selected values
-              isFiltering={true}
-            />
-          </div>
-
-          <div className="flex gap-4">
+      {/* Improved Filters Section */}
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
+        {/* Filter Controls */}
+        <div className="flex flex-col space-y-2">
+          <div className="flex flex-wrap gap-2">
+            {/* Status & Priority Popover */}
             <div className="w-auto">
-              <DatePicker
-                value={dateRappelFrom}
-                onChange={handleDateRappelFromChange}
-                fromYear={new Date().getFullYear() - 1}
-                toYear={new Date().getFullYear() + 1}
-                styling="w-full border border-normalGrey bg-normalGrey"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
+                  >
+                    <FilterIcon size={16} />
+                    <span className='font-oswald'>Status & Priorité</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-64 p-3 border border-gray-200 shadow-md bg-white rounded-md"
+                  align="start"
+                  sideOffset={5}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-oswald text-highBlue text-base">Filtres</h3>
+                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                      <XIcon size={14} />
+                      <span className="sr-only">Close</span>
+                    </PopoverClose>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="w-full">
+                      <label className="block text-xs font-medium text-highBlue mb-1">Status</label>
+                      <StatusDevisDropDown
+                        value={selectedStatus}
+                        onChange={handleStatusChange}
+                        isFiltring={true}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label className="block text-xs font-medium text-highBlue mb-1">Priorité</label>
+                      <PriorityDevisDropDown
+                        value={selectedPriority}
+                        onChange={handlePriorityChange}
+                        isFiltring={true}
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="w-auto">
+              <CarsMultiSelect
+                selectedValues={selectedCars}
+                onChange={handleCarChange}
+                isFiltering={true}
               />
             </div>
             <div className="w-auto">
-              <DatePicker
-                value={dateRappelTo}
-                onChange={handleDateRappelToChange}
-                fromYear={new Date().getFullYear() - 1}
-                toYear={new Date().getFullYear() + 1}
-                styling="w-full border border-normalGrey bg-normalGrey"
+              <ClientsMultiSelect
+                selectedValues={selectedClients}
+                onChange={handleClientChange}
+                isFiltering={true}
               />
             </div>
-          </div>
 
+            {/* Date Range Filters in a popover */}
+            <div className="w-auto">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
+                  >
+                    <CalendarIcon size={16} />
+                    <span className='font-oswald'>Période (Rappels)</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-96 p-4 border border-gray-200 shadow-md bg-white rounded-md"
+                  align="start"
+                  sideOffset={5}
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-oswald text-highBlue text-base">Période (Rappels)</h3>
+                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                      <XIcon size={14} />
+                      <span className="sr-only">Close</span>
+                    </PopoverClose>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-1/2">
+                      <label className="block text-sm font-medium text-highBlue mb-1.5">De</label>
+                      <DatePicker
+                        value={dateRappelFrom}
+                        onChange={handleDateRappelFromChange}
+                        fromYear={new Date().getFullYear() - 1}
+                        toYear={new Date().getFullYear() + 1}
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-sm font-medium text-highBlue mb-1.5">À</label>
+                      <DatePicker
+                        value={dateRappelTo}
+                        onChange={handleDateRappelToChange}
+                        fromYear={new Date().getFullYear() - 1}
+                        toYear={new Date().getFullYear() + 1}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      onClick={() => {
+                        setDateRappelFrom(undefined);
+                        setDateRappelTo(undefined);
+                        setPage(1);
+                      }}
+                      className="text-xs px-3 py-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
+                    >
+                      Réinitialiser les dates
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              </div>
+
+              {/*   Show only  Reminder of Today When I click a Button* */}
+              <div className="w-auto">
+                <Button
+                  onClick={() => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set to beginning of the day
+                    const tomorrow = new Date(today);
+                    today.setDate(today.getDate() + 1);
+                    setDateRappelFrom(tomorrow);
+                    setDateRappelTo(today);
+                    setPage(1);
+                  }}
+                  className="text-xs px-3 py-1 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-md font-oswald"
+                >
+                  Rappels d'aujourd'hui
+                </Button>
+                </div>
+          
+          </div>
         </div>
-        <div className="w-auto">
+
+        {/* Search Box */}
+        <div className="w-full md:w-auto">
           <SearchBar onSearch={handleSearch} searchValue={searchValue} />
         </div>
       </div>
@@ -173,7 +314,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis }) => {
         ) : (
           <>
             <SheetProvider>
-              <TableData data={data?.data || []} columns={displayedColumns} />
+              <TableData data={data?.data || []} autoOpenDevisId={autoOpenDevisId} />
             </SheetProvider>
             <div className="flex justify-center mt-4">
               <PaginationTable

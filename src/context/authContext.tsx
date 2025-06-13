@@ -3,6 +3,7 @@ import { saveToken, getToken, removeToken, loginUser } from '../services/authSer
 import { fetchUserData } from '../services/apiService';
 import { User } from '../models/user.model';
 
+
 interface AuthContextProps {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
@@ -22,7 +23,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       fetchUserData()
         .then(data => setUser(data))
         .catch(err => {
-          console.error(err);
           removeToken(); // Clear token on error
         });
     }
@@ -36,8 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(userData);
       setError(null); // Clear any previous errors
     } catch (err) {
-      console.error('Login failed:', err);
-      setError('Login failed. Please check your credentials.');
+      setError('Échec de la connexion. Vos identifiants sont incorrects ou votre compte est inactif.');
       throw err; // Rethrow the error to be handled in the component
     }
   };

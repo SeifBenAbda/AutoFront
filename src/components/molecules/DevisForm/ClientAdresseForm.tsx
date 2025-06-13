@@ -22,13 +22,13 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
             <div className="w-full space-y-4">
                 {/* Adresse */}
                 <div className="text-whiteSecond">
-                <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`} className="flex-1 text-highBlue">
-                    <Input
-                        className="border border-highBlue bg-bgColorLight text-highBlue"
-                        placeholder="Adresse"
-                        {...register(`${formId}.adresse`)}
-                    />
-                </FormCardContent>
+                    <FormCardContent form={form} label="Adresse" name={`${formId}.adresse`} className="flex-1 text-highBlue">
+                        <Input
+                            className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
+                            placeholder="Adresse"
+                            {...register(`${formId}.adresse`)}
+                        />
+                    </FormCardContent>
                 </div>
 
                 {/* Ville and Region */}
@@ -36,7 +36,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Ville" name={`${formId}.ville`} className="flex-1 text-highBlue">
                             <Input
-                                className="border border-highBlue bg-bgColorLight text-highBlue"
+                                className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                                 placeholder="Ville"
                                 {...register(`${formId}.ville`)}
                             />
@@ -44,17 +44,22 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     </div>
                     <div className="flex-1">
                         <FormCardContent form={form} label="Region" name={`${formId}.region`} className="flex-1 text-highBlue">
-                            <Controller
-                                name={`${formId}.region`}
-                                control={control}
-                                render={({ field }) => (
-                                    <RegionDropDown
-                                        value={field.value || ""}
-                                        onChange={(value) => field.onChange(value)}
-                                        isFiltring={false}
-                                    />
-                                )}
-                            />
+                            <div className={`${form.formState.errors[formId]?.region
+                                ? "border border-red-500 rounded-md"
+                                : ""
+                                }`}>
+                                <Controller
+                                    name={`${formId}.region`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <RegionDropDown
+                                            value={field.value || ""}
+                                            onChange={(value) => field.onChange(value)}
+                                            isFiltring={false}
+                                        />
+                                    )}
+                                />
+                            </div>
                         </FormCardContent>
                     </div>
                 </div>
@@ -64,7 +69,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Code Postal" name={`${formId}.postalCode`} className="flex-1 text-highBlue">
                             <NumericInputForm
-                                className="border border-highBlue bg-bgColorLight text-highBlue"
+                                className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                                 placeholder="Code Postal"
                                 {...register(`${formId}.postalCode`)}
                                 maxLength={5}
@@ -74,7 +79,7 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
                     <div className="flex-1">
                         <FormCardContent form={form} label="Pays" name={`${formId}.pays`} className="flex-1 text-highBlue">
                             <Input
-                                className="border border-highBlue bg-bgColorLight text-highBlue"
+                                className="border border-normalGrey font-oswald bg-normalGrey text-highBlue"
                                 placeholder="Pays"
                                 {...register(`${formId}.pays`)}
                             />
@@ -84,13 +89,13 @@ const ClientAdresseForm: React.FC<any> = ({ form, formId }) => {
 
                 {/* Plus d'informations Adresse */}
                 <div className="text-whiteSecond">
-                <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`} className="flex-1 text-highBlue">
-                    <Textarea
-                        className="border border-highBlue bg-bgColorLight min-h-[70px] text-highBlue"
-                        placeholder="Plus d'informations.."
-                        {...register(`${formId}.addressMoreInfos`)}
-                    />
-                </FormCardContent>
+                    <FormCardContent form={form} label="Plus d'informations Adresse" name={`${formId}.addressMoreInfos`} className="flex-1 text-highBlue">
+                        <Textarea
+                            className="border border-normalGrey font-oswald bg-normalGrey min-h-[70px] text-highBlue"
+                            placeholder="Plus d'informations.."
+                            {...register(`${formId}.addressMoreInfos`)}
+                        />
+                    </FormCardContent>
                 </div>
             </div>
         </Form>

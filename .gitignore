@@ -25,3 +25,15 @@ dist-ssr
 *.sw?
 .env.development
 .env.production
+# Text files
+*.txt
+
+# Environment files
+.env
+.env.*
+
+# Archive files
+*.zip
+
+# Database files
+*.sql

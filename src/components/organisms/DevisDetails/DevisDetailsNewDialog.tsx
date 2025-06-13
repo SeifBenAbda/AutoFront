@@ -16,11 +16,11 @@ type DevisDetailsPageProps = {
 };
 
 // Create custom components for each state
-const ClientInfo = ({ geneder, name, phone }: { geneder: string; name: string; phone: string }) => (
+const ClientInfo = ({ geneder, name, phone,type }: { geneder: string; name: string; phone: string; type: string }) => (
     <div className="flex items-center space-x-8 px-3 py-1 justify-center">
         <div className="flex flex-row space-x-2">
             <img src={clientIcon} alt="Agent" className="w-5 h-5" />
-            <span className="text-highBlue font-oswald">{geneder} {name}</span>
+            <span className="text-highBlue font-oswald">{type==="Particulier" ? geneder : ""} {name}</span>
         </div>
         <div className="flex flex-row space-x-2">
             <img src={phoneIcon} alt="Phone" className="w-5 h-5" />
@@ -124,7 +124,7 @@ export function DevisDetailsPage({
 
     // Determine if the user is an admin
     useEffect(() => {
-        if (user?.groupe === 'ADMIN') {
+        if (user?.role === 'ADMIN') {
             setIsAdmin(true);
         }
     }, [user]);
@@ -181,7 +181,7 @@ export function DevisDetailsPage({
                     <div className={`font-medium font-oswald text-sm rounded-md px-2 py-1 ${getPriorityClassName(allData.PriorityDevis)}`}>
                         Priorité {allData.PriorityDevis}
                     </div>
-                    <div className="font-oswald text-2xl flex-1 text-center pr-8">Devis N° {allData.DevisId}</div>
+                    <div className="font-oswald text-2xl flex-1 text-center pr-8">Lead N° {allData.DevisId}</div>
                     <CircleX className="h-7 w-7 cursor-pointer" onClick={onClose} />
                 </DialogTitle>
 
@@ -196,6 +196,7 @@ export function DevisDetailsPage({
                                     geneder={allData.client?.clientGender ?? ""}
                                     name={allData.client?.nomClient ?? ""}
                                     phone={allData.client?.telClient ?? ""}
+                                    type={allData.client?.clientType ?? ""}
                                 />
                             ) : currentComponent === 'reminder' ? (
                                 <ReminderInfo rappels={allData.rappels} />

@@ -39,6 +39,7 @@ const ClientsMultiSelect = ({ selectedValues, onChange, isFiltering }: ClientsDo
     return (
         <MultiSelect
             options={options}
+            key={options.findIndex((option) => option.value === selectedValues[0])}
             onValueChange={onChange}
             defaultValue={selectedValues}
             placeholder="Tous les clients"

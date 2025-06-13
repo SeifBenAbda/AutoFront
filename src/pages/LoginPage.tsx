@@ -5,7 +5,6 @@ const LoginPage: React.FC = () => {
   return (
     <div
       className="h-screen flex flex-col bg-lightWhite"
-      style={{ backgroundImage: 'url("https://undraw.co/api/illustrations/2d09f2c8-2a6d-4c12-bb1c-6c589e3eae7f")', backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute top-4 left-4">
         <h1 className="text-2xl font-bold text-highBlue font-oswald">AUTO PRO</h1>

@@ -16,7 +16,7 @@ const PriorityDevisDropDown = ({ value, onChange, isFiltring }: PriorityDevisTyp
     const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey font-oswald">
+            <SelectTrigger className="w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue">
                 <SelectValue placeholder={value ? value.toString() : "Toutes les priorités"} className={hoverItem} />
             </SelectTrigger>
             <SelectContent className="bg-normalGrey border-normalGrey">

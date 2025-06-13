@@ -84,6 +84,7 @@ export interface Devis {
   Comments : string | undefined ,
   Responsable : string | undefined ,
   ResponsableNum : string | undefined ,
+  numberCars: number | undefined;
   client: Client | undefined; // The client associated with the Devis
   itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis
@@ -92,6 +93,8 @@ export interface Devis {
   devisFacture:DevisFacture;
   devisReserved:DevisReserved;
   gesteCommer:DevisGesteCommer;
+  AssignedFrom?: string | undefined; // The user who assigned the Devis
+  AssignedTo?: string | undefined; // The user to whom the Devis is assigned
 }
 
 
@@ -106,6 +109,7 @@ export interface Rappel{
   UpdatedBy : string | undefined , 
   UpdatedAt : Date | undefined , 
   RappelContent:string | undefined
+  isClosed:boolean | undefined ,
 }
 
 
