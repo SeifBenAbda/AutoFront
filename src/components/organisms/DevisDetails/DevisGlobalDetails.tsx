@@ -1,6 +1,6 @@
 import { Label } from "../../../@/components/ui/label";
 import { CardContent, CardTitle } from "../../../@/components/ui/card";
-import { Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved } from "../../../types/devisTypes";
+import { Devis, DevisFacture, DevisPayementDetails } from "../../../types/devisTypes";
 import StatusDevisDropDown from "../../../components/atoms/StatusDevis";
 import PriorityDevisDropDown from "../../../components/atoms/PriorityDropDown";
 import BanksLeasingDropDown from "../../../components/atoms/BanksLeasingDropDown";
@@ -16,6 +16,8 @@ import { useUser } from "../../../context/userContext";
 import { params } from "../../../utils/params";
 import PhoneInput from "../../../components/atoms/PhoneInput";
 import { state } from "../../../utils/shared_functions";
+import AgentNamesDropDowm from "../../../components/atoms/AgentNamesDropDowm";
+
 
 interface DevisGlobalDetailsProps {
     devis: Devis;
@@ -30,10 +32,12 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const token = getToken();
     const { user } = useUser();
     const initialDevisFacture = devis.devisFacture;
-    const isEditingBrdOpen = devis.StatusDevis !== "Livré";
-    const [isEditingOpen, setIsEditingOpen] = useState(devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null);
+    const isEditingBrdOpen = devis.StatusDevis !== "Livré" && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
+    const [isEditingOpen, setIsEditingOpen] = useState((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
+
     useEffect(() => {
-        setIsEditingOpen(devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null);
+        console.log("Assigned to user:", devis.AssignedTo, "User username:", user?.username, "isAdmin:", isAdmin);
+        setIsEditingOpen((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
         if (devis.DevisId) {
             setIsLoading(true);
             const fetchData = async () => {
@@ -52,6 +56,16 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
         };
         onUpdate(updatedDevis);
     };
+
+
+    const handleAssignedToChange = (value: string) => {
+        const updatedDevis = {
+            ...devis,
+            AssignedTo: value === "Non déterminé" ? "" : value,
+            AssignedFrom: value === "Non déterminé" ? "" : user?.username,
+        };
+        onUpdate(updatedDevis);
+    }
 
 
 
@@ -280,7 +294,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className="relative text-sm font-medium text-highBlue ">Immatriculation</Label>
-                        <Input
+                        {isEditingOpen ? (
+                            <Input
                             maxLength={30}
                             value={devis.carRequests[0].Immatriculation || ""}
                             onChange={(e) => {
@@ -295,16 +310,27 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                             placeholder="Numéro d'immatriculation"
                             className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                         />
+                        ) : (
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.carRequests[0].Immatriculation || ""}</span>
+                            </div>
+                        )}
                     </CardContent>
 
                     <CardContent className="w-full">
                         <Label className="relative text-sm font-medium text-highBlue ">Date de Livraison</Label>
-                        <DatePicker
+                        {isEditingOpen ? (
+                            <DatePicker
                             value={devis.devisFacture?.DateLivraison || new Date()}
                             onChange={handleDateLivraisonChange}
                             fromYear={new Date().getFullYear()}
                             toYear={new Date().getFullYear() + 1}
                         />
+                        ) : (   
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.devisFacture?.DateLivraison ? new Date(devis.devisFacture.DateLivraison).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+                            </div>
+                        )}
                     </CardContent>
                 </div>
             </div>
@@ -327,11 +353,17 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="w-full">
                         <Label className="text-sm font-medium text-highBlue">Status</Label>
-                        <StatusDevisDropDown
-                            value={devis.StatusDevis}
-                            onChange={(value) => handleStatusChange(value)}
-                            isFiltring={false}
-                        />
+                        {isEditingOpen ? (
+                            <StatusDevisDropDown
+                                value={devis.StatusDevis}
+                                onChange={handleStatusChange}
+                                isFiltring={false}
+                            />
+                        ) : (
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.StatusDevis}</span>
+                            </div>
+                        )}
                     </CardContent>
 
                     {/** 
@@ -346,14 +378,28 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="w-full">
                         <Label className="text-sm font-medium text-highBlue">Priorité</Label>
-                        <PriorityDevisDropDown
+                        { isEditingOpen ? (
+                            <PriorityDevisDropDown
                             value={devis.PriorityDevis}
                             onChange={(value) => handleChange("PriorityDevis", value)}
                             isFiltring={false}
                         />
+                        ) : (   
+                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
+                                <span>{devis.PriorityDevis}</span>
+                            </div>
+                        )}
                     </CardContent>
 
-
+                    {isAdmin && (
+                        <CardContent className="w-full">
+                            <Label className="text-sm font-medium text-highBlue">Assigné à</Label>
+                            <AgentNamesDropDowm
+                                value={devis.AssignedTo}
+                                onChange={(value) => handleAssignedToChange(value)}
+                            />
+                        </CardContent>
+                    )}
                 </div>
                 {devis.StatusDevis === "Annulé" && (
                     <CardContent className="w-full">

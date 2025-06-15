@@ -5,7 +5,7 @@ import { Textarea } from "../../../@/components/ui/textarea";
 import { Label } from "../../../@/components/ui/label";
 import CarsDropDown from "../../../components/atoms/CarsDropDown";
 import { params } from "../../../utils/params";
-
+import { useUser } from "../../../context/userContext";
 interface DevisVehiculeDetailsProps {
     carRequest: CarRequest;
     devis: Devis;
@@ -15,7 +15,8 @@ interface DevisVehiculeDetailsProps {
 }
 
 export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevis, isAdmin }: DevisVehiculeDetailsProps) {
-    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture==null;
+    const { user } = useUser();
+    const isEditingOpen = (devis.StatusDevis == "En Cours" || devis.devisFacture==null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
     const handleChange = (field: keyof CarRequest, value: string | Date | undefined) => {
         onUpdate({
             ...carRequest,

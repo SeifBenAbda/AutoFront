@@ -56,7 +56,6 @@ export const defaultFormDevisGeneral : Devis = {
     client: undefined,
     ReasonAnnulation: undefined,
     Comments: undefined,
-    itemRequests: [],
     carRequests: [],
     rappels: [],
     numberCars: 1,

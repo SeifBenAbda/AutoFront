@@ -1,4 +1,5 @@
-import { fetchAgentsHistory } from '../services/profileService';
+import { User } from '@/models/user.model';
+import { fetchAgentNames, fetchAgentsHistory } from '../services/profileService';
 import { state } from '../utils/shared_functions';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -41,3 +42,16 @@ const useAgentsHistory = (username?:string,entityType?:string,fromDate?:Date,toD
 };
 
 export default useAgentsHistory;
+
+
+
+export const useAgentNames = () => {
+     const navigate = useNavigate(); // Move the useNavigate call here inside the hook
+
+    return useQuery<User[]>({
+        queryKey: ['agentNames'],
+        queryFn: () => fetchAgentNames(navigate), // Pass navigate to the fetchAgentsHistory function
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+    });
+};

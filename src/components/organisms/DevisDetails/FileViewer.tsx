@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FileData, useDevisFiles } from '../../../hooks/useUploadFiles'; // Adjust the import path as needed
 import { useUrlFiles } from '../../../hooks/useUploadFiles'; // Import the useUrlFiles hook
-import Modal from '../../atoms/ModalFileViewer'; // Adjust the import path to your Modal component
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardTitle } from '../../../@/components/ui/card';
 import emptyBoxIcon from '../../../images/emptyBox.png';
 import useDocsCheck, { DocumentCondition } from '../../../hooks/useDocsCheck';
 import { Devis } from '../../../types/devisTypes';
 import Loading from '../../../components/atoms/Loading';
+import { useUser } from "../../../context/userContext";
+
 
 const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devis }) => {
     const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -19,7 +20,9 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
     const [isLoadingFile, setIsLoadingFiles] = useState(false);
 
     const [isLoadingOpening, setIsLoadingOpening] = useState(false);
-
+     const { user } = useUser();
+     const isAdmin = user?.role === 'ADMIN';
+     const isEditingOpen = (devis.StatusDevis != "Livré" && devis.StatusDevis!='Annulé') && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
 
     const { data: files = [], isLoading, error, refetch } = useDevisFiles(devisId, navigate);
     const { mutateAsync: fetchFileUrl } = useUrlFiles(devisId, navigate);

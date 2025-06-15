@@ -14,7 +14,8 @@ interface DevisRappelsDetailsProps {
 
 export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, onUpdate }: DevisRappelsDetailsProps) {
     const { user } = useUser();
-    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture==null;
+    const isAdmin = user?.role === 'ADMIN';
+    const isEditingOpen = (devis.StatusDevis == "En Cours" || devis.devisFacture==null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
     const handleChange = (rappelId: number, field: keyof Rappel, value: string | Date | boolean | undefined) => {
         const index = rappels.findIndex(rappel => rappel.RappelId === rappelId);
 
@@ -70,6 +71,7 @@ export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, on
                     <button
                         onClick={handleAddRappel}
                         className="bg-white text-highBlue px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-transparent"
+                        disabled={!isEditingOpen}
                     >
                         Nouvel Rappel
                     </button>
@@ -105,12 +107,18 @@ export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, on
                                             <div className="text-sm">{new Date(rappel.RappelDate!).toLocaleDateString()}</div>
                                         ) : (
                                             <div className="w-40">
-                                                <DatePicker
+                                                {isEditingOpen ? (
+                                                    <DatePicker
                                                     value={rappel.RappelDate}
                                                     onChange={(date) => handleDateChange(rappel.RappelId!, date)}
                                                     fromYear={new Date().getFullYear()}
                                                     toYear={new Date().getFullYear() + 1}
                                                 />
+                                                ) : (
+                                                    <div className="text-sm">
+                                                        {rappel.RappelDate ? new Date(rappel.RappelDate).toLocaleDateString() : "Aucune date"}
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </td>

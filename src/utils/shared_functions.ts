@@ -61,7 +61,6 @@ const isCanceledDevisNotFinished = (devis: Devis): boolean => {
 }
 
 const bordoreauxMissing = (devis: Devis): boolean => {
-    console.log("Borderaux : ",devis.devisFacture.StatutBRD);
     if(devis.devisFacture === null || devis.devisFacture === undefined) {
         return false;
     }
@@ -138,3 +137,20 @@ export const isErrorBanqueSelection = (banque: string): boolean => {
 export const getErrorBanqueSelection = (): string => {
      return "La banque n'est pas encore choisie !";
 }
+
+
+
+export const saveDatabaseName = (name: string): void => {
+    localStorage.setItem('databaseName', name);
+    state.databaseName = name;
+};
+
+export const getDatabaseName = (): string => {
+    const savedName = localStorage.getItem('databaseName');
+    return savedName || '';
+};
+
+export const removeDatabaseName = (): void => {
+    localStorage.removeItem('databaseName');
+    state.databaseName = '';
+};

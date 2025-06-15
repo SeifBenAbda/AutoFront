@@ -54,6 +54,7 @@ const createGlobalDevisUpdateHandler = (queryClient: any) => {
 export const useWebSocketForDevis = (
   page: number, 
   searchValue?: string, 
+  assignedTo?: string,
   status?: string, 
   priority?: string, 
   cars?: string[]
@@ -62,9 +63,9 @@ export const useWebSocketForDevis = (
   const mountedRef = useRef(true);
 
   // Stable query key using useMemo
-  const queryKey = useMemo(() => 
-    ['data', page, searchValue, status, priority, cars], 
-    [page, searchValue, status, priority, cars]
+  const queryKey = useMemo(() =>
+    ['data', page, searchValue, assignedTo, status, priority, cars],
+    [page, searchValue, assignedTo, status, priority, cars]
   );
 
   useEffect(() => {
