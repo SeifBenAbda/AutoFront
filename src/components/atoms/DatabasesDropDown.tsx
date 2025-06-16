@@ -1,4 +1,4 @@
-import { state } from "../../utils/shared_functions"; 
+import { getDatabaseName, saveDatabaseName, state } from "../../utils/shared_functions"; 
 import { forwardRef } from 'react';
 
 import {
@@ -15,9 +15,10 @@ const DatabasesDropDown = forwardRef<HTMLButtonElement>(
 (any, ref) => {
     const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     const databases = state.databasesAccess;
-    const currentDatabase = state.databaseName;
+    const currentDatabase = getDatabaseName() || state.databaseName;
     const handleChange = (selectedValue: string) => {
         state.databaseName = selectedValue;
+        saveDatabaseName(selectedValue);
         window.location.href = '/dashboard';
     };
     

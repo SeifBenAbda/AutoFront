@@ -160,7 +160,6 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     clientId: myDevis!.client?.id!,
                     updatedDevis: myDevis!,
                     updatedClient: myDevis!.client,
-                    updatedItemRequestData: undefined,
                     updatedCarRequestData: myDevis!.carRequests?.[0] || undefined,
                     updatedRappels: rappels || undefined,
                     updatedDevisFacture: myDevis!.devisFacture || undefined,

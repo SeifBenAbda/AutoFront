@@ -18,6 +18,7 @@ interface ApiResponse {
 const useDevis = (
   page: number, 
   searchValue?: string, 
+  assignedTo?: string,
   status?: string, 
   priority?: string, 
   cars?: string[], 
@@ -30,23 +31,25 @@ const useDevis = (
     'data', 
     page, 
     searchValue, 
+    assignedTo,
     status, 
     priority, 
     cars, 
     clients, 
     dateRappelFrom?.toISOString(), // Convert dates to strings for stable comparison
     dateRappelTo?.toISOString()
-  ], [page, searchValue, status, priority, cars, clients, dateRappelFrom, dateRappelTo]);
+  ], [page, searchValue, assignedTo, status, priority, cars, clients, dateRappelFrom, dateRappelTo]);
 
   // Initialize WebSocket - this should only run once per component
-  const isConnected = useWebSocketForDevis(page, searchValue, status, priority, cars);
-  
+  const isConnected = useWebSocketForDevis(page, searchValue, assignedTo, status, priority, cars);
+
   const query = useQuery<ApiResponse>({
     queryKey,
     queryFn: async () => {
       const result = await fetchDevisAllData(
         state.databaseName, 
         searchValue, 
+        assignedTo,
         page, 
         status, 
         priority, 

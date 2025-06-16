@@ -4,7 +4,7 @@ import uploadIcon from '../../../images/file.png';
 import checkDocIcon from '../../../images/checkDoc.png';
 import FileViewer from "./FileViewer";
 import { DocumentsUploadCard } from "./DocumentsUpload";
-
+import { useUser } from "../../../context/userContext";
 
 interface DevisDoucmentDetailsProps {
     devis: Devis;
@@ -15,6 +15,10 @@ export function DevisDoucmentDetails({ devis }: DevisDoucmentDetailsProps) {
 
     const [activeComponent, setActiveComponent] = useState<'checkFiles' | 'uploadFile'>('checkFiles');
     const [hasSelectedFiles, setHasSelectedFiles] = useState<boolean>(false);
+     const { user } = useUser();
+    const isAdmin = user?.role === 'ADMIN';
+    const isEditingOpen = (devis.StatusDevis != "Livré" && devis.StatusDevis!='Annulé') && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
+
 
     const handleChangeComponent = (component: 'checkFiles' | 'uploadFile') => {
         if (hasSelectedFiles && activeComponent === 'uploadFile') {
@@ -43,6 +47,7 @@ export function DevisDoucmentDetails({ devis }: DevisDoucmentDetailsProps) {
                     
                     return (
                         <button
+                            disabled={!isEditingOpen}
                             key={icon.id}
                             className={`flex items-center font-oswald gap-2 px-3 py-2 rounded-md transition-colors ${
                                 isActive 

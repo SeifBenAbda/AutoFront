@@ -21,7 +21,8 @@ import {
   Bell,
   Calendar,
   CheckCircle2,
-  FileText
+  FileText,
+  Star
 } from "lucide-react";
 
 interface DataTableProps {
@@ -38,20 +39,20 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
   const navigate = useNavigate();
   const { user } = useUser();
   const { mutateAsync: deleteDevis } = useDeletedDevis();
-
+  const [isAssignedToMe, setIsAssignedToMe] = useState<boolean>(false);
   // Update tableData when data prop changes
   useEffect(() => {
     setTableData(data);
   }, [data]);
 
   useEffect(() => {
-        if (autoOpenDevisId) {
-            const devis = data.find(d => d.DevisId == autoOpenDevisId);
-            if (devis) {
-                handleOpenSheet(devis);
-            }
-        }
-    }, [autoOpenDevisId, data]);
+    if (autoOpenDevisId) {
+      const devis = data.find(d => d.DevisId == autoOpenDevisId);
+      if (devis) {
+        handleOpenSheet(devis);
+      }
+    }
+  }, [autoOpenDevisId, data]);
 
   // Status badge component
   const StatusBadge = ({ status }: { status: string }) => {
@@ -208,9 +209,22 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
         </div>
       ),
       accessorKey: "DevisId",
-      size: 80, // Set fixed width
+      // Set fixed width
       cell: ({ row }) => {
-        return <div className="font-medium text-black">#{row.getValue("DevisId")}</div>;
+        const isAssigned = row.original.AssignedTo === user?.username;
+        return (
+          <div className="font-medium text-black flex items-center justify-center">
+            {isAssigned && (
+              <div className="relative group">
+                <Star className="w-4 h-4 text-yellow-500 mr-1 fill-yellow-400" />
+                <div className="absolute z-10 invisible group-hover:visible bg-black text-white text-xs rounded py-1 px-2 -mt-8 left-1/2 transform -translate-x-1/2">
+                  Assigné à moi
+                </div>
+              </div>
+            )}
+            #{row.getValue("DevisId")}
+          </div>
+        );
       },
     },
     {
@@ -403,16 +417,15 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className={`hover:bg-gray-50 transition-colors ${
-                  row.original.StatusDevis?.toLowerCase() !== 'annulé' && 
-                  row.original.rappels?.some(rappel => {
-                  const rappelDate = new Date(rappel.RappelDate!);
-                  const today = new Date();
-                  return rappelDate.getDate() === today.getDate() && 
-                     rappelDate.getMonth() === today.getMonth() &&
-                     rappelDate.getFullYear() === today.getFullYear();
-                  }) ? 'bg-red-100 border' : ''
-                  }`}
+                  className={`hover:bg-gray-50 transition-colors ${row.original.StatusDevis?.toLowerCase() !== 'annulé' &&
+                      row.original.rappels?.some(rappel => {
+                        const rappelDate = new Date(rappel.RappelDate!);
+                        const today = new Date();
+                        return rappelDate.getDate() === today.getDate() &&
+                          rappelDate.getMonth() === today.getMonth() &&
+                          rappelDate.getFullYear() === today.getFullYear();
+                      }) ? 'bg-blueCiel border' : ''
+                    }`}
                 >
                   {row.getVisibleCells().map(cell => (
                     <td key={cell.id} className="px-4 py-3 text-sm text-black whitespace-nowrap text-center">

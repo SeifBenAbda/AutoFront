@@ -122,3 +122,23 @@ export const revokeAgentDatabaseAccess = async (
 
     return response.json();
 };
+
+
+export const fetchAgentNames = async (
+    navigate: (path: string) => void
+) => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/users/all`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch agent names');
+
+    return response.json();
+}

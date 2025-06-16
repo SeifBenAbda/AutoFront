@@ -13,6 +13,7 @@ import useSession from './hooks/sessions/useSession';
 
 import { getToken } from './services/authService';
 import useWebSocketAgents from './hooks/useWebSocketAgents';
+import { getDatabaseName, state } from './utils/shared_functions';
 
 const AppContent: React.FC<{ user: any }> = ({ user }) => {
   const location = useLocation();
@@ -123,6 +124,7 @@ const App: React.FC = () => {
       setLoading(false);
     };
 
+    state.databaseName = getDatabaseName();
     initializeAuth();
 
     const handleResize = () => {

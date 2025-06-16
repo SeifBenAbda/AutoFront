@@ -19,26 +19,28 @@ import {
   PopoverTrigger,
 } from "../../../@/components/ui/popover";
 import { PopoverClose } from '@radix-ui/react-popover';
+import { useUser } from '../../../context/userContext';
 
 interface DataTableProps {
   typeDevis: string;
   autoOpenDevisId?: number | string; // Optional prop for auto-opening a specific Devis
 }
 
-const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) => {
+const DataTable: React.FC<DataTableProps> = ({ typeDevis, autoOpenDevisId }) => {
   const [page, setPage] = useState(1);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
+  const [assignedTo, setAssignedTo] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>('Tous Status');
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>('Toutes les priorités');
   const [selectedCars, setSelectedCars] = useState<string[]>([]); // Changed to an array
   const [selectedClients, setSelectedClients] = useState<string[]>([]); // Changed to an array
   const [dateRappelFrom, setDateRappelFrom] = useState<Date | undefined>();
   const [dateRappelTo, setDateRappelTo] = useState<Date | undefined>();
-
+  const { user } = useUser();
   // Fetch data from the API based on current filters and pagination
   const { data, isLoading, error } = useDevis(
-    page, searchValue, selectedStatus,
+    page, searchValue, assignedTo, selectedStatus,
     selectedPriority, selectedCars, selectedClients,
     dateRappelFrom,
     dateRappelTo);
@@ -68,7 +70,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
   useEffect(() => {
     // Only proceed if we're in search mode and data is loaded
     if (!isSearchingDevis || isLoading || !data) return;
-    
+
     // Check if the devis exists in the current page data
     const devisFound = data.data.some(devis => {
       // Normalize ID types for comparison
@@ -76,7 +78,7 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
       const searchId = typeof autoOpenDevisId === 'number' ? autoOpenDevisId : Number(autoOpenDevisId);
       return devisId === searchId;
     });
-    
+
     if (devisFound) {
       // Devis found, stop searching
       setIsSearchingDevis(false);
@@ -140,6 +142,12 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
     setPage(1); // Reset to first page on search
   };
 
+  const handleAssignedToChange = (assignedTo: string) => {
+    console.log("Assigned to:", assignedTo);
+    setAssignedTo(assignedTo);
+    setPage(1); // Reset to first page on assignedTo change
+  }
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden ">
       {/* Header with Devis Title and Filter */}
@@ -158,145 +166,180 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis , autoOpenDevisId }) =>
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
         {/* Filter Controls */}
         <div className="flex flex-col space-y-2">
-          <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
             {/* Status & Priority Popover */}
             <div className="w-auto">
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
-                  >
-                    <FilterIcon size={16} />
-                    <span className='font-oswald'>Status & Priorité</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-64 p-3 border border-gray-200 shadow-md bg-white rounded-md"
-                  align="start"
-                  sideOffset={5}
+              <PopoverTrigger asChild>
+                <Button
+                className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-oswald text-highBlue text-base">Filtres</h3>
-                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
-                      <XIcon size={14} />
-                      <span className="sr-only">Close</span>
-                    </PopoverClose>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="w-full">
-                      <label className="block text-xs font-medium text-highBlue mb-1">Status</label>
-                      <StatusDevisDropDown
-                        value={selectedStatus}
-                        onChange={handleStatusChange}
-                        isFiltring={true}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <label className="block text-xs font-medium text-highBlue mb-1">Priorité</label>
-                      <PriorityDevisDropDown
-                        value={selectedPriority}
-                        onChange={handlePriorityChange}
-                        isFiltring={true}
-                      />
-                    </div>
-                  </div>
-                </PopoverContent>
+                <FilterIcon size={16} />
+                <span className='font-oswald'>Status & Priorité</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-64 p-3 border border-gray-200 shadow-md bg-white rounded-md"
+                align="start"
+                sideOffset={5}
+              >
+                <div className="flex justify-between items-center mb-2">
+                <h3 className="font-oswald text-highBlue text-base">Filtres</h3>
+                <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                  <XIcon size={14} />
+                  <span className="sr-only">Close</span>
+                </PopoverClose>
+                </div>
+                <div className="space-y-3">
+                <div className="w-full">
+                  <label className="block text-xs font-medium text-highBlue mb-1">Status</label>
+                  <StatusDevisDropDown
+                  value={selectedStatus}
+                  onChange={handleStatusChange}
+                  isFiltring={true}
+                  />
+                </div>
+                <div className="w-full">
+                  <label className="block text-xs font-medium text-highBlue mb-1">Priorité</label>
+                  <PriorityDevisDropDown
+                  value={selectedPriority}
+                  onChange={handlePriorityChange}
+                  isFiltring={true}
+                  />
+                </div>
+                </div>
+              </PopoverContent>
               </Popover>
             </div>
 
             <div className="w-auto">
               <CarsMultiSelect
-                selectedValues={selectedCars}
-                onChange={handleCarChange}
-                isFiltering={true}
+              selectedValues={selectedCars}
+              onChange={handleCarChange}
+              isFiltering={true}
               />
             </div>
             <div className="w-auto">
               <ClientsMultiSelect
-                selectedValues={selectedClients}
-                onChange={handleClientChange}
-                isFiltering={true}
+              selectedValues={selectedClients}
+              onChange={handleClientChange}
+              isFiltering={true}
               />
             </div>
 
             {/* Date Range Filters in a popover */}
             <div className="w-auto">
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
-                  >
-                    <CalendarIcon size={16} />
-                    <span className='font-oswald'>Période (Rappels)</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-96 p-4 border border-gray-200 shadow-md bg-white rounded-md"
-                  align="start"
-                  sideOffset={5}
+              <PopoverTrigger asChild>
+                <Button
+                className="flex items-center gap-2 bg-normalGrey text-highBlue hover:bg-lightGrey px-4 py-2 rounded-md"
                 >
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-oswald text-highBlue text-base">Période (Rappels)</h3>
-                    <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
-                      <XIcon size={14} />
-                      <span className="sr-only">Close</span>
-                    </PopoverClose>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-1/2">
-                      <label className="block text-sm font-medium text-highBlue mb-1.5">De</label>
-                      <DatePicker
-                        value={dateRappelFrom}
-                        onChange={handleDateRappelFromChange}
-                        fromYear={new Date().getFullYear() - 1}
-                        toYear={new Date().getFullYear() + 1}
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <label className="block text-sm font-medium text-highBlue mb-1.5">À</label>
-                      <DatePicker
-                        value={dateRappelTo}
-                        onChange={handleDateRappelToChange}
-                        fromYear={new Date().getFullYear() - 1}
-                        toYear={new Date().getFullYear() + 1}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-3 flex justify-end">
-                    <Button
-                      onClick={() => {
-                        setDateRappelFrom(undefined);
-                        setDateRappelTo(undefined);
-                        setPage(1);
-                      }}
-                      className="text-xs px-3 py-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
-                    >
-                      Réinitialiser les dates
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              </div>
-
-              {/*   Show only  Reminder of Today When I click a Button* */}
-              <div className="w-auto">
+                <CalendarIcon size={16} />
+                <span className='font-oswald'>Période (Rappels)</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-96 p-4 border border-gray-200 shadow-md bg-white rounded-md"
+                align="start"
+                sideOffset={5}
+              >
+                <div className="flex justify-between items-center mb-3">
+                <h3 className="font-oswald text-highBlue text-base">Période (Rappels)</h3>
+                <PopoverClose className="h-4 w-4 opacity-70 hover:opacity-100">
+                  <XIcon size={14} />
+                  <span className="sr-only">Close</span>
+                </PopoverClose>
+                </div>
+                <div className="flex gap-3">
+                <div className="w-1/2">
+                  <label className="block text-sm font-medium text-highBlue mb-1.5">De</label>
+                  <DatePicker
+                  value={dateRappelFrom}
+                  onChange={handleDateRappelFromChange}
+                  fromYear={new Date().getFullYear() - 1}
+                  toYear={new Date().getFullYear() + 1}
+                  />
+                </div>
+                <div className="w-1/2">
+                  <label className="block text-sm font-medium text-highBlue mb-1.5">À</label>
+                  <DatePicker
+                  value={dateRappelTo}
+                  onChange={handleDateRappelToChange}
+                  fromYear={new Date().getFullYear() - 1}
+                  toYear={new Date().getFullYear() + 1}
+                  />
+                </div>
+                </div>
+                <div className="mt-3 flex justify-end">
                 <Button
                   onClick={() => {
+                  setDateRappelFrom(undefined);
+                  setDateRappelTo(undefined);
+                  setPage(1);
+                  }}
+                  className="text-xs px-3 py-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md"
+                >
+                  Réinitialiser les dates
+                </Button>
+                </div>
+              </PopoverContent>
+              </Popover>
+            </div>
+
+            {/*   Show only  Reminder of Today When I click a Button* */}
+            <div className="w-auto">
+              <Button
+                onClick={() => {
+                  // Check if today's filter is already active
+                  const isActive = dateRappelFrom && dateRappelTo && 
+                    dateRappelFrom.getDate() === new Date().getDate() &&
+                    dateRappelFrom.getMonth() === new Date().getMonth() &&
+                    dateRappelFrom.getFullYear() === new Date().getFullYear();
+                  
+                  if (isActive) {
+                    // If active, clear the filter
+                    setDateRappelFrom(undefined);
+                    setDateRappelTo(undefined);
+                  } else {
+                    // If not active, set to today's date range
                     const today = new Date();
                     today.setHours(0, 0, 0, 0); // Set to beginning of the day
                     const tomorrow = new Date(today);
-                    today.setDate(today.getDate() + 1);
-                    setDateRappelFrom(tomorrow);
-                    setDateRappelTo(today);
-                    setPage(1);
-                  }}
-                  className="text-xs px-3 py-1 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-md font-oswald"
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    setDateRappelFrom(today);
+                    setDateRappelTo(tomorrow);
+                  }
+                  setPage(1);
+                }}
+                className={`text-xs px-3 py-1 rounded-md font-oswald ${
+                  dateRappelFrom && dateRappelTo && 
+                  dateRappelFrom.getDate() === new Date().getDate() &&
+                  dateRappelFrom.getMonth() === new Date().getMonth() &&
+                  dateRappelFrom.getFullYear() === new Date().getFullYear()
+                    ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' 
+                    : 'bg-normalGrey text-highBlue hover:bg-lightGrey'
+                }`}
+              >
+                Rappels d'aujourd'hui
+              </Button>
+            </div>
+            <div className="w-auto">
+                <Button
+                onClick={() => {
+                const isActive = assignedTo === user?.username;
+                handleAssignedToChange(isActive ? '' : user!.username);
+                }}
+                className={`px-4 py-2 rounded-md text-xs font-oswald transition-colors duration-200 ${
+                assignedTo === user?.username 
+                ? 'bg-yellow-400 text-highBlue hover:bg-yellow-500' 
+                : 'bg-normalGrey text-highBlue hover:bg-lightGrey'
+                }`}
                 >
-                  Rappels d'aujourd'hui
+                Assigné à moi
                 </Button>
-                </div>
-          
-          </div>
+            </div>
+            </div>
+
         </div>
 
         {/* Search Box */}

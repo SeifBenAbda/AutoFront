@@ -6,7 +6,7 @@ import { Devis } from "../../../types/devisTypes";
 import { useUploadFiles } from "../../../hooks/useUploadFiles";
 import DocumentTypeDropDown from "../../../components/atoms/DocumentTypeSelect";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-
+import { useUser } from "../../../context/userContext";
 interface DocumentFile {
     file: File; // Keep using the native File type
     typeDocument: string; // Store the document type separately
@@ -24,6 +24,9 @@ export function DocumentsUploadCard({ devis, onFileSelect, onUploadSuccess }: Do
     const [uploadMessage, setUploadMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+     const { user } = useUser();
+    const isAdmin = user?.role === 'ADMIN';
+     const isEditingOpen = (devis.StatusDevis != "Livré" && devis.StatusDevis!='Annulé') && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
     const navigate = useNavigate();
 
     // Use mutation instead of query

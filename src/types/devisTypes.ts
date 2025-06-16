@@ -86,7 +86,6 @@ export interface Devis {
   ResponsableNum : string | undefined ,
   numberCars: number | undefined;
   client: Client | undefined; // The client associated with the Devis
-  itemRequests: ItemRequest[]; // Array of ItemRequests associated with the Devis
   carRequests: CarRequest[]; // Array of CarRequests associated with the Devis
   rappels:Rappel[];
   devisPayementDetails:DevisPayementDetails; 

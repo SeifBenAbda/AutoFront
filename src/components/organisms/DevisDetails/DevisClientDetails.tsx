@@ -6,8 +6,12 @@ import { Label } from "../../../@/components/ui/label";
 import { Textarea } from "../../../@/components/ui/textarea";
 import { params } from "../../../utils/params";
 import PhoneInput from "../../../components/atoms/PhoneInput";
-
+import { useUser } from "../../../context/userContext";
 import ClientSectorsDropDown from "../../../components/atoms/ClientSectorsDropDown";
+
+
+
+
 interface DevisClientDetailsProps {
     devis: Devis;
     client: Client;
@@ -15,7 +19,9 @@ interface DevisClientDetailsProps {
 }
 
 export function DevisClientDetails({ client, onUpdate, devis }: DevisClientDetailsProps) {
-    const isEditingOpen = devis.StatusDevis == "En Cours" || devis.devisFacture == null;
+    const { user } = useUser();
+    const isAdmin = user?.role === "ADMIN";
+    const isEditingOpen = (devis.StatusDevis == "En Cours" || devis.devisFacture == null) && (devis.AssignedTo === "" || devis.AssignedTo === user?.username || isAdmin);
 
 
     const handleDateChange = (date: Date | undefined) => {
