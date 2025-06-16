@@ -159,6 +159,7 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
                     'Authorization': `Basic ${btoa('Faouzi:baf.syrine2013')}`, // Replace with your credentials
                 },
                 credentials: 'include', // Include credentials in the request
+                signal: AbortSignal.timeout(10000), // 10 second timeout
             });
 
             if (!response.ok) {
@@ -184,8 +185,9 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
 
             const file_path = fileResponse.file_path;
             const sanitizedFilePath = file_path.replace(/\\/g, '/');
+            
             const fullUrl = `${API_URL}${encodeURIComponent(sanitizedFilePath)}`;
-
+            console.log('Full URL:', fullUrl);
             // Fetch the file content with authorization
             const fileBlob = await fetchFileWithAuth(fullUrl);
 

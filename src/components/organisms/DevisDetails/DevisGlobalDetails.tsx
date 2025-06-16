@@ -36,7 +36,6 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const [isEditingOpen, setIsEditingOpen] = useState((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
 
     useEffect(() => {
-        console.log("Assigned to user:", devis.AssignedTo, "User username:", user?.username, "isAdmin:", isAdmin);
         setIsEditingOpen((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
         if (devis.DevisId) {
             setIsLoading(true);
@@ -692,13 +691,13 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.DemandeRemise || ""}
+                                    value={devis.devisGesteCommerciale?.DemandeRemise || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("DemandeRemise", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             ) : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.DemandeRemise || "0"}</span>
+                                    <span>{devis.devisGesteCommerciale?.DemandeRemise || "0"}</span>
                                 </div>
                             )}
                     </CardContent>
@@ -707,14 +706,14 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.RemiseAccepte || ""}
+                                    value={devis.devisGesteCommerciale?.RemiseAccepte || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("RemiseAccepte", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             )
                             : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.RemiseAccepte || "0"}</span>
+                                    <span>{devis.devisGesteCommerciale?.RemiseAccepte || "0"}</span>
                                 </div>
                             )}
                     </CardContent>
@@ -726,13 +725,13 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.DemandeDeFranchise || ""}
+                                    value={devis.devisGesteCommerciale?.DemandeDeFranchise || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("DemandeDeFranchise", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             ) : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.DemandeDeFranchise || "0"}</span>
+                                    <span>{devis.devisGesteCommerciale?.DemandeDeFranchise || "0"}</span>
                                 </div>
                             )}
 
@@ -742,14 +741,14 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.FranchiseAccepte || ""}
+                                    value={devis.devisGesteCommerciale?.FranchiseAccepte || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("FranchiseAccepte", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             )
                             : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.FranchiseAccepte || "0"}</span>
+                                    <span>{devis.devisGesteCommerciale?.FranchiseAccepte || "0"}</span>
                                 </div>
                             )}
                     </CardContent>
@@ -761,13 +760,13 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.Voucher || ""}
+                                    value={devis.devisGesteCommerciale?.Voucher || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("Voucher", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             ) : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.Voucher || ""}</span>
+                                    <span>{devis.devisGesteCommerciale?.Voucher || ""}</span>
                                 </div>
                             )}
                     </CardContent>
@@ -776,14 +775,14 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                         {isEditingOpen ?
                             (
                                 <NumericInput
-                                    value={devis.gesteCommer?.VoucherAccepte || ""}
+                                    value={devis.devisGesteCommerciale?.VoucherAccepte || ""}
                                     onChange={(value) => handleChangedevisGesteCommer("VoucherAccepte", value.toString())}
                                     className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}
                                 />
                             )
                             : (
                                 <div className={`p-2 mr-2 rounded-md sm:text-sm ${params.inputBoxStyle}`}>
-                                    <span>{devis.gesteCommer?.VoucherAccepte || ""}</span>
+                                    <span>{devis.devisGesteCommerciale?.VoucherAccepte || ""}</span>
                                 </div>
                             )}
                     </CardContent>
