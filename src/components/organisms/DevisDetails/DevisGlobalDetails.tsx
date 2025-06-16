@@ -262,8 +262,8 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const handleChangedevisGesteCommer = (field: string, value: string) => {
         const updatedDevis = {
             ...devis,
-            gesteCommer: {
-                ...devis.gesteCommer,
+            devisGesteCommerciale: {
+                ...devis.devisGesteCommerciale,
                 [field]: value,
             },
         };
@@ -274,7 +274,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 return isNaN(parsedValue) ? 0 : parsedValue;
             };
 
-            const remise = parseNumber(updatedDevis.gesteCommer.RemiseAccepte || "0");
+            const remise = parseNumber(updatedDevis.devisGesteCommerciale.RemiseAccepte || "0");
             //const voucher = parseNumber(updatedDevis.gesteCommer.VoucherAccepte || "0");
             const totalTTC = parseNumber(updatedDevis.devisPayementDetails.TotalTTC?.toString() || "0");
             const totalAPRem = totalTTC - remise
