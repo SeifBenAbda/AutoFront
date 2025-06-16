@@ -93,7 +93,6 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
     }, [enabled]);
   
     const logout = useCallback(async () => {
-     console.log('Logging out user:', user?.username);
       if(user){
         await logoutUser(user!.username).then(() => {
         removeToken();

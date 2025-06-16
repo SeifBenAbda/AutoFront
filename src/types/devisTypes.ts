@@ -91,7 +91,7 @@ export interface Devis {
   devisPayementDetails:DevisPayementDetails; 
   devisFacture:DevisFacture;
   devisReserved:DevisReserved;
-  gesteCommer:DevisGesteCommer;
+  devisGesteCommerciale:DevisGesteCommer;
   AssignedFrom?: string | undefined; // The user who assigned the Devis
   AssignedTo?: string | undefined; // The user to whom the Devis is assigned
 }
