@@ -1,5 +1,0 @@
-anydesk AutoPro = 1144580688
-Mot de passe	= baf.syrine2013
-
-
-Auto Pro old : 1238769256
