@@ -8,13 +8,15 @@ interface UseSessionOptions {
   warningTime?: number;
   autoRefresh?: boolean;
   enabled?: boolean;
+  autoExtendOnActivity?: boolean; // New option
 }
 
 const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<void>) => {
     const {
-      warningTime = 60000,
+      warningTime = 180000,
       autoRefresh = false,
-      enabled = true
+      enabled = true,
+      autoExtendOnActivity = true // Default to true
     } = options;
   
     const [sessionExpiring, setSessionExpiring] = useState(false);
@@ -23,22 +25,82 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
     const [hasExtended, setHasExtended] = useState(false);
     const {user} = useUser();
     const lastActivityRef = useRef(Date.now());
+    const lastExtensionRef = useRef(0); // Track last extension time
+    const isExtendingRef = useRef(false); // Prevent multiple simultaneous extensions
   
     const navigate = useNavigate();
   
+    // Enhanced activity tracking with auto-extension logic
     useEffect(() => {
-      const updateActivity = () => {
-        lastActivityRef.current = Date.now();
+      const updateActivity = async () => {
+        const now = Date.now();
+        lastActivityRef.current = now;
+        
+        // Check if user was active in the last 3 minutes (180000ms)
+        const wasRecentlyActive = now - lastActivityRef.current < 180000;
+        
+        // Auto-extend session if in warning zone and conditions are met
+        if (
+          autoExtendOnActivity &&
+          sessionExpiring &&
+          isTabActive &&
+          !isExtendingRef.current &&
+          wasRecentlyActive &&
+          (now - lastExtensionRef.current) > 30000 // Prevent extending too frequently (30 sec cooldown)
+        ) {
+          const remaining = calculateTimeRemaining();
+          
+          // Only auto-extend if we're in warning zone but not critically low
+          if (remaining && remaining <= warningTime && remaining > 30000) {
+            console.log('Auto-extending session due to recent user activity (last 3 minutes)');
+            isExtendingRef.current = true;
+            
+            try {
+              const success = await extendSession();
+              if (success) {
+                lastExtensionRef.current = now;
+                setHasExtended(true);
+              }
+            } catch (error) {
+              console.error('Auto-extension failed:', error);
+            } finally {
+              isExtendingRef.current = false;
+            }
+          }
+        }
       };
   
-      window.addEventListener('mousemove', updateActivity);
-      window.addEventListener('keydown', updateActivity);
+      // Throttle the activity handler to prevent excessive calls
+      let timeoutId: NodeJS.Timeout;
+      const throttledUpdateActivity = () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(updateActivity, 1000); // Throttle to max once per second
+      };
+  
+      // All activity events that should trigger auto-extension
+      window.addEventListener('mousemove', throttledUpdateActivity, { passive: true });
+      window.addEventListener('keydown', updateActivity, { passive: true });
+      window.addEventListener('keyup', updateActivity, { passive: true });
+      window.addEventListener('click', updateActivity, { passive: true });
+      window.addEventListener('scroll', throttledUpdateActivity, { passive: true });
+      window.addEventListener('wheel', throttledUpdateActivity, { passive: true });
+      window.addEventListener('touchstart', updateActivity, { passive: true });
+      window.addEventListener('touchmove', throttledUpdateActivity, { passive: true });
+      window.addEventListener('focus', updateActivity, { passive: true });
   
       return () => {
-        window.removeEventListener('mousemove', updateActivity);
+        clearTimeout(timeoutId);
+        window.removeEventListener('mousemove', throttledUpdateActivity);
         window.removeEventListener('keydown', updateActivity);
+        window.removeEventListener('keyup', updateActivity);
+        window.removeEventListener('click', updateActivity);
+        window.removeEventListener('scroll', throttledUpdateActivity);
+        window.removeEventListener('wheel', throttledUpdateActivity);
+        window.removeEventListener('touchstart', updateActivity);
+        window.removeEventListener('touchmove', throttledUpdateActivity);
+        window.removeEventListener('focus', updateActivity);
       };
-    }, []);
+    }, [sessionExpiring, isTabActive, autoExtendOnActivity, warningTime]);
   
     useEffect(() => {
       const handleVisibilityChange = () => {
@@ -121,7 +183,7 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
         setTimeRemaining(remaining);
   
         const now = Date.now();
-        const isUserActive = now - lastActivityRef.current < 60000;
+        const isUserActive = now - lastActivityRef.current < 180000; // Changed to 3 minutes (180000ms)
   
         if (remaining === null) {
           // Token is missing or invalid, force logout
@@ -132,14 +194,20 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
         if (remaining <= warningTime && remaining > 0) {
           setSessionExpiring(true);
   
+          // Original auto-extension logic (fallback)
           if (
             isTabActive &&
             isUserActive &&
             remaining <= 60000 &&
-            !hasExtended
+            !hasExtended &&
+            !isExtendingRef.current
           ) {
-            extendSession();
-            setHasExtended(true);
+            extendSession().then((success) => {
+              if (success) {
+                setHasExtended(true);
+                lastExtensionRef.current = now;
+              }
+            });
           }
         } else if (remaining <= 0) {
             logout();
@@ -149,7 +217,8 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
           setSessionExpiring(false);
         }
   
-        if (remaining > 60000 && hasExtended) {
+        // Reset hasExtended flag when session is no longer in warning zone
+        if (remaining > warningTime && hasExtended) {
           setHasExtended(false);
         }
       };
@@ -185,7 +254,8 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
       timeRemaining,
       extendSession,
       logout,
-      checkSession
+      checkSession,
+      isTabActive // Export tab active state for external use
     };
   };
   
