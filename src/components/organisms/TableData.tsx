@@ -36,10 +36,8 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
   const [tableData, setTableData] = useState<Devis[]>(data);
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
   const { user } = useUser();
-  const { mutateAsync: deleteDevis } = useDeletedDevis();
-  const [isAssignedToMe, setIsAssignedToMe] = useState<boolean>(false);
+
   // Update tableData when data prop changes
   useEffect(() => {
     setTableData(data);

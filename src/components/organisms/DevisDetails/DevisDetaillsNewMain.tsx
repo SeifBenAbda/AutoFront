@@ -165,7 +165,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                     updatedDevisFacture: myDevis!.devisFacture || undefined,
                     updatedDevisReserved: myDevis!.devisReserved || undefined,
                     updatedDevisPayementDetails: myDevis!.devisPayementDetails || undefined,
-                    updatedDevisGesteCommerciale: myDevis!.gesteCommer || undefined
+                    updatedDevisGesteCommerciale: myDevis!.devisGesteCommerciale || undefined
                 });
                 onSave(myDevis!);
                 onClose();
@@ -173,6 +173,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                 console.error('Failed to save updates:', error);
             } finally {
                 setLoading(false);
+                // Navigate to the car tracking page after saving           
             }
         }
     };
@@ -211,6 +212,7 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     ] : [];
 
     useEffect(() => {
+        navigate("/carTracking");
         setActiveStep(0);
     }, [devis]);
 
