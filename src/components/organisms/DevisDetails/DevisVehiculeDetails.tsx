@@ -89,7 +89,7 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                 </CardContent>
 
                 <CardContent className="w-full">
-                    <Label className="relative text-sm font-medium text-highBlue ">Dernier véhicule possédé</Label>
+                    <Label className="relative text-sm font-medium text-highBlue ">Nombre de véhicules</Label>
                     {isEditingOpen ? (
                         <NumberCarsDropDown
                             value={devis?.numberCars?.toString() || ""}
