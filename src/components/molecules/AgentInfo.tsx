@@ -26,10 +26,19 @@ const AgentInfo: React.FC<{}> = ({ }) => {
         </PopoverTrigger>
         <PopoverContent className='mr-2 bg-normalGrey border border-normalGrey rounded-md p-1 text-highBlue w-40 pl-2 pr-2'>
 
-          <div className="flex items-center justify-between mt-2 mb-2 hover:bg-highBlue hover:text-lightWhite cursor-pointer hover:border rounded-md p-2 font-oswald text-sm" onClick={() => handleNavClick('/profile')}>
+          <a 
+            href="/profile" 
+            className="flex items-center justify-between mt-2 mb-2 hover:bg-highBlue hover:text-lightWhite cursor-pointer hover:border rounded-md p-2 font-oswald text-sm text-inherit no-underline" 
+            onClick={(e) => {
+              if (!e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+                handleNavClick('/profile');
+              }
+            }}
+          >
             <span>Profile</span>
             <User size={20} />
-          </div>
+          </a>
 
           <div className="flex items-center justify-between mb-2 hover:bg-highBlue hover:text-lightWhite cursor-pointer hover:border rounded-md p-2 font-oswald text-sm" onClick={() => handleLogout(user!.username, navigate)}>
             <span>Se déconnecter</span>

@@ -85,37 +85,50 @@ const NavMenu: React.FC = () => {
         </div>
       </Button>
        */}
-       <Button
-        onClick={() => handleNavClick('Dashboard', "/dashboard")}
-        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? activeOptionSytle : nonActiveOptionSytle}`}
-      >
-        <div className="flex items-center space-x-2">
-          <LayoutDashboard />
-          <span>Dashboard</span>
+      <a href="/dashboard" className="no-underline">
+        <Button
+         onClick={(e) => {
+           e.preventDefault(); // Prevent default anchor behavior on left click
+           handleNavClick('Dashboard', "/dashboard");
+         }}
+         className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dashboard' ? activeOptionSytle : nonActiveOptionSytle}`}
+        >
+         <div className="flex items-center space-x-2">
+           <LayoutDashboard />
+           <span>Dashboard</span>
+         </div>
+        </Button>
+      </a>
+      
+      <a href="/car-request" className="no-underline">
+        <Button
+         onClick={(e) => {
+           e.preventDefault();
+           handleNavClick('Dossier Voiture', "/car-request");
+         }}
+         className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? activeOptionSytle : nonActiveOptionSytle}`}
+        >
+         <div className="flex items-center space-x-2">
+           <Car />
+           <span>Dossier Voiture</span>
+         </div>
+        </Button>
+      </a>
 
-        </div>
-      </Button>
-      <Button
-        onClick={() => handleNavClick('Dossier Voiture', "/car-request")}
-        className={`flex items-center justify-center p-2 rounded-md ${activeLink === 'Dossier Voiture' ? activeOptionSytle : nonActiveOptionSytle}`}
-      >
-        <div className="flex items-center space-x-2">
-          <Car />
-          <span>Dossier Voiture</span>
-
-        </div>
-      </Button>
-
-      <Button
-        onClick={() => handleNavClick('Suivi Leads', "/carTracking")}
-        className={`p-2 rounded-md ${activeLink === 'Suivi Leads' ? activeOptionSytle : nonActiveOptionSytle}`}
-      >
-        <div className="flex items-center space-x-2">
-          <FilePenLine />
-          <span>Suivi Leads</span>
-        </div>
-
-      </Button>
+      <a href="/carTracking" className="no-underline">
+        <Button
+         onClick={(e) => {
+           e.preventDefault();
+           handleNavClick('Suivi Leads', "/carTracking");
+         }}
+         className={`p-2 rounded-md ${activeLink === 'Suivi Leads' ? activeOptionSytle : nonActiveOptionSytle}`}
+        >
+         <div className="flex items-center space-x-2">
+           <FilePenLine />
+           <span>Suivi Leads</span>
+         </div>
+        </Button>
+      </a>
 
       {/*
         <Button
