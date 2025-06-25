@@ -2,7 +2,7 @@ import { state } from "../utils/shared_functions";
 import { fetchCarRequestStats, fetchConversionStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { string } from "zod";
+
 
 export interface DossierStat {
     devisId: number;
@@ -73,6 +73,7 @@ export interface PlanningRappelResult {
     carType:string; 
     rappelDate: Date;
     devisId: number;
+    rappelContent: string;
 }
 
 export interface RappelsByCreator {

@@ -53,7 +53,7 @@ const ConversionStats: React.FC = () => {
                 <table className="min-w-full text-sm border rounded-md border-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Créateur</th>
+                            <th className="px-6 py-3 text-start font-medium text-gray-600 font-oswald">Créateur</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Leads</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Nombre de Rappels</th>
                             <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Leads en Cours</th>

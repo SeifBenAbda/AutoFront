@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { format, differenceInDays } from 'date-fns';
-import { PlanningRappelData, usePlanningRappels } from '../../../hooks/useDashboard';
+import { usePlanningRappels } from '../../../hooks/useDashboard';
 import CustomPagination from '../../../components/atoms/CustomPagination';
 import { DatePicker } from '../../../components/atoms/DateSelector';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
-import { Badge } from '../../../@/components/ui/badge';
 
 const PlanningRappelComponent: React.FC = () => {
     // Default date range
@@ -28,10 +27,10 @@ const PlanningRappelComponent: React.FC = () => {
     // Get all rappels flattened for easier rendering
     const allRappels = useMemo(() => {
         if (!data?.result?.rappelsByCreator || !data?.result?.allCreators) return [];
-        
+
         return data.result.allCreators
             .filter(creator => selectedCreator === 'all' || creator === selectedCreator)
-            .flatMap(creator => 
+            .flatMap(creator =>
                 (data.result.rappelsByCreator[creator] || []).map(rappel => ({
                     ...rappel,
                     creator
@@ -54,12 +53,12 @@ const PlanningRappelComponent: React.FC = () => {
                 <div className="text-2xl text-highBlue font-oswald">
                     Planning des appels
                 </div>
-                
+
                 {/* Creator filter */}
                 <div className="flex items-center gap-2 ml-auto">
                     <label className="text-highBlue whitespace-nowrap">Créateur:</label>
-                    <Select 
-                        onValueChange={(value) => setSelectedCreator(value)} 
+                    <Select
+                        onValueChange={(value) => setSelectedCreator(value)}
                         defaultValue={selectedCreator}
                     >
                         <SelectTrigger className="w-40 border border-normalGrey bg-normalGrey font-oswald">
@@ -67,9 +66,9 @@ const PlanningRappelComponent: React.FC = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-normalGrey border-normalGrey">
                             {creators.map(creator => (
-                                <SelectItem 
-                                    key={creator} 
-                                    value={creator} 
+                                <SelectItem
+                                    key={creator}
+                                    value={creator}
                                     className="hover:bg-highGrey hover:text-whiteSecond transition-colors"
                                 >
                                     {creator === 'all' ? 'Tous les Créateurs' : creator}
@@ -79,7 +78,7 @@ const PlanningRappelComponent: React.FC = () => {
                     </Select>
                 </div>
             </div>
-            
+
             {/* Date range selection */}
             <div className="flex flex-wrap gap-4 items-center mb-4 bg-white p-4 rounded-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -110,11 +109,12 @@ const PlanningRappelComponent: React.FC = () => {
                 <table className="min-w-full text-sm">
                     <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="px-6 py-3 text-left font-medium text-gray-600 font-oswald">Créateur</th>
-                            <th className="px-6 py-3 text-left font-medium text-gray-600 font-oswald">Client</th>
-                            <th className="px-6 py-3 text-left font-medium text-gray-600 font-oswald">Type de Voiture</th>
-                            <th className="px-6 py-3 text-left font-medium text-gray-600 font-oswald">Date</th>
-                            <th className="px-6 py-3 text-left font-medium text-gray-600 font-oswald">Délai</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Créateur</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Lead ID</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Client</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Type de Voiture</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Date</th>
+                            <th className="px-6 py-3 text-center font-medium text-gray-600 font-oswald">Délai</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -127,6 +127,10 @@ const PlanningRappelComponent: React.FC = () => {
                         ) : isLoading ? (
                             Array.from({ length: 5 }).map((_, index) => (
                                 <tr key={index} className="animate-pulse">
+                                    {/* Lead ID - compact */}
+                                    <td className="px-6 py-4">
+                                        <div className="bg-gray-200 rounded h-4 w-16"></div>
+                                    </td>
                                     {/* Creator column with color dot */}
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
@@ -155,26 +159,41 @@ const PlanningRappelComponent: React.FC = () => {
                         ) : allRappels.length > 0 ? (
                             allRappels.map((rappel, idx) => {
                                 const rappelDate = new Date(rappel.rappelDate);
-                                const days = differenceInDays(rappelDate, today);
+                                // Create date objects with time set to midnight to compare dates only
+                                const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                                const rappelDateOnly = new Date(rappelDate.getFullYear(), rappelDate.getMonth(), rappelDate.getDate());
+                                const days = differenceInDays(rappelDateOnly, todayDateOnly);
                                 let statusText = "";
                                 let statusClass = "";
-
-                                if (days < 0) {
-                                    statusText = "En retard";
-                                    statusClass = "text-red-600 bg-red-50";
-                                } else if (days === 0) {
-                                    statusText = "Aujourd'hui";
-                                    statusClass = "text-orange-600 bg-orange-50";
-                                } else if (days === 1) {
-                                    statusText = "Demain";
-                                    statusClass = "text-yellow-600 bg-yellow-50";
-                                } else if (days <= 3) {
-                                    statusText = `Dans ${days} jours`;
-                                    statusClass = "text-yellow-600 bg-yellow-50";
+                                const isRappelHasContent = rappel.rappelContent && rappel.rappelContent.trim() !== "";
+                                if (isRappelHasContent) {
+                                    statusText = "Rappel prévu";
+                                    statusClass = "text-blue-600 bg-blue-50";
                                 } else {
-                                    statusText = `Dans ${days} jours`;
-                                    statusClass = "text-green-600 bg-green-50";
+                                    if (days < 0) {
+                                        statusText = "En retard";
+                                        statusClass = "text-red-600 bg-red-50";
+                                    } else if (days === 0) {
+                                        statusText = "Aujourd'hui";
+                                        statusClass = "text-orange-600 bg-orange-50";
+                                    } else if (days === 1) {
+                                        statusText = "Demain";
+                                        statusClass = "text-yellow-600 bg-yellow-50";
+                                    } else if (days <= 3) {
+                                        statusText = `Dans ${days} jours`;
+                                        statusClass = "text-yellow-600 bg-yellow-50";
+                                    } else {
+                                        statusText = `Dans ${days} jours`;
+                                        statusClass = "text-green-600 bg-green-50";
+                                    }
                                 }
+                                
+                                // Create short versions for small screens
+                                const shortStatusText = isRappelHasContent ? "Prévu" : 
+                                    days < 0 ? "Retard" : 
+                                    days === 0 ? "Aujourd'hui" : 
+                                    days === 1 ? "Demain" : 
+                                    `+${days}j`;
 
                                 return (
                                     <tr key={idx} className="hover:bg-gray-50 transition-colors">
@@ -185,12 +204,20 @@ const PlanningRappelComponent: React.FC = () => {
                                             ></span>
                                             {rappel.creator}
                                         </td>
-                                        <td className="px-6 py-4 font-medium">{rappel.clientName}</td>
-                                        <td className="px-6 py-4">{rappel.carType}</td>
-                                        <td className="px-6 py-4">{format(rappelDate, 'dd/MM/yyyy')}</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs ${statusClass}`}>
-                                                {statusText}
+                                        <td className="px-6 py-4 font-medium text-center">
+                                            <button
+                                                className="text-highBlue hover:underline"
+                                                onClick={() => window.open(`/carTracking?devis=${rappel.devisId}`, '_blank')}
+                                            >
+                                                {rappel.devisId}
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-center">{rappel.clientName}</td>
+                                        <td className="px-6 py-4 text-center">{rappel.carType}</td>
+                                        <td className="px-6 py-4 text-center">{format(rappelDate, 'dd/MM/yyyy')}</td>
+                                        <td className="px-6 py-4 align-middle text-center">
+                                            <span className={`px-3 py-2 rounded-md font-oswald text-xs ${statusClass}`}>
+                                                {shortStatusText}
                                             </span>
                                         </td>
                                     </tr>
@@ -210,16 +237,16 @@ const PlanningRappelComponent: React.FC = () => {
             {/* Pagination */}
             <div className="mt-4">
                 <CustomPagination
-                currentPage={page}
-                totalPages={data?.meta.totalPages || 0}
-                onPageChange={(newPage) => setPage(newPage)}
-                containerClassName="flex items-center justify-center mt-4 space-x-2"
-                previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
-                nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
-                activePageClassName="bg-highBlue text-white"
-                inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
-                dotClassName="px-3 py-1 text-highBlue"
-            />
+                    currentPage={page}
+                    totalPages={data?.meta.totalPages || 0}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    containerClassName="flex items-center justify-center mt-4 space-x-2"
+                    previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    activePageClassName="bg-highBlue text-white"
+                    inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                    dotClassName="px-3 py-1 text-highBlue"
+                />
             </div>
         </div>
     );
