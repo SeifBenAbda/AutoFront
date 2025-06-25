@@ -75,7 +75,7 @@ const StepCircle = ({ isActive, onClick, stepIcon: Icon, stepLabel }: StepCircle
     </div>
 );
 const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen, onClose, isAdmin, onSave }) => {
-    const generationBcInterneAvailable = devis.StatusDevis !== "En attente" && devis.StatusDevis!=="En Cours" && devis.StatusDevis !== "Annulé"  && devis.StatusDevis !=="HDSI";
+    const generationBcInterneAvailable = devis.StatusDevis !== "En attente" && devis.StatusDevis!=="En Cours" && devis.StatusDevis !== "Annulé" ;
     const [activeStep, setActiveStep] = useState<number>(0);
     const { user } = useUser();
     const [myDevis, setDevis] = useState<Devis | null>(devis);

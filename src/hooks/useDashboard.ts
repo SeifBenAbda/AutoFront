@@ -159,6 +159,7 @@ export interface CreatorStats {
 
 export interface ConversionStatsResult {
     creators: CreatorStats[];
+    totals:CreatorStats;
     totalCreators: number;
 }
 
