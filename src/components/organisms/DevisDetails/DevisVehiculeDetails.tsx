@@ -6,6 +6,7 @@ import { Label } from "../../../@/components/ui/label";
 import CarsDropDown from "../../../components/atoms/CarsDropDown";
 import { params } from "../../../utils/params";
 import { useUser } from "../../../context/userContext";
+import NumberCarsDropDown from "../../../components/atoms/NumberCarsDopDown";
 interface DevisVehiculeDetailsProps {
     carRequest: CarRequest;
     devis: Devis;
@@ -16,10 +17,18 @@ interface DevisVehiculeDetailsProps {
 
 export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevis, isAdmin }: DevisVehiculeDetailsProps) {
     const { user } = useUser();
-    const isEditingOpen = (devis.StatusDevis == "En Cours" || devis.devisFacture==null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
+    const isEditingOpen = (devis.StatusDevis == "En Cours" || devis.devisFacture == null) && (devis.AssignedTo === "" || devis.AssignedTo === user?.username || isAdmin);
     const handleChange = (field: keyof CarRequest, value: string | Date | undefined) => {
         onUpdate({
             ...carRequest,
+            [field]: value,
+        });
+    };
+
+
+    const handleDevisChange = (field: keyof Devis, value: string | Date | undefined) => {
+        onUpdateDevis({
+            ...devis,
             [field]: value,
         });
     };
@@ -31,11 +40,11 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     <Label className="relative text-sm font-medium text-highBlue ">Véhicule</Label>
                     {isAdmin ? (
                         <div className="mt-1 block">
-                        <CarsDropDown
-                            value={carRequest?.CarModel || ""}
-                            onChange={(value) => handleChange("CarModel", value)}
-                            isFiltring={false}
-                        />
+                            <CarsDropDown
+                                value={carRequest?.CarModel || ""}
+                                onChange={(value) => handleChange("CarModel", value)}
+                                isFiltring={false}
+                            />
                         </div>
 
                     ) : (
@@ -79,6 +88,20 @@ export function DevisVehiculeDetails({ carRequest, devis, onUpdate, onUpdateDevi
                     )}
                 </CardContent>
 
+                <CardContent className="w-full">
+                    <Label className="relative text-sm font-medium text-highBlue ">Nombre de véhicules</Label>
+                    {isEditingOpen ? (
+                        <NumberCarsDropDown
+                            value={devis?.numberCars?.toString() || ""}
+                            onChange={(value) => handleDevisChange("numberCars", value)}
+                            isFiltring={false}
+                        />
+                    ) : (
+                        <div className={`mt-1 p-2 block rounded-md  focus:ring-0 sm:text-sm ${params.inputBoxStyle}`}>
+                            {devis?.numberCars || ""}
+                        </div>
+                    )}
+                </CardContent>
             </div>
             <div className="pl-6 pr-6 mt-2">
                 <CardTitle className="text-xl text-highBlue font-oswald text-left w-full mb-2 ml-3 mr-3 ">Plus d'Informations</CardTitle>

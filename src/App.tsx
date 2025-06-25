@@ -1,5 +1,5 @@
 // Fixed App.tsx component
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import useAuth from './hooks/useAuth';
 import CarRequestPage from './templates/CarRequestLayout';
@@ -10,6 +10,8 @@ import ProfileUserPage from './pages/ProfileUserPage';
 import DashboardLayout from './templates/DashboardLayout';
 import SessionNotification from './components/organisms/SessionNotification/SessionNotification';
 import useSession from './hooks/sessions/useSession';
+import session_ending from './assets/session_ending.mp3';
+
 
 import { getToken } from './services/authService';
 import useWebSocketAgents from './hooks/useWebSocketAgents';
@@ -20,6 +22,8 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
   const isLoginPage = location.pathname === '/login';
   const token = getToken();
   const isLoggedIn = Boolean(user) && Boolean(token);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const hasPlayedWarningRef = useRef(false);
 
   const {
     sessionExpiring,
@@ -27,10 +31,23 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
     extendSession,
     logout
   } = useSession({
-    warningTime: 60000,
+    warningTime: 180000,
     autoRefresh: false,
     enabled: isLoggedIn && !isLoginPage,
+    autoExtendOnActivity: true // Enable auto-extension on user activity
   });
+
+  // Play sound when session is expiring
+  useEffect(() => {
+    if (sessionExpiring && !hasPlayedWarningRef.current && audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.warn('Error playing session expiration sound:', error);
+      });
+      hasPlayedWarningRef.current = true;
+    } else if (!sessionExpiring) {
+      hasPlayedWarningRef.current = false;
+    }
+  }, [sessionExpiring]);
 
   // Fixed: Only initialize WebSocket when user is logged in and stable
   const { addEventListener } = useWebSocketAgents({
@@ -93,14 +110,16 @@ const AppContent: React.FC<{ user: any }> = ({ user }) => {
 
   return (
     <>
-      {isLoggedIn && !isLoginPage && (
-        <SessionNotification
-          isExpiring={sessionExpiring}
-          timeRemaining={timeRemaining}
-          onExtend={extendSession}
-          onLogout={logout}
-        />
-      )}
+        <audio ref={audioRef} src={session_ending} preload="auto" />
+        
+        {isLoggedIn && !isLoginPage && (
+          <SessionNotification
+            isExpiring={sessionExpiring}
+            timeRemaining={timeRemaining}
+            onExtend={extendSession}
+            onLogout={logout}
+          />
+        )}
       <Routes>
         <Route path="/login" element={!isLoggedIn ? <LoginPage /> : <Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />} />

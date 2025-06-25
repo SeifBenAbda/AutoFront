@@ -34,6 +34,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
     const initialDevisFacture = devis.devisFacture;
     const isEditingBrdOpen = devis.StatusDevis !== "Livré" && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
     const [isEditingOpen, setIsEditingOpen] = useState((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
+    const isEditingImmatriculationOpen = devis.StatusDevis=="Livré"  && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
 
     useEffect(() => {
         setIsEditingOpen((devis.StatusDevis == "En Cours" || devis.StatusDevis === "Annulé" || initialDevisFacture === null) && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin));
@@ -293,7 +294,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
                 <div className="flex gap-4 w-full">
                     <CardContent className="w-full">
                         <Label className="relative text-sm font-medium text-highBlue ">Immatriculation</Label>
-                        {isEditingOpen ? (
+                        {isEditingImmatriculationOpen ? (
                             <Input
                             maxLength={30}
                             value={devis.carRequests[0].Immatriculation || ""}
@@ -318,7 +319,7 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="w-full">
                         <Label className="relative text-sm font-medium text-highBlue ">Date de Livraison</Label>
-                        {isEditingOpen ? (
+                        {isEditingImmatriculationOpen ? (
                             <DatePicker
                             value={devis.devisFacture?.DateLivraison || new Date()}
                             onChange={handleDateLivraisonChange}
@@ -352,17 +353,11 @@ export function DevisGlobalDetails({ devis, isAdmin, onUpdate }: DevisGlobalDeta
 
                     <CardContent className="w-full">
                         <Label className="text-sm font-medium text-highBlue">Status</Label>
-                        {isEditingOpen ? (
-                            <StatusDevisDropDown
+                        <StatusDevisDropDown
                                 value={devis.StatusDevis}
                                 onChange={handleStatusChange}
                                 isFiltring={false}
                             />
-                        ) : (
-                            <div className={`w-full p-2 rounded-md sm:text-sm caret-highBlue ${params.inputBoxStyle}`}>
-                                <span>{devis.StatusDevis}</span>
-                            </div>
-                        )}
                     </CardContent>
 
                     {/** 

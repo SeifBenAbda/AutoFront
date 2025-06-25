@@ -22,7 +22,7 @@ const ConversionStats: React.FC = () => {
                     Statistiques de Conversion
                 </div>
             </div>
-            
+
             {/* Date range selection */}
             <div className="flex flex-wrap gap-4 items-center mb-4 bg-white p-4 rounded-lg">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -96,33 +96,47 @@ const ConversionStats: React.FC = () => {
                                 </tr>
                             ))
                         ) : data?.result?.creators?.length ? (
-                            data.result.creators.map((creator, idx) => {
-                                // Generate a consistent color for each creator
-                                const hash = creator.creator.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-                                const hue = hash % 360;
-                                const creatorColor = `hsl(${hue}, 70%, 65%)`;
-                                
-                                return (
-                                    <tr key={creator.creator || idx} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-center">
-                                            <span
-                                                className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
-                                                style={{ backgroundColor: creatorColor }}
-                                            ></span>
-                                            {creator.creator}
-                                        </td>
-                                        <td className="px-6 py-4 text-center">{creator.totalDevis}</td>
-                                        <td className="px-6 py-4 text-center">{creator.rappelsCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.enCoursCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.reserveCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.hdsiCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.factureCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.livreCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.annuleCount}</td>
-                                        <td className="px-6 py-4 text-center">{creator.tauxConversion}</td>
-                                    </tr>
-                                );
-                            })
+                            <>
+                                {data.result.creators.map((creator, idx) => {
+                                    // Generate a consistent color for each creator
+                                    const hash = creator.creator.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                                    const hue = hash % 360;
+                                    const creatorColor = `hsl(${hue}, 70%, 65%)`;
+
+                                    return (
+                                        <tr key={creator.creator || idx} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 text-start">
+                                                <span
+                                                    className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
+                                                    style={{ backgroundColor: creatorColor }}
+                                                ></span>
+                                                {creator.creator}
+                                            </td>
+                                            <td className="px-6 py-4 text-center">{creator.totalDevis}</td>
+                                            <td className="px-6 py-4 text-center">{creator.rappelsCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.enCoursCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.reserveCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.hdsiCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.factureCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.livreCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.annuleCount}</td>
+                                            <td className="px-6 py-4 text-center">{creator.tauxConversion}</td>
+                                        </tr>
+                                    );
+                                })}
+                                <tr key="totals" className="bg-gray-100 font-oswald">
+                                    <td className="px-6 py-4 text-start">Totaux</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.totalDevis}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.rappelsCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.enCoursCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.reserveCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.hdsiCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.factureCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.livreCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.annuleCount}</td>
+                                    <td className="px-6 py-4 text-center">{data.result.totals.tauxConversion}</td>
+                                </tr>
+                            </>
                         ) : (
                             <tr>
                                 <td colSpan={10} className="text-center py-6 text-gray-500">
@@ -137,16 +151,16 @@ const ConversionStats: React.FC = () => {
             {/* Pagination */}
             <div className="mt-4">
                 <CustomPagination
-                currentPage={page}
-                totalPages={data?.meta.totalPages || 0}
-                onPageChange={(newPage) => setPage(newPage)}
-                containerClassName="flex items-center justify-center mt-4 space-x-2"
-                previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
-                nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
-                activePageClassName="bg-highBlue text-white"
-                inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
-                dotClassName="px-3 py-1 text-highBlue"
-            />
+                    currentPage={page}
+                    totalPages={data?.meta.totalPages || 0}
+                    onPageChange={(newPage) => setPage(newPage)}
+                    containerClassName="flex items-center justify-center mt-4 space-x-2"
+                    previousButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    nextButtonClassName="px-3 py-1 bg-transparent text-highBlue rounded disabled:opacity-50"
+                    activePageClassName="bg-highBlue text-white"
+                    inactivePageClassName="bg-transparent text-highBlue border border-gray-300 hover:bg-gray-100 transition-colors"
+                    dotClassName="px-3 py-1 text-highBlue"
+                />
             </div>
         </div>
     );

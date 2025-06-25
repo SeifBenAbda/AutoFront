@@ -303,12 +303,12 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis, autoOpenDevisId }) => 
                     setDateRappelTo(undefined);
                   } else {
                     // If not active, set to today's date range
-                    const today = new Date();
+                    const today = new Date(new Date().toLocaleDateString('en-US', { timeZone: 'Africa/Tunis' }));
                     today.setHours(0, 0, 0, 0); // Set to beginning of the day
                     const tomorrow = new Date(today);
                     tomorrow.setDate(tomorrow.getDate() + 1);
                     setDateRappelFrom(today);
-                    setDateRappelTo(tomorrow);
+                    setDateRappelTo(today);
                   }
                   setPage(1);
                 }}

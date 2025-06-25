@@ -66,7 +66,7 @@ export const defaultFormDevisGeneral : Devis = {
     devisPayementDetails: { ...defaultFormPayementDetails },
     devisFacture: { ...defaultFormCarDevisFacture },
     devisReserved: { ...defaultFormDevisReserved },
-    gesteCommer: { ...defaultFormDevisGesteCommer },
+    devisGesteCommerciale: { ...defaultFormDevisGesteCommer },
     isGesteCommerciale: false
 };
 

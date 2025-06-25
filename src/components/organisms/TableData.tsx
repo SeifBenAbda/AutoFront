@@ -36,10 +36,8 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
   const [tableData, setTableData] = useState<Devis[]>(data);
   const [selectedRow, setSelectedRow] = useState<Devis | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
   const { user } = useUser();
-  const { mutateAsync: deleteDevis } = useDeletedDevis();
-  const [isAssignedToMe, setIsAssignedToMe] = useState<boolean>(false);
+
   // Update tableData when data prop changes
   useEffect(() => {
     setTableData(data);
@@ -68,6 +66,8 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
           return 'bg-blue-100 text-blue-700 border border-blue-200';
         case 'livré':
           return 'bg-purple-50 text-purple-700 border border-purple-200';
+        case 'hdsi':
+          return 'bg-highBlue text-whiteSecond border border-highBlue';  
         default:
           return 'bg-gray-100 text-gray-700 border border-gray-200';
       }
@@ -77,6 +77,7 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
     const isCancelled = status?.toLowerCase() === 'annulé';
     const isReserved = status?.toLowerCase() === 'réservé';
     const isLivred = status?.toLowerCase() === 'livré';
+    const isHdsi = status?.toLowerCase() === 'hdsi';
 
     return (
       <span className={`px-3 w-[100px] justify-center py-1 text-xs font-medium rounded-md inline-flex items-center ${getStatusColor()}`}>
@@ -147,6 +148,32 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
               </>
             ) :
 
+             isHdsi ?
+            (
+                <>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round">
+                  {/* Document */}
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" className="animate-pulse" />
+                  {/* Corner fold */}
+                  <path d="M14 2v6h6" />
+                  {/* Stars/sparkles */}
+                  <path d="M20 13l-1.5-1.5L20 10l1.5 1.5L20 13z" className="animate-ping" />
+                  <path d="M4 13l-1.5-1.5L4 10l1.5 1.5L4 13z" className="animate-ping" />
+                  <path d="M12 7l-1-1 1-1 1 1-1 1z" className="animate-ping" />
+                  {/* Trending line */}
+                  <path d="M9 17l3-3 3 3" className="animate-pulse" />
+                </svg>
+                <span className="text-white animate-[fadeIn_1s_ease-in-out]">HDSI</span>
+                </>
+            ) :
+
             status}
       </span>
     );
@@ -183,10 +210,17 @@ export const TableData = ({ data, columns: externalColumns, autoOpenDevisId }: D
   const getClosestReminder = (rappels: any[] | undefined) => {
     if (!rappels || rappels.length === 0) return null;
 
+    // Create a date for today (with time set to 00:00:00)
     const now = new Date();
-    // Filter future reminders
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    // Filter today and future reminders
     const futureRappels = rappels
-      .filter(rappel => new Date(rappel.RappelDate) >= now)
+      .filter(rappel => {
+        const rappelDate = new Date(rappel.RappelDate);
+        const rappelDateOnly = new Date(rappelDate.getFullYear(), rappelDate.getMonth(), rappelDate.getDate());
+        return rappelDateOnly.getTime() >= today.getTime();
+      })
       .sort((a, b) => new Date(a.RappelDate).getTime() - new Date(b.RappelDate).getTime());
 
     // If there are future reminders, return the closest one
