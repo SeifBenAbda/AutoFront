@@ -1064,4 +1064,39 @@ export const generateBcInterne = async (databasename: string,devisId: number, na
     throw error;
   }
 }
-  
+
+
+export const addBankOrLeasing = async (database: string, name: string, type: string) => {
+  const token = getToken();
+  if (!token) {
+    throw new Error('No token found');
+  }
+
+  const body = { database, name, type };
+
+  try {
+    const response = await fetch(`${API_URL}/banks-and-leasing/create`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeToken();
+      throw new Error('Unauthorized: Token is invalid or expired');
+    }
+
+    if (!response.ok) {
+      throw new Error('Failed to add bank or leasing');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
