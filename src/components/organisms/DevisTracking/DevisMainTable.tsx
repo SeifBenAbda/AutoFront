@@ -80,17 +80,12 @@ const DataTable: React.FC<DataTableProps> = ({ typeDevis, autoOpenDevisId }) => 
     });
 
     if (devisFound) {
-      // Devis found, stop searching
-      console.log('Devis found:', autoOpenDevisId);
+    
       setIsSearchingDevis(false);
     } else if (data.meta.currentPage < data.meta.totalPages) {
-      // Not found on this page, go to the next page
       setPage(prevPage => prevPage + 1);
     } else {
-      console.log('Devis not found in any pages');
-      // We've checked all pages without finding the devis
       setIsSearchingDevis(false);
-      // Clear the search filter since we didn't find anything with it
       setSearchValue('');
     }
   }, [data, isLoading, isSearchingDevis, autoOpenDevisId]);
