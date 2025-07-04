@@ -563,6 +563,32 @@ export const deletedDevis = async (
 
 
 
+export const resetDevisData = async (
+  database: string,
+  devisId: number,
+): Promise<Devis> => { 
+  const token = getToken();
+
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_URL}/devis/reset`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      database,
+      devisId
+    }),
+  });
+
+  if (!response.ok) throw new Error('Network response was not ok');
+
+  return response.json();
+};
+
+
 export const createDevis = async (
   database: string,
   client: Client,

@@ -3,7 +3,7 @@ import { CarRequest, Client, Devis, Rappel } from "../../../types/devisTypes";
 import { UserRoundCog, FileText, Car, BellRing, Files } from "lucide-react";
 import { useUser } from "../../../context/userContext";
 import { DevisGlobalDetails } from "./DevisGlobalDetails";
-import { useUpdateDevis } from "../../../hooks/useDevis";
+import { useDevisResetData, useUpdateDevis } from "../../../hooks/useDevis";
 import { DevisClientDetails } from "./DevisClientDetails";
 import { DevisVehiculeDetails } from "./DevisVehiculeDetails";
 import { DevisRappelsDetails } from "./DevisRappelsDetails";
@@ -88,6 +88,24 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
     const { mutateAsync: updateDevis } = useUpdateDevis();
     const navigate = useNavigate();
     const { mutateAsync: generateBcInterne } = useGenerateBcInterne(devis.DevisId!, navigate);
+    const { mutateAsync: resetDevisData } = useDevisResetData();
+    
+    
+    const resetDevis = async () => {
+        setLoading(true);
+        try {
+            await resetDevisData({
+                database: state.databaseName,
+                devisId: devis.DevisId!,
+            });
+            setDevis(null);
+            onClose();
+        } catch (error) {
+            console.error('Failed to reset devis:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
     const totalSteps = [
 
         { icon: UserRoundCog, label: "Client" },
@@ -267,6 +285,12 @@ const DevisDetailsNewMain: React.FC<DevisDetailsNewMainProps> = ({ devis, isOpen
                         <Button onClick={handleGenerateBcInterne} className="w-full py-2 text-white bg-greenOne hover:bg-greenOne rounded-md">
                         Générer BC Interne
                     </Button>)}
+                    {devis.StatusDevis==="Annulé" && isAdmin && (
+                        <Button onClick={resetDevis} className="w-full py-2 text-white
+                        bg-red-500 hover:bg-red-600 rounded-md">
+                            Réinitialiser
+                        </Button>
+                    )}
                     <Button onClick={handleSave} className="w-full py-2 text-white bg-highBlue rounded-md">
                         Enregistrer
                     </Button>
