@@ -2,10 +2,11 @@ import { z } from "zod";
 
 
 const rappelFormSchema = z.object({
-    RappelDate: z.date({
-        message: "Date est requis.",
-    }),
-    RappelContent: z.string().optional(),  // Ensure this is required
+  RappelDate: z.date().nullable().refine(
+    (date) => date === null || !isNaN(date.getTime()),
+    { message: "Date invalide" }
+  ),
+  RappelContent: z.string().optional(),
 });
 
 const itemSchema = z.object({
@@ -74,18 +75,25 @@ export const devisSchema = z.object({
             message: "La priorité doit être 'Normale', 'Moyenne' ou 'Haute'.",
         }),
     }),
-    rappelForm: z.array(rappelFormSchema)
-    .refine(
-        (data) => {
-            if (data.length === 0) return true;
-            const today = new Date();
-            const firstDate = data[0].RappelDate;
-            return today.toDateString() !== firstDate.toDateString();
-        },
-        {
-            message: "Le premier rappel ne peut pas être aujourd'hui",
-            path: ["rappelForm"]
-        }
+    rappelForm: z.array(rappelFormSchema).refine(
+    (data) => {
+        
+        if (data.length === 0 || !data[0].RappelDate) return true; // Skip if empty or no date
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to midnight
+        const firstRappelDate = new Date(data[0].RappelDate);
+        firstRappelDate.setHours(0, 0, 0, 0); // Normalize to midnight
+        // For a boolean result:
+        const isDifferent = today.toDateString() != firstRappelDate.toDateString();
+
+        // If you need it as a string for display:
+        const comparisonResult = `${today.toDateString()} != ${firstRappelDate.toDateString()}: ${isDifferent}`;
+        return isDifferent;
+    },
+    {
+        message: "Le premier rappel ne peut pas être aujourd'hui "
+    }
     ),
 
     itemChangeForm: z.object({

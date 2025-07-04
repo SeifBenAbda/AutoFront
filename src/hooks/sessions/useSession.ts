@@ -52,7 +52,6 @@ const useSession = (options: UseSessionOptions = {}, checkAuth?: () => Promise<v
           
           // Only auto-extend if we're in warning zone but not critically low
           if (remaining && remaining <= warningTime && remaining > 30000) {
-            console.log('Auto-extending session due to recent user activity (last 3 minutes)');
             isExtendingRef.current = true;
             
             try {

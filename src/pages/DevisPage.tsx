@@ -94,11 +94,10 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
             <Toaster tostCloseStyle={""} />
             <Card className="h-full p-2 m-1 bg-bgColorLight border border-bgColorLight overflow-auto">
                 <div className="flex flex-col">
-                    {/* Rest of your component... */}
                     <CardHeader className="sticky top-0 left-0 right-0 bg-bgColorLight z-10 p-4 border-b border-bgColorLight flex flex-col md:flex-row md:items-center md:justify-between ml-4 mr-4">
                         <div>
-                            <CardTitle className="text-darkGrey">Devis</CardTitle>
-                            <CardDescription>Devis pour voiture</CardDescription>
+                            <CardTitle className="text-blueGrey text-3xl font-oswald">Dossier</CardTitle>
+                            <CardDescription>Dossier pour voiture</CardDescription>
                         </div>
                         <div className="mt-2 md:mt-0">
                             <Button
@@ -107,7 +106,7 @@ const DevisPage: React.FC<DevisPageProps> = ({ isLoading, setIsLoading }) => {
                                 disabled={isLoading}
                                 className="bg-greenOne hover:bg-greenOne"
                             >
-                                Valider Devis
+                                Valider Dossier
                             </Button>
                         </div>
                     </CardHeader>

@@ -167,7 +167,7 @@ const PlanningRappelComponent: React.FC = () => {
                                 let statusClass = "";
                                 const isRappelHasContent = rappel.rappelContent && rappel.rappelContent.trim() !== "";
                                 if (isRappelHasContent) {
-                                    statusText = "Rappel prévu";
+                                    statusText = "Rappel Terminé";
                                     statusClass = "text-blue-600 bg-blue-50";
                                 } else {
                                     if (days < 0) {
@@ -189,7 +189,7 @@ const PlanningRappelComponent: React.FC = () => {
                                 }
                                 
                                 // Create short versions for small screens
-                                const shortStatusText = isRappelHasContent ? "Prévu" : 
+                                const shortStatusText = isRappelHasContent ? "Terminé" : 
                                     days < 0 ? "Retard" : 
                                     days === 0 ? "Aujourd'hui" : 
                                     days === 1 ? "Demain" : 
