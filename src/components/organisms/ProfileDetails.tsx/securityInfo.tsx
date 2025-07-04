@@ -111,7 +111,7 @@ export function Securite() {
         });
         
         // Handle logout
-        handleLogout(navigate);
+        handleLogout(user.username ,navigate);
       } else {
         // Error toast
         await showToast({
@@ -153,7 +153,7 @@ export function Securite() {
         <CardHeader className="bg-gradient-to-r from-highBlue to-normalBlue p-4 md:p-5 relative border-b border-gray-700/30 rounded-t-lg">
           <div className="flex items-center gap-2">
             <ShieldCheckIcon className="w-5 h-5 text-greenOne" />
-            <CardTitle className="text-whiteSecond text-xl">Sécurité</CardTitle>
+            <CardTitle className="text-whiteSecond text-xl font-oswald">Sécurité</CardTitle>
           </div>
           <CardDescription className="text-whiteSecond">
             Mettez à jour votre mot de passe pour sécuriser votre compte

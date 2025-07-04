@@ -417,7 +417,7 @@ const BankAndLeasingManipulation: React.FC = () => {
     return (
         <Card className="shadow-md border border-gray-200/10 transition-all duration-200 rounded-xl overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 bg-gradient-to-r from-highBlue to-normalBlue">
-                <CardTitle className="text-xl font-bold text-white">
+                <CardTitle className="text-xl font-bold text-white font-oswald">
                     Banques et Leasings
                 </CardTitle>
                 <div className="flex space-x-2">

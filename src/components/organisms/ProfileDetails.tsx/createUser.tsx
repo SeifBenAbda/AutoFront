@@ -203,8 +203,8 @@ export const CreateUser = () => {
             <Card className="bg-whiteSecond border border-normalGrey/10 w-full shadow-md rounded-xl overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-highBlue to-normalBlue p-4 md:p-5 relative">
                     <div className="flex items-center justify-between">
-                        <CardTitle className="text-whiteSecond text-xl flex items-center gap-2">
-                            <UserPlus className="w-5 h-5 text-greenOne" />
+                        <CardTitle className="text-whiteSecond text-xl flex items-center gap-2 font-oswald">
+                            <UserPlus className="w-5 h-5 text-whiteSecond" />
                             Créer un nouvel utilisateur
                         </CardTitle>
                         <div className="flex items-center space-x-2">
