@@ -1,6 +1,6 @@
 // src/hooks/useDevis.ts (Stable version)
 import { CarRequest, Client, Devis, DevisFacture, DevisGesteCommer, DevisPayementDetails, DevisReserved, Rappel } from '../types/devisTypes';
-import { createDevis, deletedDevis, fetchDevisAllData, updateDevis } from '../services/apiService';
+import { createDevis, deletedDevis, fetchDevisAllData, resetDevisData, updateDevis } from '../services/apiService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSocket, useWebSocketForDevis } from './useWebSocket';
 import { state } from '../utils/shared_functions';
@@ -174,3 +174,27 @@ export const useDeletedDevis = () => {
 };
 
 export default useDevis;
+
+
+
+export const useDevisResetData = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: {
+      database: string;
+      devisId: number;
+    }) => {
+      return resetDevisData(params.database, params.devisId);
+    },
+    onSuccess: (data) => {
+      // Invalidate all data queries
+      queryClient.invalidateQueries({ 
+        queryKey: ['data'],
+        exact: false 
+      });
+    },
+    onError: (error) => {
+    },
+  });
+}
