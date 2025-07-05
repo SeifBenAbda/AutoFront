@@ -492,11 +492,11 @@ const BankAndLeasingManipulation: React.FC = () => {
                                             >
                                                 <TableCell className="font-medium text-gray-700">{item.name}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant="outline" className={`${item.type === 'bank'
+                                                    <Badge variant="outline" className={`${item.type === 'Bank'
                                                             ? 'bg-blue-50 text-blue-700 border-blue-200'
                                                             : 'bg-purple-50 text-purple-700 border-purple-200'
                                                         } rounded-md px-3 py-2`}>
-                                                        {item.type === 'bank' ? 'Banque' : 'Leasing'}
+                                                        {item.type === 'Bank' ? 'Banque' : 'Leasing'}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell className="text-right">

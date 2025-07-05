@@ -60,7 +60,7 @@ const AgentsHistoryTable: React.FC<AgentsHistoryTableProps> = ({
         if (actionLower.includes('updat') || actionLower === 'mis à jour') return 'bg-highBlue hover:bg-highBlue text-whiteSecond dark:bg-blue-900 dark:text-blue-300';
         if (actionLower.includes('delet') || actionLower === 'suppression') return 'bg-redOne text-red-800 dark:bg-red-900 dark:text-red-300';
         if (actionLower.includes('view') || actionLower === 'consulté') return 'bg-purpleOne text-purple-800 dark:bg-purple-900 dark:text-purple-300';
-        if (actionLower.includes('generat')) return 'bg-highYellow border-highYellow hover:bg-highYellow text-highBlue dark:bg-yellow-900 dark:text-yellow-300';
+        if (actionLower.includes('commande')) return 'bg-highYellow border-highYellow hover:bg-highYellow text-highBlue dark:bg-yellow-900 dark:text-yellow-300';
         return 'bg-grayOne text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     };
 
