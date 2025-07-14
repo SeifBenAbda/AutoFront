@@ -3,6 +3,7 @@ import AudioRecorder from "./DevisAudioSystem";
 import { Textarea } from "../../../@/components/ui/textarea";
 import { DatePicker } from "../../atoms/DateSelector";
 import { useUser } from "../../../context/userContext";
+import { useEffect } from "react";
 
 interface DevisRappelsDetailsProps {
     devisId: number,
@@ -31,6 +32,20 @@ export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, on
 
         onUpdate(updatedRappels);
     };
+
+    
+    useEffect(() => {
+        // Sort rappels by date when component mounts or updates
+        const sortedRappels = [...rappels].sort((a, b) => {
+            if (!a.RappelDate && !b.RappelDate) return 0;
+            if (!a.RappelDate) return 1;
+            if (!b.RappelDate) return -1;
+            return new Date(a.RappelDate).getTime() - new Date(b.RappelDate).getTime();
+        });
+        onUpdate(sortedRappels);
+    }, [rappels, onUpdate]);
+
+    
 
 
     const handleCommentsChange = (comments: string): void => {
