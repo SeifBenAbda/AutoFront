@@ -42,8 +42,13 @@ export function DevisRappelsDetails({ devisId, rappels, devis, onUpdateDevis, on
             if (!b.RappelDate) return -1;
             return new Date(a.RappelDate).getTime() - new Date(b.RappelDate).getTime();
         });
-        onUpdate(sortedRappels);
-    }, [rappels, onUpdate]);
+
+        // Only update if the order has actually changed
+        const hasOrderChanged = rappels.some((rappel, index) => rappel.RappelId !== sortedRappels[index].RappelId);
+        if (hasOrderChanged) {
+            onUpdate(sortedRappels);
+        }
+    }, [rappels]);
 
     
 
