@@ -4,6 +4,7 @@ import { getToken, removeToken } from './authService';
 import { User } from "../models/user.model";
 import { generateBcInterneResponse } from "../hooks/useUploadFiles";
 import { CarModel } from "../hooks/useCars";
+import { se } from "date-fns/locale";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -166,7 +167,8 @@ export const fetchDevisAllData = async (
   cars?:string[],
   clients?:string[],
   dateRappelFrom?: Date | undefined,
-  dateRappelTo?: Date | undefined
+  dateRappelTo?: Date | undefined,
+  selectedAgent?: string | undefined
 ): Promise<ApiResponse> => {
   const token = getToken();
 
@@ -176,8 +178,8 @@ export const fetchDevisAllData = async (
 
   const endpoint = searchValue ? '/devis/searchDevis' : '/devis/completeDevis';
   const body = searchValue
-    ? { database, searchValue, page, status, priority, cars, clients, dateRappelFrom, dateRappelTo, assignedTo }
-    : { database, page, status, priority, cars, clients, dateRappelFrom, dateRappelTo, assignedTo };
+    ? { database, searchValue, page, status, priority, cars, clients, dateRappelFrom, dateRappelTo, assignedTo, selectedAgent }
+    : { database, page, status, priority, cars, clients, dateRappelFrom, dateRappelTo, assignedTo, selectedAgent };
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {

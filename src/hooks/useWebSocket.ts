@@ -57,15 +57,16 @@ export const useWebSocketForDevis = (
   assignedTo?: string,
   status?: string, 
   priority?: string, 
-  cars?: string[]
+  cars?: string[],
+  selectedAgent?: string
 ) => {
   const queryClient = useQueryClient();
   const mountedRef = useRef(true);
 
   // Stable query key using useMemo
   const queryKey = useMemo(() =>
-    ['data', page, searchValue, assignedTo, status, priority, cars],
-    [page, searchValue, assignedTo, status, priority, cars]
+    ['data', page, searchValue, assignedTo, status, priority, cars,selectedAgent],
+    [page, searchValue, assignedTo, status, priority, cars,selectedAgent]
   );
 
   useEffect(() => {
