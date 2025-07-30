@@ -24,7 +24,8 @@ const useDevis = (
   cars?: string[], 
   clients?: string[],
   dateRappelFrom?: Date | undefined, 
-  dateRappelTo?: Date | undefined
+  dateRappelTo?: Date | undefined,
+  selectedAgent?: string | undefined
 ) => {
   // Stable query key using useMemo to prevent unnecessary re-renders
   const queryKey = useMemo(() => [
@@ -37,11 +38,12 @@ const useDevis = (
     cars, 
     clients, 
     dateRappelFrom?.toISOString(), // Convert dates to strings for stable comparison
-    dateRappelTo?.toISOString()
-  ], [page, searchValue, assignedTo, status, priority, cars, clients, dateRappelFrom, dateRappelTo]);
+    dateRappelTo?.toISOString(),
+    selectedAgent
+  ], [page, searchValue, assignedTo, status, priority, cars, clients, dateRappelFrom, dateRappelTo, selectedAgent]);
 
   // Initialize WebSocket - this should only run once per component
-  const isConnected = useWebSocketForDevis(page, searchValue, assignedTo, status, priority, cars);
+  const isConnected = useWebSocketForDevis(page, searchValue, assignedTo, status, priority, cars,selectedAgent);
 
   const query = useQuery<ApiResponse>({
     queryKey,
@@ -56,7 +58,8 @@ const useDevis = (
         cars, 
         clients, 
         dateRappelFrom, 
-        dateRappelTo
+        dateRappelTo,
+        selectedAgent
       );
       
      

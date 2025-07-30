@@ -13,10 +13,11 @@ SelectValue,
 interface AgentNamesDropDowmTypes {
 value?: string;
 onChange: (value: string) => void;
+isFiltring?: boolean;
 }
 
 const AgentNamesDropDowm = forwardRef<HTMLButtonElement, AgentNamesDropDowmTypes>(
-({ value, onChange }, ref) => {
+({ value, onChange, isFiltring }, ref) => {
     const hoverItem = "cursor-pointer focus:bg-lightWhite hover:rounded-md";
     const { data: agents, isLoading, error } = useAgentNames();
 
@@ -31,12 +32,12 @@ const AgentNamesDropDowm = forwardRef<HTMLButtonElement, AgentNamesDropDowmTypes
 
     return (
         <Select onValueChange={onChange}>
-            <SelectTrigger ref={ref} className="w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue">
-                <SelectValue placeholder={value ? value.toString() : "Non déterminé"} className={hoverItem}/>
+            <SelectTrigger ref={ref} className={`w-full border border-normalGrey bg-normalGrey font-oswald text-highBlue ${isFiltring ? 'text-xs' : ''}`}>
+                <SelectValue placeholder={value ? value.toString() : isFiltring ? "Tous les agents": "Non déterminé"} className={hoverItem}/>
             </SelectTrigger>
             <SelectContent className="bg-normalGrey border-normalGrey">
-                <SelectItem value="Non déterminé" className={hoverItem}>
-                    Non déterminé
+                <SelectItem value={isFiltring ? "Tous les agents" : "Non déterminé"} className={hoverItem}>
+                    {isFiltring ? "Tous les agents" : "Non déterminé"}
                 </SelectItem>
                 {agents?.map((agent) => (
                     <SelectItem key={agent.id} value={agent.username} className={hoverItem}>
