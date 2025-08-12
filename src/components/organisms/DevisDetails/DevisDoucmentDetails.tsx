@@ -17,7 +17,7 @@ export function DevisDoucmentDetails({ devis }: DevisDoucmentDetailsProps) {
     const [hasSelectedFiles, setHasSelectedFiles] = useState<boolean>(false);
      const { user } = useUser();
     const isAdmin = user?.role === 'ADMIN';
-    const isEditingOpen = (devis.StatusDevis != "Livré" && devis.StatusDevis!='Annulé') && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
+    const isEditingOpen = (devis.StatusDevis!='Annulé') && (devis.AssignedTo === "" || devis.AssignedTo=== user?.username || isAdmin);
 
 
     const handleChangeComponent = (component: 'checkFiles' | 'uploadFile') => {
