@@ -21,6 +21,8 @@ const isModificationFactureCorrect = (devis: Devis): boolean => {
 }
 
 
+// BUG : ASK Client ? Date Reservation >= Date Creation ??? 
+//ERROR : Devis 6702
 const isModificationReservationCorrect = (devis: Devis): boolean => {
     if (!devis.devisReserved.DateReservation || !devis.carRequests[0].CarColor || devis.carRequests[0].CarColor === "") {
         return false;

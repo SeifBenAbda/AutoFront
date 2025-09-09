@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Bar, YAxis, XAxis } from 'recharts';
 import { useCarStats } from '../../../hooks/useDashboard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../@/components/ui/select';
@@ -10,8 +10,46 @@ import { Loader } from 'lucide-react';
 const CarRequestStats: React.FC = () => {
     const [timeframe, setTimeframe] = useState<'TODAY' | 'THIS_MONTH'>('TODAY');
     const [selectedCars, setSelectedCars] = useState<string[]>([]);
-    const { data, isLoading, error } = useCarStats(selectedCars);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+    
     const { data: carModels } = useCarModelsFacture();
+    
+    // First, get all car models to make initial query
+    const allCarModels = carModels?.CarModelsFacture || [];
+    
+    // Use all cars for initial data fetch to determine which ones have sales
+    const { data, isLoading, error } = useCarStats(isInitialLoad ? allCarModels : selectedCars);
+
+    // Auto-select cars that have sales for the current timeframe
+    useEffect(() => {
+        if (data && allCarModels.length > 0) {
+            const carsWithSales: string[] = [];
+            
+            Object.entries(data).forEach(([carModel, carData]) => {
+                if (!('message' in carData)) {
+                    // Check if any seller has sales for the current timeframe
+                    const hasSales = Object.values(carData).some(stats => stats[timeframe] > 0);
+                    if (hasSales) {
+                        carsWithSales.push(carModel);
+                    }
+                }
+            });
+            
+            // Only update if there are cars with sales and it's different from current selection
+            if (carsWithSales.length > 0 && 
+                (isInitialLoad || JSON.stringify(carsWithSales.sort()) !== JSON.stringify(selectedCars.sort()))) {
+                setSelectedCars(carsWithSales);
+                setIsInitialLoad(false);
+            }
+        }
+    }, [data, timeframe, allCarModels.length, isInitialLoad, selectedCars]);
+
+    // Handle timeframe change
+    const handleTimeframeChange = (newTimeframe: 'TODAY' | 'THIS_MONTH') => {
+        setTimeframe(newTimeframe);
+        // Reset to trigger auto-selection for new timeframe
+        setIsInitialLoad(true);
+    };
     // Collect only seller names with values > 0 for the current timeframe
     const getSellers = () => {
         const sellerSet = new Set<string>();
@@ -62,21 +100,37 @@ const CarRequestStats: React.FC = () => {
                 <div className="flex items-center space-x-4">
                     <div className="w-64">
                         <CustomMultiSelect
-                            options={carModels?.CarModelsFacture.map(car => car) || []}
+                            options={allCarModels}
                             defaultValue={selectedCars}
-                            maxItemsToShow={2}
+                            maxItemsToShow={1}
                             onChange={(selectedItems) => {
                                 setSelectedCars(selectedItems as string[]);
+                                setIsInitialLoad(false); // User manual selection, disable auto-selection
                             }}
-                            optionListStyle='absolute mt-1 max-h-60 overflow-auto z-10 bg-normalGrey border border-normalGrey rounded-md shadow-lg'
-                            optionClassName='px-3 py-2 cursor-pointer hover:bg-gray-100 text-highBlue font-oswald'
-                            className="w-full border border-normalGrey bg-normalGrey text-highBlue font-oswald"
-                            placeholder="Sélectionner les voitures"
+                            optionListStyle='absolute mt-1 max-h-60 overflow-auto z-10 bg-white border border-gray-300 rounded-lg shadow-xl'
+                            optionClassName='px-4 py-3 cursor-pointer hover:bg-blue-50 text-gray-800 font-medium transition-colors duration-200 border-b border-gray-100 last:border-b-0'
+                            selectedOptionClassName='bg-blue-100 text-blue-800 font-semibold border-l-4 border-blue-500'
+                            className="w-full border border-gray-300 bg-white text-gray-800 font-medium rounded-lg focus:border-blue-500 transition-all duration-200"
+                            placeholder={selectedCars.length > 0 ? 
+                                `🚗 ${selectedCars.length} sélectionnée${selectedCars.length > 1 ? 's' : ''}` 
+                                : "🔍 Auto-sélection..."
+                            }
                             containerClassName="w-full p-0"
-
                         />
+                        {/* Compact selected cars display below */}
+                        {selectedCars.length > 0 && (
+                            <div className="mt-1 text-xs text-gray-600 bg-gray-50 rounded px-2 py-1">
+                                <span className="font-medium">
+                                    {timeframe === 'TODAY' ? '📅 Aujourd\'hui' : '📅 Ce mois'}: 
+                                </span>
+                                <span className="ml-1">
+                                    {selectedCars.slice(0, 2).join(', ')}
+                                    {selectedCars.length > 2 && ` +${selectedCars.length - 2}`}
+                                </span>
+                            </div>
+                        )}
                     </div>
-                    <Select value={timeframe} onValueChange={(value) => setTimeframe(value as 'TODAY' | 'THIS_MONTH')}>
+                    <Select value={timeframe} onValueChange={handleTimeframeChange}>
                         <SelectTrigger className="w-32 border border-normalGrey bg-normalGrey text-highBlue font-oswald">
                             <SelectValue placeholder="Période" />
                         </SelectTrigger>

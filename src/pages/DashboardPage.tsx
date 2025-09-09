@@ -4,12 +4,16 @@ import DocumentMissingStats from '../components/organisms/DashboardDetails/docum
 import DossierStats from '../components/organisms/DashboardDetails/globalStats';
 import React from 'react';
 import ConversionStats from '../components/organisms/DashboardDetails/ConversionStats';
+import SourceLeadStats from '../components/organisms/DashboardDetails/SourceLeadStats';
 
 
 const DashboardPage: React.FC = () => {
     return (
         <div className="flex flex-col space-y-2">
-            <DocumentMissingStats />
+            <div className='flex flex-col min-[1680px]:flex-row min-[1680px]:space-x-2 min-[1680px]:space-y-0 space-y-2'>
+                <DocumentMissingStats />
+                <SourceLeadStats />
+            </div>
             <div className='flex flex-col min-[1680px]:flex-row min-[1680px]:space-x-2 min-[1680px]:space-y-0 space-y-2'>
                 <ConversionStats />
                 <PlanningRappelComponent />

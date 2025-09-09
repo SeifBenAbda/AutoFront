@@ -91,16 +91,17 @@ const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
                         {displayedItems.map(item => (
                             <span
                                 key={item}
-                                className={`bg-greenOne text-whiteSecond text-center text-sm px-2 py-1 rounded-md ${selectedOptionClassName}`}
+                                className={`bg-blue-500 text-white text-xs px-2 py-1 rounded-md font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center ${selectedOptionClassName}`}
                             >
-                                {item}
+                                🚗 {item.length > 8 ? item.substring(0, 8) + '...' : item}
                                 {!disabled && (
                                     <span
-                                        className="ml-1 cursor-pointer"
+                                        className="ml-1 hover:bg-blue-600 rounded-full w-3 h-3 flex items-center justify-center text-xs cursor-pointer transition-colors duration-200"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             toggleOption(item);
                                         }}
+                                        title={`Retirer ${item}`}
                                     >
                                         ×
                                     </span>
@@ -108,18 +109,18 @@ const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
                             </span>
                         ))}
                         {remainingCount > 0 && (
-                            <span className="bg-gray-100 text-gray-800 border border-gray-800 text-sm px-2 py-1 rounded-md">
-                                et {remainingCount} autres
+                            <span className="bg-gray-400 text-white text-xs px-2 py-1 rounded-md font-medium shadow-sm">
+                                +{remainingCount}
                             </span>
                         )}
-                        {!disabled && (
-                            <span
-                                className="ml-2 bg-red-500 border rounded-md py-1 px-1 border-red-500 text-whiteSecond text-sm cursor-pointer hover:text-whiteSecond"
+                        {!disabled && selectedItems.length > 1 && (
+                            <button
+                                className="ml-1 bg-red-500 hover:bg-red-600 rounded-md py-1 px-2 text-white text-xs cursor-pointer hover:shadow-md transition-all duration-200 font-medium"
                                 onClick={clearAll}
-                                title="Effacer toutes les sélections"
+                                title="Effacer tout"
                             >
-                                Tout effacer
-                            </span>
+                                ×
+                            </button>
                         )}
                     </div>
                 ) : (
@@ -132,18 +133,25 @@ const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
                     {options.map(option => (
                         <div
                             key={option}
-                            className={`${optionStyle} ${selectedItems.includes(option) ? 'bg-blue-50 ' + selectedOptionClassName : optionClassName
-                                }`}
+                            className={`${optionStyle} ${selectedItems.includes(option) ? 
+                                'bg-blue-50 border-l-4 border-blue-500 text-blue-800 font-semibold ' + selectedOptionClassName : 
+                                optionClassName
+                            }`}
                             onClick={() => toggleOption(option)}
                         >
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
-                                    className="mr-2"
+                                    className="mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                     checked={selectedItems.includes(option)}
                                     readOnly
                                 />
-                                {option}
+                                <span className={`${selectedItems.includes(option) ? 'font-semibold' : 'font-medium'}`}>
+                                    {selectedItems.includes(option) ? '🚗 ' : '🚙 '}{option}
+                                </span>
+                                {selectedItems.includes(option) && (
+                                    <span className="ml-auto text-blue-600 text-sm">✓</span>
+                                )}
                             </div>
                         </div>
                     ))}

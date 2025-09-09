@@ -1,5 +1,5 @@
 import { state } from "../utils/shared_functions";
-import { fetchCarRequestStats, fetchConversionStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels } from "../services/statsService";
+import { fetchCarRequestStats, fetchConversionStats, fetchDocumentMissingStats, fetchDossierStats, fetchOverdueRappels, fetchPlanningRappels, fetchSourceLeadStats } from "../services/statsService";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -179,6 +179,30 @@ export const useConversionStats = (page: number = 1, startingDate: Date, endingD
     return useQuery<ConversionStats>({
         queryKey: ['conversionStats', page, startingDate, endingDate],
         queryFn: () => fetchConversionStats(state.databaseName, page, startingDate, endingDate, navigate),
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+    });
+};
+
+
+//-- Source Lead Stats
+export interface SourceStat {
+    source: string;
+    count: number;
+    percentage: string;
+}
+
+export interface SourceLeadStats {
+    totalDevis: number;
+    sourceStats: SourceStat[];
+}
+
+export const useSourceLeadStats = () => {
+    const navigate = useNavigate();
+    
+    return useQuery<SourceLeadStats>({
+        queryKey: ['sourceLeadStats'],
+        queryFn: () => fetchSourceLeadStats(state.databaseName, navigate),
         staleTime: 0,
         refetchOnWindowFocus: false,
     });

@@ -1,4 +1,4 @@
-import { CarRequestStats, ConversionStats, DocumentMissingStats, DossierStat, PlanningRappel } from "../hooks/useDashboard";
+import { CarRequestStats, ConversionStats, DocumentMissingStats, DossierStat, PlanningRappel, SourceLeadStats } from "../hooks/useDashboard";
 import { getToken, removeToken } from "./authService";
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -214,6 +214,36 @@ export const fetchConversionStats = async (
   }
 
   if (!response.ok) throw new Error("Failed to fetch conversion stats");
+  
+  return response.json();
+}
+
+
+export const fetchSourceLeadStats = async (
+  databaseName: string,
+  navigate: (path: string) => void
+): Promise<SourceLeadStats> => {
+  const token = getToken();
+  if (!token) throw new Error("No token found fetch source lead stats data");
+
+  const response = await fetch(`${API_URL}/dashboard/source-lead-stats`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "database": databaseName,
+    }),
+  });
+
+  if (response.status === 401) {
+    removeToken();
+    navigate("/login");
+    throw new Error("Unauthorized: Token is invalid or expired");
+  }
+
+  if (!response.ok) throw new Error("Failed to fetch source lead stats");
   
   return response.json();
 }
