@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { state } from '../utils/shared_functions';
 import {
@@ -19,49 +19,63 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     const navigate = useNavigate();
     
     // Debug logging
-    console.log('useGoalsData called with:', { 
-        databaseName: state.databaseName, 
-        year, 
-        month, 
-        category,
-        isDatabaseNameValid: !!state.databaseName 
-    });
+    // console.log('useGoalsData called with:', { 
+    //     databaseName: state.databaseName, 
+    //     year, 
+    //     month, 
+    //     category,
+    //     isDatabaseNameValid: !!state.databaseName 
+    // });
     
     const categoriesQuery = useQuery({
         queryKey: ['goalCategories', state.databaseName],
         queryFn: () => {
-            console.log('Calling fetchGoalCategories with database:', state.databaseName);
             return fetchGoalCategories(state.databaseName, navigate);
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: Infinity, // Never consider data stale
+        gcTime: Infinity, // Keep data in cache forever
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
         enabled: !!state.databaseName,
     });
 
     const statusesQuery = useQuery({
         queryKey: ['goalStatuses', state.databaseName],
         queryFn: () => {
-            console.log('Calling fetchGoalStatuses with database:', state.databaseName);
             return fetchGoalStatuses(state.databaseName, navigate);
         },
-        staleTime: 5 * 60 * 1000,
+        staleTime: Infinity, // Never consider data stale
+        gcTime: Infinity, // Keep data in cache forever
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
         enabled: !!state.databaseName,
     });
 
     const monthlyGoalsQuery = useQuery({
         queryKey: ['monthlyGoals', state.databaseName, year, month],
         queryFn: () => fetchMonthlyGoals(state.databaseName, year, month, navigate),
-        staleTime: 5 * 60 * 1000,
+        staleTime: Infinity, // Never consider data stale
+        gcTime: Infinity, // Keep data in cache forever
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
         enabled: !!state.databaseName && year > 0 && month > 0, // Only fetch when year and month are specified
     });
 
     const statusViewsQuery = useQuery({
         queryKey: ['goalStatusViews', state.databaseName, year, month, category],
         queryFn: () => fetchGoalStatusViews(state.databaseName, year, month, category, navigate),
-        staleTime: 5 * 60 * 1000,
+        staleTime: Infinity, // Never consider data stale
+        gcTime: Infinity, // Keep data in cache forever
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
         enabled: !!state.databaseName && year > 0 && month > 0, // Only fetch when filters are specified
     });
 
@@ -84,43 +98,34 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     };
 };
 
-// Mutation hooks for create operations
+// Mutation hooks for create operations - no auto-invalidation
 export const useCreateGoalCategory = () => {
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
     
     return useMutation({
         mutationFn: (data: CreateGoalCategoryDto) =>
             createGoalCategory(state.databaseName, data, navigate),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['goalCategories'] });
-        },
+        // Removed onSuccess auto-invalidation - user must manually refresh
     });
 };
 
 export const useCreateGoalStatus = () => {
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
     
     return useMutation({
         mutationFn: (data: CreateGoalStatusDto) =>
             createGoalStatus(state.databaseName, data, navigate),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['goalStatuses'] });
-        },
+        // Removed onSuccess auto-invalidation - user must manually refresh
     });
 };
 
 export const useCreateMonthlyGoal = () => {
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
     
     return useMutation({
         mutationFn: (data: CreateMonthlyGoalDto) =>
             createMonthlyGoal(state.databaseName, data, navigate),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['monthlyGoals'] });
-        },
+        // Removed onSuccess auto-invalidation - user must manually refresh
     });
 };
 

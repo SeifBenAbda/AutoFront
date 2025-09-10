@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "../../../context/userContext";
 import { useToast } from "../../../hooks/use-toast";
 import { Input } from "../../../@/components/ui/input";
@@ -48,167 +48,79 @@ import useGoalsData, {
 import {
     CreateGoalCategoryDto,
     CreateGoalStatusDto,
-    CreateMonthlyGoalDto
+    CreateMonthlyGoalDto,
+    GoalCategory,
+    GoalStatus,
+    MonthlyGoal,
+    GoalStatusView
 } from "../../../services/goalManagementService";
 
-export default function GoalsManagement() {
-    const { user } = useUser();
-    const { toast } = useToast();
-    
-    // State for different tabs and filters - no default filters
-    const [activeTab, setActiveTab] = useState(0);
-    const [filterYear, setFilterYear] = useState(0); // 0 means no filter
-    const [filterMonth, setFilterMonth] = useState(0); // 0 means no filter
-    const [filterCategory] = useState("");
-    
-    // Dialog states
-    const [showCreateCategoryDialog, setShowCreateCategoryDialog] = useState(false);
-    const [showCreateStatusDialog, setShowCreateStatusDialog] = useState(false);
-    const [showCreateGoalDialog, setShowCreateGoalDialog] = useState(false);
-    
-    // Form states
-    const [newCategory, setNewCategory] = useState<CreateGoalCategoryDto>({ 
-        CategoryName: "", 
-        Description: "" 
-    });
-    const [newStatus, setNewStatus] = useState<CreateGoalStatusDto>({ 
-        StatusName: "", 
-        Description: "", 
-        StatusKey: "" 
-    });
-    const [newGoal, setNewGoal] = useState<CreateMonthlyGoalDto>({ 
-        categoryName: "",
-        year: new Date().getFullYear(), 
-        month: new Date().getMonth() + 1, 
-        targetQuantity: 0,
-        createdBy: ""
-    });
+// =====================
+// Types / Interfaces
+// =====================
+interface OverviewTabProps {
+    filterYear: number;
+    setFilterYear: (year: number) => void;
+    filterMonth: number;
+    setFilterMonth: (month: number) => void;
+    goalCategories: GoalCategory[];
+    monthlyGoals: MonthlyGoal[];
+    goalStatuses: GoalStatus[];
+    goalStatusViews: GoalStatusView[];
+}
 
-    // Hooks for data fetching - simplified like AgentsHistory
-    const { data: response, isLoading, refetch } = useGoalsData(filterYear, filterMonth, filterCategory);
-    
-    const goalCategories = response?.goalCategories || [];
-    const goalStatuses = response?.goalStatuses || [];
-    const monthlyGoals = response?.monthlyGoals || [];
-    const goalStatusViews = response?.goalStatusViews || [];
-    
-    const refetchAll = () => {
-        refetch();
-    };
-    
-    // Debug logging with useEffect to prevent excessive re-renders
-    useEffect(() => {
-        console.log('response from server :', response);
-        console.log('GoalsManagement Debug:', {
-            goalCategories: goalCategories,
-            goalStatuses: goalStatuses,
-            monthlyGoals: monthlyGoals,
-            goalStatusViews: goalStatusViews,
-            isLoading: isLoading,
-            filterYear,
-            filterMonth,
-            filterCategory,
-            userRole: user?.role
-        });
-    }, [goalCategories, goalStatuses, monthlyGoals, goalStatusViews, isLoading, filterYear, filterMonth, filterCategory, user?.role]);
+interface CategoriesTabProps {
+    showCreateCategoryDialog: boolean;
+    setShowCreateCategoryDialog: (open: boolean) => void;
+    newCategory: CreateGoalCategoryDto;
+    setNewCategory: React.Dispatch<React.SetStateAction<CreateGoalCategoryDto>>;
+    handleCreateCategory: () => Promise<void> | void;
+    goalCategories: GoalCategory[];
+}
 
-    // Mutation hooks
-    const createCategoryMutation = useCreateGoalCategory();
-    const createStatusMutation = useCreateGoalStatus();
-    const createGoalMutation = useCreateMonthlyGoal();
-    // Note: Edit/Delete mutations can be added when implementing those features
-    // const updateCategoryMutation = useUpdateGoalCategory();
-    // const deleteCategoryMutation = useDeleteGoalCategory();
+interface StatusTabProps {
+    showCreateStatusDialog: boolean;
+    setShowCreateStatusDialog: (open: boolean) => void;
+    newStatus: CreateGoalStatusDto;
+    setNewStatus: React.Dispatch<React.SetStateAction<CreateGoalStatusDto>>;
+    handleCreateStatus: () => Promise<void> | void;
+    goalStatuses: GoalStatus[];
+}
 
-    // Styling constants
-    const textInputStyle = "bg-normalGrey text-highGrey pl-4 p-2 h-10 border border-normalGrey rounded-md font-oswald";
-    const labelStyle = "block text-sm text-highBlue font-oswald mb-1";
-    const buttonStyle = "bg-highBlue hover:bg-lightBlue text-white font-oswald px-4 py-2 rounded-md transition-colors";
-    const cardStyle = "bg-white p-6 rounded-xl border border-normalGrey/20 shadow-sm hover:shadow-md transition-all duration-300";
+interface GoalsTabProps {
+    showCreateGoalDialog: boolean;
+    setShowCreateGoalDialog: (open: boolean) => void;
+    newGoal: CreateMonthlyGoalDto;
+    setNewGoal: React.Dispatch<React.SetStateAction<CreateMonthlyGoalDto>>;
+    handleCreateGoal: () => Promise<void> | void;
+    goalCategories: GoalCategory[];
+    monthlyGoals: MonthlyGoal[];
+}
 
-    const tabs = [
-        { name: "Vue d'ensemble", icon: BarChart3 },
-        { name: "Catégories", icon: Target },
-        { name: "Statuts", icon: CheckCircle },
-        { name: "Objectifs", icon: Calendar },
-        { name: "Mappings", icon: Car }
-    ];
+// Styling constants (moved outside for sharing)
+const textInputStyle = "bg-normalGrey text-highGrey pl-4 p-2 h-10 border border-normalGrey rounded-md font-oswald";
+const labelStyle = "block text-sm text-highBlue font-oswald mb-1";
+const buttonStyle = "bg-lightBlue hover:bg-highBlue text-white font-oswald px-4 py-2 rounded-md transition-colors";
+const cardStyle = "bg-white p-6 rounded-xl border border-normalGrey/20 shadow-sm hover:shadow-md transition-all duration-300";
 
-    const months = [
-        "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-        "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
-    ];
+// Months constant
+const months = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+];
 
-    // Handle form submissions
-    const handleCreateCategory = async () => {
-        try {
-            await createCategoryMutation.mutateAsync(newCategory);
-            toast({
-                title: "Succès",
-                description: "Catégorie créée avec succès"
-            });
-            setNewCategory({ CategoryName: "", Description: "" });
-            setShowCreateCategoryDialog(false);
-        } catch (error) {
-            console.error('Error creating goal category:', error);
-            toast({
-                title: "Erreur",
-                description: "Erreur lors de la création de la catégorie",
-                variant: "destructive"
-            });
-        }
-    };
-
-    const handleCreateStatus = async () => {
-        try {
-            await createStatusMutation.mutateAsync(newStatus);
-            toast({
-                title: "Succès",
-                description: "Statut créé avec succès"
-            });
-            setNewStatus({ StatusName: "", Description: "", StatusKey: "" });
-            setShowCreateStatusDialog(false);
-        } catch (error) {
-            console.error('Error creating goal status:', error);
-            toast({
-                title: "Erreur",
-                description: "Erreur lors de la création du statut",
-                variant: "destructive"
-            });
-        }
-    };
-
-    const handleCreateGoal = async () => {
-        try {
-            const goalData = {
-                ...newGoal,
-                createdBy: user?.username || "Unknown"
-            };
-            await createGoalMutation.mutateAsync(goalData);
-            toast({
-                title: "Succès",
-                description: "Objectif créé avec succès"
-            });
-            setNewGoal({ 
-                categoryName: "",
-                year: new Date().getFullYear(), 
-                month: new Date().getMonth() + 1, 
-                targetQuantity: 0,
-                createdBy: ""
-            });
-            setShowCreateGoalDialog(false);
-        } catch (error) {
-            console.error('Error creating monthly goal:', error);
-            toast({
-                title: "Erreur",
-                description: "Erreur lors de la création de l'objectif",
-                variant: "destructive"
-            });
-        }
-    };
-
-    // Overview Component
-    const OverviewTab = () => (
+// Overview Tab Component (extracted and receives props)
+function OverviewTab({
+    filterYear,
+    setFilterYear,
+    filterMonth,
+    setFilterMonth,
+    goalCategories,
+    monthlyGoals,
+    goalStatuses,
+    goalStatusViews
+}: OverviewTabProps) {
+    return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className={cardStyle}>
@@ -289,7 +201,9 @@ export default function GoalsManagement() {
                     <TableBody>
                         {filterYear > 0 && filterMonth > 0 ? (
                             goalStatusViews.length > 0 ? (
-                                goalStatusViews.map((view, index) => (
+                                goalStatusViews.map((view, index) => {
+                                    const progress = view.Objectif ? Math.min((view.Total / view.Objectif) * 100, 100) : 0;
+                                    return (
                                     <TableRow key={index}>
                                         <TableCell className="font-medium">{view.CategoryName}</TableCell>
                                         <TableCell>{view.Objectif}</TableCell>
@@ -302,14 +216,15 @@ export default function GoalsManagement() {
                                                 <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
                                                     <div 
                                                         className="bg-lightBlue h-2 rounded-full" 
-                                                        style={{ width: `${Math.min((view.Total / view.Objectif) * 100, 100)}%` }}
+                                                        style={{ width: `${progress}%` }}
                                                     ></div>
                                                 </div>
-                                                {Math.round((view.Total / view.Objectif) * 100)}%
+                                                {Math.round(progress)}%
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center text-highGrey py-8">
@@ -329,9 +244,18 @@ export default function GoalsManagement() {
             </div>
         </div>
     );
+}
 
-    // Categories Tab Component
-    const CategoriesTab = () => (
+// Categories Tab Component (extracted and receives props)
+function CategoriesTab({
+    showCreateCategoryDialog,
+    setShowCreateCategoryDialog,
+    newCategory,
+    setNewCategory,
+    handleCreateCategory,
+    goalCategories
+}: CategoriesTabProps) {
+    return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Catégories</h3>
@@ -418,9 +342,18 @@ export default function GoalsManagement() {
             </div>
         </div>
     );
+}
 
-    // Status Tab Component
-    const StatusTab = () => (
+// Status Tab Component (extracted and receives props)
+function StatusTab({
+    showCreateStatusDialog,
+    setShowCreateStatusDialog,
+    newStatus,
+    setNewStatus,
+    handleCreateStatus,
+    goalStatuses
+}: StatusTabProps) {
+    return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Statuts</h3>
@@ -520,9 +453,19 @@ export default function GoalsManagement() {
             </div>
         </div>
     );
+}
 
-    // Goals Tab Component
-    const GoalsTab = () => (
+// Goals Tab Component (extracted and receives props)
+function GoalsTab({
+    showCreateGoalDialog,
+    setShowCreateGoalDialog,
+    newGoal,
+    setNewGoal,
+    handleCreateGoal,
+    goalCategories,
+    monthlyGoals
+}: GoalsTabProps) {
+    return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Objectifs</h3>
@@ -644,9 +587,11 @@ export default function GoalsManagement() {
             </div>
         </div>
     );
+}
 
-    // Mappings Tab Component (placeholder for now)
-    const MappingsTab = () => (
+// Mappings Tab Component (extracted)
+function MappingsTab() {
+    return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Mappings Voiture-Catégorie</h3>
@@ -662,15 +607,199 @@ export default function GoalsManagement() {
             </div>
         </div>
     );
+}
+
+export default function GoalsManagement() {
+    const { user } = useUser();
+    const { toast } = useToast();
+    
+    // State for different tabs and filters - no default filters
+    const [activeTab, setActiveTab] = useState(0);
+    const [filterYear, setFilterYear] = useState(0); // 0 means no filter
+    const [filterMonth, setFilterMonth] = useState(0); // 0 means no filter
+    const [filterCategory] = useState("");
+    
+    // Dialog states
+    const [showCreateCategoryDialog, setShowCreateCategoryDialog] = useState(false);
+    const [showCreateStatusDialog, setShowCreateStatusDialog] = useState(false);
+    const [showCreateGoalDialog, setShowCreateGoalDialog] = useState(false);
+    
+    // Form states
+    const [newCategory, setNewCategory] = useState<CreateGoalCategoryDto>({ 
+        CategoryName: "", 
+        Description: "" 
+    });
+    const [newStatus, setNewStatus] = useState<CreateGoalStatusDto>({ 
+        StatusName: "", 
+        Description: "", 
+        StatusKey: "" 
+    });
+    const [newGoal, setNewGoal] = useState<CreateMonthlyGoalDto>({ 
+        categoryName: "",
+        year: new Date().getFullYear(), 
+        month: new Date().getMonth() + 1, 
+        targetQuantity: 0,
+        createdBy: ""
+    });
+
+    // Hooks for data fetching - simplified like AgentsHistory
+    const { data: response, isLoading, refetch } = useGoalsData(filterYear, filterMonth, filterCategory);
+    
+    const goalCategories = response?.goalCategories || [];
+    const goalStatuses = response?.goalStatuses || [];
+    const monthlyGoals = response?.monthlyGoals || [];
+    const goalStatusViews = response?.goalStatusViews || [];
+    
+    const refetchAll = () => {
+        refetch();
+    };
+    
+    // Mutation hooks
+    const createCategoryMutation = useCreateGoalCategory();
+    const createStatusMutation = useCreateGoalStatus();
+    const createGoalMutation = useCreateMonthlyGoal();
+
+    const tabs = [
+        { name: "Vue d'ensemble", icon: BarChart3 },
+        { name: "Catégories", icon: Target },
+        { name: "Statuts", icon: CheckCircle },
+        { name: "Objectifs", icon: Calendar },
+        { name: "Mappings", icon: Car }
+    ];
+
+    // Handle form submissions
+    const handleCreateCategory = async () => {
+        try {
+            await createCategoryMutation.mutateAsync(newCategory);
+            toast({
+                title: "Succès",
+                description: "Catégorie créée avec succès"
+            });
+            setNewCategory({ CategoryName: "", Description: "" });
+            setShowCreateCategoryDialog(false);
+            refetchAll();
+        } catch (error) {
+            console.error('Error creating goal category:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la création de la catégorie",
+                variant: "destructive"
+            });
+        }
+    };
+
+    const handleCreateStatus = async () => {
+        try {
+            await createStatusMutation.mutateAsync(newStatus);
+            toast({
+                title: "Succès",
+                description: "Statut créé avec succès"
+            });
+            setNewStatus({ StatusName: "", Description: "", StatusKey: "" });
+            setShowCreateStatusDialog(false);
+            refetchAll();
+        } catch (error) {
+            console.error('Error creating goal status:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la création du statut",
+                variant: "destructive"
+            });
+        }
+    };
+
+    const handleCreateGoal = async () => {
+        try {
+            const goalData = {
+                ...newGoal,
+                createdBy: user?.username || "Unknown"
+            };
+            await createGoalMutation.mutateAsync(goalData);
+            toast({
+                title: "Succès",
+                description: "Objectif créé avec succès"
+            });
+            setNewGoal({ 
+                categoryName: "",
+                year: new Date().getFullYear(), 
+                month: new Date().getMonth() + 1, 
+                targetQuantity: 0,
+                createdBy: ""
+            });
+            setShowCreateGoalDialog(false);
+            refetchAll();
+        } catch (error) {
+            console.error('Error creating monthly goal:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la création de l'objectif",
+                variant: "destructive"
+            });
+        }
+    };
 
     const renderTabContent = () => {
         switch (activeTab) {
-            case 0: return <OverviewTab />;
-            case 1: return <CategoriesTab />;
-            case 2: return <StatusTab />;
-            case 3: return <GoalsTab />;
+            case 0: 
+                return (
+                    <OverviewTab 
+                        filterYear={filterYear}
+                        setFilterYear={setFilterYear}
+                        filterMonth={filterMonth}
+                        setFilterMonth={setFilterMonth}
+                        goalCategories={goalCategories}
+                        monthlyGoals={monthlyGoals}
+                        goalStatuses={goalStatuses}
+                        goalStatusViews={goalStatusViews}
+                    />
+                );
+            case 1: 
+                return (
+                    <CategoriesTab 
+                        showCreateCategoryDialog={showCreateCategoryDialog}
+                        setShowCreateCategoryDialog={setShowCreateCategoryDialog}
+                        newCategory={newCategory}
+                        setNewCategory={setNewCategory}
+                        handleCreateCategory={handleCreateCategory}
+                        goalCategories={goalCategories}
+                    />
+                );
+            case 2: 
+                return (
+                    <StatusTab 
+                        showCreateStatusDialog={showCreateStatusDialog}
+                        setShowCreateStatusDialog={setShowCreateStatusDialog}
+                        newStatus={newStatus}
+                        setNewStatus={setNewStatus}
+                        handleCreateStatus={handleCreateStatus}
+                        goalStatuses={goalStatuses}
+                    />
+                );
+            case 3: 
+                return (
+                    <GoalsTab 
+                        showCreateGoalDialog={showCreateGoalDialog}
+                        setShowCreateGoalDialog={setShowCreateGoalDialog}
+                        newGoal={newGoal}
+                        setNewGoal={setNewGoal}
+                        handleCreateGoal={handleCreateGoal}
+                        goalCategories={goalCategories}
+                        monthlyGoals={monthlyGoals}
+                    />
+                );
             case 4: return <MappingsTab />;
-            default: return <OverviewTab />;
+            default: return (
+                <OverviewTab 
+                    filterYear={filterYear}
+                    setFilterYear={setFilterYear}
+                    filterMonth={filterMonth}
+                    setFilterMonth={setFilterMonth}
+                    goalCategories={goalCategories}
+                    monthlyGoals={monthlyGoals}
+                    goalStatuses={goalStatuses}
+                    goalStatusViews={goalStatusViews}
+                />
+            );
         }
     };
 
