@@ -40,6 +40,7 @@ import {
     RefreshCw
 } from "lucide-react";
 import Loading from "../../atoms/Loading";
+
 import useGoalsData, {
     useCreateGoalCategory,
     useCreateGoalStatus,
@@ -54,6 +55,7 @@ import {
     MonthlyGoal,
     GoalStatusView
 } from "../../../services/goalManagementService";
+import StatusDevisDropDown from "../../../components/atoms/StatusDevis";
 
 // =====================
 // Types / Interfaces
@@ -100,7 +102,8 @@ interface GoalsTabProps {
 // Styling constants (moved outside for sharing)
 const textInputStyle = "bg-normalGrey text-highGrey pl-4 p-2 h-10 border border-normalGrey rounded-md font-oswald";
 const labelStyle = "block text-sm text-highBlue font-oswald mb-1";
-const buttonStyle = "bg-lightBlue hover:bg-highBlue text-white font-oswald px-4 py-2 rounded-md transition-colors";
+// Primary action button style (updated to improve visibility)
+const buttonStyle = "bg-highBlue hover:bg-lightBlue text-white font-oswald px-4 py-2 rounded-md transition-colors";
 const cardStyle = "bg-white p-6 rounded-xl border border-normalGrey/20 shadow-sm hover:shadow-md transition-all duration-300";
 
 // Months constant
@@ -387,28 +390,25 @@ function StatusTab({
                         </DialogHeader>
                         <div className="space-y-4">
                             <div>
-                                <Label className={labelStyle}>Nom du statut</Label>
-                                <Input
-                                    className={textInputStyle}
+                                <Label className={labelStyle}>Statut</Label>
+                                <StatusDevisDropDown 
                                     value={newStatus.StatusName}
-                                    onChange={(e) => setNewStatus({...newStatus, StatusName: e.target.value})}
-                                    placeholder="Ex: Facturé"
+                                    isFiltring={false}
+                                    onChange={(val: string) => {
+                                        if (val === 'Tous Status') return; // ignore meta option
+                                        setNewStatus({
+                                            ...newStatus,
+                                            StatusName: val,
+                                            StatusKey: val
+                                        });
+                                    }}
                                 />
                             </div>
                             <div>
-                                <Label className={labelStyle}>Clé du statut</Label>
+                                <Label className={labelStyle}>Description (optionnel)</Label>
                                 <Input
                                     className={textInputStyle}
-                                    value={newStatus.StatusKey}
-                                    onChange={(e) => setNewStatus({...newStatus, StatusKey: e.target.value})}
-                                    placeholder="Ex: FACTURE"
-                                />
-                            </div>
-                            <div>
-                                <Label className={labelStyle}>Description</Label>
-                                <Input
-                                    className={textInputStyle}
-                                    value={newStatus.Description}
+                                    value={newStatus.Description || ''}
                                     onChange={(e) => setNewStatus({...newStatus, Description: e.target.value})}
                                     placeholder="Description du statut"
                                 />
