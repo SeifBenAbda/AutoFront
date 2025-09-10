@@ -56,6 +56,7 @@ export interface CreateGoalStatusDto {
 
 export interface CreateMonthlyGoalDto {
     categoryName: string;
+    statusName: string; // Required: which status this goal targets
     year: number;
     month: number;
     targetQuantity: number;
@@ -81,10 +82,7 @@ export const fetchGoalCategories = async (
     navigate: (path: string) => void
 ): Promise<GoalCategory[]> => {
     const token = getToken();
-    if (!token) navigate('/login');
-
-    console.log("Fetching goal categories for database:", database);
-    
+    if (!token) navigate('/login');    
     const response = await fetch(`${API_URL}/goal-categories/list`, {
         method: 'POST',
         headers: {
@@ -93,12 +91,8 @@ export const fetchGoalCategories = async (
         },
         body: JSON.stringify({ database })
     });
-
-    console.log("Goal categories response:", response);
-    
     if (!response.ok) throw new Error('Failed to fetch goal categories');
     const data = await response.json();
-    console.log("Goal categories data:", data);
     return data;
 };
 
@@ -210,11 +204,8 @@ export const fetchGoalStatuses = async (
         },
         body: JSON.stringify({ database })
     });
-    console.log("Response of fetchGoalStatuses:", response);
-
     if (!response.ok) throw new Error('Failed to fetch goal statuses');
     const data = await response.json();
-    console.log("Goal statuses data:", data);
     return data;
 };
 
@@ -448,5 +439,72 @@ export const fetchCarCategorization = async (
     });
 
     if (!response.ok) throw new Error('Failed to fetch car categorization');
+    return response.json();
+};
+
+// =============================
+// Car Category Mapping Mutations
+// =============================
+
+// (Approximate) interface for car categorization rows; adjust as backend evolves
+export interface CarCategorization {
+    CarId: number;
+    CategoryName?: string;
+    CategoryId?: number;
+    Model?: string;
+    Version?: string;
+    Available?: boolean;
+    [key: string]: any; // fallback for unexpected fields
+}
+
+export const assignCarToCategory = async (
+    database: string,
+    carId: number,
+    categoryName: string,
+    navigate: (path: string) => void,
+    statusName?: string
+): Promise<{ success: boolean; message?: string } | CarCategorization> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const requestBody: any = {
+        database,
+        carId,
+        categoryName
+    };
+    
+    if (statusName) {
+        requestBody.statusName = statusName;
+    }
+
+    const response = await fetch(`${API_URL}/car-category-mapping/assign`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) throw new Error('Failed to assign car to category');
+    return response.json();
+};
+
+export const autoCategorizeCars = async (
+    database: string,
+    navigate: (path: string) => void
+): Promise<{ success: boolean; message?: string }> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/car-category-mapping/auto-categorize`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ database })
+    });
+    if (!response.ok) throw new Error('Failed to auto-categorize cars');
     return response.json();
 };

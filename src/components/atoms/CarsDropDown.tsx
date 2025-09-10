@@ -7,7 +7,6 @@ import {
     SelectValue,
 } from "../../@/components/ui/select";
 import useCarModels from '../../hooks/useCars';
-import Loading from './Loading';
 
 interface CarsDropDownTypes {
     value?: string;

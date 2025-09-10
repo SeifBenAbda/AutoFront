@@ -9,6 +9,8 @@ import {
     createGoalCategory,
     createGoalStatus,
     createMonthlyGoal,
+    assignCarToCategory,
+    autoCategorizeCars,
     CreateGoalCategoryDto,
     CreateGoalStatusDto,
     CreateMonthlyGoalDto,
@@ -18,12 +20,16 @@ import {
 const useGoalsData = (year: number, month: number, category?: string) => {
     const navigate = useNavigate();
     
+    // Create a filter key to ensure cache invalidation when filters change
+    const filterKey = `${year}-${month}-${category || 'all'}`;
+    
     // Debug logging
     // console.log('useGoalsData called with:', { 
     //     databaseName: state.databaseName, 
     //     year, 
     //     month, 
     //     category,
+    //     filterKey,
     //     isDatabaseNameValid: !!state.databaseName 
     // });
     
@@ -32,8 +38,8 @@ const useGoalsData = (year: number, month: number, category?: string) => {
         queryFn: () => {
             return fetchGoalCategories(state.databaseName, navigate);
         },
-        staleTime: Infinity, // Never consider data stale
-        gcTime: Infinity, // Keep data in cache forever
+        staleTime: 10 * 60 * 1000, // 10 minutes for categories (less frequently changing)
+        gcTime: 30 * 60 * 1000, // 30 minutes in cache
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
@@ -46,8 +52,8 @@ const useGoalsData = (year: number, month: number, category?: string) => {
         queryFn: () => {
             return fetchGoalStatuses(state.databaseName, navigate);
         },
-        staleTime: Infinity, // Never consider data stale
-        gcTime: Infinity, // Keep data in cache forever
+        staleTime: 10 * 60 * 1000, // 10 minutes for statuses (less frequently changing)
+        gcTime: 30 * 60 * 1000, // 30 minutes in cache
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
@@ -56,27 +62,27 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     });
 
     const monthlyGoalsQuery = useQuery({
-        queryKey: ['monthlyGoals', state.databaseName, year, month],
-        queryFn: () => fetchMonthlyGoals(state.databaseName, year, month, navigate),
-        staleTime: Infinity, // Never consider data stale
-        gcTime: Infinity, // Keep data in cache forever
+        queryKey: ['monthlyGoals', state.databaseName, filterKey],
+        queryFn: () => fetchMonthlyGoals(state.databaseName, year === 0 ? undefined : year, month === 0 ? undefined : month, navigate),
+        staleTime: 2 * 60 * 1000, // 2 minutes - shorter cache for filtered data
+        gcTime: 5 * 60 * 1000, // 5 minutes - clean up old cache faster
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         refetchInterval: false,
-        enabled: !!state.databaseName && year > 0 && month > 0, // Only fetch when year and month are specified
+        enabled: !!state.databaseName, // Always enabled when database is available
     });
 
     const statusViewsQuery = useQuery({
-        queryKey: ['goalStatusViews', state.databaseName, year, month, category],
-        queryFn: () => fetchGoalStatusViews(state.databaseName, year, month, category, navigate),
-        staleTime: Infinity, // Never consider data stale
-        gcTime: Infinity, // Keep data in cache forever
+        queryKey: ['goalStatusViews', state.databaseName, filterKey],
+        queryFn: () => fetchGoalStatusViews(state.databaseName, year === 0 ? undefined : year, month === 0 ? undefined : month, category, navigate),
+        staleTime: 2 * 60 * 1000, // 2 minutes - shorter cache for filtered data
+        gcTime: 5 * 60 * 1000, // 5 minutes - clean up old cache faster
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         refetchInterval: false,
-        enabled: !!state.databaseName && year > 0 && month > 0, // Only fetch when filters are specified
+        enabled: !!state.databaseName, // Always enabled when database is available
     });
 
     return {
@@ -126,6 +132,22 @@ export const useCreateMonthlyGoal = () => {
         mutationFn: (data: CreateMonthlyGoalDto) =>
             createMonthlyGoal(state.databaseName, data, navigate),
         // Removed onSuccess auto-invalidation - user must manually refresh
+    });
+};
+
+// Car mapping mutations
+export const useAssignCarToCategory = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ carId, categoryName, statusName }: { carId: number; categoryName: string; statusName?: string }) =>
+            assignCarToCategory(state.databaseName, carId, categoryName, navigate, statusName),
+    });
+};
+
+export const useAutoCategorizeCars = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: () => autoCategorizeCars(state.databaseName, navigate),
     });
 };
 

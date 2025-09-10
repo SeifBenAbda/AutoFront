@@ -8,7 +8,7 @@ import AgentsHistoryTable from "./ProfileDetails.tsx/AgentsHistory";
 import CarsManipulation from "./ProfileDetails.tsx/CarsManipulation";
 import AgentsManipulation from "./ProfileDetails.tsx/AgentsManipulation";
 import BankAndLeasingManipulation from "./ProfileDetails.tsx/BanksAndLeasingManipulation";
-import GoalsManagement from "./ProfileDetails.tsx/GoalsManagement";
+import GoalsManagement from "./ProfileDetails.tsx/GoalsManagement/index";
 
 
 
