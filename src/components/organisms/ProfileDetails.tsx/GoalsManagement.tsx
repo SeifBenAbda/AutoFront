@@ -259,7 +259,16 @@ function CategoriesTab({
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Catégories</h3>
-                <Dialog open={showCreateCategoryDialog} onOpenChange={setShowCreateCategoryDialog}>
+                <Dialog 
+                    open={showCreateCategoryDialog} 
+                    onOpenChange={(open) => {
+                        if (open) {
+                            // Reset form when opening
+                            setNewCategory({ CategoryName: "", Description: "" });
+                        }
+                        setShowCreateCategoryDialog(open);
+                    }}
+                >
                     <DialogTrigger asChild>
                         <Button className={buttonStyle}>
                             <Plus className="w-4 h-4 mr-2" />
@@ -357,7 +366,15 @@ function StatusTab({
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Statuts</h3>
-                <Dialog open={showCreateStatusDialog} onOpenChange={setShowCreateStatusDialog}>
+                <Dialog 
+                    open={showCreateStatusDialog} 
+                    onOpenChange={(open) => {
+                        if (open) {
+                            setNewStatus({ StatusName: "", Description: "", StatusKey: "" });
+                        }
+                        setShowCreateStatusDialog(open);
+                    }}
+                >
                     <DialogTrigger asChild>
                         <Button className={buttonStyle}>
                             <Plus className="w-4 h-4 mr-2" />
@@ -469,7 +486,15 @@ function GoalsTab({
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-highBlue font-oswald">Gestion des Objectifs</h3>
-                <Dialog open={showCreateGoalDialog} onOpenChange={setShowCreateGoalDialog}>
+                <Dialog 
+                    open={showCreateGoalDialog} 
+                    onOpenChange={(open) => {
+                        if (open) {
+                            setNewGoal({ categoryName: "", year: 0, month: 0, targetQuantity: 0, createdBy: "" });
+                        }
+                        setShowCreateGoalDialog(open);
+                    }}
+                >
                     <DialogTrigger asChild>
                         <Button className={buttonStyle}>
                             <Plus className="w-4 h-4 mr-2" />
@@ -505,18 +530,19 @@ function GoalsTab({
                                     <Input
                                         type="number"
                                         className={textInputStyle}
-                                        value={newGoal.year}
-                                        onChange={(e) => setNewGoal({...newGoal, year: parseInt(e.target.value)})}
+                                        value={newGoal.year === 0 ? "" : newGoal.year}
+                                        onChange={(e) => setNewGoal({...newGoal, year: e.target.value === "" ? 0 : parseInt(e.target.value)})}
+                                        placeholder="Année"
                                     />
                                 </div>
                                 <div>
                                     <Label className={labelStyle}>Mois</Label>
                                     <Select 
-                                        value={newGoal.month.toString()} 
-                                        onValueChange={(value) => setNewGoal({...newGoal, month: parseInt(value)})}
+                                        value={newGoal.month === 0 ? "" : newGoal.month.toString()} 
+                                        onValueChange={(value) => setNewGoal({...newGoal, month: value === "" ? 0 : parseInt(value)})}
                                     >
                                         <SelectTrigger className={textInputStyle}>
-                                            <SelectValue />
+                                            <SelectValue placeholder="Mois" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {months.map((month, index) => (
@@ -533,9 +559,9 @@ function GoalsTab({
                                 <Input
                                     type="number"
                                     className={textInputStyle}
-                                    value={newGoal.targetQuantity}
-                                    onChange={(e) => setNewGoal({...newGoal, targetQuantity: parseInt(e.target.value)})}
-                                    placeholder="Ex: 50"
+                                    value={newGoal.targetQuantity === 0 ? "" : newGoal.targetQuantity}
+                                    onChange={(e) => setNewGoal({...newGoal, targetQuantity: e.target.value === "" ? 0 : parseInt(e.target.value)})}
+                                    placeholder="Quantité"
                                 />
                             </div>
                             <Button onClick={handleCreateGoal} className={buttonStyle}>
