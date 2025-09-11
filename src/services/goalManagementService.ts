@@ -35,12 +35,15 @@ export interface MonthlyGoal {
 
 export interface GoalStatusView {
     CategoryName: string;
+    StatusName: string;
+    StatusKey: string;
     Year: number;
     Month: number;
     Objectif: number;
     Total: number;
     Manque: number;
     MonthName: string;
+    StatusMessage: string;
 }
 
 export interface CreateGoalCategoryDto {
@@ -193,9 +196,6 @@ export const fetchGoalStatuses = async (
 ): Promise<GoalStatus[]> => {
     const token = getToken();
     if (!token) navigate('/login');
-
-    console.log("Fetching goal statuses for database:", database);
-
     const response = await fetch(`${API_URL}/goal-statuses/list`, {
         method: 'POST',
         headers: {
@@ -278,6 +278,46 @@ export const deleteGoalStatus = async (
     if (!response.ok) throw new Error('Failed to delete goal status');
 };
 
+export const fetchAllGoalStatuses = async (
+    database: string,
+    navigate: (path: string) => void
+): Promise<GoalStatus[]> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+    const response = await fetch(`${API_URL}/goal-statuses/list-all`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ database })
+    });
+    if (!response.ok) throw new Error('Failed to fetch all goal statuses');
+    const data = await response.json();
+    return data;
+};
+
+export const restoreGoalStatus = async (
+    database: string,
+    id: number,
+    navigate: (path: string) => void
+): Promise<GoalStatus> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/goal-statuses/${id}/restore`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ database }),
+    });
+
+    if (!response.ok) throw new Error('Failed to restore goal status');
+    return response.json();
+};
+
 // Monthly Goals Service Functions
 export const fetchMonthlyGoals = async (
     database: string,
@@ -293,7 +333,6 @@ export const fetchMonthlyGoals = async (
     if (month) params.append('month', month.toString());
 
     const url = `${API_URL}/monthly-goals/list${params.toString() ? `?${params}` : ''}`;
-
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -303,8 +342,12 @@ export const fetchMonthlyGoals = async (
         body: JSON.stringify({ database })
     });
 
-    if (!response.ok) throw new Error('Failed to fetch monthly goals');
-    return response.json();
+    if (!response.ok) {
+        throw new Error('Failed to fetch monthly goals');
+    }
+    
+    const data = await response.json();
+    return data;
 };
 
 export const createMonthlyGoal = async (
@@ -507,4 +550,43 @@ export const autoCategorizeCars = async (
     });
     if (!response.ok) throw new Error('Failed to auto-categorize cars');
     return response.json();
+};
+
+export const fetchCarsByCategory = async (
+    database: string,
+    categoryId: number,
+    navigate: (path: string) => void
+): Promise<any[]> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/car-category-mapping/categorization/category/${categoryId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ database })
+    });
+    if (!response.ok) throw new Error('Failed to fetch cars by category');
+    return response.json();
+};
+
+export const removeCategoryMapping = async (
+    database: string,
+    mappingId: number,
+    navigate: (path: string) => void
+): Promise<void> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/car-category-mapping/${mappingId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ database })
+    });
+    if (!response.ok) throw new Error('Failed to remove car from category');
 };

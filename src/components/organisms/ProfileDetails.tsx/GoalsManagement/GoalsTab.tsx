@@ -40,7 +40,7 @@ function GoalsTab({
     goalCategories,
     goalStatuses,
     monthlyGoals
-}: GoalsTabProps) {
+}: GoalsTabProps) { 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -163,28 +163,41 @@ function GoalsTab({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {monthlyGoals.map((goal) => (
-                            <TableRow key={goal.GoalId}>
-                                <TableCell>{goal.GoalId}</TableCell>
-                                <TableCell>
-                                    {goalCategories.find(cat => cat.CategoryId === goal.CategoryId)?.CategoryName}
-                                </TableCell>
-                                <TableCell>{goal.Year}</TableCell>
-                                <TableCell>{months[goal.Month - 1]}</TableCell>
-                                <TableCell className="font-medium">{goal.TargetQuantity}</TableCell>
-                                <TableCell>{goal.CreatedBy}</TableCell>
-                                <TableCell>
-                                    <div className="flex space-x-2">
-                                        <Button variant="outline" size="sm" className="hover:bg-lightBlue hover:text-white border-lightBlue text-lightBlue">
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-                                        <Button variant="outline" size="sm" className="hover:bg-red-500 hover:text-white border-red-500 text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                    </div>
+                        {monthlyGoals && monthlyGoals.length > 0 ? (
+                            monthlyGoals.map((goal) => {
+                                return (
+                                    <TableRow key={goal.GoalId}>
+                                        <TableCell>{goal.GoalId}</TableCell>
+                                        <TableCell>
+                                            {goalCategories.find(cat => cat.CategoryId === goal.CategoryId)?.CategoryName || 'Unknown Category'}
+                                        </TableCell>
+                                        <TableCell>{goal.Year}</TableCell>
+                                        <TableCell>{months[goal.Month - 1] || goal.Month}</TableCell>
+                                        <TableCell className="font-medium">{goal.TargetQuantity}</TableCell>
+                                        <TableCell>{goal.CreatedBy}</TableCell>
+                                        <TableCell>
+                                            <div className="flex space-x-2">
+                                                <Button variant="outline" size="sm" className="hover:bg-lightBlue hover:text-white border-lightBlue text-lightBlue">
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                                <Button variant="outline" size="sm" className="hover:bg-red-500 hover:text-white border-red-500 text-red-500">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                                    {monthlyGoals === undefined ? 
+                                        'Chargement des objectifs...' : 
+                                        'Aucun objectif trouvé. Créez votre premier objectif en cliquant sur "Nouvel Objectif".'
+                                    }
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </div>

@@ -17,7 +17,9 @@ import Loading from "../../../atoms/Loading";
 import useGoalsData, {
     useCreateGoalCategory,
     useCreateGoalStatus,
-    useCreateMonthlyGoal
+    useCreateMonthlyGoal,
+    useDeleteGoalStatus,
+    useRestoreGoalStatus
 } from "../../../../hooks/useGoalsManagement";
 import {
     CreateGoalCategoryDto,
@@ -36,10 +38,10 @@ export default function GoalsManagement() {
     const { user } = useUser();
     const { toast } = useToast();
     
-    // State for different tabs and filters - set current year/month as defaults
+    // State for different tabs and filters - set to "all" by default to show all data
     const [activeTab, setActiveTab] = useState(0);
-    const [filterYear, setFilterYear] = useState(new Date().getFullYear()); // Default to current year
-    const [filterMonth, setFilterMonth] = useState(new Date().getMonth() + 1); // Default to current month
+    const [filterYear, setFilterYear] = useState(0); // 0 means "all years"
+    const [filterMonth, setFilterMonth] = useState(0); // 0 means "all months"
     const [filterCategory] = useState("");
     
     // Dialog states
@@ -78,10 +80,37 @@ export default function GoalsManagement() {
         refetch();
     };
     
+    // Force refetch all goals when switching to Goals tab (tab index 3) or Overview tab (tab index 0)
+    const handleTabChange = (tabIndex: number) => {
+        setActiveTab(tabIndex);
+        
+        // If switching to Overview tab (index 0), force refetch all data
+        if (tabIndex === 0) {
+            // Force refetch for Overview tab
+            setTimeout(() => {
+                refetch();
+            }, 100);
+        }
+        
+        // If switching to Goals tab (index 3), force refetch all goals regardless of current filters
+        if (tabIndex === 3) {
+            // Force refetch with "all" parameters for Goals tab
+            setFilterYear(0);
+            setFilterMonth(0);
+            
+            // Small delay to ensure state is updated before refetch
+            setTimeout(() => {
+                refetch();
+            }, 100);
+        }
+    };
+    
     // Mutation hooks
     const createCategoryMutation = useCreateGoalCategory();
     const createStatusMutation = useCreateGoalStatus();
     const createGoalMutation = useCreateMonthlyGoal();
+    const deleteStatusMutation = useDeleteGoalStatus();
+    const restoreStatusMutation = useRestoreGoalStatus();
 
     const tabs = [
         { name: "Vue d'ensemble", icon: BarChart3 },
@@ -127,6 +156,42 @@ export default function GoalsManagement() {
             toast({
                 title: "Erreur",
                 description: "Erreur lors de la création du statut",
+                variant: "destructive"
+            });
+        }
+    };
+
+    const handleDeleteStatus = async (id: number, statusName: string) => {
+        try {
+            await deleteStatusMutation.mutateAsync({ id });
+            toast({
+                title: "Succès",
+                description: `Statut "${statusName}" désactivé avec succès`
+            });
+            refetchAll();
+        } catch (error) {
+            console.error('Error deleting goal status:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la désactivation du statut",
+                variant: "destructive"
+            });
+        }
+    };
+
+    const handleRestoreStatus = async (id: number, statusName: string) => {
+        try {
+            await restoreStatusMutation.mutateAsync({ id });
+            toast({
+                title: "Succès",
+                description: `Statut "${statusName}" réactivé avec succès`
+            });
+            refetchAll();
+        } catch (error) {
+            console.error('Error restoring goal status:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la réactivation du statut",
                 variant: "destructive"
             });
         }
@@ -185,6 +250,7 @@ export default function GoalsManagement() {
                         monthlyGoals={monthlyGoals}
                         goalStatuses={goalStatuses}
                         goalStatusViews={goalStatusViews}
+                        loading={isLoading}
                     />
                 );
             case 1: 
@@ -206,6 +272,8 @@ export default function GoalsManagement() {
                         newStatus={newStatus}
                         setNewStatus={setNewStatus}
                         handleCreateStatus={handleCreateStatus}
+                        handleDeleteStatus={handleDeleteStatus}
+                        handleRestoreStatus={handleRestoreStatus}
                         goalStatuses={goalStatuses}
                     />
                 );
@@ -274,7 +342,7 @@ export default function GoalsManagement() {
                     return (
                         <button
                             key={index}
-                            onClick={() => setActiveTab(index)}
+                            onClick={() => handleTabChange(index)}
                             className={`flex items-center space-x-2 px-4 py-2 rounded-md font-oswald transition-all ${
                                 activeTab === index
                                     ? 'bg-highBlue text-white shadow-sm'

@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { state } from '../utils/shared_functions';
 import {
     fetchGoalCategories,
-    fetchGoalStatuses,
+    fetchAllGoalStatuses,
     fetchMonthlyGoals,
     fetchGoalStatusViews,
+    fetchCarsByCategory,
     createGoalCategory,
     createGoalStatus,
     createMonthlyGoal,
+    deleteGoalStatus,
+    restoreGoalStatus,
+    removeCategoryMapping,
     assignCarToCategory,
     autoCategorizeCars,
     CreateGoalCategoryDto,
@@ -24,14 +28,14 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     const filterKey = `${year}-${month}-${category || 'all'}`;
     
     // Debug logging
-    // console.log('useGoalsData called with:', { 
-    //     databaseName: state.databaseName, 
-    //     year, 
-    //     month, 
-    //     category,
-    //     filterKey,
-    //     isDatabaseNameValid: !!state.databaseName 
-    // });
+    console.log('🎯 useGoalsData called with:', { 
+        databaseName: state.databaseName, 
+        year, 
+        month, 
+        category,
+        filterKey,
+        isDatabaseNameValid: !!state.databaseName 
+    });
     
     const categoriesQuery = useQuery({
         queryKey: ['goalCategories', state.databaseName],
@@ -50,7 +54,7 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     const statusesQuery = useQuery({
         queryKey: ['goalStatuses', state.databaseName],
         queryFn: () => {
-            return fetchGoalStatuses(state.databaseName, navigate);
+            return fetchAllGoalStatuses(state.databaseName, navigate);
         },
         staleTime: 10 * 60 * 1000, // 10 minutes for statuses (less frequently changing)
         gcTime: 30 * 60 * 1000, // 30 minutes in cache
@@ -85,7 +89,7 @@ const useGoalsData = (year: number, month: number, category?: string) => {
         enabled: !!state.databaseName, // Always enabled when database is available
     });
 
-    return {
+    const result = {
         data: {
             goalCategories: categoriesQuery.data || [],
             goalStatuses: statusesQuery.data || [],
@@ -102,6 +106,20 @@ const useGoalsData = (year: number, month: number, category?: string) => {
             statusViewsQuery.refetch();
         }
     };
+
+    // Debug the results
+    console.log('📊 useGoalsData result:', {
+        monthlyGoalsQuery: {
+            data: monthlyGoalsQuery.data,
+            isLoading: monthlyGoalsQuery.isLoading,
+            isError: monthlyGoalsQuery.isError,
+            error: monthlyGoalsQuery.error
+        },
+        monthlyGoalsCount: monthlyGoalsQuery.data?.length || 0,
+        result: result.data
+    });
+
+    return result;
 };
 
 // Mutation hooks for create operations - no auto-invalidation
@@ -132,6 +150,30 @@ export const useCreateMonthlyGoal = () => {
         mutationFn: (data: CreateMonthlyGoalDto) =>
             createMonthlyGoal(state.databaseName, data, navigate),
         // Removed onSuccess auto-invalidation - user must manually refresh
+    });
+};
+
+export const useDeleteGoalStatus = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ id }: { id: number }) =>
+            deleteGoalStatus(state.databaseName, id, navigate),
+    });
+};
+
+export const useRestoreGoalStatus = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ id }: { id: number }) =>
+            restoreGoalStatus(state.databaseName, id, navigate),
+    });
+};
+
+export const useRemoveCategoryMapping = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ mappingId }: { mappingId: number }) =>
+            removeCategoryMapping(state.databaseName, mappingId, navigate),
     });
 };
 

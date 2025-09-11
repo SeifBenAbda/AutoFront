@@ -21,6 +21,7 @@ export interface OverviewTabProps {
     monthlyGoals: MonthlyGoal[];
     goalStatuses: GoalStatus[];
     goalStatusViews: GoalStatusView[];
+    loading?: boolean;
 }
 
 export interface CategoriesTabProps {
@@ -38,6 +39,8 @@ export interface StatusTabProps {
     newStatus: CreateGoalStatusDto;
     setNewStatus: React.Dispatch<React.SetStateAction<CreateGoalStatusDto>>;
     handleCreateStatus: () => Promise<void> | void;
+    handleDeleteStatus: (id: number, statusName: string) => Promise<void> | void;
+    handleRestoreStatus: (id: number, statusName: string) => Promise<void> | void;
     goalStatuses: GoalStatus[];
 }
 

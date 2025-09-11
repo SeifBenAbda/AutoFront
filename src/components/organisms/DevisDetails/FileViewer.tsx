@@ -187,7 +187,6 @@ const FileViewer: React.FC<{ devisId: number, devis: Devis }> = ({ devisId, devi
             const sanitizedFilePath = file_path.replace(/\\/g, '/');
             
             const fullUrl = `${API_URL}${encodeURIComponent(sanitizedFilePath)}`;
-            console.log('Full URL:', fullUrl);
             // Fetch the file content with authorization
             const fileBlob = await fetchFileWithAuth(fullUrl);
 
