@@ -44,6 +44,147 @@ import { GoalsTabProps } from "./types";
 import { textInputStyle, labelStyle, buttonStyle, months } from "./constants";
 import { useUpdateMonthlyGoal, useUpdateMonthlyGoalById, useDeleteMonthlyGoal } from "../../../../hooks/useGoalsManagement";
 
+// Helper function to get month-specific colors
+const getMonthColor = (monthIndex: number): string => {
+    const monthColors: string[] = [
+        'bg-indigo-100 text-indigo-800 border-indigo-200',    // Janvier
+        'bg-pink-100 text-pink-800 border-pink-200',          // Février
+        'bg-green-100 text-green-800 border-green-200',       // Mars
+        'bg-yellow-100 text-yellow-800 border-yellow-200',    // Avril
+        'bg-purple-100 text-purple-800 border-purple-200',    // Mai
+        'bg-blue-100 text-blue-800 border-blue-200',          // Juin
+        'bg-red-100 text-red-800 border-red-200',             // Juillet
+        'bg-orange-100 text-orange-800 border-orange-200',    // Août
+        'bg-teal-100 text-teal-800 border-teal-200',          // Septembre
+        'bg-cyan-100 text-cyan-800 border-cyan-200',          // Octobre
+        'bg-amber-100 text-amber-800 border-amber-200',       // Novembre
+        'bg-slate-100 text-slate-800 border-slate-200'        // Décembre
+    ];
+    
+    return monthColors[monthIndex - 1] || 'bg-green-100 text-green-800 border-green-200'; // fallback color
+};
+
+// StatusBadge component for enhanced status display with animations
+const StatusBadge = ({ status, isWide = false }: { status: string; isWide?: boolean }) => {
+    const getStatusColor = () => {
+      switch (status?.toLowerCase()) {
+        case 'facturé':
+          return 'bg-green-50 text-green-800 border border-green-300';
+        case 'réservé':
+          return 'bg-yellow-50 text-yellow-800 border border-yellow-300';
+        case 'annulé':
+          return 'bg-red-50 text-red-800 border border-red-300';
+        case 'draft':
+          return 'bg-blue-100 text-blue-700 border border-blue-200';
+        case 'livré':
+          return 'bg-purple-50 text-purple-700 border border-purple-200';
+        case 'hdsi':
+          return 'bg-highBlue text-whiteSecond border border-highBlue';  
+        default:
+          return 'bg-gray-100 text-gray-700 border border-gray-200';
+      }
+    };
+
+    const isBilled = status?.toLowerCase() === 'facturé';
+    const isCancelled = status?.toLowerCase() === 'annulé';
+    const isReserved = status?.toLowerCase() === 'réservé';
+    const isLivred = status?.toLowerCase() === 'livré';
+    const isHdsi = status?.toLowerCase() === 'hdsi';
+
+    const widthClass = isWide ? 'w-[150px]' : 'w-[100px]';
+
+    return (
+      <span className={`px-3 ${widthClass} justify-center py-1 text-xs font-medium rounded-md inline-flex items-center font-oswald ${getStatusColor()}`}>
+        {isBilled ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 animate-pulse"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M9 14l6-6" />
+              <rect width="18" height="18" x="3" y="3" rx="2" className="animate-[pulse_2s_ease-in-out_infinite]" />
+              <path d="M9 8h6M9 12h6M9 16h6" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Facturé</span>
+          </>
+        ) : isCancelled ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 animate-spin-slow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M15 9l-6 6" />
+              <path d="M9 9l6 6" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Annulé</span>
+          </>
+        ) : isReserved ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 mr-1 "
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              <path d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z" />
+              <circle cx="12" cy="14" r="2" />
+            </svg>
+            <span className="animate-[fadeIn_1s_ease-in-out]">Réservé</span>
+          </>
+        ) : isLivred ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 mr-1 animate-bounce"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2">
+              {/* Car body */}
+              <path d="M5 17h14v-6H5v6z" />
+              {/* Car top */}
+              <path d="M7 11V9c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v2" />
+              {/* Wheels */}
+              <circle cx="7" cy="17" r="2" />
+              <circle cx="17" cy="17" r="2" />
+              {/* Motion lines */}
+              <path d="M3 17h-2" className="animate-pulse" />
+              <path d="M23 17h-2" className="animate-pulse" />
+            </svg>
+            <span className="transition-opacity duration-1000">Livré</span>
+          </>
+        ) : isHdsi ? (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4 mr-1"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round">
+              {/* Document */}
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" className="animate-pulse" />
+              {/* Corner fold */}
+              <path d="M14 2v6h6" />
+              {/* Stars/sparkles */}
+              <path d="M20 13l-1.5-1.5L20 10l1.5 1.5L20 13z" className="animate-ping" />
+              <path d="M4 13l-1.5-1.5L4 10l1.5 1.5L4 13z" className="animate-ping" />
+              <path d="M12 7l-1-1 1-1 1 1-1 1z" className="animate-ping" />
+              {/* Trending line */}
+              <path d="M9 17l3-3 3 3" className="animate-pulse" />
+            </svg>
+            <span className="text-white animate-[fadeIn_1s_ease-in-out]">HDSI</span>
+          </>
+        ) : status}
+      </span>
+    );
+};
+
 function GoalsTab({
     showCreateGoalDialog,
     setShowCreateGoalDialog,
@@ -370,9 +511,7 @@ function GoalsTab({
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-center font-oswald">
-                                                <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-md text-xs font-medium font-oswald">
-                                                    {goalStatuses.find(status => status.StatusId === goal.StatusId)?.StatusName || 'Unknown Status'}
-                                                </span>
+                                                <StatusBadge status={goalStatuses.find(status => status.StatusId === goal.StatusId)?.StatusName || 'Unknown Status'} />
                                             </TableCell>
                                             <TableCell className="text-center font-oswald">
                                                 <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-md font-oswald">
@@ -380,7 +519,7 @@ function GoalsTab({
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-center font-oswald">
-                                                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-md text-xs font-medium font-oswald">
+                                                <span className={`px-2 py-1 rounded-md text-xs font-medium border font-oswald ${getMonthColor(goal.Month)}`}>
                                                     {months[goal.Month - 1] || goal.Month}
                                                 </span>
                                             </TableCell>
@@ -477,11 +616,8 @@ function GoalsTab({
                                         <SelectContent>
                                             {goalStatuses.map(status => (
                                                 <SelectItem key={status.StatusId} value={status.StatusName}>
-                                                    <div className="flex items-center">
-                                                        <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium mr-2">
-                                                            {status.StatusKey}
-                                                        </span>
-                                                        {status.StatusName}
+                                                    <div className="flex items-center justify-center w-full">
+                                                        <StatusBadge status={status.StatusKey} isWide={true} />
                                                     </div>
                                                 </SelectItem>
                                             ))}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../../../@/components/ui/button";
 import { Label } from "../../../../@/components/ui/label";
 import {
@@ -49,6 +49,24 @@ function ExportDialog({ goalCategories, filterYear }: Omit<ExportDialogProps, 'f
     const [selectAllMonths, setSelectAllMonths] = useState(false);
 
     const exportMutation = useExportGoals();
+
+    // Reset all states when dialog opens - only run when isOpen changes
+    useEffect(() => {
+        if (isOpen) {
+            // Reset all form states to default values
+            setExportType('excel');
+            setSelectedYear(filterYear || new Date().getFullYear());
+            setPeriodType('year');
+            setSelectedMonths([]);
+            setSelectedCategories([]);
+            setIncludeDetails(true);
+            setSelectAllCategories(true);
+            setSelectAllMonths(false);
+            
+            // Reset the export mutation state (clear any success/error messages)
+            exportMutation.reset();
+        }
+    }, [isOpen, filterYear]); // Removed exportMutation from dependencies
 
     const handleMonthToggle = (monthIndex: number) => {
         if (selectedMonths.includes(monthIndex)) {

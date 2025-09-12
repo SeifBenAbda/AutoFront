@@ -44,6 +44,41 @@ const convertMonthToFrench = (englishMonth: string): string => {
     return monthMap[englishMonth] || englishMonth;
 };
 
+// Helper function to get month-specific colors
+const getMonthColor = (monthName: string): string => {
+    const monthColors: { [key: string]: string } = {
+        // French month names with unique colors
+        'Janvier': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+        'Février': 'bg-pink-100 text-pink-800 border-pink-200', 
+        'Mars': 'bg-green-100 text-green-800 border-green-200',
+        'Avril': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        'Mai': 'bg-purple-100 text-purple-800 border-purple-200',
+        'Juin': 'bg-blue-100 text-blue-800 border-blue-200',
+        'Juillet': 'bg-red-100 text-red-800 border-red-200',
+        'Août': 'bg-orange-100 text-orange-800 border-orange-200',
+        'Septembre': 'bg-teal-100 text-teal-800 border-teal-200',
+        'Octobre': 'bg-cyan-100 text-cyan-800 border-cyan-200',
+        'Novembre': 'bg-amber-100 text-amber-800 border-amber-200',
+        'Décembre': 'bg-slate-100 text-slate-800 border-slate-200',
+        
+        // English month names for fallback
+        'January': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+        'February': 'bg-pink-100 text-pink-800 border-pink-200',
+        'March': 'bg-green-100 text-green-800 border-green-200',
+        'April': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        'May': 'bg-purple-100 text-purple-800 border-purple-200',
+        'June': 'bg-blue-100 text-blue-800 border-blue-200',
+        'July': 'bg-red-100 text-red-800 border-red-200',
+        'August': 'bg-orange-100 text-orange-800 border-orange-200',
+        'September': 'bg-teal-100 text-teal-800 border-teal-200',
+        'October': 'bg-cyan-100 text-cyan-800 border-cyan-200',
+        'November': 'bg-amber-100 text-amber-800 border-amber-200',
+        'December': 'bg-slate-100 text-slate-800 border-slate-200'
+    };
+    
+    return monthColors[monthName] || 'bg-blue-100 text-blue-800 border-blue-200'; // fallback color
+};
+
 // Helper function to get status badge styling
 const getStatusBadgeStyle = (statusName: string) => {
     const statusStyles: { [key: string]: string } = {
@@ -219,7 +254,7 @@ function OverviewTab({
                                 </TableRow>
                             ) : (filteredGoalStatusViews.length > 0 && activeMonthlyGoals.length > 0) ? (
                                 filteredGoalStatusViews.map((view, index) => {
-                                    const progress = view.Objectif ? Math.min((view.Total / view.Objectif) * 100, 100) : 0;
+                                    const progress = view.Objectif ? parseFloat((Math.min((view.Total / view.Objectif) * 100, 100)).toFixed(2)) : 0;
                                     const progressColor = getProgressColor(progress);
                                     const progressTextColor = getProgressTextColor(progress);
                                     const badgeColor = getStatusBadgeColor(view.Manque);
@@ -238,7 +273,7 @@ function OverviewTab({
                                             </span>
                                         </TableCell>
                                         <TableCell className="text-center font-oswald">
-                                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium font-oswald">
+                                            <span className={`px-2 py-1 rounded-md text-xs font-medium border font-oswald ${getMonthColor(convertMonthToFrench(view.MonthName))}`}>
                                                 {convertMonthToFrench(view.MonthName)}
                                             </span>
                                         </TableCell>
@@ -266,7 +301,7 @@ function OverviewTab({
                                             <div className="space-y-2 px-2">
                                                 <div className="flex items-center justify-between">
                                                     <span className={`text-sm font-bold font-oswald ${progressTextColor}`}>
-                                                        {Math.round(progress)}%
+                                                        {progress.toFixed(2)}%
                                                     </span>
                                                     <span className="text-xs text-gray-500 font-oswald">
                                                         {progress >= 100 ? '🏆 Atteint' : progress >= 75 ? '👍 Bon' : progress >= 50 ? '⚡ Moyen' : '🔥 Effort'}
