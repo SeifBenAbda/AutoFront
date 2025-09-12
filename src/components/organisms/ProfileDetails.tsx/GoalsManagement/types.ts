@@ -31,6 +31,7 @@ export interface CategoriesTabProps {
     setNewCategory: React.Dispatch<React.SetStateAction<CreateGoalCategoryDto>>;
     handleCreateCategory: () => Promise<void> | void;
     goalCategories: GoalCategory[];
+    refetch: () => void;
 }
 
 export interface StatusTabProps {
@@ -42,6 +43,7 @@ export interface StatusTabProps {
     handleDeleteStatus: (id: number, statusName: string) => Promise<void> | void;
     handleRestoreStatus: (id: number, statusName: string) => Promise<void> | void;
     goalStatuses: GoalStatus[];
+    refetch: () => void;
 }
 
 export interface GoalsTabProps {
@@ -53,6 +55,7 @@ export interface GoalsTabProps {
     goalCategories: GoalCategory[];
     goalStatuses: GoalStatus[];
     monthlyGoals: MonthlyGoal[];
+    refetch: () => void;
 }
 
 export interface MappingsTabProps {

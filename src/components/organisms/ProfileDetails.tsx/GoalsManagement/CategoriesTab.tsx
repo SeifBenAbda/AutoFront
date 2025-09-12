@@ -42,14 +42,199 @@ import {
     Car,
     X,
     Eye,
+    Loader,
 } from "lucide-react";
 import { CategoriesTabProps } from "./types";
 import { textInputStyle, labelStyle, buttonStyle } from "./constants";
 import { useState } from "react";
-import { fetchCarsByCategory, removeCategoryMapping } from "../../../../services/goalManagementService";
+import { fetchCarsByCategory, removeCategoryMapping, updateGoalCategory, deleteGoalCategory, restoreGoalCategory } from "../../../../services/goalManagementService";
 import { useNavigate } from "react-router-dom";
 import { state } from "../../../../utils/shared_functions";
 import { useToast } from "../../../../hooks/use-toast";
+import React from "react";
+
+// Data model
+interface GoalCategory {
+    CategoryId: number;
+    CategoryName: string;
+    Description: string;
+    IsActive: boolean;
+    CreatedAt: string;
+}
+
+// Edit Category Dialog Component
+const EditCategoryDialog = ({
+    category,
+    isOpen,
+    onClose,
+    onSave
+}: {
+    category: GoalCategory | null;
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (updatedCategory: GoalCategory) => void;
+}) => {
+    const [formData, setFormData] = useState<Partial<GoalCategory>>({});
+    const [successMsg, setSuccessMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (category) {
+            setFormData({
+                CategoryId: category.CategoryId,
+                CategoryName: category.CategoryName,
+                Description: category.Description
+            });
+            setSuccessMsg('');
+            setErrorMsg('');
+        }
+    }, [category]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSuccessMsg('');
+        setErrorMsg('');
+        setIsLoading(true);
+
+        if (!category || !formData.CategoryName?.trim()) {
+            setErrorMsg("Le nom de la catégorie est requis.");
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            await updateGoalCategory(
+                state.databaseName,
+                category.CategoryId,
+                {
+                    CategoryName: formData.CategoryName,
+                    Description: formData.Description || ''
+                },
+                navigate
+            );
+
+            setSuccessMsg('Catégorie modifiée avec succès.');
+            setTimeout(() => {
+                setSuccessMsg('');
+                setIsLoading(false);
+                onClose();
+                if (category) {
+                    onSave({ ...category, ...formData as GoalCategory });
+                }
+            }, 1200);
+        } catch (error) {
+            console.error('Error updating category:', error);
+            setErrorMsg("Une erreur est survenue lors de la modification.");
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-md bg-white rounded-xl border-0 shadow-2xl">
+                <DialogHeader className="pb-4">
+                    <DialogTitle className="text-xl font-bold text-highBlue font-oswald flex items-center space-x-2">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                            <Edit className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <span>Modifier la catégorie</span>
+                    </DialogTitle>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {isLoading && (
+                        <div className="flex justify-center items-center my-10">
+                            <Loader className="h-8 w-8 animate-spin text-highBlue" />
+                        </div>
+                    )}
+                    
+                    {!isLoading && (
+                        <>
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label className={`${labelStyle} flex items-center space-x-2`}>
+                                        <Tag className="w-4 h-4" />
+                                        <span>Nom de la catégorie</span>
+                                    </Label>
+                                    <Input
+                                        id="CategoryName"
+                                        name="CategoryName"
+                                        value={formData.CategoryName || ''}
+                                        onChange={handleChange}
+                                        className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
+                                        placeholder="Ex: i10_i20"
+                                        required
+                                        onFocus={(e) => {
+                                            const len = e.target.value.length;
+                                            e.target.setSelectionRange(len, len);
+                                        }}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className={`${labelStyle} flex items-center space-x-2`}>
+                                        <FileText className="w-4 h-4" />
+                                        <span>Description</span>
+                                    </Label>
+                                    <Input
+                                        id="Description"
+                                        name="Description"
+                                        value={formData.Description || ''}
+                                        onChange={handleChange}
+                                        className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
+                                        placeholder="Description de la catégorie"
+                                        onFocus={(e) => {
+                                            const len = e.target.value.length;
+                                            e.target.setSelectionRange(len, len);
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {successMsg && (
+                                <div className="bg-green-50 border border-green-300 text-green-800 rounded-md p-3 text-sm mt-2">
+                                    {successMsg}
+                                </div>
+                            )}
+                            {errorMsg && (
+                                <div className="bg-red-50 border border-red-300 text-red-800 rounded-md p-3 text-sm mt-2">
+                                    {errorMsg}
+                                </div>
+                            )}
+
+                            <div className="flex justify-end space-x-3 pt-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={onClose}
+                                    className="font-oswald hover:bg-gray-100"
+                                >
+                                    Annuler
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    className={`${buttonStyle} font-oswald shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200`}
+                                >
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Mettre à jour
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
 
 function CategoriesTab({
@@ -58,21 +243,56 @@ function CategoriesTab({
     newCategory,
     setNewCategory,
     handleCreateCategory,
-    goalCategories
+    goalCategories,
+    refetch
 }: CategoriesTabProps) {
     const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
     const [categorySheet, setCategorySheet] = useState(false);
     const [categoryCars, setCategoryCars] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [carsLoading, setCarsLoading] = useState(false);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [carToDelete, setCarToDelete] = useState<{mappingId: number, carModel: string} | null>(null);
+    
+    // Edit category states
+    const [showEditCategoryDialog, setShowEditCategoryDialog] = useState(false);
+    const [editingCategory, setEditingCategory] = useState<GoalCategory | null>(null);
+    
+    // Delete category states
+    const [showDeleteCategoryDialog, setShowDeleteCategoryDialog] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<any | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    
+    // Individual loading states for different operations
+    const [tableLoading, setTableLoading] = useState(false);
+    const [createLoading, setCreateLoading] = useState(false);
+    
     const navigate = useNavigate();
     const { toast } = useToast();
+
+    // Handle refetch with loading state
+    const handleRefetch = async () => {
+        setTableLoading(true);
+        try {
+            await refetch();
+        } finally {
+            setTableLoading(false);
+        }
+    };
+
+    // Handle create category with loading state
+    const handleCreateCategoryWithLoading = async () => {
+        setCreateLoading(true);
+        try {
+            await handleCreateCategory();
+        } finally {
+            setCreateLoading(false);
+        }
+    };
 
     const handleCategoryClick = async (category: any) => {
         setSelectedCategory(category);
         setCategorySheet(true);
-        setLoading(true);
+        setCarsLoading(true);
         
         try {
             const cars = await fetchCarsByCategory(state.databaseName, category.CategoryId, navigate);
@@ -85,7 +305,7 @@ function CategoriesTab({
                 variant: "destructive"
             });
         } finally {
-            setLoading(false);
+            setCarsLoading(false);
         }
     };
 
@@ -114,6 +334,86 @@ function CategoriesTab({
         } finally {
             setShowDeleteConfirmation(false);
             setCarToDelete(null);
+        }
+    };
+
+    // Handle edit category
+    const handleEditCategory = (category: GoalCategory) => {
+        setEditingCategory(category);
+        setShowEditCategoryDialog(true);
+    };
+
+    const handleSaveCategory = () => {
+        setShowEditCategoryDialog(false);
+        setEditingCategory(null);
+        handleRefetch(); // Use individual loading refetch
+    };
+
+    const handleCloseEditDialog = () => {
+        setShowEditCategoryDialog(false);
+        setEditingCategory(null);
+    };
+
+    // Handle delete category
+    const handleDeleteCategory = (category: any) => {
+        setCategoryToDelete(category);
+        setShowDeleteCategoryDialog(true);
+    };
+
+    const handleConfirmDeleteCategory = async (permanent: boolean = false) => {
+        if (!categoryToDelete) return;
+        
+        setIsDeleting(true);
+        
+        try {
+            if (permanent) {
+                // For now, we only support soft delete
+                // Permanent delete would require a different backend endpoint
+                await deleteGoalCategory(state.databaseName, categoryToDelete.CategoryId, navigate);
+                toast({
+                    title: "Succès",
+                    description: "Catégorie désactivée avec succès"
+                });
+            } else {
+                await deleteGoalCategory(state.databaseName, categoryToDelete.CategoryId, navigate);
+                toast({
+                    title: "Succès",
+                    description: "Catégorie désactivée avec succès"
+                });
+            }
+            
+            setShowDeleteCategoryDialog(false);
+            setCategoryToDelete(null);
+            // Refresh the categories data with individual loading
+            handleRefetch();
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la suppression de la catégorie",
+                variant: "destructive"
+            });
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleRestoreCategory = async (categoryId: number) => {
+        try {
+            await restoreGoalCategory(state.databaseName, categoryId, navigate);
+            toast({
+                title: "Succès",
+                description: "Catégorie restaurée avec succès"
+            });
+            // Refresh the categories data with individual loading
+            handleRefetch();
+        } catch (error) {
+            console.error('Error restoring category:', error);
+            toast({
+                title: "Erreur",
+                description: "Erreur lors de la restauration de la catégorie",
+                variant: "destructive"
+            });
         }
     };
 
@@ -155,60 +455,67 @@ function CategoriesTab({
                                 <span>Créer une nouvelle catégorie</span>
                             </DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <Label className={`${labelStyle} flex items-center space-x-2`}>
-                                    <Tag className="w-4 h-4" />
-                                    <span>Nom de la catégorie</span>
-                                </Label>
-                                <Input
-                                    className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
-                                    value={newCategory.CategoryName}
-                                    onChange={(e) => setNewCategory({...newCategory, CategoryName: e.target.value})}
-                                    placeholder="Ex: i10_i20"
-                                />
+                        {createLoading ? (
+                            <div className="flex justify-center items-center my-10">
+                                <Loader className="h-8 w-8 animate-spin text-highBlue" />
                             </div>
-                            <div className="space-y-2">
-                                <Label className={`${labelStyle} flex items-center space-x-2`}>
-                                    <FileText className="w-4 h-4" />
-                                    <span>Description</span>
-                                </Label>
-                                <Input
-                                    className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
-                                    value={newCategory.Description}
-                                    onChange={(e) => setNewCategory({...newCategory, Description: e.target.value})}
-                                    placeholder="Description de la catégorie"
-                                />
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label className={`${labelStyle} flex items-center space-x-2`}>
+                                        <Tag className="w-4 h-4" />
+                                        <span>Nom de la catégorie</span>
+                                    </Label>
+                                    <Input
+                                        className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
+                                        value={newCategory.CategoryName}
+                                        onChange={(e) => setNewCategory({...newCategory, CategoryName: e.target.value})}
+                                        placeholder="Ex: i10_i20"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className={`${labelStyle} flex items-center space-x-2`}>
+                                        <FileText className="w-4 h-4" />
+                                        <span>Description</span>
+                                    </Label>
+                                    <Input
+                                        className={`${textInputStyle} focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200`}
+                                        value={newCategory.Description}
+                                        onChange={(e) => setNewCategory({...newCategory, Description: e.target.value})}
+                                        placeholder="Description de la catégorie"
+                                    />
+                                </div>
+                                <Button 
+                                    onClick={handleCreateCategoryWithLoading} 
+                                    className={`${buttonStyle} w-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200`}
+                                    disabled={createLoading}
+                                >
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Créer la catégorie
+                                </Button>
                             </div>
-                            <Button 
-                                onClick={handleCreateCategory} 
-                                className={`${buttonStyle} w-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200`}
-                            >
-                                <Plus className="w-4 h-4 mr-2" />
-                                Créer la catégorie
-                            </Button>
-                        </div>
+                        )}
                     </DialogContent>
                 </Dialog>
             </div>
 
             {/* Enhanced Categories Table */}
             <div className="bg-gradient-to-br from-white to-gray-50 p-8 rounded-xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="mb-6">
-                    <h4 className="text-lg font-bold text-highBlue font-oswald mb-2">Liste des catégories</h4>
-                    <p className="text-sm text-gray-600 font-oswald">Gérez toutes vos catégories d'objectifs</p>
-                </div>
-                
-                <div className="overflow-x-auto">
+                {tableLoading ? (
+                    <div className="flex justify-center items-center my-10">
+                        <Loader className="h-8 w-8 animate-spin text-highBlue" />
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow className="border-gray-200 bg-gray-50">
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">#</TableHead>
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">Nom de la catégorie</TableHead>
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">Description</TableHead>
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">Statut</TableHead>
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">Date de création</TableHead>
-                                <TableHead className="font-bold text-gray-700 py-4 text-center">Actions</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">#</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">Nom de la catégorie</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">Description</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">Statut</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">Date de création</TableHead>
+                                <TableHead className="text-gray-700 py-4 text-center font-oswald">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -218,25 +525,25 @@ function CategoriesTab({
                                     className="border-gray-200 hover:bg-gray-50 transition-all duration-200"
                                 >
                                     <TableCell className="text-center py-4">
-                                        <span className="font-bold text-gray-700">
+                                        <span className="text-gray-700 font-oswald">
                                             {index + 1}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-center py-4">
                                         <button 
                                             onClick={() => handleCategoryClick(category)}
-                                            className="font-semibold text-gray-900 hover:text-blue-600 transition-colors cursor-pointer underline decoration-dotted"
+                                            className="font-semibold text-gray-900 hover:text-blue-600 transition-colors cursor-pointer underline decoration-dotted font-oswald"
                                         >
                                             {category.CategoryName}
                                         </button>
                                     </TableCell>
                                     <TableCell className="text-center py-4">
-                                        <span className="text-gray-700">
+                                        <span className="text-gray-700 font-oswald">
                                             {category.Description || "Aucune description"}
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-center py-4">
-                                        <span className={`px-3 py-1 rounded-md text-sm font-medium ${
+                                        <span className={`px-3 py-1 rounded-md text-sm font-medium font-oswald ${
                                             category.IsActive 
                                                 ? 'bg-green-100 text-green-800' 
                                                 : 'bg-red-100 text-red-800'
@@ -245,7 +552,7 @@ function CategoriesTab({
                                         </span>
                                     </TableCell>
                                     <TableCell className="text-center py-4">
-                                        <span className="text-gray-600">
+                                        <span className="text-gray-600 font-oswald">
                                             {new Date(category.CreatedAt).toLocaleDateString('fr-FR')}
                                         </span>
                                     </TableCell>
@@ -254,7 +561,7 @@ function CategoriesTab({
                                             <Button 
                                                 variant="outline" 
                                                 size="sm" 
-                                                className="hover:bg-blue-500 hover:text-white border-blue-500 text-blue-500 transition-all duration-200"
+                                                className="hover:bg-blue-500 hover:text-white border-blue-500 text-blue-500 transition-all duration-200 font-oswald"
                                                 onClick={() => handleCategoryClick(category)}
                                             >
                                                 <Eye className="w-4 h-4" />
@@ -262,14 +569,16 @@ function CategoriesTab({
                                             <Button 
                                                 variant="outline" 
                                                 size="sm" 
-                                                className="hover:bg-lightBlue hover:text-white border-lightBlue text-lightBlue transition-all duration-200"
+                                                className="hover:bg-black hover:text-white border-black text-black transition-all duration-200 font-oswald"
+                                                onClick={() => handleEditCategory(category)}
                                             >
                                                 <Edit className="w-4 h-4" />
                                             </Button>
                                             <Button 
                                                 variant="outline" 
                                                 size="sm" 
-                                                className="hover:bg-red-500 hover:text-white border-red-500 text-red-500 transition-all duration-200"
+                                                className="hover:bg-red-500 hover:text-white border-red-500 text-red-500 transition-all duration-200 font-oswald"
+                                                onClick={() => handleDeleteCategory(category)}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
@@ -302,6 +611,7 @@ function CategoriesTab({
                         </TableBody>
                     </Table>
                 </div>
+                )}
             </div>
 
             {/* Cars Sheet */}
@@ -318,10 +628,9 @@ function CategoriesTab({
                     </SheetHeader>
                     
                     <div className="mt-6">
-                        {loading ? (
-                            <div className="flex items-center justify-center py-12">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                <span className="ml-2 text-gray-600">Chargement...</span>
+                        {carsLoading ? (
+                            <div className="flex justify-center items-center my-10">
+                                <Loader className="h-8 w-8 animate-spin text-highBlue" />
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -404,6 +713,58 @@ function CategoriesTab({
                             Confirmer
                         </AlertDialogAction>
                     </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Edit Dialog */}
+            <EditCategoryDialog
+                category={editingCategory}
+                isOpen={showEditCategoryDialog}
+                onClose={handleCloseEditDialog}
+                onSave={handleSaveCategory}
+            />
+
+            {/* Delete Category Dialog */}
+            <AlertDialog open={showDeleteCategoryDialog} onOpenChange={setShowDeleteCategoryDialog}>
+                <AlertDialogContent className="bg-white">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-600 font-bold">
+                            Supprimer la catégorie
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Que souhaitez-vous faire avec la catégorie "{categoryToDelete?.CategoryName}" ?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    
+                    {isDeleting ? (
+                        <div className="flex justify-center items-center my-10">
+                            <Loader className="h-8 w-8 animate-spin text-highBlue" />
+                        </div>
+                    ) : (
+                        <AlertDialogFooter className="flex-col space-y-3">
+                            <div className="flex space-x-3 w-full">
+                                <AlertDialogCancel 
+                                    onClick={() => {
+                                        setShowDeleteCategoryDialog(false);
+                                        setCategoryToDelete(null);
+                                    }}
+                                    className="hover:bg-gray-100 flex-1"
+                                >
+                                    Annuler
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={() => handleConfirmDeleteCategory(false)}
+                                    className="bg-orange-600 hover:bg-orange-700 text-white flex-1"
+                                >
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    Désactiver
+                                </AlertDialogAction>
+                            </div>
+                            <div className="text-xs text-gray-500 text-center">
+                                La désactivation masque la catégorie mais garde les données
+                            </div>
+                        </AlertDialogFooter>
+                    )}
                 </AlertDialogContent>
             </AlertDialog>
         </div>

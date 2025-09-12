@@ -6,18 +6,28 @@ import {
     fetchAllGoalStatuses,
     fetchMonthlyGoals,
     fetchGoalStatusViews,
-    fetchCarsByCategory,
     createGoalCategory,
     createGoalStatus,
     createMonthlyGoal,
+    updateMonthlyGoal,
+    updateMonthlyGoalById,
+    deleteMonthlyGoal,
     deleteGoalStatus,
     restoreGoalStatus,
+    updateGoalCategory,
+    updateGoalStatus,
+    deleteGoalCategory,
+    restoreGoalCategory,
     removeCategoryMapping,
     assignCarToCategory,
+    bulkAssignCarsToCategory,
     autoCategorizeCars,
     CreateGoalCategoryDto,
     CreateGoalStatusDto,
     CreateMonthlyGoalDto,
+    UpdateGoalCategoryDto,
+    UpdateGoalStatusDto,
+    UpdateMonthlyGoalDto,
 } from '../services/goalManagementService';
 
 // Simple hook that fetches all goals data at once - similar to useAgentsHistory
@@ -26,16 +36,6 @@ const useGoalsData = (year: number, month: number, category?: string) => {
     
     // Create a filter key to ensure cache invalidation when filters change
     const filterKey = `${year}-${month}-${category || 'all'}`;
-    
-    // Debug logging
-    console.log('🎯 useGoalsData called with:', { 
-        databaseName: state.databaseName, 
-        year, 
-        month, 
-        category,
-        filterKey,
-        isDatabaseNameValid: !!state.databaseName 
-    });
     
     const categoriesQuery = useQuery({
         queryKey: ['goalCategories', state.databaseName],
@@ -107,18 +107,6 @@ const useGoalsData = (year: number, month: number, category?: string) => {
         }
     };
 
-    // Debug the results
-    console.log('📊 useGoalsData result:', {
-        monthlyGoalsQuery: {
-            data: monthlyGoalsQuery.data,
-            isLoading: monthlyGoalsQuery.isLoading,
-            isError: monthlyGoalsQuery.isError,
-            error: monthlyGoalsQuery.error
-        },
-        monthlyGoalsCount: monthlyGoalsQuery.data?.length || 0,
-        result: result.data
-    });
-
     return result;
 };
 
@@ -133,6 +121,30 @@ export const useCreateGoalCategory = () => {
     });
 };
 
+export const useUpdateGoalCategory = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ categoryId, data }: { categoryId: number; data: UpdateGoalCategoryDto }) =>
+            updateGoalCategory(state.databaseName, categoryId, data, navigate),
+    });
+};
+
+export const useDeleteGoalCategory = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: (categoryId: number) =>
+            deleteGoalCategory(state.databaseName, categoryId, navigate),
+    });
+};
+
+export const useRestoreGoalCategory = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: (categoryId: number) =>
+            restoreGoalCategory(state.databaseName, categoryId, navigate),
+    });
+};
+
 export const useCreateGoalStatus = () => {
     const navigate = useNavigate();
     
@@ -143,6 +155,15 @@ export const useCreateGoalStatus = () => {
     });
 };
 
+export const useUpdateGoalStatus = () => {
+    const navigate = useNavigate();
+    
+    return useMutation({
+        mutationFn: ({ statusId, data }: { statusId: number; data: UpdateGoalStatusDto }) =>
+            updateGoalStatus(state.databaseName, statusId, data, navigate),
+    });
+};
+
 export const useCreateMonthlyGoal = () => {
     const navigate = useNavigate();
     
@@ -150,6 +171,30 @@ export const useCreateMonthlyGoal = () => {
         mutationFn: (data: CreateMonthlyGoalDto) =>
             createMonthlyGoal(state.databaseName, data, navigate),
         // Removed onSuccess auto-invalidation - user must manually refresh
+    });
+};
+
+export const useUpdateMonthlyGoal = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ data }: { data: CreateMonthlyGoalDto }) =>
+            updateMonthlyGoal(state.databaseName, data, navigate),
+    });
+};
+
+export const useUpdateMonthlyGoalById = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number; data: UpdateMonthlyGoalDto }) =>
+            updateMonthlyGoalById(state.databaseName, id, data, navigate),
+    });
+};
+
+export const useDeleteMonthlyGoal = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ id }: { id: number }) =>
+            deleteMonthlyGoal(state.databaseName, id, navigate),
     });
 };
 
@@ -183,6 +228,14 @@ export const useAssignCarToCategory = () => {
     return useMutation({
         mutationFn: ({ carId, categoryName, statusName }: { carId: number; categoryName: string; statusName?: string }) =>
             assignCarToCategory(state.databaseName, carId, categoryName, navigate, statusName),
+    });
+};
+
+export const useBulkAssignCarsToCategory = () => {
+    const navigate = useNavigate();
+    return useMutation({
+        mutationFn: ({ carNames, categoryName, statusName }: { carNames: string[]; categoryName: string; statusName?: string }) =>
+            bulkAssignCarsToCategory(state.databaseName, carNames, categoryName, navigate, statusName),
     });
 };
 

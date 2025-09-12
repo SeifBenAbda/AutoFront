@@ -12,7 +12,6 @@ import {
     AlertCircle,
     RefreshCw
 } from "lucide-react";
-import Loading from "../../../atoms/Loading";
 
 import useGoalsData, {
     useCreateGoalCategory,
@@ -262,6 +261,7 @@ export default function GoalsManagement() {
                         setNewCategory={setNewCategory}
                         handleCreateCategory={handleCreateCategory}
                         goalCategories={goalCategories}
+                        refetch={refetch}
                     />
                 );
             case 2: 
@@ -275,6 +275,7 @@ export default function GoalsManagement() {
                         handleDeleteStatus={handleDeleteStatus}
                         handleRestoreStatus={handleRestoreStatus}
                         goalStatuses={goalStatuses}
+                        refetch={refetch}
                     />
                 );
             case 3: 
@@ -288,6 +289,7 @@ export default function GoalsManagement() {
                         goalCategories={goalCategories}
                         goalStatuses={goalStatuses}
                         monthlyGoals={monthlyGoals}
+                        refetch={refetch}
                     />
                 );
             case 4: return <MappingsTab goalCategories={goalCategories} goalStatuses={goalStatuses} />;
@@ -357,13 +359,7 @@ export default function GoalsManagement() {
             </div>
 
             {/* Tab Content */}
-            {isLoading ? (
-                <div className="flex justify-center py-12">
-                    <Loading />
-                </div>
-            ) : (
-                renderTabContent()
-            )}
+            {renderTabContent()}
         </div>
     );
 }

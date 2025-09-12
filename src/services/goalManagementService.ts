@@ -66,6 +66,13 @@ export interface CreateMonthlyGoalDto {
     createdBy: string;
 }
 
+export interface UpdateMonthlyGoalDto {
+    categoryName?: string;
+    statusName?: string;
+    targetQuantity?: number;
+    updatedBy: string;
+}
+
 export interface UpdateGoalCategoryDto {
     CategoryName?: string;
     Description?: string;
@@ -374,6 +381,55 @@ export const createMonthlyGoal = async (
     return response.json();
 };
 
+export const updateMonthlyGoal = async (
+    database: string,
+    data: CreateMonthlyGoalDto,
+    navigate: (path: string) => void
+): Promise<MonthlyGoal> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/monthly-goals/set-goal`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            database,
+            ...data
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to update monthly goal');
+    return response.json();
+};
+
+export const updateMonthlyGoalById = async (
+    database: string,
+    id: number,
+    data: UpdateMonthlyGoalDto,
+    navigate: (path: string) => void
+): Promise<any> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const response = await fetch(`${API_URL}/monthly-goals/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            database,
+            ...data
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to update monthly goal');
+    return response.json();
+};
+
 export const deleteMonthlyGoal = async (
     database: string,
     id: number,
@@ -465,20 +521,19 @@ export const fetchCarCategorization = async (
     const token = getToken();
     if (!token && navigate) navigate('/login');
 
-    const params = new URLSearchParams();
-    if (category) params.append('category', category);
-    if (model) params.append('model', model);
-    if (available !== undefined) params.append('available', available.toString());
+    // Build the request body with filters
+    const requestBody: any = { database };
+    if (category) requestBody.categoryName = category;
+    if (model) requestBody.carModel = model;
+    if (available !== undefined) requestBody.isAvailable = available;
 
-    const url = `${API_URL}/goal-views/car-categorization${params.toString() ? `?${params}` : ''}`;
-
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}/goal-views/car-categorization`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ database })
+        body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) throw new Error('Failed to fetch car categorization');
@@ -530,6 +585,39 @@ export const assignCarToCategory = async (
     });
 
     if (!response.ok) throw new Error('Failed to assign car to category');
+    return response.json();
+};
+
+export const bulkAssignCarsToCategory = async (
+    database: string,
+    carNames: string[],
+    categoryName: string,
+    navigate: (path: string) => void,
+    statusName?: string
+): Promise<{ success: boolean; message?: string; results?: any[]; errors?: any[] }> => {
+    const token = getToken();
+    if (!token) navigate('/login');
+
+    const requestBody: any = {
+        database,
+        carNames,
+        categoryName
+    };
+    
+    if (statusName) {
+        requestBody.statusName = statusName;
+    }
+
+    const response = await fetch(`${API_URL}/car-category-mapping/assign-bulk`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) throw new Error('Failed to bulk assign cars to category');
     return response.json();
 };
 

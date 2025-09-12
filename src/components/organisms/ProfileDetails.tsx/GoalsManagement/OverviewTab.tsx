@@ -17,6 +17,7 @@ import {
     Target,
     Calendar,
     CheckCircle,
+    Loader,
 } from "lucide-react";
 import { OverviewTabProps } from "./types";
 import { cardStyle, months } from "./constants";
@@ -192,28 +193,22 @@ function OverviewTab({
                     <Table>
                         <TableHeader>
                             <TableRow className="border-gray-200 bg-gray-50">
-                                <TableHead className="font-bold text-gray-700 py-4">Catégorie</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Année</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Mois</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Statut</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Objectif</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Réalisé</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Manque</TableHead>
-                                <TableHead className="font-bold text-gray-700 text-center">Performance</TableHead>
+                                <TableHead className="text-gray-700 py-4 font-oswald">Catégorie</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Année</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Mois</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Statut</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Objectif</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Réalisé</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Manque</TableHead>
+                                <TableHead className="text-gray-700 text-center font-oswald">Performance</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
                                     <TableCell colSpan={8} className="text-center py-12">
-                                        <div className="space-y-3">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                                            <div className="text-gray-600 font-medium">
-                                                Chargement des données...
-                                            </div>
-                                            <div className="text-gray-400 text-sm">
-                                                Veuillez patienter pendant que nous récupérons vos objectifs
-                                            </div>
+                                        <div className="flex justify-center items-center my-10">
+                                            <Loader className="h-8 w-8 animate-spin text-highBlue" />
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -226,49 +221,49 @@ function OverviewTab({
                                     
                                     return (
                                     <TableRow key={index} className="border-gray-200 hover:bg-gray-50 transition-colors">
-                                        <TableCell className="font-semibold text-gray-900 py-4">
+                                        <TableCell className="font-semibold text-gray-900 py-4 font-oswald">
                                             <div className="flex items-center">
                                                 <div className={`w-3 h-3 rounded-md mr-3 ${progressColor}`}></div>
                                                 {view.CategoryName}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-md font-bold">
+                                        <TableCell className="text-center font-oswald">
+                                            <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-md font-oswald">
                                                 {view.Year}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium">
+                                        <TableCell className="text-center font-oswald">
+                                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium font-oswald">
                                                 {convertMonthToFrench(view.MonthName)}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className={`px-2 py-1 rounded-md text-xs font-medium border ${getStatusBadgeStyle(view.StatusName)}`}>
+                                        <TableCell className="text-center font-oswald">
+                                            <span className={`px-2 py-1 rounded-md text-xs font-medium border font-oswald ${getStatusBadgeStyle(view.StatusName)}`}>
                                                 {view.StatusName}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-md font-bold">
+                                        <TableCell className="text-center font-oswald">
+                                            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-md font-bold font-oswald">
                                                 {view.Objectif}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-md font-bold">
+                                        <TableCell className="text-center font-oswald">
+                                            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-md font-bold font-oswald">
                                                 {view.Total}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
-                                            <span className={`px-3 py-1 rounded-md font-bold border ${badgeColor}`}>
+                                        <TableCell className="text-center font-oswald">
+                                            <span className={`px-3 py-1 rounded-md font-bold border font-oswald ${badgeColor}`}>
                                                 {view.Manque < 0 ? view.Manque : `+${view.Manque}`}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-center">
+                                        <TableCell className="text-center font-oswald">
                                             <div className="space-y-2 px-2">
                                                 <div className="flex items-center justify-between">
-                                                    <span className={`text-sm font-bold ${progressTextColor}`}>
+                                                    <span className={`text-sm font-bold font-oswald ${progressTextColor}`}>
                                                         {Math.round(progress)}%
                                                     </span>
-                                                    <span className="text-xs text-gray-500">
+                                                    <span className="text-xs text-gray-500 font-oswald">
                                                         {progress >= 100 ? '🏆 Atteint' : progress >= 75 ? '👍 Bon' : progress >= 50 ? '⚡ Moyen' : '🔥 Effort'}
                                                     </span>
                                                 </div>
@@ -287,10 +282,10 @@ function OverviewTab({
                                 })
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-12">
+                                    <TableCell colSpan={8} className="text-center py-12 font-oswald">
                                         <div className="space-y-3">
                                             <div className="text-gray-400 text-6xl">📊</div>
-                                            <div className="text-gray-600 font-medium">
+                                            <div className="text-gray-600 font-medium font-oswald">
                                                 {activeMonthlyGoals.length === 0 
                                                     ? "Aucun objectif actif défini pour cette période" 
                                                     : filteredGoalStatusViews.length === 0
@@ -298,7 +293,7 @@ function OverviewTab({
                                                     : "Aucune donnée de performance disponible pour cette période"
                                                 }
                                             </div>
-                                            <div className="text-gray-400 text-sm">
+                                            <div className="text-gray-400 text-sm font-oswald">
                                                 Créez des objectifs ou modifiez les filtres pour voir les données
                                             </div>
                                         </div>
