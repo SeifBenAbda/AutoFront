@@ -20,8 +20,9 @@ import {
     Loader,
 } from "lucide-react";
 import { OverviewTabProps } from "./types";
-import { cardStyle, months } from "./constants";
+import { months } from "./constants";
 import YearSelector from "../../../atoms/YearSelector";
+import ExportDialog from "./ExportDialog";
 
 // Helper function to convert English month names to French
 const convertMonthToFrench = (englishMonth: string): string => {
@@ -186,6 +187,10 @@ function OverviewTab({
                                 ))}
                             </SelectContent>
                         </Select>
+                        <ExportDialog 
+                            goalCategories={goalCategories}
+                            filterYear={filterYear}
+                        />
                     </div>
                 </div>
                 
